@@ -1,8 +1,8 @@
-.wrap-the-whole-page {
-	padding: 0 15px;
-	margin: 0 -15px;
+
+.top-padding {
+	margin-top: 120x;
 }
 
-.toppadding {
-	padding-top: 20px;
+.left-padding {
+	margin-left: 120px;
 }
