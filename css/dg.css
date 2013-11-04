@@ -1,3 +1,4 @@
+
 .top-padding {
 	margin-top: 120x;
 }
@@ -11,32 +12,34 @@
 	filter:alpha(opacity=70);
 }
 
-.overlay {
+.leftOverlay {
+	position: absolute;
+	bottom: 375px;
+	left: 30px;
+}
+
+.rightOverlay {
 	position: absolute;
 	bottom: 450px;
-	left: 30px;
+	right: 30px;
+}
+
+.orangeText {
+	color: orange;
+}
+
+.lightText {
+	color: white;
+}
+
+.textOverlay {
+	position: absolute;
+	bottom: 650px;
+	right: 150px;
 }
 
 .span-page {
 	width: 100%;
 	z-index: 0;
 	background-size: cover;
-}
-.top-padding {
-        margin-top: 120x;
-}
-
-.left-padding {
-        margin-left: 0px;
-}
-
-.trans {
-        opacity: .7;
-        filter:alpha(opacity=70);
-}
-
-.span-page {
-        width: 100%;
-        z-index: 0;
-        background-size: cover;
 }
