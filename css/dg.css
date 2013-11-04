@@ -12,6 +12,12 @@
 	filter:alpha(opacity=70);
 }
 
+.overlay {
+	position: absolute;
+	bottom: 450px;
+	left: 30px;
+}
+
 .span-page {
 	width: 100%;
 	z-index: 0;
