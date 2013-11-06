@@ -1,4 +1,8 @@
-
+.jumbotron {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding: 0px;
+}
 
 .left-padding {
 	margin-left: 0px;
