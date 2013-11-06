@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,7 +24,7 @@
     <![endif]-->
 
     <!-- Custom styles for this template -->
-    <link href="examples/carousel/carousel.css" rel="stylesheet">
+    <link href="js/carousel.css" rel="stylesheet">
 	
 	<!-- our styling -->
 	<link href="css/dg.css" rel="stylesheet">
@@ -32,102 +33,117 @@
 <!-- NAVBAR
 ================================================== -->
   <body>
-
+	
     <div class="navbar-wrapper">
-     <div class="container">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-          <!--<div class="container">-->
-           <div class="navbar-collapse collapse"> 
-              <ul class="nav navbar-nav">
-				<li>
-					  <img src="imgs/logo.png" class="top-padding" style="width:62px;height:48px;"/>
+      <div class="container">
+
+        <div class="navbar navbar-inverse navbar-static-top">
+		<img src="imgs/dg_logo_color_105x50.png"></img>
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="navbar-collapse collapse">
+			  <ul class="nav navbar-nav">
+				<li><a href="#">Home</a></li>
+				<li><a href="#quick_start">Quick Start</a></li>
+				<li><a href="faq.html">FAQs</a></li>
+				<li><a href="docs/v1.0/index.html">API Docs</a></li>
+				<li><a href="https://groups.google.com">Discussion</a></li>
+				<li><a href="#downloads">Downloads</a></li>
+				<li class="dropdown">
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other<b class="caret"></b></a>
+				  <ul class="dropdown-menu">
+						<li><a href="#how_it_works">How It Works</a></li>
+						<li><a href="#class_architecture">Class Architecture</a></li>
+						<li class="divider"></li>
+						<li class="dropdown-header">Documentation</li>
+						<li><a href="tutorial.html">Tutorial</a></li>
+						<li><a href="detailed_documentation.html">Detailed Documentation</a></li>
+				  </ul>
 				</li>
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#quick_start">Quick Start</a></li>
-                <li><a href="#api_docs">API Docs</a></li>
-                <li><a href="https://groups.google.com">Discussion</a></li>
-                <li><a href="#downloads">Downloads</a></li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other<b class="caret"></b></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="#high_level_architecture_diagram">High Level Architecture Diagram</a></li>
+			  </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+	
+<!--	<div class="navbar-wrapper">
+	    <div class="navbar navbar-default navbar-inverse navbar-static-top">
+			<img src="imgs/dg_logo_color_105x50.png"></img>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#">Home</a></li>
+            <li><a href="#quick_start">Quick Start</a></li>
+            <li><a href="#faq">FAQs</a></li>
+			<li><a href="#api_docs">API Docs</a></li>
+            <li><a href="https://groups.google.com">Discussion</a></li>
+			<li><a href="#downloads">Downloads</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                    <li><a href="#how_it_works">How It Works</a></li>
                     <li><a href="#class_architecture">Class Architecture</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">Documentation</li>
                     <li><a href="#tutorial">Tutorial</a></li>
                     <li><a href="#detailed_documentation">Detailed Documentation</a></li>
-                  </ul>
-                </li>
               </ul>
-          </div> 
-          <!--</div>-->
+            </li>
+          </ul>
         </div>
+    </div> 
+	</div> -->
 
-     </div>
+	<div class="jumbotron">
+      <div class="container">
+		<div class="row" style="background-image: url(imgs/jumbotron_1.jpg); height: 389px; width: 1170px;"> 
+			<div class="col-sm-4" style="position: absolute; top: 154px;">
+<iframe width="420" height="315" src="http://www.youtube.com/embed/D3SdMEpRPuw" frameborder="0" allowfullscreen></iframe>
+			</div>
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4" style="position: absolute; top: 154px; right: 20px;">
+				<h2 style="color: white;">Recent News</h2>
+				<h3 style="color: white;">11/6</h3><p style="color: white;">Patch for small issue available</p>
+				<h3 style="color: white;">10/15</h3><p style="color: white;">Quick start video up!</p>
+				<h3 style="color: white;">10/6</h3><p style="color: white;">Version 1.0 is released</p>
+			</div>
+		</div>
+	  </div>
     </div>
+	
 
-  
-	<br />
-	<br />
 
-<div id="image_container">
-	<img src="imgs/cyber_c.jpg" height="550" class="trans span-page"> 
-	<img src="imgs/GreenBlock.jpg" height="450" class="trans overlay">
-</div>
 
 <div id="download_image_container">
 	<a name="downloads"></a>
 	<div class="container">
-		<img src="imgs/download_zip.png"></img>
-		<img src="imgs/download_tar.png"></img>
+		<div class="row">
+		<div class="col-sm-3">
+		<a href="https://github.com/FINRAOS/DataGenerator/zipball/master"><img src="imgs/download_zip.png"></img></a>
+		</div>
+		<div class="col-sm-3">
+		</div>
+		<div class="col-sm-3">
+		<br>
+		<b><a href="https://github.com/FINRAOS/DataGenerator">Get source code from GitHub<br>@FINRAOS</a><br></b>
+		</div>
+		</div>
 	</div>
 </div>
- 
-    <!-- Carousel
-    ================================================== -->
- <!--   <div id="myCarousel" class="carousel slide" data-ride="carousel"> -->
-      <!-- Indicators -->
-  <!--     <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-      </ol>
-      <div class="carousel-inner">
-        <div class="item active">
-          <img data-src="holder.js/900x500/auto/#777:#7a7a7a/text:First slide" alt="First slide">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>Example headline.</h1>
-              <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <img data-src="holder.js/900x500/auto/#666:#6a6a6a/text:Second slide" alt="Second slide">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>Another example headline.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <img data-src="holder.js/900x500/auto/#555:#5a5a5a/text:Third slide" alt="Third slide">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>One more for good measure.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-      <a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-    </div> --><!-- /.carousel -->
-
 
     <!-- Marketing messaging and featurettes
     ================================================== -->
@@ -175,11 +191,18 @@
       </div> -->
 
       <hr class="featurette-divider">
+	  
+	  <a name="faq"></a>
+	  <h1>FAQs</h1>
+	  
+	  <p>Here you will find some answers to frequently asked questions</p>
+		
+	  <hr class="featurette-divider">
 		
 		<a name="api_docs"></a>
 		<h1>API Docs</h1>
 		
-		<a href='http://finraos.github.io/DataGenerator/apis/v1.0/'>javadocs for V1.0</a>
+		<p>Here's the API</p>
 	
  <!--     <div class="row featurette">
         <div class="col-md-5">
@@ -194,8 +217,8 @@
 	  
       <hr class="featurette-divider">
 		
-		<a name="high_level_architecture_diagram"></a>
-		<h1>High Level Architecture Diagram</h1>
+		<a name="how_it_works"></a>
+		<h1>How It Works</h1>
 		
 		<p>Here is a high level architecture diagram</p>
 <!--
@@ -215,13 +238,6 @@
 		
 		<a name="class_architecture"></a>
 		<h1>Class Architecture</h1>
-		
-		<p>Right here</p>
-		
-      <hr class="featurette-divider">
-		
-		<a name="tutorial"></a>
-		<h1>Tutorial</h1>
 		
 		<p>Right here</p>
 		
