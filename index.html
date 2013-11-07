@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="imgs/favicon.png">
+    <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
 
-    <title>Data Generator</title>
+    <title>The DataGenerator</title>
 
     <!-- Bootstrap core CSS -->
     <link href="dist/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="js/jumbotron.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -22,32 +24,22 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-
-    <!-- Custom styles for this template -->
-    <link href="js/carousel.css" rel="stylesheet">
-	
-	<!-- our styling -->
-	<link href="css/dg.css" rel="stylesheet">
-	
   </head>
-<!-- NAVBAR
-================================================== -->
-  <body>
-	
-    <div class="navbar-wrapper">
-      <div class="container">
 
-        <div class="navbar navbar-inverse navbar-static-top">
-		<img src="imgs/dg_logo_color_105x50.png"></img>
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-            </div>
-            <div class="navbar-collapse collapse">
+  <body>
+
+	
+    <div class="navbar navbar-inverse navbar-fixed-top container" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+		   <div class="navbar-collapse collapse">
 			  <ul class="nav navbar-nav">
 				<li><a href="#">Home</a></li>
 				<li><a href="#quick_start">Quick Start</a></li>
@@ -68,92 +60,64 @@
 				</li>
 			  </ul>
             </div>
-          </div>
-        </div>
-
+			
+			
+			
+        <div class="navbar-collapse collapse">
+        </div><!--/.navbar-collapse -->
       </div>
     </div>
 	
-<!--	<div class="navbar-wrapper">
-	    <div class="navbar navbar-default navbar-inverse navbar-static-top">
-			<img src="imgs/dg_logo_color_105x50.png"></img>
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="#">Home</a></li>
-            <li><a href="#quick_start">Quick Start</a></li>
-            <li><a href="#faq">FAQs</a></li>
-			<li><a href="#api_docs">API Docs</a></li>
-            <li><a href="https://groups.google.com">Discussion</a></li>
-			<li><a href="#downloads">Downloads</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                    <li><a href="#how_it_works">How It Works</a></li>
-                    <li><a href="#class_architecture">Class Architecture</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Documentation</li>
-                    <li><a href="#tutorial">Tutorial</a></li>
-                    <li><a href="#detailed_documentation">Detailed Documentation</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-    </div> 
-	</div> -->
 	
-	<div class="container">
-		<h3>Data Generator is a tool that generates your data so you can focus on your testing.</h3>
-	</div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron container">
 	
-	<div class="jumbotron">
-      <div class="container">
-		<div class="row"> 
-			<div class="col-sm-4">
-<iframe width="420" height="315" src="http://www.youtube.com/embed/D3SdMEpRPuw" frameborder="0" allowfullscreen></iframe>
-			</div>
-			<div class="col-sm-4"></div>
-			<div class="col-sm-4">
-				<h2>Recent News</h2>
-				<h3>11/6</h3><p>Patch for small issue available</p>
-				<h3>10/15</h3><p>Quick start video up!</p>
-				<h3>10/6</h3><p>Version 1.0 is released</p>
-			</div>
+
+      <div class="row">
+        <div class="col-md-4">
+		<br/>
+          <p>DataGenerator is an open source tool that generates test data, expectations and test scripts using dependency models, equivalence class partitioned data and templates. </p>
+        </div>
+        <div class="col-md-4">
+		<br/>
+          	<video width="427" height="240" controls>
+			  <source src="vid/DG.mp4" type="video/mp4">
+			  <source src="vid/DG.ogg" type="video/ogg">
+			  <source src="vid/DG.webm" type="video/webm">
+			  <object data="vid/DG.mp4" width="427" height="240">
+				<embed src="vid/DG.swf" width="427" height="240">
+			  </object> 
+			</video>
+       </div>
+	   
+      </div>
+	  
+	  
+	   <div class="row">
+		<div class="col-md-4">
+			<p><a class="btn btn-primary btn-lg" role="button">Download latest executable &raquo;</a></p>
 		</div>
-	  </div>
+		<div class="col-md-4">
+		   <b><font size='2'><a href="https://github.com/FINRAOS/DataGenerator">Get involved on GitHub @FINRAOS/DataGenerator</a><br></font></b>
+	   </div>
+	  
+
+	  
+	 
+	  
+	  
+	
+      <!--div class="container">
+	  
+        <p>The DataGenerator is an open source tool that generates test data, expectations and test scripts using dependency models, equivalence class partitioned data and templates.</p>
+        <p><a class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
+      </div-->
     </div>
-	
-
-
-
-<div id="download_image_container">
-	<a name="downloads"></a>
-	<div class="container">
-		<div class="row">
-		<div class="col-sm-3">
-		<a href="https://github.com/FINRAOS/DataGenerator/zipball/master"><img src="imgs/download_zip.png"></img></a>
-		</div>
-		<div class="col-sm-3">
-		</div>
-		<div class="col-sm-3">
-		<br>
-		<b><a href="https://github.com/FINRAOS/DataGenerator">Get source code from GitHub<br>@FINRAOS</a><br></b>
-		</div>
-		</div>
 	</div>
-</div>
 
-    <!-- Marketing messaging and featurettes
-    ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
-
-    <div class="container marketing">
+	
+	    <div class="container marketing">
 		
       <!-- Three columns of text below the carousel -->
       <div class="row">
@@ -173,95 +137,14 @@
           <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
-
-
-      <!-- START THE FEATURETTES -->
-
-      <hr class="featurette-divider">
-
-	  <a name="quick_start"></a>
-	  <h1>Quick Start</h1>
-	  
-	  <p>This is the place where you will learn how to get quickly started with DataGenerator.</p>
-	  
-<!--      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div> -->
-
-      <hr class="featurette-divider">
-	  
-	  <a name="faq"></a>
-	  <h1>FAQs</h1>
-	  
-	  <p>Here you will find some answers to frequently asked questions</p>
-		
-	  <hr class="featurette-divider">
-		
-		<a name="api_docs"></a>
-		<h1>API Docs</h1>
-		
-		<p><a href='apis/v1.0/index.html'>Here's the API</a></p>
 	
- <!--     <div class="row featurette">
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-        <div class="col-md-7">
-          <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-      </div>
--->
-	  
-      <hr class="featurette-divider">
-		
-		<a name="how_it_works"></a>
-		<h1>How It Works</h1>
-		
-		<p>Here is a high level architecture diagram</p>
-<!--
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div>
 
-	  -->
-	  
-      <hr class="featurette-divider">
-		
-		<a name="class_architecture"></a>
-		<h1>Class Architecture</h1>
-		
-		<p>Right here</p>
-		
-      <hr class="featurette-divider">
-		
-		<a name="detailed_documentation"></a>
-		<h1>Detailed Documentation</h1>
-		
-		<p>Right here</p>
-		
-      <!-- /END THE FEATURETTES -->
+      <hr>
 
-
-      <!-- FOOTER -->
       <footer>
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2013 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        <p>&copy; Copyright 2013 DataGenerator Contributors.</p>
       </footer>
-
-    </div><!-- /.container -->
+    </div> <!-- /container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -272,3 +155,7 @@
     <script src="docs-assets/js/holder.js"></script>
   </body>
 </html>
+
+
+
+
