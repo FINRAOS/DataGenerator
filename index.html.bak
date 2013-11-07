@@ -43,7 +43,7 @@
 			  <ul class="nav navbar-nav">
 				<li><a href="#">Home</a></li>
 				<li><a href="#quick_start">Quick Start</a></li>
-				<li><a href="https://groups.google.com">Google Group</a></li>
+				<li><a href="https://groups.google.com" target="new">Google Group</a></li>
 				<li><a href="#get_involved">Get Involved</a></li>
 				<li><a href="#downloads">Downloads</a></li>
 				<li class="dropdown">
@@ -54,6 +54,7 @@
 						<li><a href="faq.html">FAQs</a></li>
 				  </ul>
 				</li>
+				<li><a href="#about">About</a></li>
 			  </ul>
             </div>
 			
@@ -73,7 +74,7 @@
       <div class="row">
         <div class="col-md-4">
 		<br/>
-          <p>DataGenerator <font size='4'>is an open source testing tool that allows the user to model the behavior of a piece of software by employing specification and dependency modeling. Using templates, it enables the user to produce highly customizable and dynamically calculated test expectations, test data or test scripts to help test a piece of software.</font></p>		  
+          <p><font color="grey" size='6'>DataGenerator</font> <font size='4'>is an Apache V2 licensed testing tool that allows the user to model the behavior of a piece of software by employing data specification and dependency modeling. Using templates, it enables the user to produce highly customizable and dynamically calculated test expectations, test data or test scripts to help test a piece of software.</font></p>		  
         </div>
         <div class="col-md-4">
 		<br/>
@@ -92,10 +93,10 @@
 	  
 	   <div class="row">
 		<div class="col-md-4">
-			<p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/master">Download Latest Executable &raquo;</a></p>
+			<p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>
 		</div>
 		<div class="col-md-4" align="left">
-		   <b><font size='2'><a href="https://github.com/FINRAOS/DataGenerator">Get involved on GitHub @FINRAOS/DataGenerator</a><br></font></b>
+		   <p><a href="https://github.com/FINRAOS/DataGenerator" class="btn btn-secondary btn-lg" role="button">Get involved on GitHub @FINRAOS/DataGenerator</a></p>
 	   </div>
 	  
 
@@ -111,56 +112,87 @@
       </div-->
     </div>
 	</div>
+	
 
+	
+			 <!-- 
+		  Major challenges in software testing are ensuring test coverage, reduction of test execution effort and flexibility to accommodate changing requirements. DataGenerator is a new testing tool that help solve these challenges. By enabling the specification of data equivalence classes and dependency modeling the DataGenerator allows the user to model the behavior or the requirements of a piece of software. Using templates, the format of the output produced is highly customizable, and has the ability to include dynamically calculated test expectations, test data or test scripts. The combined use of the specification inputs, tool-assured test case coverage, and customizable templates, enables a tester to achieve increased coverage in less time while maintaining the flexibility to adapt to requirements changes. In an agile software development environment, modifications to the specification input and output templates are all that is required to get the tests re-generated. Therefore, this reduces time spent on test case generation and requirements gathering and alleviates gaps between requirements and test cases generated enabling elements of behavior-driven development.
+		  -->
+		  
+	
+	
 	
 	    <div class="container marketing">
 		
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-sm-4">
-          <img class="img-circle" src="imgs/coverage.png" alt="Increased Coverage">
-          <h2>Increased Coverage</h2>
-          <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/coverage.png" alt="Increased Coverage">
+          <h2 style="text-align: center;">Increased Coverage</h2>
+          <p>Using combinatorial data generation and pair-wise data generation techniques it allows the user to cover boundary data test scenarios. By incoporating graph coverage techniques such as node, path and edge coverage it allows the user to capture application logic paths.
+		 </p>
+		  
         </div><!-- /.col-lg-4 -->
         <div class="col-sm-4">
-          <img class="img-circle" src="imgs/manual_lab.png" alt="Decrease Manual Effort">
-          <h2>Decrease Manual Effort</h2>
-          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/manual_lab.png" alt="Decrease Manual Effort">
+          <h2 style="text-align: center;">Decrease Manual Effort</h2>
+          <p>By enabling the testers to template the output and model requirements, this tool reduces effort needed to hand craft test data to ensure coverage. This also makes it much easier for the testers to react to constant requirement changes that occur in a typical agile environment reducing overall time spent on test data creation and maintanance.
+		  
+		  </p>
         </div><!-- /.col-lg-4 -->
         <div class="col-sm-4">
-          <img class="img-circle" src="imgs/flexibility.png" alt="Flexible Output">
-          <h2>Flexible Output</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/flexibility.png" alt="Flexible Output">
+          <h2 style="text-align: center;">Flexible Output</h2>
+          <p>Data that is generated can be applied multiple templates allowing the tester to have many types of output generated including test data, automation code, input data, verification data and verification scripts.</p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 	
 
       <hr class="featurette-divider">
-		
-		<a name="quick_start"></a>
+ 
+		<a style="padding-top: 40px; margin-top: -40px;" name="quick_start"></a>
 		<h1>Quick Start</h1>
 		<p>Here's the Quick start content<p>
+	
 		     
 	 <hr class="featurette-divider">
 		
-		<a name="get_involved"></a>
+		<a style="padding-top: 40px; margin-top: -40px;" name="get_involved"></a>
 		<h1>Get Involved</h1>
 		<p>Here's how you can get involved<p>
 		
 		
-	 <hr class="featurette-divider">
-		
-		<a name="downloads"></a>
+	<hr class="featurette-divider">
+		<a style="padding-top: 40px; margin-top: -40px;" name="downloads"></a>
 		<h1>Downloads</h1>
-		<p><a class="btn btn-primary btn-lg" role="button">Download Release Version 1 &raquo;</a></p>
-		
+		<p><a class="btn btn-primary " role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v1.0 &raquo;</a></p>
+		<p><a class="btn btn-primary " role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v0.1 &raquo;</a></p>
 	 <hr class="featurette-divider">
-		
-      <footer>
-        <p>&copy; Copyright 2013 DataGenerator Contributors.</p>
-      </footer>
+
     </div> <!-- /container -->
 
+	
+	
+	
+	
+	
+	
+	
+	<div class="navbar navbar-inverse container navbar-fixed">
+      <div class="container">
+        <div class="navbar-header"><br/>
+        <font color ="grey" class="navbar avbar-toggle">&copy; Copyright 2013 DataGenerator Contributors</font><br/><br/>
+        </div>
+      </div>
+    </div>
+	
+	
+	
+	
+	
+	
+	
+	
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
