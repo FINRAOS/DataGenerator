@@ -1,11 +1,14 @@
-Introduction to DataGenerator
+Overivew
 =============================
 
-Primary goals of test automation are increased coverage, decreased manual effort and flexibility to accommodate changing requirements.
-DataGenerator is a testing tool that provides these goals. This tool supports requirements specification and test case specification in terms of work
-flows and data equivalence classes. By using templates, the format of the test data produced is highly customizable, and has the ability to include
-dynamically calculated test expectations. The combined use of straightforward specification inputs, tool-assured test case coverage, and
-customizable output enables a tester to achieve increased coverage in less time, while maintaining the flexibility to adapt to requirements changes.
-In an agile software development environment, modifications to the specification input and output templates are all that’s required to get the tests re-generated.
-This reduces time spent on test case generation and requirements gathering and alleviates gaps between requirements and test cases generated which
-strengthens behavior-driven development. 
+DataGenerator is a model-based tool for data generation designed to help testers quickly address changes to application requirements
+and test coverage demands. The DataGenerator approach allows testers to capture scnearios in the form of equivalence classes and
+a graphical state-machine model. These inputs drive the population of fully customizable, templatized text files (e.g., CSV, XML, input files, or
+even source code!).
+
+DataGenerator can be configured to provide various levels of coverage of models and equivalence classes. Templating leverages Apache Velocity, and
+can be extended through the Velocity Java API.
+
+
+
+
