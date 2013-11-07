@@ -1,3 +1,3 @@
 #!/bin/bash
-rm -rf ../html/
-cp -r ./_build/html ../
+rm -rf ../../html/
+cp -r ./_build/html ../../
