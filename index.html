@@ -27,8 +27,6 @@
   </head>
 
   <body>
-
-	
     <div class="navbar navbar-inverse navbar-fixed-top container" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -54,7 +52,6 @@
 						<li><a href="docs/html/FAQ.html" target="_blank">FAQs</a></li>
 				  </ul>
 				</li>
-				<li><a href="#about">About</a></li>
 			  </ul>
             </div>
 			
@@ -78,48 +75,28 @@
         </div>
         <div class="col-md-4">
 		<br/>
-          	<video width="600" height="300" controls>
+          	<video width="600" height="320" controls>
 			  <source src="vid/DG.mp4" type="video/mp4">
 			  <source src="vid/DG.ogg" type="video/ogg">
 			  <source src="vid/DG.webm" type="video/webm">
-			  <object data="vid/DG.mp4" width="427" height="240">
-				<embed src="vid/DG.swf" width="427" height="240">
+			  <object data="vid/DG.mp4" width="600" height="320">
+				<embed src="vid/DG.swf" width="600" height="320">
 			  </object> 
 			</video>
        </div>
-	   
       </div>
-	  
-	  
 	   <div class="row">
 		<div class="col-md-4">
-			<p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>
+			<p><a class="btn btn-danger btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>
 		</div>
 		<div class="col-md-4" align="left">
-		   <p><a href="https://github.com/FINRAOS/DataGenerator" class="btn btn-secondary btn-lg" role="button">Get involved on GitHub @FINRAOS/DataGenerator</a></p>
+		    <p><a class="btn btn-success btn-primary btn-lg" role="button" style="input {background-color:#FF0000;}"  href="https://github.com/FINRAOS/DataGenerator" target="new" >Get involved on GitHub @FINRAOS/DataGenerator</a></p>
 	   </div>
-	  
-
-	  
-	 
-	  
-	  
-	
-      <!--div class="container">
-	  
-        <p>The DataGenerator is an open source tool that generates test data, expectations and test scripts using dependency models, equivalence class partitioned data and templates.</p>
-        <p><a class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
-      </div-->
     </div>
 	</div>
 	
 
-	
-			 <!-- 
-		  Major challenges in software testing are ensuring test coverage, reduction of test execution effort and flexibility to accommodate changing requirements. DataGenerator is a new testing tool that help solve these challenges. By enabling the specification of data equivalence classes and dependency modeling the DataGenerator allows the user to model the behavior or the requirements of a piece of software. Using templates, the format of the output produced is highly customizable, and has the ability to include dynamically calculated test expectations, test data or test scripts. The combined use of the specification inputs, tool-assured test case coverage, and customizable templates, enables a tester to achieve increased coverage in less time while maintaining the flexibility to adapt to requirements changes. In an agile software development environment, modifications to the specification input and output templates are all that is required to get the tests re-generated. Therefore, this reduces time spent on test case generation and requirements gathering and alleviates gaps between requirements and test cases generated enabling elements of behavior-driven development.
-		  -->
-		  
-	
+
 	
 	
 	    <div class="container marketing">
@@ -129,45 +106,78 @@
         <div class="col-sm-4">
           <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/coverage.png" alt="Increased Coverage">
           <h2 style="text-align: center;">Increased Coverage</h2>
-          <p>Using combinatorial data generation and pair-wise data generation techniques it allows the user to cover boundary data test scenarios. By incoporating graph coverage techniques such as node, path and edge coverage it allows the user to capture application logic paths.
+          <p>Using combinatorial data generation and pair-wise data generation techniques it allows the tester to cover boundary data test scenarios. By incoporating graph coverage algorithms such as node, path and edge coverage it allows the tester to test various application logic scenarios.
 		 </p>
 		  
         </div><!-- /.col-lg-4 -->
         <div class="col-sm-4">
           <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/manual_lab.png" alt="Decrease Manual Effort">
           <h2 style="text-align: center;">Decrease Manual Effort</h2>
-          <p>By enabling the testers to template the output and model requirements, this tool reduces effort needed to hand craft test data to ensure coverage. This also makes it much easier for the testers to react to constant requirement changes that occur in a typical agile environment reducing overall time spent on test data creation and maintanance.
+          <p>By enabling the testers to template the output and model the requirements, it reduces effort needed to hand craft test data to ensure coverage. This also makes it much easier for the testers to react to constant requirement changes that occur in a typical agile environment reducing overall time spent on test data creation and maintanance.
 		  
 		  </p>
         </div><!-- /.col-lg-4 -->
         <div class="col-sm-4">
           <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/flexibility.png" alt="Flexible Output">
           <h2 style="text-align: center;">Flexible Output</h2>
-          <p>Data that is generated can be applied multiple templates allowing the tester to have many types of output generated including test data, automation code, input data, verification data and verification scripts.</p>
+          <p>Data generated can be applied to multiple templates allowing the tester to have many types of output generated including test data, automation code, input data, verification data and verification scripts.</p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 	
+		<a style="padding-top: 40px; margin-top: -40px;"  name="quick_start">&nbsp;</a>
+		<div class="alert alert-info">
+		<h3>Quick Start</h3>	
+		</div>
+		
+		
+		<span class="badge">1</span> Download Latest DataGenerator.<br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a class="btn btn-danger btn-sm" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a><br/><br/><br/>
+		
+		<span class="badge">2</span> Make sure you have the latest JRE/JDK installed on your machine. If not, go to <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="new">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a> to download it.<br/><br/><br/>
+		
+		<span class="badge">Dependency Generation Quick Start Example:</span> 
+<!--
+- Get this DOWNLOAD of a sample data generator specification.
+- Expand it. You will see the following folder structure.
 
-      <hr class="featurette-divider">
+
+The 'input' folder contains the branch modeling specifications.
+'input/branchspec' contains the visio dependency models.
+'input/dataspec' contains the parameter definitions.
+'input/teamplate' contains the DataGenerator output templates.
+'dd.properties' file within the input folder contains global parameter for DataGenerator.
  
-		<a style="padding-top: 40px; margin-top: -40px;" name="quick_start"></a>
-		<h1>Quick Start</h1>
-		<p>Here's the Quick start content<p>
+- Execute GC.bat file from the COMMAND shell
+or
+- Execute the following java command from the zip extraction folder
+or
+java -jar DataDynamo-1.0-SNAPSHOT.jar -dataspec input\dataspec -branchgraph input\branchspec -templates input\template -out out -allPaths -config input\dd.properties
+- 'out' folder will have your generated output.
+ 
+Combinatorial Generation Quick Start Example:
+TBD-->
+
+		<p>TBD<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><p>
 	
 		     
-	 <hr class="featurette-divider">
+		<a style="padding-top: 40px; margin-top: -40px;"  name="get_involved">&nbsp;</a>
+		<div class="alert alert-info">
+		<h3>Get Involved</h3>
+		</div>
+
+		<p>TBD<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><p>
 		
-		<a style="padding-top: 40px; margin-top: -40px;" name="get_involved"></a>
-		<h1>Get Involved</h1>
-		<p>Here's how you can get involved<p>
 		
 		
-	<hr class="featurette-divider">
-		<a style="padding-top: 40px; margin-top: -40px;" name="downloads"></a>
-		<h1>Downloads</h1>
-		<p><a class="btn btn-primary " role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v1.0 &raquo;</a></p>
-		<p><a class="btn btn-primary " role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v0.1 &raquo;</a></p>
-	 <hr class="featurette-divider">
+		<a style="padding-top: 40px; margin-top: -40px;"  name="downloads">&nbsp;</a>
+		<div class="alert alert-info">
+		<h3>Downloads</h3>
+		</div>
+
+		<p><a class="btn btn-danger" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v1.0 &raquo;</a></p>
+		<p><a class="btn btn-danger" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v0.1 &raquo;</a></p>
+		
+	 <hr class="featurette-divider"/>
 
     </div> <!-- /container -->
 
