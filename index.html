@@ -15,6 +15,11 @@
 
     <!-- Custom styles for this template -->
     <link href="js/jumbotron.css" rel="stylesheet">
+	
+	    <!-- Le styles -->
+    <link href="dist/css/bootstrap.css" rel="stylesheet">
+    <link href="dist/css/bootstrap-responsive.css" rel="stylesheet">
+
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -41,7 +46,7 @@
 			  <ul class="nav navbar-nav">
 				<li><a href="#">Home</a></li>
 				<li><a href="#quick_start">Quick Start</a></li>
-				<li><a href="https://groups.google.com/forum/#!forum/datagenerator" target="new">Google Group</a></li>
+				<li><a href="https://groups.google.com/forum/#!forum/datagenerator" target="_blank">Google Group</a></li>
 				<li><a href="#get_involved">Get Involved</a></li>
 				<li><a href="#downloads">Downloads</a></li>
 				<li class="dropdown">
@@ -66,34 +71,24 @@
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron container">
-	
-
       <div class="row">
         <div class="col-md-4">
 		<br/>
-          <p><font color="grey" size='10'>DataGenerator</font><font size='6'> is an automated tool designed to ease the pain of test creation and maintenance.</font></p>		  
+          <p><font color="grey" size='10'>DataGenerator</font><font size='5'> is an automated tool designed to ease the pain of test creation and maintenance.</font></p>	
+		  <br/>
+		  <p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>	
+		  <p><a class="btn btn-success btn-primary btn-lg" role="button" style="input {background-color:#FF0000;}"  href="https://github.com/FINRAOS/DataGenerator" target="new" >Get involved on GitHub</a></p>		  
         </div>
-        <div class="col-md-4">
-		<br/>
-          	<video width="600" height="320" controls>
-			  <source src="vid/DG.mp4" type="video/mp4">
-			  <source src="vid/DG.ogg" type="video/ogg">
-			  <source src="vid/DG.webm" type="video/webm">
-			  <object data="vid/DG.mp4" width="600" height="320">
-				<embed src="vid/DG.swf" width="600" height="320">
-			  </object> 
-			</video>
+        <div class="col-md-4">		
+			<link href="vid/CLIP_embed.css" rel="stylesheet" type="text/css">
+			</head>
+			<body>
+			<iframe class="tscplayer_inline" name="tsc_player" src="vid/CLIP_player.html" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+			</body>
        </div>
       </div>
-	   <div class="row">
-		<div class="col-md-4">
-			<p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>
-		</div>
-		<div class="col-md-4" align="left">
-		    <p><a class="btn btn-success btn-primary btn-lg" role="button" style="input {background-color:#FF0000;}"  href="https://github.com/FINRAOS/DataGenerator" target="new" >Get involved on GitHub @FINRAOS/DataGenerator</a></p>
-	   </div>
     </div>
-	</div>
+
 	
 	
 	    <div class="container marketing">
@@ -101,19 +96,19 @@
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-sm-4">
-          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/coverage.png" alt="Increased Coverage">
+          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/coverage.png" alt="Increased Coverage" height="33%" width="33%">
           <h2 style="text-align: center;">Increased Coverage</h2>
-          <p><font size ="4" color="grey">DataGenerator generates test data using combinatorial coverage techniques like 'pairwise combinations' and graphical coverage techniques like 'all paths'.</font></p>
+          <p><font color="grey">DataGenerator generates test data using combinatorial coverage techniques like 'pairwise combinations' and graphical coverage techniques like 'all paths'.</font></p>
         </div><!-- /.col-lg-4 -->
-        <div class="col-sm-4">
-          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/manual_lab.png" alt="Decreased Manual Effort">
-          <h2 style="text-align: center;">Decrease Manual Effort</h2>
-          <p><font size ="4" color="grey">DataGenerator automates test maintenance, allowing you to work smarter and respond to change faster in an Agile environment.</font></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-sm-4">
-          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/flexibility.png" alt="Flexible Output">
+		<div class="col-sm-4">
+          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/flexibility.png" alt="Flexible Output" height="33%" width="33%">
           <h2 style="text-align: center;">Flexible Output</h2>
-          <p><font size ="4" color="grey">Leveraging state-of-the-art templating, DataGenerator can produce test input, expected results, and automation scripts in any textual format.</font></p>
+          <p><font color="grey">Leveraging state-of-the-art templating, DataGenerator can produce test input, expected results, and automation scripts in any textual format.</font></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-sm-4">
+          <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/manual_lab.png" alt="Decreased Manual Effort" height="33%" width="33%">
+          <h2 style="text-align: center;">Decrease Manual Effort</h2>
+          <p><font color="grey">DataGenerator automates test maintenance, allowing you to work smarter and respond to change faster in an Agile environment.</font></p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 	
