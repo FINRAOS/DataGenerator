@@ -12,12 +12,6 @@
 
     <!-- Bootstrap core CSS -->
     <link href="dist/css/bootstrap.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="js/jumbotron.css" rel="stylesheet">
-	
-	    <!-- Le styles -->
-    <link href="dist/css/bootstrap.css" rel="stylesheet">
     <link href="dist/css/bootstrap-responsive.css" rel="stylesheet">
 
 
@@ -51,11 +45,11 @@
 				<li><a href="#downloads">Downloads</a></li>
 				<li><a href="#support">Support</a></li>
 				<li class="dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
-				  <ul class="dropdown-menu">
-						<li><a href="docs/html/index.html" target="_blank">User Documentation</a></li>
-						<li><a href="apis/v1.0/index.html" target="_blank">API Docs</a></li>
-						<li><a href="docs/html/FAQ.html" target="_blank">FAQs</a></li>
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="z-index:9999;">Documentation<b class="caret"></b></a>
+				  <ul class="dropdown-menu"  style="z-index:9999;">
+						<li><a href="docs/html/index.html"  style="z-index:9999;" target="_blank">User Documentation</a></li>
+						<li><a href="apis/v1.0/index.html"  style="z-index:9999;" target="_blank">API Docs</a></li>
+						<li><a href="docs/html/FAQ.html"  style="z-index:9999;" target="_blank">FAQs</a></li>
 				  </ul>
 				</li>
 			  </ul>
@@ -71,26 +65,27 @@
 	
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron container">
+    <br/><br/><div class="jumbotron container">
       <div class="row">
         <div class="col-md-4">
 		<br/>
-          <p><font color="grey" size='10'>DataGenerator</font><font size='5'> is an automated tool designed to ease the pain of test creation and maintenance.</font></p>	
-		  <br/>
+          <p><font color="grey" size='10'>DataGenerator</font><font size='5'><br/>is an automated tool designed to ease the pain of test creation and maintenance.</font></p>	
 		  <p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>	
 		  <p><a class="btn btn-success btn-primary btn-lg" role="button" style="input {background-color:#FF0000;}"  href="https://github.com/FINRAOS/DataGenerator" target="new" >Get involved on GitHub</a></p>		  
         </div>
         <div class="col-md-4">		
 			<link href="vid/CLIP_embed.css" rel="stylesheet" type="text/css">
 			</head>
-			<body>
-			<iframe class="tscplayer_inline" name="tsc_player" src="vid/CLIP_player.html" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+			<body  style="z-index:1;">
+			<div style="display:block;position:relative;top:0px;z-index:-9999;">
+			<iframe style="z-index:1;" class="tscplayer_inline" name="tsc_player" src="vid/CLIP_player.html" scrolling="no" frameborder="0"  webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+			</div>
 			</body>
        </div>
       </div>
     </div>
 
-	
+	<br/>
 	
 	    <div class="container marketing">
 		
@@ -113,23 +108,27 @@
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 	
+	<div class="row">
 		<a style="padding-top: 40px; margin-top: -40px;"  name="quick_start">&nbsp;</a>
 		<div class="alert alert-info">
 		<h3>Quick Start</h3>	
 		</div>
 		
 		
-		<span class="badge">1</span> Download Latest DataGenerator.<br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<a class="btn btn-primary btn-sm" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a><br/><br/><br/>
 		
-		<span class="badge">2</span> Make sure you have the latest JRE/JDK installed on your machine. If not, go to <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="new">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a> to download it.<br/><br/><br/>
+		<ol>
+		<li>Download Latest DataGenerator <a class="btn btn-primary btn-sm" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p></li>
+
+		<li><p>Make sure you have the latest JRE/JDK installed on your machine. If not, go to <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="new">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a> to download it.</p></li>
+
+		<u>Logic modelling example:</u><br/><br/>
+			<ol type='a'>
+			
+			
+					
+		<li>Get this <a class="btn btn-primary btn-sm" role="button" href="DT.zip">download &raquo;</a> of a sample data generator project.</li>
 		
-		<span class="badge">Dependency Generation Quick Start Example:</span> <br/><br/>
-		
-		
-		<span class="badge">a</span> Get this <a class="btn btn-primary btn-sm" role="button" href="DT.zip">download &raquo;</a> of a sample data generator project. <br/><br/>
-		
-		<span class="badge">b</span> Expand it. You will see the following folder structure. <br/><br/><br/>
+		<li>Expand it. You will see the following folder structure.</li><br/>
 		
 		<img src="imgs/dg1.png"/><br/>
 		
@@ -140,44 +139,26 @@
 		'<b>input/dataspec</b>' folder contains the parameter definitions.<br/>
 		'<b>input/teamplate</b>' folder contains the DataGenerator output templates.<br/>
 		'<b>dd.properties</b>' file within the input folder contains global parameter for DataGenerator.<br/><br/>
+		</ol>
 		
-		<span class="badge">c</span> Either: <br/><br/>
+		<li>Either: </li><br/>
 		
 		- Execute GC.bat file from the Command shell.<br/>
 			<code>CMD /c C:\DT\GC.bat</code>
 		<br/><br/>OR<br/><br/>
 		- Execute the following java command from the zip extraction folder.<br/>		
-			<code>java -jar DataDynamo-1.0-SNAPSHOT.jar -dataspec input\dataspec -branchgraph input\branchspec -templates input\template -out out -allPaths -config input\dd.properties</code>
+			<code width="100%">java -jar DataDynamo-1.0-SNAPSHOT.jar -dataspec input\dataspec -branchgraph input\branchspec -templates input\template -out out -allPaths -config input\dd.properties</code>
 		<br/><br/>
 		
 		- '<b>out</b>' folder will have your generated output.<br/><br/>
-		
-		<span class="badge">Combinatorial Generation Quick Start Example</span>
-		
-		<p>TBD</p>
-		
-<!--
-- Get this DOWNLOAD of a sample data generator specification.
-- Expand it. You will see the following folder structure.
+			
+
+			</ol>
 
 
-The 'input' folder contains the branch modeling specifications.
-'input/branchspec' contains the visio dependency models.
-'input/dataspec' contains the parameter definitions.
-'input/teamplate' contains the DataGenerator output templates.
-'dd.properties' file within the input folder contains global parameter for DataGenerator.
- 
-- Execute GC.bat file from the COMMAND shell
-or
-- Execute the following java command from the zip extraction folder
-or
-java -jar DataDynamo-1.0-SNAPSHOT.jar -dataspec input\dataspec -branchgraph input\branchspec -templates input\template -out out -allPaths -config input\dd.properties
-- 'out' folder will have your generated output.
- 
-Combinatorial Generation Quick Start Example:
-TBD-->
+      </div><!-- /.row -->
 
- 
+ 	<div class="row">
 		<a style="padding-top: 40px; margin-top: -40px;"  name="get_involved">&nbsp;</a>
 		<div class="alert alert-info">
 		<h3>Get Involved</h3>
@@ -218,34 +199,39 @@ TBD-->
 		</p>
 		</li>
 		</ol>
+		</div>
 		
+		
+		<div class="row">
 		<a style="padding-top: 40px; margin-top: -40px;"  name="downloads">&nbsp;</a>
 		<div class="alert alert-info">
 		<h3>Downloads</h3>
 		</div>
 
 		<p><a class="btn btn-primary" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Executable v1.0 &raquo;</a></p>
-		
-		
-		
+		</div><!-- /.row -->
+
+		<div class="row">
 		<a style="padding-top: 40px; margin-top: -40px;"  name="support">&nbsp;</a>
 		<div class="alert alert-info">
 		<h3>Support</h3>		
 		</div>
 		
 		
-		
 
 		<div class="row">
-			<table>
+			<ol>
+			<table width="99%">
 			<tr><td>
-			  <img src="imgs/FINRAL.jpg" alt="Increased Coverage" height="100%" width="100%">
+			 <img src="imgs/FINRA.jpg" alt="Increased Coverage">&nbsp;
 			</td>
 			<td>
 			  <p><font color="grey">The FINRA developer community is actively supporting the DataGenerator project. FINRA has graciously allocated time for their internal development resources to actively spend time to enhance and be invovled in the DataGenrator open source community.</font></p>
 			  <p><a href="http://www.finra.org">http://www.finra.org</a></p>
 			</td></tr>	
-			</table>		
+			</table>	
+			</ol>
+		</div>			
       </div><!-- /.row -->
 		
 		
@@ -263,7 +249,7 @@ TBD-->
 	<div class="navbar navbar-inverse container navbar-fixed">
       <div class="container">
         <div class="navbar-header"><br/>
-        <font color ="grey" class="navbar avbar-toggle">&copy; Copyright 2013 DataGenerator Contributors - Released under Apache V2 License</font>
+        <font color ="grey" class="navbar avbar-toggle">&copy; Copyright 2013 DataGenerator Contributors.</font>
 		<br/><br/>
         </div>
       </div>
