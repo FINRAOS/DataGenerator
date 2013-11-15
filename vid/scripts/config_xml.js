@@ -17,7 +17,7 @@ TSC.embedded_config_xml = '<x:xmpmeta xmlns:x="adobe:ns:meta/">\
             <rdf:Description xmpDM:name="tscplayer">\
                <tscDM:parameters>\
                   <rdf:Bag>\
-                     <rdf:li xmpDM:name="autohide" xmpDM:value="true"/><rdf:li xmpDM:name="autoplay" xmpDM:value="false"/><rdf:li xmpDM:name="loop" xmpDM:value="false"/><rdf:li xmpDM:name="searchable" xmpDM:value="true"/><rdf:li xmpDM:name="captionsenabled" xmpDM:value="false"/><rdf:li xmpDM:name="sidebarenabled" xmpDM:value="false"/><rdf:li xmpDM:name="unicodeenabled" xmpDM:value="false"/><rdf:li xmpDM:name="backgroundcolor" xmpDM:value="000000"/><rdf:li xmpDM:name="sidebarlocation" xmpDM:value="left"/><rdf:li xmpDM:name="endaction" xmpDM:value="stop"/><rdf:li xmpDM:name="endactionparam" xmpDM:value="true"/><rdf:li xmpDM:name="locale" xmpDM:value="en-US"/></rdf:Bag>\
+                     <rdf:li xmpDM:name="autohide" xmpDM:value="true"/><rdf:li xmpDM:name="autoplay" xmpDM:value="false"/><rdf:li xmpDM:name="loop" xmpDM:value="false"/><rdf:li xmpDM:name="searchable" xmpDM:value="true"/><rdf:li xmpDM:name="captionsenabled" xmpDM:value="false"/><rdf:li xmpDM:name="sidebarenabled" xmpDM:value="false"/><rdf:li xmpDM:name="unicodeenabled" xmpDM:value="false"/><rdf:li xmpDM:name="backgroundcolor" xmpDM:value="000000"/><rdf:li xmpDM:name="sidebarlocation" xmpDM:value="left"/><rdf:li xmpDM:name="endaction" xmpDM:value="stop"/><rdf:li xmpDM:name="endactionparam" xmpDM:value="true"/><rdf:li xmpDM:name="locale" xmpDM:value="en-US"/><rdf:li xmpDM:name="wmode" xmpDM:value="opaque"/></rdf:Bag>\
                </tscDM:parameters>\
                <tscDM:controllerText>\
                   <rdf:Bag>\
@@ -29,7 +29,7 @@ TSC.embedded_config_xml = '<x:xmpmeta xmlns:x="adobe:ns:meta/">\
             <rdf:Description>\
                <tscDM:files>\
                   <rdf:Seq>\
-                     <rdf:li xmpDM:name="0" xmpDM:value="CLIP.mp4"/><rdf:li xmpDM:name="1" xmpDM:value="CLIP_First_Frame.png"/><rdf:li xmpDM:name="2" xmpDM:value="CLIP_Thumbnails.png"/></rdf:Seq>\
+                     <rdf:li xmpDM:name="0" xmpDM:value="CLIP.mp4"/><rdf:li xmpDM:name="1" xmpDM:value="CLIP_First_Frame.png"/><rdf:li xmpDM:name="2" xmpDM:value="CLIP_Thumbnails.png"/><rdf:li xmpDM:name="wmode" xmpDM:value="opaque"/></rdf:Seq>\
                </tscDM:files>\
             </rdf:Description>\
          </tscDM:contentList>\

@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 #tsc_player {
-   z-index: 9999;	
+   z-index: 9998;	
 }
 
 .tscplayer_inline {
@@ -9,7 +9,7 @@
 	margin: 30px;
 	width: 600px;
 	height: 324px;
-	z-index:auto;
+	z-index:9998;
 }
 
 .tscplayer_fullframe {
@@ -18,7 +18,7 @@
 	left: 0px;
 	margin: 0px;
 	padding: 0px;
-	z-index: 9999;	
+	z-index: 9998;	
 }
 
 @media screen and (max-width: 600px) {
