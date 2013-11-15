@@ -1,28 +1,29 @@
 @charset "utf-8";
 
 #tsc_player {
-   z-index: 9999;	
+   z-index: 9998;	
 }
 
 .tscplayer_inline {
-	position:static;
+	position:relative;
 	margin: 30px;
 	width: 600px;
 	height: 324px;
-	z-index:auto;
+	z-index:9998;
 }
 
 .tscplayer_fullframe {
-	position:absolute;
+	position:relative;
 	top: 0px;
 	left: 0px;
 	margin: 0px;
 	padding: 0px;
-	z-index: 9999;	
+	z-index: 9998;	
 }
 
 @media screen and (max-width: 600px) {
     .tscplayer_inline {
 	width: 100%;
+		z-index: 9998;	
     }
 }
