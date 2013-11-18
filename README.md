@@ -1,4 +1,4 @@
-DataGenerator
+[DataGenerator](http://finraos.github.io/DataGenerator/index.html#get_involved)
 =============
 
 Contributing
