@@ -18,10 +18,10 @@ cd DataGenerator
 git checkout master
 
 # Run package to compile and create jar
-mvn package
+TBD
 
 # Run unit tests
-mvn package
+TBD
 
 
 DataGenerator Class architecture diagram
