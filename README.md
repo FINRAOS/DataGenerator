@@ -3,7 +3,7 @@ DataGenerator
 
 Contributing
 ------------
-We encourage contribution from the open source community to make DataGenerator better. Please refer to the [development](file:///C:/GitHub/datagenerator/index.html#get_involved) page for more information on how to contribute to this project.
+We encourage contribution from the open source community to make DataGenerator better. Please refer to the [development](http://finraos.github.io/DataGenerator/index.html#get_involved) page for more information on how to contribute to this project.
 
 
 Building
@@ -21,7 +21,7 @@ mvn package
 
 DataGenerator Class architecture diagram
 ------------------------------------------------
-![Alt attribute text Here](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
+![DataGenerator Class Diagram](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
 
 (**NOTE:** This does not include all classes included in the DataGenerator package)
 
