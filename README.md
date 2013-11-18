@@ -1,6 +1,6 @@
 DataGenerator
 =============
-_Important classes architecture diagram_.
+_Important classes architecture diagram._
 
 ![Alt attribute text Here](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
 
