@@ -1,6 +1,6 @@
 DataGenerator
 =============
-**Class architecture diagram.**
+**DataGenerator Class architecture diagram.**
 
 ![Alt attribute text Here](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
 
