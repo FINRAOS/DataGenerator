@@ -1,4 +1,7 @@
 DataGenerator
 =============
-Important classes architecture diagram. (**NOTE:** This does not include all classes included in the DataGenerator package) 
+Important classes architecture diagram. 
+
 ![Alt attribute text Here](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
+
+(**NOTE:** This does not include all classes included in the DataGenerator package)
