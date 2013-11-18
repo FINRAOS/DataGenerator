@@ -7,7 +7,7 @@ We encourage contribution from the open source community to make DataGenerator b
 
 
 Building
-=========
+------------
 DataGenerator uses Maven for build. Please install Maven by downloading it from [here](http://maven.apache.org/download.cgi).
 ```sh
 # Clone DataGenerator git repo
@@ -20,14 +20,14 @@ mvn package
 
 
 DataGenerator Class architecture diagram
-========================================
+------------------------------------------------
 ![Alt attribute text Here](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
 
 (**NOTE:** This does not include all classes included in the DataGenerator package)
 
 
 License Type
-=============
+------------------------------------
 JTAF projects including ExtWebDriver is licensed under [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
