@@ -1,3 +1,3 @@
 DataGenerator
 =============
-[http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png]
+[[http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png]]
