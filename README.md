@@ -1,2 +1,1 @@
-![DataGenerator](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
-=====================================================================================
+![DataGenerator](http://finraos.github.io/DataGenerator)
