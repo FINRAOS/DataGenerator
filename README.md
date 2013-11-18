@@ -14,9 +14,14 @@ DataGenerator uses Maven for build. Please install Maven by downloading it from 
 git clone git://github.com/FINRAOS/DataGenerator.git
 cd DataGenerator
 
+# Checkout master branch
+git checkout master
+
 # Run package to compile and create jar
 mvn package
-```
+
+# Run unit tests
+mvn package
 
 
 DataGenerator Class architecture diagram
