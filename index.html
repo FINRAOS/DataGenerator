@@ -61,7 +61,7 @@
 			
 			
 			
-        <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse  container ">
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -69,24 +69,20 @@
 	
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <br/><br/><div class="jumbotron container">
+    <br/><br/><div class="container" style="background-color:#EEEEF4;">
       <div class="row">
         <div class="col-md-4">
 		<br/>
           <p><font color="grey" size='10'>DataGenerator</font><font size='5'><br/>is an automated tool designed to ease the pain of test creation and maintenance.</font></p>	
 		  <p><a class="btn btn-primary btn-lg" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p>	
-		  <p><a class="btn btn-success btn-primary btn-lg" role="button" style="input {background-color:#FF0000;}"  href="https://github.com/FINRAOS/DataGenerator" target="new" >Get involved on GitHub</a></p>		  
+		  <p><a class="btn btn-success btn-primary btn-lg" role="button" style="input {background-color:#FF0000;}"  href="https://github.com/FINRAOS/DataGenerator" target="new">Get involved on GitHub</a></p>		  
         </div>
         <div class="col-md-4" style="z-index:1;position:relative;" align="right">		
 			<div style="display:block;position:relative;top:0px;z-index:1;">
-			<iframe style="z-index:1;position: relative;" class="tscplayer_inline" name="tsc_player" src="vid/CLIP_player.html" scrolling="no" frameborder="0"  webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+			<iframe style="z-index:1;position:relative;" class="tscplayer_inline" name="tsc_player" src="vid/CLIP_player.html" scrolling="no" frameborder="0"  webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 			</div>
        </div>
 	   
-
-
-
-
 	   
       </div>
     </div>
@@ -96,7 +92,7 @@
 	    <div class="container marketing">
 		
       <!-- Three columns of text below the carousel -->
-      <div class="row">
+      <div class="row container ">
         <div class="col-sm-4">
           <img class="img-circle" style="display: block; margin-left: auto; margin-right: auto;" src="imgs/coverage.png" alt="Increased Coverage" height="33%" width="33%">
           <h2 style="text-align: center;">Increased Coverage</h2>
@@ -123,7 +119,7 @@
 		<ol>
 		<li>Download Latest DataGenerator <a class="btn btn-primary btn-sm" role="button" href="https://github.com/FINRAOS/DataGenerator/zipball/master">Download Latest Executable &raquo;</a></p></li>
 
-		<li><p>Make sure you have the latest JRE/JDK installed on your machine. If not, go to <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="new">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a> to download it.</p></li>
+		<li><p>Make sure you have the latest JRE/JDK installed on your machine. If not, download it from <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="new">Oracle</a>.</p></li>
 
 		<u>Logic modelling example:</u><br/><br/>
 			<ol type='a'>
@@ -148,10 +144,10 @@
 		<li>Either: </li><br/>
 		
 		- Execute GC.bat file from the Command shell.<br/>
-			<code>CMD /c C:\DT\GC.bat</code>
+			<code><pre>CMD /c C:\DT\GC.bat</pre></code>
 		<br/><br/>OR<br/><br/>
 		- Execute the following java command from the zip extraction folder.<br/>		
-			<code width="100%" class="container">java -jar DataDynamo-1.0-SNAPSHOT.jar -dataspec input\dataspec -branchgraph input\branchspec -templates input\template -out out -allPaths -config input\dd.properties</code>
+			<code width="100%" class="container"><pre>java -jar DataDynamo-1.0-SNAPSHOT.jar -dataspec input\dataspec -branchgraph input\branchspec -templates input\template -out out -allPaths -config input\dd.properties</pre></code>
 		<br/><br/>
 		
 		- '<b>out</b>' folder will have your generated output.<br/><br/>
@@ -204,7 +200,7 @@
 		</div>
 		
 		
-		<div class="row">
+		<div class="row ">
 		<a style="padding-top: 40px; margin-top: -40px;"   name="downloads">&nbsp;</a>
 		<div class="alert alert-info"><b><font size="5">Downloads</font></b></div>
 		
@@ -222,7 +218,7 @@
 
 		<div class="row">
 			<ol>
-			<table width="99%">
+			<table width="99%" class="container">
 			
 			<tr><td class="alert" colspan="2"><font size="5"><b>Team</b></font></td></tr>
 			<tr><td class="alert"><img src="imgs/nil.jpg"/></td><td class="alert"><b>Project Lead</b><br/>Nilkamal Weerasinghe<br/><a href="http://www.wnilkamal.com" target="_new" >Website</a></td></tr>
@@ -233,7 +229,7 @@
 			<tr><td  class="alert">
 			 <img src="imgs/FINRA.jpg" alt="Increased Coverage">&nbsp;
 			</td>
-			<td>
+			<td  class="container">
 			  <p><font color="grey">The FINRA developer community is actively supporting the DataGenerator project. FINRA has graciously allocated time for their internal development resources to enhance DataGenerator and to be invovlved in the open source community.</font></p>
 			  <p><a href="http://www.finra.org" target="_new">http://www.finra.org</a></p>
 			  <p><font color="grey">Want to join the FINRA? </font><a href=" http://www.finra.org/AboutFINRA/Careers/" target="_new" >Careers @FINRA</a></p>
