@@ -1,1 +1,1 @@
-[[http://finraos.github.io/DataGenerator]]
+http://finraos.github.io/DataGenerator
