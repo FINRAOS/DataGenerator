@@ -33,7 +33,7 @@ DataGenerator Class architecture diagram
 
 License Type
 ------------------------------------
-JTAF projects including ExtWebDriver is licensed under [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+The DataGenerator project is licensed under [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 
