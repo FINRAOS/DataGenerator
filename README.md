@@ -17,11 +17,11 @@ cd DataGenerator
 # Checkout master branch
 git checkout master
 
-# Run package to compile and create jar
-TBD
+# Run package to compile and create jar (also runs unit tests)
+mvn package
 
-# Run unit tests
-TBD
+# Compile and run unit tests only
+mvn test
 ```
 
 DataGenerator Class architecture diagram
