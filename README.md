@@ -26,7 +26,7 @@ mvn test
 
 DataGenerator Class architecture diagram
 ------------------------------------------------
-![DataGenerator Class Diagram](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
+![DataGenerator class diagram](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
 
 (**NOTE:** This does not include all classes included in the DataGenerator package)
 
