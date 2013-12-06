@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="google" value="notranslate" /> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title></title>
+<link href="skins/overlay/player-min.css" rel="stylesheet" type="text/css" />
+
+
+
+<style>
+html, body {
+	background-color: #1a1a1a;
+}
+</style>
+</head>
+<body>
+
+<div id="tscVideoContent"></div>
+
+<script src="scripts/jquery-1.7.1.min.js" ></script>
+<script src="scripts/jquery-ui-1.8.15.custom.min.js" ></script>
+<script src="scripts/swfobject.js"></script>
+<script src="scripts/modernizr.js"></script>
+<script src="scripts/handlebars.js"></script>
+
+<script src="scripts/config_xml.js"></script>
+<script src="scripts/player-min.js" charset="utf-8"></script>
+<script type="text/javascript">
+    TSC.playerConfiguration.setFlashPlayerSwf("CLIP_controller.swf");
+    TSC.playerConfiguration.setMediaSrc("CLIP.mp4");
+    TSC.playerConfiguration.setXMPSrc("CLIP_config.xml");
+    
+    TSC.playerConfiguration.setAutoHideControls(true);
+    TSC.playerConfiguration.setBackgroundColor("#000000");
+    TSC.playerConfiguration.setCaptionsEnabled(false);
+    TSC.playerConfiguration.setSidebarEnabled(false);
+    
+    TSC.playerConfiguration.setAutoPlayMedia(false);
+    TSC.playerConfiguration.setPosterImageSrc("CLIP_First_Frame.png");
+    TSC.playerConfiguration.setIsSearchable(false);
+    TSC.playerConfiguration.setEndActionType("stop");
+    TSC.playerConfiguration.setEndActionParam("true");
+    TSC.playerConfiguration.setAllowRewind(-1);
+    
+
+    TSC.localizationStrings.setLanguage(TSC.languageCodes.ENGLISH);
+
+    $(document).ready(function (e) {
+        TSC.mediaPlayer.init("#tscVideoContent");
+    });
+</script>
+
+
+
+</body>
+</html>
