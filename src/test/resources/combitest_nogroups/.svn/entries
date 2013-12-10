@@ -1,0 +1,34 @@
+10
+
+dir
+2057
+http://subversion.finra.org/dev_services/DataDynamo/trunk/src/test/resources/combitest_nogroups
+http://subversion.finra.org/dev_services
+
+
+
+2012-12-13T19:53:56.292678Z
+523
+robbinbr
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+7d043dcc-7957-ab44-a731-f4cd272899a5
+
+dataspec
+dir
+
+templates
+dir
+

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest
+END
+tempprops.properties
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/tempprops.properties
+END
+globaltest.txt
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/globaltest.txt
+END
+tempPropsSpec.xls
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/tempPropsSpec.xls
+END
+globaltemp.properties
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/globaltemp.properties
+END
+dummy.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/dummy.txt
+END
+vtools.properties
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/vtools.properties
+END
+pergroup.properties
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/pergroup.properties
+END
+toolstest.txt
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/tempPropsTest/toolstest.txt
+END

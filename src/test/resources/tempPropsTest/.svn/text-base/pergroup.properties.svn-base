@@ -1,0 +1,2 @@
+dummy.txt.renameTo=group${keyGroup}.txt
+dummy.txt.perGroup=g1

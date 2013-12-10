@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/main/resources
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/main/resources/log4j.properties
+END
+SpringConfig.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/main/resources/SpringConfig.xml
+END

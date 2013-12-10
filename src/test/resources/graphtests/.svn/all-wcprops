@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/graphtests
+END
+graphSmoke.vdx
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/graphtests/graphSmoke.vdx
+END
+graphSmokeSpec.xls
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/graphtests/graphSmokeSpec.xls
+END
+graphSmokeTemplate.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/dev_services/!svn/ver/523/DataDynamo/trunk/src/test/resources/graphtests/graphSmokeTemplate.txt
+END
