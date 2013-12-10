@@ -1,2 +1,2 @@
 language: java
-script: mvn package
+script: mvn package -DskipTests
