@@ -3,13 +3,45 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.finra.datagenerator</groupId>
-    <artifactId>DataDynamo</artifactId>
+    <artifactId>DataGenerator</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>DataGenerator</name>
+    <description>A tool that generates test scripts using a given model and templates</description>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <url>http://github.com/FINRAOS/DataGenerator</url>
+    <scm>
+        <connection>scm:git:http://github.com:FINRAOS/DataGenerator</connection>
+        <developerConnection>scm:git:http://github.com:FINRAOS/DataGenerator</developerConnection>
+        <url>http://github.com:FINRAOS/DataGenerator</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>wnilkamal</id>
+            <name>Nil Weerasingh</name>
+            <email>wnilkamal@yahoo.com</email>
+        </developer>
+        <developer>
+            <id>bryantrobbins</id>
+            <name>Bryan Robbins</name>
+            <email>bryantrobbins@gmail.com</email>
+        </developer>
+        <developer>
+            <id>mibrahim</id>
+            <name>Mohamed Ibrahim</name>
+            <email>mibrahim@mibrahim.net</email>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
 
     <build>
         <plugins>
@@ -97,7 +129,54 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <configLocation>config/sun_checkstyle.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failOnViolation>false</failOnViolation>
+                            <failsOnError>false</failsOnError>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
     </build>
@@ -172,4 +251,17 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>oss.sonatype.org</id>
+            <name>Sonatype</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>oss.sonatype.org</id>
+            <name>Sonatype</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
