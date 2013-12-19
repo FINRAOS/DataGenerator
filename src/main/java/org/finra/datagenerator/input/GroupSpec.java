@@ -27,8 +27,8 @@ import org.apache.log4j.Logger;
 import org.finra.datagenerator.AppConstants;
 
 /**
- * Represent a specificiation for a group. Name, number per parent, elements that are required to be unique, and parent
- * group name.
+ * Represent a specificiation for a group. Name, number per parent, elements
+ * that are required to be unique, and parent group name.
  *
  * @author ChamberA
  *
@@ -99,14 +99,15 @@ public class GroupSpec {
     }
 
     /**
-     * If this group has uniqueness requirements, then this method will return the ith unique combination as
-     * vartype:value pairs, or throw an exception if all combinations have been exhausted.
+     * If this group has uniqueness requirements, then this method will return
+     * the ith unique combination as vartype:value pairs, or throw an exception
+     * if all combinations have been exhausted.
      *
      * @return
      */
     public synchronized Map<String, String> getUniqueCombo(int i) {
-        Preconditions.checkArgument(this.requiresUniqueElems(), name+" does not have any unique element requirements");
-        if (comboGen==null) {
+        Preconditions.checkArgument(this.requiresUniqueElems(), name + " does not have any unique element requirements");
+        if (comboGen == null) {
             comboGen = new UniqueElementsComboGenerator();
         }
         return comboGen.getUniqueCombo(i);
@@ -123,12 +124,12 @@ public class GroupSpec {
 
         private UniqueElementsComboGenerator() {
             // initialize the list of options for each unique element
-            for(String uniquElem : uniqueElements){
+            for (String uniquElem : uniqueElements) {
                 options.add(memberVariableSpecs.get(uniquElem).getPropertySpec(AppConstants.VALUE).getPositiveValues());
             }
             // count the possible combos
             possibleCombos = 1;
-            for(List<String> optionList : options){
+            for (List<String> optionList : options) {
                 possibleCombos *= optionList.size();
             }
         }
@@ -138,7 +139,7 @@ public class GroupSpec {
          */
         private Map<String, String> getCurrentComboAsMap() {
             Map<String, String> comboAsMap = new HashMap<String, String>();
-            for(int i = 0; i<uniqueElements.size(); ++i){
+            for (int i = 0; i < uniqueElements.size(); ++i) {
                 String elementName = uniqueElements.get(i);
                 String value = options.get(i).get(curCombo.get(i));
                 comboAsMap.put(elementName, value);
@@ -148,21 +149,21 @@ public class GroupSpec {
 
         private void generateNextCombo() {
             if (curCombo.isEmpty()) { // the first combo is option 0 for each element
-                for(int i = 0; i<uniqueElements.size(); ++i){
+                for (int i = 0; i < uniqueElements.size(); ++i) {
                     curCombo.add(0);
                 }
             } else {
-                for(int i = 0; i<curCombo.size(); ++i){
-                    if (curCombo.get(i)==options.get(i).size()-1) {
+                for (int i = 0; i < curCombo.size(); ++i) {
+                    if (curCombo.get(i) == options.get(i).size() - 1) {
                         // if we have exhausted the options for this element then roll the number over to 0
                         curCombo.set(i, 0);
                         // if this is the last element, then there are no more combinations!
-                        if (i==curCombo.size()-1) {
-                            throw new NoSuchElementException("Combinations exhausted for group: "+name);
+                        if (i == curCombo.size() - 1) {
+                            throw new NoSuchElementException("Combinations exhausted for group: " + name);
                         }
                     } else {
                         // we make a new combo by incrementing this count
-                        curCombo.set(i, curCombo.get(i)+1);
+                        curCombo.set(i, curCombo.get(i) + 1);
                         break;
                     }
                 }
@@ -171,9 +172,9 @@ public class GroupSpec {
         }
 
         private Map<String, String> getUniqueCombo(int i) {
-            Preconditions.checkArgument(i>=0, "Combo number must be >= 0");
-            Preconditions.checkArgument(i<possibleCombos, "Only "+possibleCombos+" unique combos are possible for group: "+name+" elems: "+uniqueElements);
-            while (memoizedCombos.size()<i+1){
+            Preconditions.checkArgument(i >= 0, "Combo number must be >= 0");
+            Preconditions.checkArgument(i < possibleCombos, "Only " + possibleCombos + " unique combos are possible for group: " + name + " elems: " + uniqueElements);
+            while (memoizedCombos.size() < i + 1) {
                 generateNextCombo();
             }
             return memoizedCombos.get(i);

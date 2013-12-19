@@ -26,8 +26,9 @@ import org.finra.datagenerator.input.GroupSpec;
 import org.finra.datagenerator.input.VariableSpec;
 
 /**
- * Represents a group of variables within a dataset. Users will have acess to these in their templates by calling
- * $dataset.getGroupOfType("groupType") and iterating over their member variables.
+ * Represents a group of variables within a dataset. Users will have acess to
+ * these in their templates by calling $dataset.getGroupOfType("groupType") and
+ * iterating over their member variables.
  *
  * @author ChamberA
  *
@@ -50,8 +51,8 @@ public class DataSetGroup implements Serializable {
     protected ConcurrentMap<String, DataSetVariable> variablesByAlias = new MapMaker().makeMap();
 
     /**
-     * Creates data set group, initialized with it's variables set to default values. Parent group and child groups must
-     * be set externally.
+     * Creates data set group, initialized with it's variables set to default
+     * values. Parent group and child groups must be set externally.
      *
      * @param groupSpec
      */
@@ -59,14 +60,14 @@ public class DataSetGroup implements Serializable {
         this.type = groupSpec.getName();
         this.alias = groupSpec.getName();
         // create it's variables with default values
-        for(VariableSpec varSpec : groupSpec.getAllMemberVariableSpecs()){
+        for (VariableSpec varSpec : groupSpec.getAllMemberVariableSpecs()) {
             this.addVariable(new DataSetVariable(varSpec));
         }
     }
 
     /**
-     * An empty data set group, only initiliazed by type. Useful for creating on-the-fly groups (i.e. when we don't have
-     * a GroupSpec)
+     * An empty data set group, only initiliazed by type. Useful for creating
+     * on-the-fly groups (i.e. when we don't have a GroupSpec)
      *
      * @param type
      */
@@ -76,8 +77,9 @@ public class DataSetGroup implements Serializable {
     }
 
     /**
-     * Copy constructor. WARNING references to other groups are shallow copies. This method is only intended to be used
-     * as part of the DataSet copy contructor, which will take care of updating these references.
+     * Copy constructor. WARNING references to other groups are shallow copies.
+     * This method is only intended to be used as part of the DataSet copy
+     * contructor, which will take care of updating these references.
      *
      * @param original
      */
@@ -85,7 +87,7 @@ public class DataSetGroup implements Serializable {
         this.type = original.getType();
         this.alias = original.getAlias();
         // deep copy of variables
-        for(DataSetVariable originalVar : original.allVariables()){
+        for (DataSetVariable originalVar : original.allVariables()) {
             DataSetVariable copiedVar = new DataSetVariable(originalVar);
             addVariable(copiedVar);
         }

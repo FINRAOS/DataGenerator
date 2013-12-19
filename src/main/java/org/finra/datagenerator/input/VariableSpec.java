@@ -23,7 +23,8 @@ import org.apache.log4j.Logger;
 import org.finra.datagenerator.AppConstants;
 
 /**
- * Represents a specification for a variable type. Name, group membership, and associated properties.
+ * Represents a specification for a variable type. Name, group membership, and
+ * associated properties.
  *
  * @author ChamberA
  *

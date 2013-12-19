@@ -24,7 +24,8 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 /**
- * This class reads in a list of template files, and returns them as a list of Template objects.
+ * This class reads in a list of template files, and returns them as a list of
+ * Template objects.
  *
  * @author ChamberA
  *
@@ -37,10 +38,10 @@ public class TemplateReader {
         Preconditions.checkArgument(!files.isEmpty(), "No template files were provided to read.");
 
         List<Template> templates = new Vector<Template>();
-        for(File f : files){
+        for (File f : files) {
             Template template = new Template(f);
             templates.add(template);
-            LOG.info("Template: "+template.getFilename());
+            LOG.info("Template: " + template.getFilename());
         }
         return templates;
     }

@@ -19,7 +19,8 @@ package org.finra.datagenerator.input;
 import com.google.common.base.Objects;
 
 /**
- * A collection of info describing a check value requirement for use in the branch graph.
+ * A collection of info describing a check value requirement for use in the
+ * branch graph.
  *
  * @author ChamberA
  *
@@ -67,9 +68,9 @@ public class CheckPropertyRequirement {
         if (obj instanceof CheckPropertyRequirement) {
             final CheckPropertyRequirement other = (CheckPropertyRequirement) obj;
             return Objects.equal(variableAlias, other.variableAlias)
-                    &&Objects.equal(value, other.value)
-                    &&Objects.equal(groupAlias, other.groupAlias)
-                    &&Objects.equal(property, other.property);
+                    && Objects.equal(value, other.value)
+                    && Objects.equal(groupAlias, other.groupAlias)
+                    && Objects.equal(property, other.property);
         } else {
             return false;
         }

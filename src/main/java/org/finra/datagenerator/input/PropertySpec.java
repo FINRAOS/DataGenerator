@@ -50,7 +50,7 @@ public class PropertySpec {
     public PropertySpec addPositiveValue(String posVal) {
         positiveValues.add(posVal);
         // the first pos val is taken to be default
-        if (positiveValues.size()==1) {
+        if (positiveValues.size() == 1) {
             defaultValue = posVal;
         }
         return this;

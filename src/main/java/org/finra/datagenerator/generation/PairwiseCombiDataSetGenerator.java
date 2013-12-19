@@ -54,32 +54,33 @@ public class PairwiseCombiDataSetGenerator implements ICombiDataSetGenerator {
         }
         // return defensive copy of the cached dataset
         List<DataSet> ret = new LinkedList<DataSet>();
-        for(DataSet cachedDs : dataSetCache.get(dataSpec)){
+        for (DataSet cachedDs : dataSetCache.get(dataSpec)) {
             ret.add(new DataSet(cachedDs));
         }
         return ret;
     }
 
     /**
-     * Generates the pairwise datasets by writing a temp file formatted for UnsychronizedAllPairs.java, running the
-     * pairwise algorithm on it, and creating datasets from the results.
+     * Generates the pairwise datasets by writing a temp file formatted for
+     * UnsychronizedAllPairs.java, running the pairwise algorithm on it, and
+     * creating datasets from the results.
      *
      * @param dataSpec
      * @return
      */
     private List<DataSet> internalDataSetGeneration(DataSpec dataSpec) {
-		// UnsynchronizedAllPairs.java needs a particularly formatted file to read, containig all the choices for each variable.
+        // UnsynchronizedAllPairs.java needs a particularly formatted file to read, containig all the choices for each variable.
         // so we create that out of the dataspec here and write it to a temp file.
         try {
             File tempFile = File.createTempFile("pairwise", null);
             BufferedWriter tempWriter = Files.newWriter(tempFile, Charsets.UTF_8);
-			// for each variable in the spec, we need to write out it's possible values in a row
+            // for each variable in the spec, we need to write out it's possible values in a row
             // as well as keep track of which row corresponds to which variable
             List<String> varOrder = new ArrayList<String>();
-            for(VariableSpec varSpec : dataSpec.getAllVariableSpecs()){
+            for (VariableSpec varSpec : dataSpec.getAllVariableSpecs()) {
                 // if it has values, print them separated by |
-                for(String value : varSpec.getPropertySpec(AppConstants.VALUE).getPositiveValues()){
-                    tempWriter.append(value+"|");
+                for (String value : varSpec.getPropertySpec(AppConstants.VALUE).getPositiveValues()) {
+                    tempWriter.append(value + "|");
                 }
                 tempWriter.newLine();
                 varOrder.add(varSpec.getName());
@@ -91,9 +92,9 @@ public class PairwiseCombiDataSetGenerator implements ICombiDataSetGenerator {
 
             // each row represents a unique combo and corresponds to a dataset
             List<DataSet> generatedDataSets = new LinkedList<DataSet>();
-            for(int row = 0; row<combos.length; row++){
+            for (int row = 0; row < combos.length; row++) {
                 DataSet pwDataSet = new DataSet();
-                for(int col = 0; col<combos[row].length; col++){
+                for (int col = 0; col < combos[row].length; col++) {
                     // each column is a variable value, that type of which we look up in varOrder
                     VariableSpec spec = dataSpec.getVariableSpec(varOrder.get(col));
                     DataSetVariable pwVar = pwDataSet.createVariable(spec);
@@ -103,8 +104,7 @@ public class PairwiseCombiDataSetGenerator implements ICombiDataSetGenerator {
                 generatedDataSets.add(pwDataSet);
             }
             return generatedDataSets;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }

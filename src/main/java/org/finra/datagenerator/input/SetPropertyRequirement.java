@@ -19,7 +19,8 @@ package org.finra.datagenerator.input;
 import com.google.common.base.Objects;
 
 /**
- * This class is just a bundle of information that describes a 'set property' requirement for the branch graph.
+ * This class is just a bundle of information that describes a 'set property'
+ * requirement for the branch graph.
  *
  * @author ChamberA
  *
@@ -67,9 +68,9 @@ public class SetPropertyRequirement {
         if (obj instanceof SetPropertyRequirement) {
             final SetPropertyRequirement other = (SetPropertyRequirement) obj;
             return Objects.equal(variableAlias, other.variableAlias)
-                    &&Objects.equal(value, other.value)
-                    &&Objects.equal(groupAlias, other.groupAlias)
-                    &&Objects.equal(property, other.property);
+                    && Objects.equal(value, other.value)
+                    && Objects.equal(groupAlias, other.groupAlias)
+                    && Objects.equal(property, other.property);
         } else {
             return false;
         }

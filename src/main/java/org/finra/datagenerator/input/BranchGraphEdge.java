@@ -37,23 +37,22 @@ public class BranchGraphEdge extends DefaultWeightedEdge implements IBranchGraph
     public BranchGraphEdge copy() {
         BranchGraphEdge ret = new BranchGraphEdge();
         try {
-            for(CreateVariableRequirement val : createVarReqs){
+            for (CreateVariableRequirement val : createVarReqs) {
                 ret.addCreateVariableReq(val.clone());
             }
-            for(CreateGroupRequirement val : createGroupReqs){
+            for (CreateGroupRequirement val : createGroupReqs) {
                 ret.addCreateGroupReq(val.clone());
             }
-            for(SetPropertyRequirement val : setPropReqs){
+            for (SetPropertyRequirement val : setPropReqs) {
                 ret.addSetPropertyReq(val.clone());
             }
-            for(CheckPropertyRequirement val : checkPropReqs){
+            for (CheckPropertyRequirement val : checkPropReqs) {
                 ret.addCheckPropertyReq(val.clone());
             }
-            for(AppendPropertyRequirement val : appendPropReqs){
+            for (AppendPropertyRequirement val : appendPropReqs) {
                 ret.addAppendPropertyReq(val.clone());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ret;

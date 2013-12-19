@@ -17,7 +17,8 @@
 package org.finra.datagenerator.input;
 
 /**
- * Represent a <connect/> element parsed from a .vdx file. The Apache Digester returns these to VDXBranchGraphReader.
+ * Represent a <connect/> element parsed from a .vdx file. The Apache Digester
+ * returns these to VDXBranchGraphReader.
  *
  * @author ChamberA
  *

@@ -67,7 +67,8 @@ public class DefaultCombiDataSetGenerator implements ICombiDataSetGenerator {
     }
 
     /**
-     * Makes a new DataSet and populates it via recursiveDataGeneration(), beginning with the root group.
+     * Makes a new DataSet and populates it via recursiveDataGeneration(),
+     * beginning with the root group.
      *
      * @param dataSpec
      * @return
@@ -79,24 +80,24 @@ public class DefaultCombiDataSetGenerator implements ICombiDataSetGenerator {
     }
 
     /**
-     * Fills out default data recursively by groups. Enforces group hierarchy and uniqueness requirements specified in
-     * the Data Spec.
+     * Fills out default data recursively by groups. Enforces group hierarchy
+     * and uniqueness requirements specified in the Data Spec.
      *
      * @param dataSet
      */
     private void recursiveDataGeneration(DataSpec dataSpec, DataSet dataSet, DataSetGroup parentGroup) {
-        for(GroupSpec groupSpec : dataSpec.getAllGroupSpecs()){
+        for (GroupSpec groupSpec : dataSpec.getAllGroupSpecs()) {
             // for each group whose parent is this group type
             if (groupSpec.getParentGroupType().equals(parentGroup.getType())) {
                 // Figure out how many groups ought to be created per the dataspec. Recursively create that many groups.
                 int n = groupSpec.getNumPerParent();
-                for(int i = 0; i<n; ++i){
+                for (int i = 0; i < n; ++i) {
                     DataSetGroup createdGroup = dataSet.createGroup(groupSpec, parentGroup);
                     recursiveDataGeneration(dataSpec, dataSet, createdGroup);
                     // if certain variables are required to be unique, overwrite the default values with the next unique combo
                     if (groupSpec.requiresUniqueElems()) {
                         Map<String, String> combo = groupSpec.getUniqueCombo(i);
-                        for(Entry<String, String> elem : combo.entrySet()){
+                        for (Entry<String, String> elem : combo.entrySet()) {
                             createdGroup.get(elem.getKey()).setProperty(AppConstants.VALUE, elem.getValue());
                         }
                     }

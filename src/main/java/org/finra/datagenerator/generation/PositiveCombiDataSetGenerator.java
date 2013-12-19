@@ -41,7 +41,7 @@ public class PositiveCombiDataSetGenerator implements ICombiDataSetGenerator {
     }
 
     public List<DataSet> generateDataSets(DataSpec dataSpec) {
-		// only recompute the datasets if they aren't in the cache
+        // only recompute the datasets if they aren't in the cache
         // TODO: thread issue for concurrent modification since the synchronize block doesn't extend out till return ret;
         synchronized (dataSetCache) {
             if (!dataSetCache.containsKey(dataSpec)) {
@@ -50,20 +50,20 @@ public class PositiveCombiDataSetGenerator implements ICombiDataSetGenerator {
         }
         // return defensive copy of the cached dataset
         List<DataSet> ret = new LinkedList<DataSet>();
-        for(DataSet cachedDs : dataSetCache.get(dataSpec)){
+        for (DataSet cachedDs : dataSetCache.get(dataSpec)) {
             ret.add(new DataSet(cachedDs));
         }
         return ret;
     }
 
     private List<DataSet> internalDataSetGeneration(DataSpec dataSpec) {
-		// for each variable in the spec that has multiple positive values
+        // for each variable in the spec that has multiple positive values
         // create new default datasets and overwrite a the values to cover each one
         List<DataSet> generatedDataSets = new ArrayList<DataSet>();
-        for(VariableSpec varspec : dataSpec.getAllVariableSpecs()){
-            if (varspec.getPropertySpec(AppConstants.VALUE).getPositiveValues().size()>1) {
+        for (VariableSpec varspec : dataSpec.getAllVariableSpecs()) {
+            if (varspec.getPropertySpec(AppConstants.VALUE).getPositiveValues().size() > 1) {
                 List<String> posValues = varspec.getPropertySpec(AppConstants.VALUE).getPositiveValues();
-                for(String posValue : posValues.subList(1, posValues.size())){
+                for (String posValue : posValues.subList(1, posValues.size())) {
                     DataSet newDataSet = DefaultCombiDataSetGenerator.getInstance().generateDataSets(dataSpec).get(0);
                     // overwrite with the new positive value
                     newDataSet.get(varspec.getName()).setProperty(AppConstants.VALUE, posValue);

@@ -59,8 +59,8 @@ public class CreateGroupRequirement {
         if (obj instanceof CreateGroupRequirement) {
             final CreateGroupRequirement other = (CreateGroupRequirement) obj;
             return Objects.equal(groupType, other.groupType)
-                    &&Objects.equal(alias, other.alias)
-                    &&Objects.equal(parentAlias, other.parentAlias);
+                    && Objects.equal(alias, other.alias)
+                    && Objects.equal(parentAlias, other.parentAlias);
         } else {
             return false;
         }

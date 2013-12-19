@@ -55,7 +55,7 @@ public class AllCombosDataSetGenerator implements ICombiDataSetGenerator {
         }
         // return defensive copy of the cached dataset
         List<DataSet> ret = new LinkedList<>();
-        for(DataSet cachedDs : dataSetCache.get(dataSpec)){
+        for (DataSet cachedDs : dataSetCache.get(dataSpec)) {
             ret.add(new DataSet(cachedDs));
         }
         return ret;
@@ -84,13 +84,13 @@ public class AllCombosDataSetGenerator implements ICombiDataSetGenerator {
         Set<List<String>> combos = Sets.cartesianProduct(options); // guava is awesome!!
 
         List<DataSet> generatedDataSets = new LinkedList<>();
-        for(List<String> combo : combos){
+        for (List<String> combo : combos) {
             DataSet comboDataSet = new DataSet();
             // each element in this combo corresponds directly to an elemnt in variableSpecs
             // so we advance two iterators through both lists, creating a variable and setting it's value
             Iterator<String> comboIter = combo.iterator();
             Iterator<VariableSpec> varSpecIter = variableSpecs.iterator();
-            for(int i = 0; i<combo.size(); ++i){
+            for (int i = 0; i < combo.size(); ++i) {
                 comboDataSet.createVariable(varSpecIter.next()).setProperty(AppConstants.VALUE, comboIter.next());
             }
             generatedDataSets.add(comboDataSet);

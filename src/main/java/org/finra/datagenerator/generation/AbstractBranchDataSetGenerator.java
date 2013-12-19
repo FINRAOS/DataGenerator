@@ -35,7 +35,8 @@ public abstract class AbstractBranchDataSetGenerator implements IBranchDataSetGe
     private static final Logger log = Logger.getLogger(AbstractBranchDataSetGenerator.class);
 
     /**
-     * Converts a path of edges to a path of nodes + edges. The input list remains unaltered.
+     * Converts a path of edges to a path of nodes + edges. The input list
+     * remains unaltered.
      *
      * @param edgePath
      * @param graph
@@ -46,7 +47,7 @@ public abstract class AbstractBranchDataSetGenerator implements IBranchDataSetGe
         // insert the first node
         pathWithNodes.add(graph.getEdgeSource(edgePath.get(0)));
         // the rest follow in a loop
-        for(BranchGraphEdge edge : edgePath){
+        for (BranchGraphEdge edge : edgePath) {
             pathWithNodes.add(edge);
             pathWithNodes.add(graph.getEdgeTarget(edge));
         }
@@ -55,13 +56,13 @@ public abstract class AbstractBranchDataSetGenerator implements IBranchDataSetGe
 
     protected DataSet dataSetFromPath(List<IBranchGraphElement> path, DataSpec dataSpec) throws IllegalStateException {
         DataSet dataSet = new DataSet();
-        for(IBranchGraphElement elem : path){
+        for (IBranchGraphElement elem : path) {
             // checkProperties requirements
-            for(CheckPropertyRequirement checkPropReq : elem.getCheckPropertyReqs()){
+            for (CheckPropertyRequirement checkPropReq : elem.getCheckPropertyReqs()) {
                 String varAlias = checkPropReq.getVariableAlias();
                 String groupAlias = checkPropReq.getGroupAlias();
                 DataSetVariable var;
-                if (groupAlias==null) {
+                if (groupAlias == null) {
                     var = dataSet.get(varAlias);
                 } else {
                     var = dataSet.getGroup(groupAlias).get(varAlias);
@@ -69,58 +70,58 @@ public abstract class AbstractBranchDataSetGenerator implements IBranchDataSetGe
                 String requiredVal = checkPropReq.getRequiredValue();
                 String actualVal = var.get(checkPropReq.getProperty());
                 if (!requiredVal.equals(actualVal)) {
-                    throw new IllegalStateException("Required: "+requiredVal+" Actual: "+actualVal);
+                    throw new IllegalStateException("Required: " + requiredVal + " Actual: " + actualVal);
                 }
             }
             // create group requirements that do not specify a parent group
-            for(CreateGroupRequirement createGroupReq : elem.getCreateGroupReqs()){
-                if (createGroupReq.getParentAlias()!=null) {
+            for (CreateGroupRequirement createGroupReq : elem.getCreateGroupReqs()) {
+                if (createGroupReq.getParentAlias() != null) {
                     continue;
                 }
                 String groupType = createGroupReq.getGroupType();
                 String alias = createGroupReq.getAlias();
-                if (alias!=null) {
+                if (alias != null) {
                     dataSet.createGroup(dataSpec.getGroupSpec(groupType), alias);
                 } else {
                     dataSet.createGroup(dataSpec.getGroupSpec(groupType));
                 }
             }
             // create group requirements that do specify a parent group
-            for(CreateGroupRequirement createGroupReq : elem.getCreateGroupReqs()){
-                if (createGroupReq.getParentAlias()==null) {
+            for (CreateGroupRequirement createGroupReq : elem.getCreateGroupReqs()) {
+                if (createGroupReq.getParentAlias() == null) {
                     continue;
                 }
                 String groupType = createGroupReq.getGroupType();
                 String parentGroupAlias = createGroupReq.getParentAlias();
                 String alias = createGroupReq.getAlias();
-                if (alias!=null) {
+                if (alias != null) {
                     dataSet.createGroup(dataSpec.getGroupSpec(groupType), dataSet.getGroup(parentGroupAlias), alias);
                 } else {
                     dataSet.createGroup(dataSpec.getGroupSpec(groupType), dataSet.getGroup(parentGroupAlias));
                 }
             }
             // create variable requirements
-            for(CreateVariableRequirement createVarReq : elem.getCreateVariableReqs()){
+            for (CreateVariableRequirement createVarReq : elem.getCreateVariableReqs()) {
                 String varType = createVarReq.getVariableType();
                 String alias = createVarReq.getAlias();
                 String groupAlias = createVarReq.getGroupAlias();
                 VariableSpec varSpec = dataSpec.getVariableSpec(varType);
-                if (groupAlias==null&&alias==null) {
+                if (groupAlias == null && alias == null) {
                     dataSet.createVariable(varSpec);
-                } else if (groupAlias==null&&alias!=null) {
+                } else if (groupAlias == null && alias != null) {
                     dataSet.createVariable(varSpec, alias);
-                } else if (groupAlias!=null&&alias==null) {
+                } else if (groupAlias != null && alias == null) {
                     dataSet.getGroup(groupAlias).addVariable(dataSet.createVariable(varSpec));
-                } else if (groupAlias!=null&&alias!=null) {
+                } else if (groupAlias != null && alias != null) {
                     dataSet.getGroup(groupAlias).addVariable(dataSet.createVariable(varSpec, alias));
                 }
             }
             // set property requirements
-            for(SetPropertyRequirement setPropReq : elem.getSetPropertyReqs()){
+            for (SetPropertyRequirement setPropReq : elem.getSetPropertyReqs()) {
                 String varAlias = setPropReq.getVariableAlias();
                 String groupAlias = setPropReq.getGroupAlias();
                 DataSetVariable var;
-                if (groupAlias==null) {
+                if (groupAlias == null) {
                     var = dataSet.get(varAlias);
                 } else {
                     var = dataSet.getGroup(groupAlias).get(varAlias);
@@ -129,26 +130,26 @@ public abstract class AbstractBranchDataSetGenerator implements IBranchDataSetGe
                 String prop = setPropReq.getProperty();
                 String val = setPropReq.getValue();
 
-                if (var==null) {
-                    throw new IllegalStateException("Variable "+varAlias+" undefined for dataSet");
+                if (var == null) {
+                    throw new IllegalStateException("Variable " + varAlias + " undefined for dataSet");
                 }
 
-                if (prop==null) {
-                    throw new IllegalStateException("Property "+prop+" undefined for variable "+varAlias);
+                if (prop == null) {
+                    throw new IllegalStateException("Property " + prop + " undefined for variable " + varAlias);
                 }
 
-                if (val==null) {
-                    throw new IllegalStateException("Missing value in setProperty statement for variable "+varAlias);
+                if (val == null) {
+                    throw new IllegalStateException("Missing value in setProperty statement for variable " + varAlias);
                 }
 
                 var.setProperty(prop, val);
             }
             // append property requirements
-            for(AppendPropertyRequirement appendPropReq : elem.getAppendPropertyReqs()){
+            for (AppendPropertyRequirement appendPropReq : elem.getAppendPropertyReqs()) {
                 String varAlias = appendPropReq.getVariableAlias();
                 String groupAlias = appendPropReq.getGroupAlias();
                 DataSetVariable var;
-                if (groupAlias==null) {
+                if (groupAlias == null) {
                     var = dataSet.get(varAlias);
                 } else {
                     var = dataSet.getGroup(groupAlias).get(varAlias);

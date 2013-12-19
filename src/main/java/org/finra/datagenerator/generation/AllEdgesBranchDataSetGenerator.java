@@ -55,7 +55,7 @@ public class AllEdgesBranchDataSetGenerator extends AbstractBranchDataSetGenerat
         }
         // return defensive copy of the cached dataset
         List<DataSet> ret = new LinkedList<>();
-        for(DataSet cachedDs : dataSetCache){
+        for (DataSet cachedDs : dataSetCache) {
             ret.add(new DataSet(cachedDs));
         }
         return ret;
@@ -65,9 +65,9 @@ public class AllEdgesBranchDataSetGenerator extends AbstractBranchDataSetGenerat
             BranchGraph graph) {
         // add a root state as the parent of all possible start states
         List<BranchGraphNode> startNodes = new LinkedList<>();
-        for(BranchGraphNode node : graph.vertexSet()){
-            if (graph.inDegreeOf(node)==0) {
-                log.info("Adding start node "+node);
+        for (BranchGraphNode node : graph.vertexSet()) {
+            if (graph.inDegreeOf(node) == 0) {
+                log.info("Adding start node " + node);
                 startNodes.add(node);
             }
         }
@@ -75,7 +75,7 @@ public class AllEdgesBranchDataSetGenerator extends AbstractBranchDataSetGenerat
         Preconditions.checkArgument(!startNodes.isEmpty(), "No nodes with indegree 0 (aka start nodes) were found in the graph.");
         BranchGraphNode rootNode = new BranchGraphNode(AppConstants.ROOT_NODE);
         graph.addVertex(rootNode);
-        for(BranchGraphNode startNode : startNodes){
+        for (BranchGraphNode startNode : startNodes) {
             graph.addEdge(rootNode, startNode);
         }
 
@@ -83,24 +83,24 @@ public class AllEdgesBranchDataSetGenerator extends AbstractBranchDataSetGenerat
         List<DiskList<BranchGraphEdge>> allPaths = AllPathsBranchDataSetGenerator.getInstance().allPaths(graph, rootNode);
         // the set of edges to be covered = the union of edges covered by all paths
         Set<BranchGraphEdge> uncoveredEdges = new HashSet<>();
-        for(DiskList<BranchGraphEdge> path : allPaths){
+        for (DiskList<BranchGraphEdge> path : allPaths) {
             uncoveredEdges.addAll(path);
         }
 
         // greedy approximation algorithm for mimimum set-cover
         List<DataSet> generatedDataSets = new LinkedList<>();
-        while (!uncoveredEdges.isEmpty()){
+        while (!uncoveredEdges.isEmpty()) {
             // find the path that covers the most new edges
             int maxScore = 0;
             List<BranchGraphEdge> greedyPick = null;
-            for(List<BranchGraphEdge> path : allPaths){
+            for (List<BranchGraphEdge> path : allPaths) {
                 int pathScore = 0;
-                for(BranchGraphEdge edge : path){
+                for (BranchGraphEdge edge : path) {
                     if (uncoveredEdges.contains(edge)) {
                         pathScore++;
                     }
                 }
-                if (pathScore>maxScore) {
+                if (pathScore > maxScore) {
                     maxScore = pathScore;
                     greedyPick = path;
                 }
@@ -112,16 +112,15 @@ public class AllEdgesBranchDataSetGenerator extends AbstractBranchDataSetGenerat
                 generatedDataSets.add(dataSet);
                 uncoveredEdges.removeAll(greedyPick);
                 allPaths.remove(greedyPick);
-            }
-            catch (IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 // the requirements of this path cannot be satisfied, so no dataset, and it gets removed from the options
                 allPaths.remove(greedyPick);
                 // if this path contains an edge that others do not, then it is impossible to cover that edge
                 Set<BranchGraphEdge> remainingEdges = new HashSet<>();
-                for(DiskList<BranchGraphEdge> path : allPaths){
+                for (DiskList<BranchGraphEdge> path : allPaths) {
                     remainingEdges.addAll(path);
                 }
-                for(BranchGraphEdge edge : greedyPick){
+                for (BranchGraphEdge edge : greedyPick) {
                     if (!remainingEdges.contains(edge)) {
                         uncoveredEdges.remove(edge);
                     }

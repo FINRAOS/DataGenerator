@@ -77,34 +77,34 @@ public class BranchGraphNode implements IBranchGraphElement {
     }
 
     public void mergeRequirements(BranchGraphNode otherNode) {
-        for(CreateVariableRequirement req : otherNode.getCreateVariableReqs()){
+        for (CreateVariableRequirement req : otherNode.getCreateVariableReqs()) {
             if (!createVarReqs.contains(req)) {
                 createVarReqs.add(req);
             }
         }
-        for(CreateGroupRequirement req : otherNode.getCreateGroupReqs()){
+        for (CreateGroupRequirement req : otherNode.getCreateGroupReqs()) {
             if (!createGroupReqs.contains(req)) {
                 createGroupReqs.add(req);
             }
         }
-        for(SetPropertyRequirement req : otherNode.getSetPropertyReqs()){
+        for (SetPropertyRequirement req : otherNode.getSetPropertyReqs()) {
             if (!setPropReqs.contains(req)) {
                 setPropReqs.add(req);
             }
         }
-        for(CheckPropertyRequirement req : otherNode.getCheckPropertyReqs()){
+        for (CheckPropertyRequirement req : otherNode.getCheckPropertyReqs()) {
             if (!checkPropReqs.contains(req)) {
                 checkPropReqs.add(req);
             }
         }
-        for(AppendPropertyRequirement req : otherNode.getAppendPropertyReqs()){
+        for (AppendPropertyRequirement req : otherNode.getAppendPropertyReqs()) {
             if (!appendPropReqs.contains(req)) {
                 appendPropReqs.add(req);
             }
         }
     }
 
-	// hashcode and equals are overriden so JGraphT
+    // hashcode and equals are overriden so JGraphT
     // will consider nodes identical iff they have the same text
     @Override
     public int hashCode() {
@@ -113,7 +113,7 @@ public class BranchGraphNode implements IBranchGraphElement {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj==this) {
+        if (obj == this) {
             return true;
         }
         if (!(obj instanceof BranchGraphNode)) {

@@ -27,16 +27,16 @@ public class DiskListIterator<T> implements ListIterator<T> {
 
     public DiskListIterator(DiskList<T> instance, int index) {
         this.instance = instance;
-        this.globalIndex = index-1;
+        this.globalIndex = index - 1;
     }
 
     public synchronized void loadBlockContainingIndex(int globalIndex) {
-        int block_index = globalIndex/instance.getBlockSize();
-        if (block_index==instance.getCurrentBlock()) {
+        int block_index = globalIndex / instance.getBlockSize();
+        if (block_index == instance.getCurrentBlock()) {
             return;
         }
         instance.saveBlock();
-        if (block_index>instance.getExternalBlockHandles().size()-1) {
+        if (block_index > instance.getExternalBlockHandles().size() - 1) {
             instance.startNewBlock();
             return;
         }
@@ -44,8 +44,8 @@ public class DiskListIterator<T> implements ListIterator<T> {
     }
 
     public int getLocalIndex() {
-        int blockIndex = globalIndex/instance.getBlockSize();
-        return globalIndex-(blockIndex*instance.getBlockSize());
+        int blockIndex = globalIndex / instance.getBlockSize();
+        return globalIndex - (blockIndex * instance.getBlockSize());
     }
 
     @Override
@@ -59,24 +59,24 @@ public class DiskListIterator<T> implements ListIterator<T> {
         T last = null;
 
         // Need to enforce block size now (current block may be over-full after the insert)
-        while (instance.getCurrentBlock()<(instance.getExternalBlockHandles().size()-1)){
+        while (instance.getCurrentBlock() < (instance.getExternalBlockHandles().size() - 1)) {
             // Place last element from previous block as first in this block, if necessary
-            if (last!=null) {
+            if (last != null) {
                 instance.getInternalBlock().add(0, last);
             }
 
             // If the block is full, we need to push its last element to the next block
             // Should always occur until we are in the last block
-            if (instance.getInternalBlock().size()>instance.getBlockSize()) {
+            if (instance.getInternalBlock().size() > instance.getBlockSize()) {
                 // Remove the last element from the current block
-                last = instance.getInternalBlock().remove(instance.getInternalBlock().size()-1);
+                last = instance.getInternalBlock().remove(instance.getInternalBlock().size() - 1);
 
                 // Save current block
                 instance.saveBlock();
 
-                if (instance.getCurrentBlock()!=instance.getExternalBlockHandles().size()-1) {
+                if (instance.getCurrentBlock() != instance.getExternalBlockHandles().size() - 1) {
                     // If there is a next block, load it
-                    int block_index = instance.getCurrentBlock()+1;
+                    int block_index = instance.getCurrentBlock() + 1;
                     instance.loadBlock(block_index);
                 } else {
                     // If not, create a new block and load that block
@@ -89,49 +89,49 @@ public class DiskListIterator<T> implements ListIterator<T> {
             // Repeat until we get to the last block
         }
 
-        instance.setSize(instance.getSize()+1);
+        instance.setSize(instance.getSize() + 1);
     }
 
     @Override
     public boolean hasNext() {
 
-        if (instance.getCurrentBlock()<instance.getExternalBlockHandles().size()-1) {
+        if (instance.getCurrentBlock() < instance.getExternalBlockHandles().size() - 1) {
             // We are not affected by the last block, so we are ok
             return true;
-        } else if (instance.getCurrentBlock()==instance.getExternalBlockHandles().size()-2) {
+        } else if (instance.getCurrentBlock() == instance.getExternalBlockHandles().size() - 2) {
             // We are the next-to-last block, so make sure we are not the last element
-            if (getLocalIndex()<instance.getInternalBlock().size()-1) {
+            if (getLocalIndex() < instance.getInternalBlock().size() - 1) {
                 return true;
             } else {
                 // If we are the last element, make sure there is at least one element
                 // in the next block (the last block)
                 instance.saveBlock();
-                instance.loadBlock(instance.getCurrentBlock()+1);
-                boolean decision = instance.getInternalBlock().size()>0;
+                instance.loadBlock(instance.getCurrentBlock() + 1);
+                boolean decision = instance.getInternalBlock().size() > 0;
                 loadBlockContainingIndex(globalIndex);
                 return decision;
             }
         }
 
         // We are in the last block, so make sure the current block has another element
-        log.info("Returning from last block decision");
-        return (getLocalIndex()<(instance.getInternalBlock().size()-1));
+        log.debug("Returning from last block decision");
+        return (getLocalIndex() < (instance.getInternalBlock().size() - 1));
     }
 
     @Override
     public boolean hasPrevious() {
-        if (instance.getCurrentBlock()>0) {
+        if (instance.getCurrentBlock() > 0) {
             // We are not in the first block, so we are ok
             return true;
         }
 
         // We are in the first block, so make sure the current block has a prior element
-        return (this.getLocalIndex()>1);
+        return (this.getLocalIndex() > 1);
     }
 
     @Override
     public T next() {
-        if (globalIndex+1>instance.getSize()) {
+        if (globalIndex + 1 > instance.getSize()) {
             return null;
         }
         globalIndex++;
@@ -142,7 +142,7 @@ public class DiskListIterator<T> implements ListIterator<T> {
 
     @Override
     public int nextIndex() {
-        return globalIndex+1;
+        return globalIndex + 1;
     }
 
     @Override
@@ -158,7 +158,7 @@ public class DiskListIterator<T> implements ListIterator<T> {
 
     @Override
     public int previousIndex() {
-        return globalIndex-1;
+        return globalIndex - 1;
     }
 
     @Override

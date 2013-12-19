@@ -19,8 +19,8 @@ package org.finra.datagenerator.input;
 import java.util.Collection;
 
 /**
- * This interface is implemented by BranchGraphNode and BranchGraphEdge. Both of these graph elements can be annotated
- * with requirements.
+ * This interface is implemented by BranchGraphNode and BranchGraphEdge. Both of
+ * these graph elements can be annotated with requirements.
  *
  * @author ChamberA
  *

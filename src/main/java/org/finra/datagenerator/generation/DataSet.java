@@ -34,7 +34,8 @@ import org.finra.datagenerator.input.VariableSpec;
 public class DataSet implements Serializable {
 
     /**
-     * Serialized ID for versioning of serialization - change if old objects become unusable
+     * Serialized ID for versioning of serialization - change if old objects
+     * become unusable
      */
     private static final long serialVersionUID = 2925168185791074578L;
 
@@ -55,28 +56,29 @@ public class DataSet implements Serializable {
     }
 
     /**
-     * Copy constructor. Deep copies all DataSetGroups and DataSetVariables to produce an independent DataSet
+     * Copy constructor. Deep copies all DataSetGroups and DataSetVariables to
+     * produce an independent DataSet
      *
      * @param original
      */
     public DataSet(DataSet original) {
         // clone and add each group from the original. Also keep a map of new -> original groups so we can update references.
         Map<DataSetGroup, DataSetGroup> replacementMap = new HashMap<>();
-        for(DataSetGroup origGroup : original.groupsByType.values()){
+        for (DataSetGroup origGroup : original.groupsByType.values()) {
             DataSetGroup copyGroup = new DataSetGroup(origGroup);
             indexGroup(copyGroup);
             replacementMap.put(origGroup, copyGroup);
         }
         // update references based on the replacementMap
-        for(DataSetGroup copiedGroup : groupsByType.values()){
+        for (DataSetGroup copiedGroup : groupsByType.values()) {
             // update it's children
             Multimap<String, DataSetGroup> updatedChildGroupsByType = LinkedHashMultimap.create();
-            for(Entry<String, DataSetGroup> origEntry : copiedGroup.childGroupsByType.entries()){
+            for (Entry<String, DataSetGroup> origEntry : copiedGroup.childGroupsByType.entries()) {
                 updatedChildGroupsByType.put(origEntry.getKey(), replacementMap.get(origEntry.getValue()));
             }
             copiedGroup.childGroupsByType = updatedChildGroupsByType;
             ConcurrentMap<String, DataSetGroup> updatedChildGroupsByAlias = new MapMaker().makeMap();
-            for(Entry<String, DataSetGroup> origEntry : copiedGroup.childGroupsByAlias.entrySet()){
+            for (Entry<String, DataSetGroup> origEntry : copiedGroup.childGroupsByAlias.entrySet()) {
                 updatedChildGroupsByAlias.put(origEntry.getKey(), replacementMap.get(origEntry.getValue()));
             }
             copiedGroup.childGroupsByAlias = updatedChildGroupsByAlias;
@@ -88,7 +90,7 @@ public class DataSet implements Serializable {
     private void indexGroup(DataSetGroup group) {
         groupsByType.put(group.getType(), group);
         groupsByAlias.put(group.getAlias(), group);
-        for(DataSetVariable var : group.allVariables()){
+        for (DataSetVariable var : group.allVariables()) {
             indexVariable(var);
         }
     }
@@ -99,8 +101,8 @@ public class DataSet implements Serializable {
     }
 
     /**
-     * Creates a new DataSet group and set it's parent to the given parent group. All variables within the group will be
-     * given default values.
+     * Creates a new DataSet group and set it's parent to the given parent
+     * group. All variables within the group will be given default values.
      *
      * @param groupSpec
      * @param parentGroup
@@ -145,8 +147,9 @@ public class DataSet implements Serializable {
     }
 
     /**
-     * Creates a new default initialized variable based on a variable spec. The variable is associated with the default
-     * group (i.e. not part of any specific group)
+     * Creates a new default initialized variable based on a variable spec. The
+     * variable is associated with the default group (i.e. not part of any
+     * specific group)
      *
      * @param varSpec
      * @return
@@ -182,7 +185,8 @@ public class DataSet implements Serializable {
      * The following functions should be known to the user for use in writing templates.
      */
     /**
-     * This is what is actually called from a Velocity template when user types $dataset.varname
+     * This is what is actually called from a Velocity template when user types
+     * $dataset.varname
      *
      * @param variableName
      * @return
@@ -208,46 +212,46 @@ public class DataSet implements Serializable {
     }
 
     public void debug() {
-        log.debug("Debugging dataset: "+this.hashCode());
+        log.debug("Debugging dataset: " + this.hashCode());
         log.debug("The variables by type:");
-        log.debug("Count = "+variablesByType.size());
-        for(Entry<String, DataSetVariable> e : variablesByType.entries()){
-            log.debug(e.getKey()+" "+e.getValue().hashCode());
+        log.debug("Count = " + variablesByType.size());
+        for (Entry<String, DataSetVariable> e : variablesByType.entries()) {
+            log.debug(e.getKey() + " " + e.getValue().hashCode());
         }
         log.debug("The variables by alias:");
-        log.debug("Count = "+variablesByAlias.size());
-        for(Entry<String, DataSetVariable> e : variablesByAlias.entrySet()){
-            log.debug(e.getKey()+" "+e.getValue().hashCode());
+        log.debug("Count = " + variablesByAlias.size());
+        for (Entry<String, DataSetVariable> e : variablesByAlias.entrySet()) {
+            log.debug(e.getKey() + " " + e.getValue().hashCode());
         }
         log.debug("The groups by type:");
-        log.debug("Count = "+groupsByType.size());
-        for(Entry<String, DataSetGroup> e : groupsByType.entries()){
-            log.info(e.getKey()+" "+e.getValue().hashCode());
+        log.debug("Count = " + groupsByType.size());
+        for (Entry<String, DataSetGroup> e : groupsByType.entries()) {
+            log.info(e.getKey() + " " + e.getValue().hashCode());
         }
         log.debug("The groups by alias:");
-        log.debug("Count = "+groupsByAlias.size());
-        for(Entry<String, DataSetGroup> e : groupsByAlias.entrySet()){
-            log.debug(e.getKey()+" "+e.getValue().hashCode());
+        log.debug("Count = " + groupsByAlias.size());
+        for (Entry<String, DataSetGroup> e : groupsByAlias.entrySet()) {
+            log.debug(e.getKey() + " " + e.getValue().hashCode());
         }
 
         log.debug("Iterating though groups by type and printing their variables");
-        for(DataSetGroup group : groupsByType.values()){
-            log.debug("Group: "+group.hashCode()+" "+group.getType());
+        for (DataSetGroup group : groupsByType.values()) {
+            log.debug("Group: " + group.hashCode() + " " + group.getType());
             log.debug("it's variables by type:");
-            for(Entry<String, DataSetVariable> e : group.variablesByType.entries()){
-                log.debug(e.getKey()+" "+e.getValue().hashCode());
+            for (Entry<String, DataSetVariable> e : group.variablesByType.entries()) {
+                log.debug(e.getKey() + " " + e.getValue().hashCode());
             }
             log.debug("it's variables by alias:");
-            for(Entry<String, DataSetVariable> e : group.variablesByAlias.entrySet()){
-                log.debug(e.getKey()+" "+e.getValue().hashCode());
+            for (Entry<String, DataSetVariable> e : group.variablesByAlias.entrySet()) {
+                log.debug(e.getKey() + " " + e.getValue().hashCode());
             }
             log.debug("and it has the following child groups by type:");
-            for(Entry<String, DataSetGroup> e : group.childGroupsByType.entries()){
-                log.debug(e.getKey()+" "+e.getValue().hashCode());
+            for (Entry<String, DataSetGroup> e : group.childGroupsByType.entries()) {
+                log.debug(e.getKey() + " " + e.getValue().hashCode());
             }
             log.debug("and it has the following child groups by alias:");
-            for(Entry<String, DataSetGroup> e : group.childGroupsByAlias.entrySet()){
-                log.debug(e.getKey()+" "+e.getValue().hashCode());
+            for (Entry<String, DataSetGroup> e : group.childGroupsByAlias.entrySet()) {
+                log.debug(e.getKey() + " " + e.getValue().hashCode());
             }
         }
 

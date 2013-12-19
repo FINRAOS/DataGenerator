@@ -19,6 +19,7 @@ package org.finra.datagenerator.disklist;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractSequentialList;
@@ -29,7 +30,7 @@ import org.apache.log4j.Logger;
 public class DiskList<T> extends AbstractSequentialList<T> {
 
     private static final Logger log = Logger.getLogger(DiskList.class);
-    private static int DEFAULT_BLOCK_SIZE = 1000;
+    private static int defaultBlockSize = 1000;
     private static int counter = 0;
 
     private Vector<T> internalBlock;
@@ -39,33 +40,33 @@ public class DiskList<T> extends AbstractSequentialList<T> {
     private int size;
 
     public DiskList() {
-        this.setBlockSize(DEFAULT_BLOCK_SIZE);
-        this.externalBlockHandles = new Vector<String>();
+        this.setBlockSize(defaultBlockSize);
+        this.externalBlockHandles = new Vector<>();
         this.setSize(0);
         startNewBlock();
     }
 
     public DiskList(int blockSize) {
         this.setBlockSize(blockSize);
-        this.externalBlockHandles = new Vector<String>();
+        this.externalBlockHandles = new Vector<>();
         this.setSize(0);
         startNewBlock();
     }
 
     public DiskList(T o) {
-        this.setBlockSize(DEFAULT_BLOCK_SIZE);
-        this.externalBlockHandles = new Vector<String>();
+        this.setBlockSize(defaultBlockSize);
+        this.externalBlockHandles = new Vector<>();
         this.setSize(0);
         startNewBlock();
         this.add(o);
     }
 
     public DiskList(Iterable<T> os) {
-        this.setBlockSize(DEFAULT_BLOCK_SIZE);
-        this.externalBlockHandles = new Vector<String>();
+        this.setBlockSize(defaultBlockSize);
+        this.externalBlockHandles = new Vector<>();
         this.setSize(0);
         startNewBlock();
-        for(T o : os){
+        for (T o : os) {
             this.add(o);
         }
     }
@@ -108,7 +109,7 @@ public class DiskList<T> extends AbstractSequentialList<T> {
         return blockSize;
     }
 
-    public void setBlockSize(int blockSize) {
+    public final void setBlockSize(int blockSize) {
         this.blockSize = blockSize;
     }
 
@@ -122,13 +123,12 @@ public class DiskList<T> extends AbstractSequentialList<T> {
 
             setCurrentBlock(block_index);
             setInternalBlock(obj);
-        }
-        catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             log.error("There was a problem loading a block", e);
         }
     }
 
-    public void startNewBlock() {
+    public final void startNewBlock() {
         // Initialize block
         setInternalBlock(new Vector<T>());
 
@@ -137,12 +137,12 @@ public class DiskList<T> extends AbstractSequentialList<T> {
         getExternalBlockHandles().add(filename);
 
         // Get index
-        setCurrentBlock(getExternalBlockHandles().size()-1);
+        setCurrentBlock(getExternalBlockHandles().size() - 1);
     }
 
     public synchronized String getNewFilename() {
         counter++;
-        String filename = counter+".dat";
+        String filename = counter + ".dat";
 
         File f = new File(filename);
         f.deleteOnExit();
@@ -151,14 +151,13 @@ public class DiskList<T> extends AbstractSequentialList<T> {
     }
 
     public void saveBlock() {
-        log.info("Saving block "+currentBlock);
+        log.debug("Saving block " + currentBlock);
 
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(externalBlockHandles.get(currentBlock)));
+        try (ObjectOutputStream out = new ObjectOutputStream(
+                new FileOutputStream(externalBlockHandles.get(currentBlock))
+        )) {
             out.writeObject(internalBlock);
-            out.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Something went wrong when saving a block.", e);
         }
     }
@@ -167,7 +166,7 @@ public class DiskList<T> extends AbstractSequentialList<T> {
         return size;
     }
 
-    public void setSize(int size) {
+    public final void setSize(int size) {
         this.size = size;
     }
 }

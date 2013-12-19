@@ -36,37 +36,43 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author ChamberA
  *
  *
- * -- Equivalence class based -- -dataspec "C:\Users\MeleS\Desktop\Data Generator\input\spec.xls" -templates
- * "C:\Users\MeleS\Desktop\Data Generator\input\template_PW.txt" -config "C:\Users\MeleS\Desktop\Data
- * Generator\input\dd.properties" -out "C:\Users\MeleS\Desktop\Data Generator\output" -pairwise -f -isoNeg
+ * -- Equivalence class based -- -dataspec "C:\Users\MeleS\Desktop\Data
+ * Generator\input\spec.xls" -templates "C:\Users\MeleS\Desktop\Data
+ * Generator\input\template_PW.txt" -config "C:\Users\MeleS\Desktop\Data
+ * Generator\input\dd.properties" -out "C:\Users\MeleS\Desktop\Data
+ * Generator\output" -pairwise -f -isoNeg
  *
- * Purcahse and Sales -dataspec "C:\Users\MeleS\Desktop\Data Generator\input\Purchases and Sales\purchase_sales.xls"
- * -templates "C:\Users\MeleS\Desktop\Data Generator\input\purchases and sales\Purch_Sales_Template.txt" -config
- * "C:\Users\MeleS\Desktop\Data Generator\input\dd.properties" -out "C:\Users\MeleS\Desktop\Data
+ * Purcahse and Sales -dataspec "C:\Users\MeleS\Desktop\Data
+ * Generator\input\Purchases and Sales\purchase_sales.xls" -templates
+ * "C:\Users\MeleS\Desktop\Data Generator\input\purchases and
+ * sales\Purch_Sales_Template.txt" -config "C:\Users\MeleS\Desktop\Data
+ * Generator\input\dd.properties" -out "C:\Users\MeleS\Desktop\Data
  * Generator\output\Purchases and Sales" -pairwise -f -isoNeg
  *
- * -dataspec "C:\Users\MeleS\Desktop\Data Generator\input\purchase_sales.xls" -templates "C:\Users\MeleS\Desktop\Data
- * Generator\input\Purch_Sales_Template.txt" -config "C:\Users\MeleS\Desktop\Data Generator\input\dd.properties" -out
+ * -dataspec "C:\Users\MeleS\Desktop\Data Generator\input\purchase_sales.xls"
+ * -templates "C:\Users\MeleS\Desktop\Data
+ * Generator\input\Purch_Sales_Template.txt" -config
+ * "C:\Users\MeleS\Desktop\Data Generator\input\dd.properties" -out
  * "C:\Users\MeleS\Desktop\Data Generator\output" -pairwise -f -isoNeg
  *
- * -- Branch coverage bases -- -dataspec "C:\RC\RCVIZ_EQ\DG\input\spec.xls" -templates
- * "C:\RC\RCVIZ_EQ\DG\input\template_BC.txt" -config "C:\RC\RCVIZ_EQ\DG\input\dd.properties" -out
- * "C:\RC\RCVIZ_EQ\DG\out" -branchgraph "C:\RC\RCVIZ_EQ\DG\input\spec.vdx" -allPaths -f
+ * -- Branch coverage bases -- -dataspec "C:\RC\RCVIZ_EQ\DG\input\spec.xls"
+ * -templates "C:\RC\RCVIZ_EQ\DG\input\template_BC.txt" -config
+ * "C:\RC\RCVIZ_EQ\DG\input\dd.properties" -out "C:\RC\RCVIZ_EQ\DG\out"
+ * -branchgraph "C:\RC\RCVIZ_EQ\DG\input\spec.vdx" -allPaths -f
  *
  */
-public class Caller {
+public final class Caller {
 
-    private static Logger log = Logger.getLogger(Caller.class);
+    private static final Logger log = Logger.getLogger(Caller.class);
 
-    public static void main(String[] args) {
+    private Caller() {
+        throw new RuntimeException("Not meant to be instantiated");
+    }
 
-        Stopwatch stopwatch = new Stopwatch().start();
+    private static Options options;
 
-        // create Spring app context
-        ApplicationContext AppContext = new ClassPathXmlApplicationContext("SpringConfig.xml");
-
-        //parse command line args
-        Options options = new Options();
+    public static void setOptions() {
+        options = new Options();
 
         options.addOption("dataspec", true, "Directory or file containing dataspec");
         options.getOption("dataspec").setRequired(true);
@@ -87,34 +93,44 @@ public class Caller {
         options.getOption("out").setArgName("path");
 
         options.addOption("f", false, "Clean output directory without prompt if pre-existing.");
-
-        options.addOption("pairwise", false, "Generates datasets that cover all pairwise combinations of positive values. Ignores groups.");
-
-        options.addOption("allCombos", false, "Generates datasets that cover all possible combinations of positive values. Careful, this could be a lot.");
-
+        options.addOption("pairwise", false, "Generates datasets that cover all pairwise combinations of"
+                + " positive values. Ignores groups.");
+        options.addOption("allCombos", false, "Generates datasets that cover all possible combinations"
+                + " of positive values. Careful, this could be a lot.");
         options.addOption("isoNeg", false, "Generates datasets that cover each negative value in isolation. ");
-
         options.addOption("isoPos", false, "Generates datasets that cover each positive value in isolation. ");
-
-        options.addOption("allPaths", false, "Generates datasets that cover all possible paths through a branch diagram.");
-
-        options.addOption("allEdges", false, "Generates datasets that cover all edges of a branch diagram. A subset of allPaths.");
-
+        options.addOption("allPaths", false, "Generates datasets that cover all possible paths through "
+                + "a branch diagram.");
+        options.addOption("allEdges", false, "Generates datasets that cover all edges of a branch diagram."
+                + " A subset of allPaths.");
         options.addOption("help", false, "Print this message");
 
-        final String USAGE = "-dataspec <path> [-branchgraph <path>] -templates <path> [-config <path>] -out <path> [options]";
+    }
+
+    public static void main(String[] args) {
+
+        Stopwatch stopwatch = new Stopwatch().start();
+
+        // create Spring app context
+        ApplicationContext appContext = new ClassPathXmlApplicationContext("SpringConfig.xml");
+
+        //parse command line args
+        setOptions();
+
+        final String usage = "-dataspec <path> [-branchgraph <path>] -templates <path> [-config <path>]"
+                + " -out <path> [options]";
 
         CommandLineParser parser = new GnuParser();
         try {
             CommandLine cmdLine = parser.parse(options, args);
 
             if (cmdLine.hasOption("help")) {
-                new HelpFormatter().printHelp(USAGE, options);
+                new HelpFormatter().printHelp(usage, options);
                 System.exit(0);
             }
 
-            if (!cmdLine.hasOption("dataspec")||!cmdLine.hasOption("out")) {
-                new HelpFormatter().printHelp(USAGE, options);
+            if (!cmdLine.hasOption("dataspec") || !cmdLine.hasOption("out")) {
+                new HelpFormatter().printHelp(usage, options);
                 System.exit(1);
             }
 
@@ -126,10 +142,10 @@ public class Caller {
                 if (cmdLine.hasOption("f")) {
                     FileUtils.deleteDirectory(outputDir);
                 } else {
-                    log.warn("Output dir "+outputDir.getPath()+" already exists. Overwrite? (y/n)");
+                    log.warn("Output dir " + outputDir.getPath() + " already exists. Overwrite? (y/n)");
                     Scanner scanner = new Scanner(System.in);
                     String response = scanner.next();
-                    while (!response.equalsIgnoreCase("y")&&!response.equalsIgnoreCase("n")){
+                    while (!response.equalsIgnoreCase("y") && !response.equalsIgnoreCase("n")) {
                         response = scanner.next();
                     }
                     if (response.equalsIgnoreCase("y")) {
@@ -142,7 +158,7 @@ public class Caller {
             }
 
             if (!outputDir.mkdir()) {
-                log.error("Error creating output dir"+outputDir.getPath());
+                log.error("Error creating output dir" + outputDir.getPath());
                 System.exit(1);
             }
 
@@ -158,14 +174,14 @@ public class Caller {
             boolean allEdgesFlag = cmdLine.hasOption("allEdges");
 
             //create the executor and tell it to do stuff
-            Executor exec = (Executor) AppContext.getBean("executor");
+            Executor exec = (Executor) appContext.getBean("executor");
 
             // input reading
             exec.readDataSpec(cmdLine.getOptionValue("dataspec"));
 
             exec.readTemplateInput(cmdLine.getOptionValue("templates"));
 
-            if (allPathsFlag||allEdgesFlag) {
+            if (allPathsFlag || allEdgesFlag) {
                 exec.readBranchGraph(cmdLine.getOptionValue("branchgraph"));
             }
 
@@ -203,15 +219,14 @@ public class Caller {
 
             exec.shutdownTaskExecutor();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
 
         log.info("Complete!");
         log.info("---");
-        log.info("Time Taken: "+stopwatch);
+        log.info("Time Taken: " + stopwatch);
     }
 
 }

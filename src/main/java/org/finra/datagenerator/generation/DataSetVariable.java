@@ -45,7 +45,7 @@ public class DataSetVariable implements Serializable {
     public DataSetVariable(VariableSpec spec) {
         type = spec.getName();
         alias = spec.getName();
-        for(PropertySpec propSpec : spec.getPropertySpecs()){
+        for (PropertySpec propSpec : spec.getPropertySpecs()) {
             properties.put(propSpec.getName(), propSpec.getDefaultValue());
         }
     }
@@ -59,7 +59,7 @@ public class DataSetVariable implements Serializable {
     public DataSetVariable(VariableSpec spec, String alias) {
         type = spec.getName();
         this.alias = alias;
-        for(PropertySpec propSpec : spec.getPropertySpecs()){
+        for (PropertySpec propSpec : spec.getPropertySpecs()) {
             properties.put(propSpec.getName(), propSpec.getDefaultValue());
         }
     }
@@ -72,7 +72,7 @@ public class DataSetVariable implements Serializable {
     protected DataSetVariable(DataSetVariable original) {
         type = original.type;
         alias = original.alias;
-        for(Entry<String, String> prop : original.properties.entrySet()){
+        for (Entry<String, String> prop : original.properties.entrySet()) {
             properties.put(prop.getKey(), prop.getValue());
         }
     }
@@ -94,12 +94,13 @@ public class DataSetVariable implements Serializable {
         if (properties.get(prop).contains("$EMPTY$")) {
             properties.put(prop, value);
         } else {
-            properties.put(prop, properties.get(prop).concat(";"+value));
+            properties.put(prop, properties.get(prop).concat(";" + value));
         }
     }
 
     /**
-     * This is what is actually called from the Velocity templates by $dataset.var.prop
+     * This is what is actually called from the Velocity templates by
+     * $dataset.var.prop
      *
      * @param prop
      * @return

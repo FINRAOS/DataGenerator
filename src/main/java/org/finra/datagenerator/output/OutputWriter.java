@@ -16,6 +16,11 @@
  */
 package org.finra.datagenerator.output;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -25,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
-
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -35,15 +39,9 @@ import org.finra.datagenerator.generation.DataSet;
 import org.finra.datagenerator.generation.DataSetGroup;
 import org.finra.datagenerator.input.Template;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.io.Files;
-
 public class OutputWriter implements Callable<File> {
 
-    private static Logger LOG = Logger.getLogger(OutputWriter.class);
+    private static final Logger log = Logger.getLogger(OutputWriter.class);
 
     // initialize Velocity
     static {
@@ -62,18 +60,21 @@ public class OutputWriter implements Callable<File> {
         this.dataSets = dataSets;
     }
 
+    @Override
     public File call() throws Exception {
         try {
-            Preconditions.checkArgument(dir.canWrite(), "Can't write to "+dir);
-            LOG.info("Writing output to: "+dir.getName()+"...");
+            Preconditions.checkArgument(dir.canWrite(), "Can't write to " + dir);
+            log.info("Writing output to: " + dir.getName() + "...");
 
             // sort the templates into global and non-global
             Collection<Template> globalTemplates = Collections2.filter(templates, new Predicate<Template>() {
+                @Override
                 public boolean apply(Template template) {
                     return template.isGlobal();
                 }
             });
             Collection<Template> nonGlobalTemplates = Collections2.filter(templates, new Predicate<Template>() {
+                @Override
                 public boolean apply(Template template) {
                     return !template.isGlobal();
                 }
@@ -82,10 +83,10 @@ public class OutputWriter implements Callable<File> {
             // for non global templates, apply each dataset to the templates, keeping a counter
             if (!nonGlobalTemplates.isEmpty()) {
                 int dataSetCount = 0;
-                for(DataSet dataSet : dataSets){
+                for (DataSet dataSet : dataSets) {
                     ++dataSetCount;
                     // create a subdir i
-                    File outputSubdir = new File(dir, ""+dataSetCount);
+                    File outputSubdir = new File(dir, "" + dataSetCount);
                     outputSubdir.mkdir();
 
                     //VelocityContext vc = new VelocityContext();
@@ -93,14 +94,14 @@ public class OutputWriter implements Callable<File> {
                     vc.put(AppConstants.DATASET, dataSet);
                     vc.put(AppConstants.DATASET_CNTR, dataSetCount);
 
-                    for(Template template : nonGlobalTemplates){
+                    for (Template template : nonGlobalTemplates) {
                         // check if this template is to be writtern on a per group basis
-                        String perGroup = TemplatingProperties.getProperty(template.getFilename()+".perGroup", null);
-                        if (perGroup==null) {
+                        String perGroup = TemplatingProperties.getProperty(template.getFilename() + ".perGroup", null);
+                        if (perGroup == null) {
                             writeContextToFile(vc, template, outputSubdir, dataSetCount);
                         } else {
                             // write a copy of this template for each instance of the group
-                            for(DataSetGroup group : dataSet.getGroupsOfType(perGroup)){
+                            for (DataSetGroup group : dataSet.getGroupsOfType(perGroup)) {
                                 vc.put(AppConstants.KEY_GROUP, group);
                                 writeContextToFile(vc, template, outputSubdir, dataSetCount);
                                 vc.remove(AppConstants.KEY_GROUP);
@@ -116,14 +117,13 @@ public class OutputWriter implements Callable<File> {
                 VelocityContext vc = newContext();
                 vc.put(AppConstants.ALL_DATASETS, dataSets);
 
-                for(Template template : globalTemplates){
+                for (Template template : globalTemplates) {
                     writeContextToFile(vc, template, dir, 0);
                 }
             }
 
-            LOG.info("Writing output to: "+dir.getName()+" completed. ("+dataSets.size()+" datasets)");
-        }
-        catch (Exception e) {
+            log.info("Writing output to: " + dir.getName() + " completed. (" + dataSets.size() + " datasets)");
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -131,8 +131,9 @@ public class OutputWriter implements Callable<File> {
     }
 
     /**
-     * Applies the context to the template and write it to the given outdir. The filename defaults to the template name,
-     * but can be overriden via templating.properties.
+     * Applies the context to the template and write it to the given outdir. The
+     * filename defaults to the template name, but can be overriden via
+     * templating.properties.
      *
      * @param vc
      * @param template
@@ -143,32 +144,31 @@ public class OutputWriter implements Callable<File> {
     private void writeContextToFile(VelocityContext vc, Template template, File outDir, int dataSetCount) throws IOException {
         // derive the output filename by applying the dataset to the template name
         String templateName = template.getFilename();
-        String outputFileNameTemplate = TemplatingProperties.getProperty(templateName+".renameTo", templateName);
+        String outputFileNameTemplate = TemplatingProperties.getProperty(templateName + ".renameTo", templateName);
 
         // Testing for appending path ID to filename
         if (outputFileNameTemplate.contains("#")) {
-            outputFileNameTemplate = outputFileNameTemplate.replace("#", ""+dataSetCount);
+            outputFileNameTemplate = outputFileNameTemplate.replace("#", "" + dataSetCount);
         }
 
         StringWriter outputFileNameSW = new StringWriter();
         Velocity.evaluate(vc, outputFileNameSW, outputFileNameTemplate, outputFileNameTemplate);
         // write the output file
         File outputFile = new File(outDir, outputFileNameSW.toString());
-        Writer outputWriter = Files.newWriter(outputFile, Charsets.UTF_8);
-        Velocity.evaluate(vc, outputWriter, templateName, template.getFileReader());
-        outputWriter.close();
+        try (Writer outputWriter = Files.newWriter(outputFile, Charsets.UTF_8)) {
+            Velocity.evaluate(vc, outputWriter, templateName, template.getFileReader());
+        }
     }
 
     // create a new context and populate it with tools specified in config file (if any)
     private VelocityContext newContext() throws ClassNotFoundException {
         VelocityContext vc = new VelocityContext();
         Map<String, String> toolsMap = TemplatingProperties.getTools();
-        for(Entry<String, String> entry : toolsMap.entrySet()){
+        for (Entry<String, String> entry : toolsMap.entrySet()) {
             try {
                 vc.put(entry.getKey(), Class.forName(entry.getValue()));
-            }
-            catch (ClassNotFoundException e) {
-                LOG.error("ClassNotFound while loading velocity tools. Check your properties file and classpath");
+            } catch (ClassNotFoundException e) {
+                log.error("ClassNotFound while loading velocity tools. Check your properties file and classpath");
                 throw e;
             }
         }

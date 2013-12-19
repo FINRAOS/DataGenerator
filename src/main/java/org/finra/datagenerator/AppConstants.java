@@ -16,19 +16,35 @@
  */
 package org.finra.datagenerator;
 
+/**
+ * Wrapper for application constants.
+ *
+ * TODO: Use System parameters to read those variables, with default settings
+ */
 public class AppConstants {
 
-    // the file extensions that will be recognized as templates
+    /**
+     * The file extensions that will be recognized as templates
+     */
     public static final String[] TEMPLATE_EXTENSIONS = {"txt", "csv", "sql", "xml", "html", "java", "xls"};
 
-    // the root group is the top of the group hierarchy in a dataset
+    /**
+     * The root group is the top of the group hierarchy in a dataset
+     */
     public static final String ROOT_GROUP = "ROOT_GROUP";
-    // all variable not explicitly assigned to a group fall into the default group
+    /**
+     * All variable not explicitly assigned to a group fall into the default
+     * group
+     */
     public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
-    // the root state that is inserted into a branch graph
+    /**
+     * the root state that is inserted into a branch graph
+     */
     public static final String ROOT_NODE = "ROOT_NODE";
 
-    // names for output dirs
+    /**
+     * The default output directory
+     */
     public static final String DEFAULT_OUT_DIRNAME = "default";
     public static final String ISOPOS_OUT_DIRNAME = "isoPos";
     public static final String ISONEG_OUT_DIRNAME = "isoNeg";

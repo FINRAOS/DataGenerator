@@ -58,8 +58,8 @@ public class CreateVariableRequirement implements Cloneable {
         if (obj instanceof CreateVariableRequirement) {
             final CreateVariableRequirement other = (CreateVariableRequirement) obj;
             return Objects.equal(variableType, other.variableType)
-                    &&Objects.equal(alias, other.alias)
-                    &&Objects.equal(groupAlias, other.groupAlias);
+                    && Objects.equal(alias, other.alias)
+                    && Objects.equal(groupAlias, other.groupAlias);
         } else {
             return false;
         }

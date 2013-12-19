@@ -58,7 +58,7 @@ public class AllPathsBranchDataSetGenerator extends AbstractBranchDataSetGenerat
         //Why is a defensive copy necessary? Is someone changing the datasets after generation?
         // return defensive copy of the cached dataset
         List<DataSet> ret = new LinkedList<>();
-        for(DataSet cachedDs : dataSetCache){
+        for (DataSet cachedDs : dataSetCache) {
             ret.add(new DataSet(cachedDs));
         }
         return ret;
@@ -67,28 +67,28 @@ public class AllPathsBranchDataSetGenerator extends AbstractBranchDataSetGenerat
     private List<DataSet> internalDataSetGeneration(DataSpec dataSpec, BranchGraph graph) {
         // add a root state as the parent of all possible start states
         List<BranchGraphNode> startNodes = new LinkedList<>();
-        for(BranchGraphNode node : graph.vertexSet()){
-            if (graph.inDegreeOf(node)==0) {
+        for (BranchGraphNode node : graph.vertexSet()) {
+            if (graph.inDegreeOf(node) == 0) {
                 startNodes.add(node);
             }
         }
         Preconditions.checkArgument(!startNodes.isEmpty(), "No nodes with indegree 0 (aka start nodes) were found in the graph.");
         BranchGraphNode rootNode = new BranchGraphNode(AppConstants.ROOT_NODE);
         graph.addVertex(rootNode);
-        for(BranchGraphNode startNode : startNodes){
+        for (BranchGraphNode startNode : startNodes) {
             graph.addEdge(rootNode, startNode);
         }
 
         List<DiskList<BranchGraphEdge>> pathsList = allPaths(graph, rootNode);
-        log.info("There are "+pathsList.size()+" paths.");
+        log.info("There are " + pathsList.size() + " paths.");
 
         // now that we have all the paths, generate datasets from them
         List<DataSet> generatedDataSets = new LinkedList<>();
         int i = 0;
-        for(List<BranchGraphEdge> path : pathsList){
+        for (List<BranchGraphEdge> path : pathsList) {
 
-            if (i%1000==0) {
-                log.info("Processed path "+i);
+            if (i % 1000 == 0) {
+                log.info("Processed path " + i);
             }
 
             i++;
@@ -97,9 +97,8 @@ public class AllPathsBranchDataSetGenerator extends AbstractBranchDataSetGenerat
             try {
                 DataSet dataSet = dataSetFromPath(pathWithNodes, dataSpec);
                 generatedDataSets.add(dataSet);
-            }
-            catch (IllegalStateException e) {
-                log.warn("Skipping dataset due to IllegalStateException: "+e.getMessage());
+            } catch (IllegalStateException e) {
+                log.warn("Skipping dataset due to IllegalStateException: " + e.getMessage());
                 continue; // the requirements of this path cannot be satisfied, so no dataset
             }
         }
@@ -111,10 +110,10 @@ public class AllPathsBranchDataSetGenerator extends AbstractBranchDataSetGenerat
             BranchGraph graph, BranchGraphNode rootNode) {
         List<DiskList<BranchGraphEdge>> pathsList = new LinkedList<>();
         // for each starting edge
-        for(BranchGraphEdge startEdge : graph.outgoingEdgesOf(rootNode)){
+        for (BranchGraphEdge startEdge : graph.outgoingEdgesOf(rootNode)) {
             // keep a count of how many visits to each node
             Map<BranchGraphNode, Integer> nodeVisits = new HashMap<>();
-            for(BranchGraphNode node : graph.vertexSet()){
+            for (BranchGraphNode node : graph.vertexSet()) {
                 nodeVisits.put(node, 0);
             }
             // we start off visiting this edge and node
@@ -139,9 +138,9 @@ public class AllPathsBranchDataSetGenerator extends AbstractBranchDataSetGenerat
             pathsList.add(new DiskList<>(curPath));
         }
         // examine adjacent edges for path termination condition
-        for(BranchGraphEdge neighbor : neighborEdges){
-            if (nodeVisits.get(graph.getEdgeTarget(neighbor))>=LOOP_DEPTH
-                    ||graph.outDegreeOf(graph.getEdgeTarget(neighbor))==0) {
+        for (BranchGraphEdge neighbor : neighborEdges) {
+            if (nodeVisits.get(graph.getEdgeTarget(neighbor)) >= LOOP_DEPTH
+                    || graph.outDegreeOf(graph.getEdgeTarget(neighbor)) == 0) {
                 curPath.add(neighbor);
                 pathsList.add(new DiskList<>(curPath));
                 curPath.removeLast();
@@ -149,16 +148,16 @@ public class AllPathsBranchDataSetGenerator extends AbstractBranchDataSetGenerat
             }
         }
         //recursive search on all neighbor edges that aren't termination edges
-        for(BranchGraphEdge neighbor : neighborEdges){
+        for (BranchGraphEdge neighbor : neighborEdges) {
             BranchGraphNode neighborNode = graph.getEdgeTarget(neighbor);
-            if (nodeVisits.get(neighborNode)>=LOOP_DEPTH
-                    ||graph.outDegreeOf(neighborNode)==0) {
+            if (nodeVisits.get(neighborNode) >= LOOP_DEPTH
+                    || graph.outDegreeOf(neighborNode) == 0) {
                 continue;
             }
             curPath.add(neighbor);
-            nodeVisits.put(neighborNode, nodeVisits.get(neighborNode)+1); //increment the visit count
+            nodeVisits.put(neighborNode, nodeVisits.get(neighborNode) + 1); //increment the visit count
             findPaths(graph, curPath, nodeVisits, pathsList);
-            nodeVisits.put(neighborNode, nodeVisits.get(neighborNode)-1); //decrement as we back up
+            nodeVisits.put(neighborNode, nodeVisits.get(neighborNode) - 1); //decrement as we back up
             curPath.removeLast();
         }
     }

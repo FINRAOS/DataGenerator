@@ -88,8 +88,9 @@ class Executor {
     }
 
     /**
-     * Threads out a DataSpecReader to read in the DataSpec from the files or dir given on the command line. The
-     * executor stores this internally as a Future<DataSpec>
+     * Threads out a DataSpecReader to read in the DataSpec from the files or
+     * dir given on the command line. The executor stores this internally as a
+     * Future<DataSpec>
      */
     public void readDataSpec(String cmdLineArg) {
 
@@ -107,8 +108,9 @@ class Executor {
     }
 
     /**
-     * Threads out a BranchGraphReader to read in the BranchGraph from files in <input dir>/branch. The executor stores
-     * this internally as a Future<BranchGraph>
+     * Threads out a BranchGraphReader to read in the BranchGraph from files in
+     * <input dir>/branch. The executor stores this internally as a
+     * Future<BranchGraph>
      */
     public void readBranchGraph(String cmdLineArg) {
 
@@ -125,9 +127,10 @@ class Executor {
     }
 
     /**
-     * Threads out one TemplateReader to read in the template files from <input dir>/templates and another to read
-     * global templates <input dir>/templates/global. Only certain file extensions will be recognized as templates.
-     * Check wiki documentation and AppConstants.TEMPLATE_EXTENSIONS.
+     * Threads out one TemplateReader to read in the template files from <input
+     * dir>/templates and another to read global templates <input
+     * dir>/templates/global. Only certain file extensions will be recognized as
+     * templates. Check wiki documentation and AppConstants.TEMPLATE_EXTENSIONS.
      */
     public void readTemplateInput(String cmdLineArg) {
 
@@ -144,7 +147,8 @@ class Executor {
     }
 
     /**
-     * Generates the default data set. This is done by assigning each variable in the dataspec it's default value.
+     * Generates the default data set. This is done by assigning each variable
+     * in the dataspec it's default value.
      *
      * @throws ExecutionException
      * @throws InterruptedException
@@ -188,8 +192,9 @@ class Executor {
     }
 
     /**
-     * Applies the generated datasets to the templates and writes them into the output directory. Assumes that the
-     * outputDir argument exists and can be written to.
+     * Applies the generated datasets to the templates and writes them into the
+     * output directory. Assumes that the outputDir argument exists and can be
+     * written to.
      *
      * @throws ExecutionException
      * @throws InterruptedException
@@ -209,7 +214,7 @@ class Executor {
     }
 
     private void writeOutDataSets(List<DataSet> dataSets, File outDir) throws InterruptedException, ExecutionException {
-        if (dataSets==null) {
+        if (dataSets == null) {
             return;
         }
 
@@ -218,8 +223,9 @@ class Executor {
     }
 
     /**
-     * We allow the user to specify either a single file or directory of files on the command line. This method is used
-     * to take that command line argument and return a collection of 0 or more files.
+     * We allow the user to specify either a single file or directory of files
+     * on the command line. This method is used to take that command line
+     * argument and return a collection of 0 or more files.
      *
      * @param cmdLineArg
      * @param exts Acceptable extensions

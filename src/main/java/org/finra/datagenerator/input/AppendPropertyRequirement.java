@@ -61,9 +61,9 @@ public class AppendPropertyRequirement {
         if (obj instanceof AppendPropertyRequirement) {
             final AppendPropertyRequirement other = (AppendPropertyRequirement) obj;
             return Objects.equal(variableAlias, other.variableAlias)
-                    &&Objects.equal(value, other.value)
-                    &&Objects.equal(groupAlias, other.groupAlias)
-                    &&Objects.equal(property, other.property);
+                    && Objects.equal(value, other.value)
+                    && Objects.equal(groupAlias, other.groupAlias)
+                    && Objects.equal(property, other.property);
         } else {
             return false;
         }

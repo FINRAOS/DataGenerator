@@ -30,23 +30,42 @@ import org.apache.log4j.Logger;
 
 public class TemplatingProperties {
 
-    private static Logger LOG = Logger.getLogger(TemplatingProperties.class);
+    private static final Logger log = Logger.getLogger(TemplatingProperties.class);
 
-    private static Properties props = new Properties();
+    private static final Properties props = new Properties();
 
+    /**
+     * Loads the properties from a file.
+     *
+     * @param f
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public static void loadProperties(File f) throws FileNotFoundException, IOException {
-        Preconditions.checkArgument(f.canRead(), "Can't read properties file "+f.getName());
+        Preconditions.checkArgument(f.canRead(), "Can't read properties file " + f.getName());
         props.load(Files.newReader(f, Charsets.UTF_8));
     }
 
+    /**
+     * Returns a property given its name and a default value.
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public static String getProperty(String key, String defaultValue) {
         return props.getProperty(key, defaultValue);
     }
 
+    /**
+     * Returns a map containing the properties whose names start with tools.
+     *
+     * @return
+     */
     public static Map<String, String> getTools() {
-        Map<String, String> toolsMap = new HashMap<String, String>();
+        Map<String, String> toolsMap = new HashMap<>();
         // syntax for properties file is tools.<handlename>=<classname>
-        for(Entry<Object, Object> prop : props.entrySet()){
+        for (Entry<Object, Object> prop : props.entrySet()) {
             String key = (String) prop.getKey();
             if (key.startsWith("tools.")) {
                 toolsMap.put(key.substring(6), (String) prop.getValue());

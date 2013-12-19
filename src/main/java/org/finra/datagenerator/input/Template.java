@@ -26,8 +26,8 @@ import org.apache.log4j.Logger;
 import org.finra.datagenerator.output.TemplatingProperties;
 
 /**
- * This class represent a single template (regular or global). It's just a wrapper around a file, with methods for
- * getting the filename and a Reader.
+ * This class represent a single template (regular or global). It's just a
+ * wrapper around a file, with methods for getting the filename and a Reader.
  *
  * @author ChamberA
  *
@@ -39,7 +39,7 @@ public class Template {
     private final File file;
 
     public Template(File file) {
-        Preconditions.checkArgument(file.canRead(), "Cannot read file: "+file.getPath());
+        Preconditions.checkArgument(file.canRead(), "Cannot read file: " + file.getPath());
         this.file = file;
     }
 
@@ -52,7 +52,7 @@ public class Template {
     }
 
     public boolean isGlobal() {
-        return TemplatingProperties.getProperty(getFilename()+".isGlobal", "false").equalsIgnoreCase("true");
+        return TemplatingProperties.getProperty(getFilename() + ".isGlobal", "false").equalsIgnoreCase("true");
     }
 
 }

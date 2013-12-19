@@ -21,7 +21,8 @@ import com.google.common.collect.Multimap;
 import org.apache.log4j.Logger;
 
 /**
- * Represents a <shape/> element parsed from a .vdx file. The Apache Digester returns these to VDXBranchGraphReader.
+ * Represents a <shape/> element parsed from a .vdx file. The Apache Digester
+ * returns these to VDXBranchGraphReader.
  *
  * @author ChamberA
  *
