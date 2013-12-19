@@ -24,8 +24,8 @@ import org.finra.datagenerator.AppConstants;
 
 public class DataSpec {
 
-    private ConcurrentMap<String, VariableSpec> varSpecs = new MapMaker().makeMap();
-    private ConcurrentMap<String, GroupSpec> groupSpecs = new MapMaker().makeMap();
+    private final ConcurrentMap<String, VariableSpec> varSpecs = new MapMaker().makeMap();
+    private final ConcurrentMap<String, GroupSpec> groupSpecs = new MapMaker().makeMap();
 
     // initialize with a default group, to which variable belong by default
     public DataSpec() {
@@ -43,7 +43,7 @@ public class DataSpec {
     }
 
     public GroupSpec getGroupSpec(String groupType) {
-        Preconditions.checkArgument(groupSpecs.containsKey(groupType), "No group spec named "+groupType);
+        Preconditions.checkArgument(groupSpecs.containsKey(groupType), "No group spec named " + groupType);
         return groupSpecs.get(groupType);
     }
 
@@ -52,7 +52,7 @@ public class DataSpec {
     }
 
     public VariableSpec getVariableSpec(String variableType) {
-        Preconditions.checkArgument(varSpecs.containsKey(variableType), "No variable spec named "+variableType);
+        Preconditions.checkArgument(varSpecs.containsKey(variableType), "No variable spec named " + variableType);
         return varSpecs.get(variableType);
     }
 
@@ -60,5 +60,20 @@ public class DataSpec {
         return varSpecs.values();
     }
 
-	//TODO: lets override equals() and hascode().
+    @Override
+    public boolean equals(Object o) {
+        DataSpec rhs;
+        if (o instanceof DataSpec) {
+            rhs = (DataSpec) o;
+        } else {
+            throw new RuntimeException("Comparing against a non-compatible object");
+        }
+
+        return varSpecs.equals(rhs.varSpecs) && groupSpecs.equals(rhs.groupSpecs);
+    }
+
+    @Override
+    public int hashCode() {
+        return varSpecs.hashCode() + groupSpecs.hashCode();
+    }
 }
