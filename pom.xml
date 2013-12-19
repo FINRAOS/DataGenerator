@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.finra.datagenerator</groupId>
     <artifactId>DataGenerator</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>DataGenerator</name>
@@ -17,8 +17,8 @@
     <url>http://github.com/FINRAOS/DataGenerator</url>
     <scm>
         <connection>scm:git:http://github.com/FINRAOS/DataGenerator</connection>
-        <developerConnection>scm:git:http://github.com:FINRAOS/DataGenerator</developerConnection>
-        <url>http://github.com:FINRAOS/DataGenerator</url>
+        <developerConnection>scm:git:http://github.com/FINRAOS/DataGenerator</developerConnection>
+        <url>http://github.com/FINRAOS/DataGenerator</url>
     </scm>
     <developers>
         <developer>
