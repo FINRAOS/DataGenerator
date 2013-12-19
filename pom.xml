@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.finra.datagenerator</groupId>
     <artifactId>DataGenerator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
+    
     <name>DataGenerator</name>
     <description>A tool that generates test scripts using a given model and templates</description>
     <licenses>
@@ -38,14 +38,13 @@
             <email>mibrahim@mibrahim.net</email>
         </developer>
     </developers>
-
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -70,8 +69,8 @@
                     </execution>
                 </executions>
             </plugin>
-
-
+            
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -81,15 +80,15 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
+            
             <!--plugin --> <!-- package jar with dependencies and set entry class -->
             <!--groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId>
             <executions> <execution> <goals> <goal>attached</goal> </goals> <phase>package</phase>
             <configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs> <archive> <manifest> <mainClass>org.finra.datagenerator.Caller</mainClass>
             </manifest> </archive> </configuration> </execution> </executions> </plugin -->
-
-
+            
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -110,7 +109,7 @@
                                     implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
-
+                                
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
@@ -118,17 +117,17 @@
                                         <Build-Number>2</Build-Number>
                                     </manifestEntries>
                                 </transformer>
-
+                                
                             </transformers>
-
-
-
+                            
+                            
+                            
                         </configuration>
-
+                        
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -150,7 +149,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -177,10 +176,10 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
         </plugins>
     </build>
-
+    
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -242,7 +241,7 @@
             <artifactId>velocity-tools</artifactId>
             <version>2.0</version>
         </dependency>
-
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -250,14 +249,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    
     <distributionManagement>
         <repository>
             <id>sontype-nexus-staging</id>
             <name>Nexus Staging Repository</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-
+        
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
             <name>Nexus Snapshot Repository</name>
