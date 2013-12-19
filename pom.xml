@@ -16,7 +16,7 @@
     </licenses>
     <url>http://github.com/FINRAOS/DataGenerator</url>
     <scm>
-        <connection>scm:git:http://github.com:FINRAOS/DataGenerator</connection>
+        <connection>scm:git:http://github.com/FINRAOS/DataGenerator</connection>
         <developerConnection>scm:git:http://github.com:FINRAOS/DataGenerator</developerConnection>
         <url>http://github.com:FINRAOS/DataGenerator</url>
     </scm>
