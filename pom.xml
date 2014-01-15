@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.finra.datagenerator</groupId>
     <artifactId>DataGenerator</artifactId>
     <version>1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    
+
     <name>DataGenerator</name>
     <description>A tool that generates test scripts using a given model and templates</description>
     <licenses>
@@ -37,14 +37,14 @@
             <email>mibrahim@mibrahim.net</email>
         </developer>
     </developers>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <build>
         <plugins>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -58,7 +58,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -83,8 +83,8 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -94,15 +94,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            
-            <!--plugin --> <!-- package jar with dependencies and set entry class -->
-            <!--groupId>org.apache.maven.plugins</groupId> <artifactId>maven-assembly-plugin</artifactId>
-            <executions> <execution> <goals> <goal>attached</goal> </goals> <phase>package</phase>
-            <configuration> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs> <archive> <manifest> <mainClass>org.finra.datagenerator.Caller</mainClass>
-            </manifest> </archive> </configuration> </execution> </executions> </plugin -->
-            
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -121,24 +113,20 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
-                                
+
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>org.finra.datagenerator.Caller</Main-Class>
                                         <Build-Number>2</Build-Number>
                                     </manifestEntries>
                                 </transformer>
-                                
                             </transformers>
-                            
-                            
-                            
                         </configuration>
-                        
+
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -160,7 +148,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -187,10 +175,10 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
         </plugins>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -252,7 +240,49 @@
             <artifactId>velocity-tools</artifactId>
             <version>2.0</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>commons-scxml</groupId>
+            <artifactId>commons-scxml</artifactId>
+            <version>0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-el</groupId>
+            <artifactId>commons-el</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-jexl</groupId>
+            <artifactId>commons-jexl</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -260,14 +290,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <distributionManagement>
         <repository>
             <id>sonatype-nexus-staging</id>
             <name>Nexus Staging Repository</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        
+
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
             <name>Nexus Snapshot Repository</name>
