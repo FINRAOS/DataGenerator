@@ -32,10 +32,6 @@ public class DataOutputFactory {
 		
 	private static DataOutputFactory instance;
 	
-	private DataOutputFactory(){
-		//do nothing
-	}
-	
 	public static DataOutputFactory getInstance(){
 		if(instance == null){
 			instance = new DataOutputFactory();
@@ -59,7 +55,7 @@ public class DataOutputFactory {
 	}
 	
 	public DataOutput getDataOutput(URL url) throws IOException{
-		if(!url.toString().startsWith("file:/")){
+		if(!url.toString().startsWith("file://")){
 			throw new IOException("Unable to identify the resource type (" + url.toString() + ")");
 		}else{
 			return new LocalFileOutput(url);
