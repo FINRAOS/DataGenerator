@@ -482,7 +482,7 @@ public class ChartExec {
 
     public static void main(String args[]) throws Exception {
         Logger.getLogger("org.apache").setLevel(Level.WARN);
-        LoggerInitializer.initialize();
+        LogInitializer.initialize();
         parseCommandLine(args);
 
         if (doSanityChecks()) {
