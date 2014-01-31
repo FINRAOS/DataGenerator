@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.cli.CommandLine;
@@ -16,6 +17,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.scxml.Context;
 import org.apache.commons.scxml.SCXMLExecutor;
@@ -45,8 +47,10 @@ public class ChartExec {
      */
     private static String initialVariables = null;
 
+    private static HashSet<String> varsOut = null;
     /**
-     * The initial set of events to trigger before re-searching for a new scenario
+     * The initial set of events to trigger before re-searching for a new
+     * scenario
      */
     private static String initialEvents = null;
 
@@ -227,7 +231,8 @@ public class ChartExec {
     }
 
     /**
-     * Reset the state machine, set the initial variables, and trigger the initial events
+     * Reset the state machine, set the initial variables, and trigger the
+     * initial events
      *
      * @throws ModelException
      */
@@ -236,6 +241,10 @@ public class ChartExec {
         executor.reset();
 
         // Set the initial variables values
+        for (String var : varsOut) {
+            context.set(var, "");
+        }
+
         for (Map.Entry<String, String> entry : initialVariablesMap.entrySet()) {
             context.set(entry.getKey(), entry.getValue());
         }
@@ -246,8 +255,9 @@ public class ChartExec {
     }
 
     /**
-     * Executes a list of given events. The format is [beforeState]-event-[afterState] with the before and after states
-     * and their separators optional
+     * Executes a list of given events. The format is
+     * [beforeState]-event-[afterState] with the before and after states and
+     * their separators optional
      *
      * @param commaSeparatedEvents
      * @throws ModelException
@@ -291,9 +301,32 @@ public class ChartExec {
         }
     }
 
+    private static HashSet<String> extractOutputVariables(String filePathName) throws IOException {
+        List<String> lines = FileUtils.readLines(new File(filePathName));
+        HashSet<String> outputVars = new HashSet<>();
+        for (String line : lines) {
+            if (line.contains("var_out")) {
+                int startIndex = line.indexOf("var_out");
+                int lastIndex = startIndex;
+                while (lastIndex < line.length() && (Character.isAlphabetic(line.charAt(lastIndex))
+                        || line.charAt(lastIndex) == '_'
+                        || line.charAt(lastIndex) == '-')) {
+                    lastIndex++;
+                }
+                if (lastIndex == line.length()) {
+                    throw new IOException("Reached the end of the line while parsing variable name in line: '" + line + "'.");
+                }
+                outputVars.add(line.substring(startIndex, lastIndex));
+            }
+        }
+
+        return outputVars;
+    }
+
     private static void process() throws Exception {
         // Load the state machine
         String absolutePath = (new File(inputFileName)).getAbsolutePath();
+        varsOut = extractOutputVariables(absolutePath);
         stateMachine = SCXMLParser.parse(new URL("file://" + absolutePath), null);
 
         executor = new SCXMLExecutor();
@@ -372,13 +405,58 @@ public class ChartExec {
             if (firstEvent) {
                 firstEvent = false;
             } else {
-                b
-                        .append(",");
+                b.append(",");
             }
             b.append(event);
         }
 
         log.info(b);
+    }
+
+    /**
+     * Defines a possible state that a state can be in. A possible state is a
+     * combination of a state and values for variables.
+     */
+    class PossibleState {
+
+        /**
+         * The name of the next state
+         */
+        String nextStateName;
+
+        /**
+         * The variables that need to be set before jumping to that state
+         */
+        final HashMap<String, String> variablesAssignmane = new HashMap<>();
+    }
+
+    /**
+     * Check all the variables in the context. Generate a state with a list of
+     * variables correctly assigned
+     *
+     * @param possiblePositiveStates
+     */
+    private static void findPossibleStates(ArrayList<PossibleState> possiblePositiveStates) {
+
+    }
+
+    /**
+     * Do a depth first search looking for scenarios
+     *
+     * @throws ModelException
+     * @throws SCXMLExpressionException
+     * @throws IOException
+     */
+    private static void searchForScenariosDFS() throws ModelException, SCXMLExpressionException, IOException {
+        ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList = new ArrayList<>();
+        ArrayList<Integer> activePostiveState = new ArrayList<>();
+
+        // First we have to generate the first level in the depth, so that we have something to start
+        // the recursion from
+        resetStateMachine();
+
+        ArrayList<PossibleState> possiblePositiveStates = new ArrayList<>();
+        findPossibleStates(possiblePositiveStates);
     }
 
     private static void searchForScenarios() throws ModelException, SCXMLExpressionException, IOException {
@@ -455,6 +533,12 @@ public class ChartExec {
         }
     }
 
+    /**
+     * Delete the scenario if an event is repeated more than maxEventReps times
+     *
+     * @param eventList
+     * @return
+     */
     private static ArrayList<String> pruneEvents(ArrayList<String> eventList) {
         // Count the number of repetitions of every event
         ArrayList<String> all = new ArrayList<>();
