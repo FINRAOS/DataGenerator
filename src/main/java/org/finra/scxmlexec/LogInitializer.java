@@ -26,7 +26,7 @@ public class LogInitializer {
         Enumeration<Appender> appenders = (Enumeration<Appender>) Logger.getRootLogger().getAllAppenders();
         while (appenders.hasMoreElements()) {
             Appender appender = (Appender) appenders.nextElement();
-            appender.setLayout(new PatternLayout("<%d{yyMMdd HHmmss} %5p %20%C{1}:%3L> %m%n"));
+            appender.setLayout(new PatternLayout("<%d{yyMMdd HHmmss} %5p %C{1}:%L> %m%n"));
         }
 
         Level level;
@@ -61,6 +61,6 @@ public class LogInitializer {
 
         Logger.getLogger("org.finra").setLevel(level);
 
-        log.debug("Set loglevel to " + level.toString());
+        System.out.println("Set loglevel to " + level.toString());
     }
 }

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -32,6 +34,7 @@ import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.SystemProperties;
 
 public class ChartExec {
 
@@ -302,6 +305,7 @@ public class ChartExec {
     }
 
     private static HashSet<String> extractOutputVariables(String filePathName) throws IOException {
+        log.info("Extracting variables from file: " + filePathName);
         List<String> lines = FileUtils.readLines(new File(filePathName));
         HashSet<String> outputVars = new HashSet<>();
         for (String line : lines) {
@@ -316,7 +320,9 @@ public class ChartExec {
                 if (lastIndex == line.length()) {
                     throw new IOException("Reached the end of the line while parsing variable name in line: '" + line + "'.");
                 }
-                outputVars.add(line.substring(startIndex, lastIndex));
+                String varName = line.substring(startIndex, lastIndex);
+                log.info("Found variable: " + varName);
+                outputVars.add(varName);
             }
         }
 
@@ -326,6 +332,7 @@ public class ChartExec {
     private static void process() throws Exception {
         // Load the state machine
         String absolutePath = (new File(inputFileName)).getAbsolutePath();
+        log.info("Processing file:" + absolutePath);
         varsOut = extractOutputVariables(absolutePath);
         stateMachine = SCXMLParser.parse(new URL("file://" + absolutePath), null);
 
@@ -338,7 +345,7 @@ public class ChartExec {
         executor.setRootContext(context);
         executor.addListener(stateMachine, listener);
 
-        searchForScenarios();
+        searchForScenariosDFS();
     }
 
     private static void findEvents(ArrayList<String> positive, ArrayList<String> negative) throws ModelException,
@@ -417,17 +424,25 @@ public class ChartExec {
      * Defines a possible state that a state can be in. A possible state is a
      * combination of a state and values for variables.
      */
-    class PossibleState {
+    static class PossibleState {
 
         /**
          * The name of the next state
          */
         String nextStateName;
+        String transitionEvent;
+
+        boolean varsInspected = false;
 
         /**
          * The variables that need to be set before jumping to that state
          */
-        final HashMap<String, String> variablesAssignmane = new HashMap<>();
+        final HashMap<String, String> variablesAssignment = new HashMap<>();
+
+        @Override
+        public String toString() {
+            return "[" + nextStateName + "," + transitionEvent + "," + varsInspected + "," + variablesAssignment + "]";
+        }
     }
 
     /**
@@ -436,8 +451,145 @@ public class ChartExec {
      *
      * @param possiblePositiveStates
      */
-    private static void findPossibleStates(ArrayList<PossibleState> possiblePositiveStates) {
+    private static ArrayList<PossibleState> findPossibleStates() throws ModelException, SCXMLExpressionException, IOException {
+        ArrayList<PossibleState> possiblePositiveStates = new ArrayList<>();
+        ArrayList<String> positive = new ArrayList<>();
+        ArrayList<String> negative = new ArrayList<>();
+        findEvents(positive, negative);
+        for (String state : positive) {
+            PossibleState possibleState = new PossibleState();
+            String[] parts = state.split("-");
+            possibleState.nextStateName = parts[2];
+            possibleState.transitionEvent = parts[1];
+            possiblePositiveStates.add(possibleState);
+        }
+        return possiblePositiveStates;
+    }
 
+    private static HashMap<String, String> readVarsOut() {
+        HashMap<String, String> result = new HashMap<>();
+        for (String varName : varsOut) {
+            result.put(varName, (String) context.get(varName));
+        }
+        return result;
+    }
+
+    private final static AtomicLong nextInt = new AtomicLong(0);
+
+    private static void produceOutput() {
+        String[] outTemplate = new String[]{
+            "var_out_RECORD_TYPE",
+            "var_out_MANIFEST_GENERATION_DATETIME",
+            "var_out_ACCOUNT_NUMBER",
+            "var_out_ACCOUNT_CLASSIFICATION_CODE",
+            "var_out_ACCOUNT_REGISTRATION_CODE",
+            "var_out_PIGGYBACK_ARRANGEMENT_FLAG",
+            "var_out_PIGGYBACK_ARRANGEMENT_FIRM_CRD_NUMBER",
+            "var_out_OPTION_LEVEL_CODE",
+            "var_out_INTERNAL_REPORTING_FIRM_IDENTIFIER",
+            "var_out_FIRM_CRD_NUMBER",
+            "var_out_INTERNAL_REPORTING_BRANCH_IDENTIFIER",
+            "var_out_ACCOUNT_TITLE",
+            "var_out_ACCOUNT_OPEN_DATE",
+            "var_out_EMPLOYEE_ACCOUNT_FLAG",
+            "var_out_MARGIN_ACCOUNT_FLAG",
+            "var_out_SELF_DIRECTED_ACCOUNT_FLAG",
+            "var_out_REGISTERED_REP_INVESTMENT_ADVISER_DISCRETIONARY_ACCOUNT_FLAG",
+            "var_out_CUSTOMER_ACCOUNT_FLAG",
+            "var_out_COMMISSION_BASED_ACCOUNT_FLAG",
+            "var_out_FEE_BASED_ACCOUNT_FLAG",
+            "var_out_DAY_TRADE_REQUIREMENT_METHOD_CALCULATION_CODE",
+            "var_out_DAY_TRADE_CALCULATION_METHOD_CODE",
+            "var_out_PATTERN_DAY_TRADER_CODE",
+            "var_out_DAY_TRADE_REQUIREMENT_METHOD_CALCULATION_CODE",
+            "var_out_DAY_TRADE_CALCULATION_METHOD_CODE",
+            "var_out_PATTERN_DAY_TRADER_CODE",
+            "var_out_ACCOUNT_SERVICES_BY_REP_GROUP_FLAG",
+            "var_out_ACCOUNT_INVESTMENT_HORIZON",
+            "var_out_ACCOUNT_INVESTMENT_HORIZON",
+            "var_out_ACCOUNT_RISK_TOLERANCE_DESCRIPTION",
+            "var_out_HOUSEHOLD_ACCOUNT_NUMBER",
+            "var_out_THIRD_PARTY_DISCRETIONARY_AUTHORITY_NAME"};
+        StringBuilder b = new StringBuilder();
+        for (String var : outTemplate) {
+            if (b.length() > 0) {
+                b.append("|");
+            }
+            String val = context.get(var).toString();
+            switch (val) {
+                case "#{nextint}":
+                    b.append(nextInt.incrementAndGet());
+                    break;
+                default:
+                    b.append(val);
+            }
+        }
+        System.out.println(b.toString());
+    }
+
+    private static void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList) throws ModelException, IOException, SCXMLExpressionException {
+        resetStateMachine();
+        while (listener.getCurrentState() == null
+                || (listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end"))) {
+            log.debug("Resetting state maching");
+            resetStateMachine();
+
+            // Replay the initial states
+            for (ArrayList<PossibleState> states : possiblePositiveStatesList) {
+                PossibleState initialState = states.get(0);
+                // Fire the event of the state
+                HashMap<String, String> varsVals = null;
+                HashMap<String, String> nextVarsVals;
+                if (!initialState.varsInspected) {
+                    varsVals = readVarsOut();
+                }
+                executor.triggerEvent(new TriggerEvent(initialState.transitionEvent, TriggerEvent.SIGNAL_EVENT));
+                if (!initialState.varsInspected) {
+                    nextVarsVals = readVarsOut();
+                    if (varsVals == null || nextVarsVals == null) {
+                        throw new IOException("NULL in nextVarsVals or varsVals");
+                    }
+                    for (Entry<String, String> var : varsVals.entrySet()) {
+                        String nextVal = nextVarsVals.get(var.getKey());
+                        if (!nextVal.equals(var.getValue())) {
+                            if (nextVal.startsWith("set:{")) {
+                                // Remove the set:{ and }
+                                String[] vals = nextVal.substring(5, nextVal.length() - 1).split(",");
+
+                                // Delete this state from the list
+                                states.remove(0);
+                                for (String val : vals) {
+                                    PossibleState possibleState = new PossibleState();
+                                    possibleState.nextStateName = initialState.nextStateName;
+                                    possibleState.transitionEvent = initialState.transitionEvent;
+                                    possibleState.variablesAssignment.putAll(initialState.variablesAssignment);
+                                    possibleState.variablesAssignment.put(var.getKey(), val);
+                                    possibleState.varsInspected = true;
+                                    states.add(0, possibleState);
+                                    log.debug("Adding:" + possibleState);
+                                }
+                            } else {
+                                states.get(0).variablesAssignment.put(var.getKey(), nextVal);
+                                states.get(0).varsInspected = true;
+                            }
+                        }
+                    }
+                    initialState = states.get(0);
+                }
+
+                // Set the variables
+                for (Entry<String, String> var : initialState.variablesAssignment.entrySet()) {
+                    context.set(var.getKey(), var.getValue());
+                }
+            }
+
+            ArrayList<PossibleState> nextPositiveStates = findPossibleStates();
+
+            possiblePositiveStatesList.add(nextPositiveStates);
+        }
+
+        // Remove end
+        possiblePositiveStatesList.remove(possiblePositiveStatesList.size() - 1);
     }
 
     /**
@@ -448,15 +600,48 @@ public class ChartExec {
      * @throws IOException
      */
     private static void searchForScenariosDFS() throws ModelException, SCXMLExpressionException, IOException {
+        log.info("Search for scenarios using depth first search");
         ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList = new ArrayList<>();
+        ArrayList<String> currentStates = new ArrayList<>();
         ArrayList<Integer> activePostiveState = new ArrayList<>();
 
         // First we have to generate the first level in the depth, so that we have something to start
         // the recursion from
-        resetStateMachine();
+        log.debug("Searching for the initial next possible states");
+        traceDepth(possiblePositiveStatesList);
+        log.debug("Initial depth trace: " + possiblePositiveStatesList);
 
-        ArrayList<PossibleState> possiblePositiveStates = new ArrayList<>();
-        findPossibleStates(possiblePositiveStates);
+        // Now we have the initial list with sets decompressed
+        produceOutput();
+        while (true) {
+            // Recursively delete one node from the end
+            boolean empty;
+            do {
+                if (possiblePositiveStatesList.isEmpty()) {
+                    empty = true;
+                    break;
+                }
+                empty = false;
+                int lastDepth = possiblePositiveStatesList.size() - 1;
+                log.debug("Removing: " + possiblePositiveStatesList.get(lastDepth).remove(0).nextStateName);
+                if (possiblePositiveStatesList.get(lastDepth).isEmpty()) {
+                    log.debug("Empty at level: " + possiblePositiveStatesList.size());
+                    possiblePositiveStatesList.remove(possiblePositiveStatesList.size() - 1);
+                    empty = true;
+                }
+            } while (empty);
+
+            if (empty) {
+                // We're done
+                break;
+            }
+
+            log.debug("**After removing, depth trace: " + possiblePositiveStatesList);
+            traceDepth(possiblePositiveStatesList);
+            log.debug("**After finding next, depth trace: " + possiblePositiveStatesList);
+
+            produceOutput();
+        }
     }
 
     private static void searchForScenarios() throws ModelException, SCXMLExpressionException, IOException {
@@ -568,6 +753,8 @@ public class ChartExec {
         Logger.getLogger("org.apache").setLevel(Level.WARN);
         LogInitializer.initialize();
         parseCommandLine(args);
+        System.out.println("Loglevel " + SystemProperties.logLevel);
+        System.out.println("Loggerlevel " + log.getLevel());
 
         if (doSanityChecks()) {
             process();
