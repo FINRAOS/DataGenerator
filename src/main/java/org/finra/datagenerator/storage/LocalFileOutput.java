@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.finra.datagenerator.impl;
+package org.finra.datagenerator.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import org.finra.datagenerator.interfaces.DataOutput;
+import org.finra.datagenerator.storage.DataOutput;
 
 /**
  * A DataOutput class that outputs data from a byte[][] array to the local file system

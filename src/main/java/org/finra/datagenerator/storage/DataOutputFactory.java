@@ -14,14 +14,14 @@
  * limitations under the License.
  *
  */
-package org.finra.datagenerator.factory;
+package org.finra.datagenerator.storage;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.finra.datagenerator.impl.LocalFileOutput;
-import org.finra.datagenerator.interfaces.DataOutput;
+import org.finra.datagenerator.storage.LocalFileOutput;
+import org.finra.datagenerator.storage.DataOutput;
 
 /**
  * Factory class that grabs the corresponding DataOutput class based on the output file passed in

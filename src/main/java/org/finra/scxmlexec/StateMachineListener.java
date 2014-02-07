@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 
 public class StateMachineListener implements SCXMLListener {
 
-    private final ArrayList<TransitionTarget> states = new ArrayList<>();
-    private final ArrayList<Transition> transitions = new ArrayList<>();
+    private final ArrayList<TransitionTarget> states = new ArrayList<TransitionTarget>();
+    private final ArrayList<Transition> transitions = new ArrayList<Transition>();
     private TransitionTarget currentState = null;
     private TransitionTarget lastState = null;
     private Transition lastTransition = null;

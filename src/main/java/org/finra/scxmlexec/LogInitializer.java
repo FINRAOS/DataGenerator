@@ -30,37 +30,33 @@ public class LogInitializer {
         }
 
         Level level;
-        switch (SystemProperties.logLevel.toLowerCase()) {
-            case "all":
-                level = Level.ALL;
-                break;
-            case "debug":
-                level = Level.DEBUG;
-                break;
-            case "error":
-                level = Level.ERROR;
-                break;
-            case "fatal":
-                level = Level.FATAL;
-                break;
-            case "info":
-                level = Level.INFO;
-                break;
-            case "off":
-                level = Level.OFF;
-                break;
-            case "trace":
-                level = Level.TRACE;
-                break;
-            case "warn":
-                level = Level.WARN;
-                break;
-            default:
-                level = Level.WARN;
+
+        String logLevel = SystemProperties.logLevel.toLowerCase();
+
+        if (logLevel.equals("all")) {
+            level = Level.ALL;
+        } else if (logLevel.equals("debug")) {
+            level = Level.DEBUG;
+        } else if (logLevel.equals("error")) {
+            level = Level.ERROR;
+        } else if (logLevel.equals("fatal")) {
+            level = Level.FATAL;
+        } else if (logLevel.equals("info")) {
+            level = Level.INFO;
+        } else if (logLevel.equals("off")) {
+            level = Level.OFF;
+        } else if (logLevel.equals("trace")) {
+            level = Level.TRACE;
+        } else if (logLevel.equals("warn")) {
+            level = Level.WARN;
+        } else {
+            level = Level.WARN;
         }
 
-        Logger.getLogger("org.finra").setLevel(level);
+        Logger.getLogger(
+                "org.finra").setLevel(level);
 
-        System.out.println("Set loglevel to " + level.toString());
+        System.out.println(
+                "Set loglevel to " + level.toString());
     }
 }

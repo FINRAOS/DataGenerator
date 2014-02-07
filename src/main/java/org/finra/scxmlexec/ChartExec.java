@@ -2,23 +2,16 @@ package org.finra.scxmlexec;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicLong;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.scxml.Context;
@@ -32,42 +25,45 @@ import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.SystemProperties;
 
 public class ChartExec {
 
     private static final Logger log = Logger.getLogger(ChartExec.class);
 
     /**
+     * A comma separated list of variables to be passed to the OutputFormatter
+     */
+    private String outputVariables;
+
+    /**
      * The input SCXML chart file
      */
-    private static String inputFileName = null;
+    private String inputFileName = null;
 
     /**
      * The set of initial variables that the user wants to set
      */
-    private static String initialVariables = null;
+    private String initialVariables = null;
 
     private static HashSet<String> varsOut = null;
     /**
      * The initial set of events to trigger before re-searching for a new
      * scenario
      */
-    private static String initialEvents = null;
+    private String initialEvents = null;
 
-    private static final ArrayList<String> initialEventsList = new ArrayList<>();
+    private static final ArrayList<String> initialEventsList = new ArrayList<String>();
 
     /**
      * Length of scenario
      */
-    private static int lengthOfScenario = 5;
+    private int lengthOfScenario = 5;
 
     /**
      * Generate -ve scenarios
      */
-    private static boolean generateNegativeScenarios = false;
+    private boolean generateNegativeScenarios = false;
 
     /**
      * The state machine
@@ -92,120 +88,95 @@ public class ChartExec {
     /**
      * Initial variables map
      */
-    private static final HashMap<String, String> initialVariablesMap = new HashMap<>();
+    private static final HashMap<String, String> initialVariablesMap = new HashMap<String, String>();
 
-    private static int maxEventReps = 1;
+    private int maxEventReps = 1;
 
-    private static int maxScenarios = 10000;
+    private int maxScenarios = 10000;
 
     private static final StateMachineListener listener = new StateMachineListener();
 
-    /**
-     * Prints the help on the command line
-     *
-     * @param options
-     */
-    public static void printHelp(Options options) {
-        Collection<Option> c = options.getOptions();
-        System.out.println("Command line options are:");
-        for (Option op : c) {
-            StringBuilder helpLine = new StringBuilder();
-            helpLine
-                    .append("\t-")
-                    .append(op.getOpt())
-                    .append(" --")
-                    .append(op.getLongOpt())
-                    .append("                 ".substring(op.getLongOpt().length()));
-
-            int length = helpLine.length();
-
-            System.out.print("\t-" + op.getOpt() + " --" + op.getLongOpt());
-            System.out.print("                 ".substring(op.getLongOpt().length()));
-            System.out.println(op.getDescription());
-        }
+    public String getOutputVariables() {
+        return outputVariables;
     }
 
-    public static void parseCommandLine(String args[]) throws ParseException {
-        // create the command line parser
-        CommandLineParser parser = new GnuParser();
-
-        // create the Options
-        final Options options = new Options()
-                .addOption("h", "help", false, "print help.")
-                .addOption("i", "inputfile", true, "the scxml input file")
-                .addOption("v", "initialvariables", true,
-                        "comma separated list of the initial variables and their values in the form of var1=val1,var2=val2")
-                .addOption("e", "initalevents", true,
-                        "a comma separated list of the initial set of events to trigger before searching for scenarios")
-                .addOption("l", "lengthofscenario", true,
-                        "the number of events to trigger searching for scenarios, default is 5")
-                .addOption("V", "generatenegative", false,
-                        "generate all negative transitions in addition to the positive ones")
-                .addOption("r", "eventreps", true,
-                        "the number of times a specific event is allowed to repeat in a scenario. The default is 1")
-                .addOption("s", "maxscenarios", true,
-                        "Maximum number of scenarios to generate. Default 10,000");
-
-        CommandLine cmd = parser.parse(options, args);
-
-        if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
-            printHelp(options);
-        }
-
-        if (cmd.hasOption("i")) {
-            inputFileName = cmd.getOptionValue('i');
-        }
-
-        if (cmd.hasOption("v")) {
-            initialVariables = cmd.getOptionValue('v');
-        }
-
-        if (cmd.hasOption("e")) {
-            initialEvents = cmd.getOptionValue('e');
-        }
-
-        if (cmd.hasOption('l')) {
-            String stringValue = cmd.getOptionValue('l');
-            if (StringUtils.isNotEmpty(stringValue)) {
-                lengthOfScenario = Integer.valueOf(stringValue);
-            } else {
-                log.error("Unparsable numeric value for option 'l':" + stringValue);
-            }
-        }
-
-        if (cmd.hasOption('r')) {
-            String stringValue = cmd.getOptionValue('r');
-            if (StringUtils.isNotEmpty(stringValue)) {
-                maxEventReps = Integer.valueOf(stringValue);
-            } else {
-                log.error("Unparsable numeric value for option 'r':" + stringValue);
-            }
-        }
-
-        if (cmd.hasOption('s')) {
-            String stringValue = cmd.getOptionValue('s');
-            if (StringUtils.isNotEmpty(stringValue)) {
-                maxScenarios = Integer.valueOf(stringValue);
-            } else {
-                log.error("Unparsable numeric value for option 's':" + stringValue);
-            }
-        }
-
-        if (cmd.hasOption("V")) {
-            generateNegativeScenarios = true;
-        }
-
+    public void setOutputVariables(String outputVariables) {
+        this.outputVariables = outputVariables;
     }
 
-    private static boolean doSanityChecks() throws IOException {
+    public String getInitialEvents() {
+        return initialEvents;
+    }
+
+    public void setInitialEvents(String initialEvents) {
+        this.initialEvents = initialEvents;
+    }
+
+    public String getInitialVariables() {
+        return initialVariables;
+    }
+
+    public void setInitialVariables(String initialVariables) {
+        this.initialVariables = initialVariables;
+    }
+
+    private static OutputStream os;
+
+    public String getInputFileName() {
+        return inputFileName;
+    }
+
+    public void setInputFileName(String inputFileName) {
+        this.inputFileName = inputFileName;
+    }
+
+    public boolean isGenerateNegativeScenarios() {
+        return generateNegativeScenarios;
+    }
+
+    public void setGenerateNegativeScenarios(boolean generateNegativeScenarios) {
+        this.generateNegativeScenarios = generateNegativeScenarios;
+    }
+
+    public int getLengthOfScenario() {
+        return lengthOfScenario;
+    }
+
+    public void setLengthOfScenario(int lengthOfScenario) {
+        this.lengthOfScenario = lengthOfScenario;
+    }
+
+    public int getMaxEventReps() {
+        return maxEventReps;
+    }
+
+    public void setMaxEventReps(int maxEventReps) {
+        this.maxEventReps = maxEventReps;
+    }
+
+    public int getMaxScenarios() {
+        return maxScenarios;
+    }
+
+    public void setMaxScenarios(int maxScenarios) {
+        this.maxScenarios = maxScenarios;
+    }
+
+    public OutputStream getOutputStream() {
+        return ChartExec.os;
+    }
+
+    private boolean doSanityChecks() throws IOException {
+        if (outputVariables == null) {
+            throw new IOException("Cannot continuw with outputVariables=null");
+        }
+
         if (inputFileName == null) {
-            log.error("Error:, input file cannot be null");
-            return false;
+            throw new IOException("Error:, input file cannot be null");
         }
 
         if (!(new File(inputFileName)).exists()) {
-            log.error("Error:, input file does not exist");
-            return false;
+            throw new IOException("Error:, input file does not exist");
         }
 
         // Parse the initial events
@@ -239,7 +210,7 @@ public class ChartExec {
      *
      * @throws ModelException
      */
-    private static void resetStateMachine() throws ModelException {
+    private void resetStateMachine() throws ModelException {
         // Go to the initial state
         executor.reset();
 
@@ -265,7 +236,7 @@ public class ChartExec {
      * @param commaSeparatedEvents
      * @throws ModelException
      */
-    private static void fireEvents(String commaSeparatedEvents) throws ModelException {
+    private void fireEvents(String commaSeparatedEvents) throws ModelException {
         if (commaSeparatedEvents == null) {
             return;
         }
@@ -287,7 +258,7 @@ public class ChartExec {
         }
     }
 
-    private static void fireEvents(ArrayList<String> events) throws ModelException {
+    private void fireEvents(ArrayList<String> events) throws ModelException {
         if (events == null) {
             return;
         }
@@ -304,15 +275,16 @@ public class ChartExec {
         }
     }
 
-    private static HashSet<String> extractOutputVariables(String filePathName) throws IOException {
+    private HashSet<String> extractOutputVariables(String filePathName) throws IOException {
         log.info("Extracting variables from file: " + filePathName);
-        List<String> lines = FileUtils.readLines(new File(filePathName));
-        HashSet<String> outputVars = new HashSet<>();
-        for (String line : lines) {
+        List<String> linesRead = FileUtils.readLines(new File(filePathName));
+        HashSet<String> outputVars = new HashSet<String>();
+        for (String line : linesRead) {
             if (line.contains("var_out")) {
                 int startIndex = line.indexOf("var_out");
                 int lastIndex = startIndex;
                 while (lastIndex < line.length() && (Character.isAlphabetic(line.charAt(lastIndex))
+                        || Character.isDigit(line.charAt(lastIndex))
                         || line.charAt(lastIndex) == '_'
                         || line.charAt(lastIndex) == '-')) {
                     lastIndex++;
@@ -329,7 +301,8 @@ public class ChartExec {
         return outputVars;
     }
 
-    private static void process() throws Exception {
+    public void process() throws Exception {
+        doSanityChecks();
         // Load the state machine
         String absolutePath = (new File(inputFileName)).getAbsolutePath();
         log.info("Processing file:" + absolutePath);
@@ -348,7 +321,7 @@ public class ChartExec {
         searchForScenariosDFS();
     }
 
-    private static void findEvents(ArrayList<String> positive, ArrayList<String> negative) throws ModelException,
+    private void findEvents(ArrayList<String> positive, ArrayList<String> negative) throws ModelException,
             SCXMLExpressionException, IOException {
         positive.clear();
         negative.clear();
@@ -377,27 +350,21 @@ public class ChartExec {
             if (condition == null) {
                 positive.add(transitionCode);
             } else {
-                Object result = elEvaluator.eval(context, condition);
+                Boolean result = (Boolean) elEvaluator.eval(context, condition);
                 if (result == null) {
                     throw new ModelException("Condition: " + condition + " evaluates to null");
                 }
-                String boolRes = result.toString().toLowerCase();
-                switch (boolRes) {
-                    case "true":
-                        positive.add(transitionCode);
-                        break;
-                    case "false":
-                        negative.add(transitionCode);
-                        break;
-                    default:
-                        throw new ModelException("Got result: " + boolRes + " while evaluating condition: " + condition
-                                + " for event " + transition.getEvent());
+
+                if (result) {
+                    positive.add(transitionCode);
+                } else {
+                    negative.add(transitionCode);
                 }
             }
         }
     }
 
-    private static void printEvents(String type, ArrayList<String> events) {
+    private void printEvents(String type, ArrayList<String> events) {
         StringBuilder b = new StringBuilder();
         b.append(type);
 
@@ -418,6 +385,7 @@ public class ChartExec {
         }
 
         log.info(b);
+
     }
 
     /**
@@ -437,7 +405,7 @@ public class ChartExec {
         /**
          * The variables that need to be set before jumping to that state
          */
-        final HashMap<String, String> variablesAssignment = new HashMap<>();
+        final HashMap<String, String> variablesAssignment = new HashMap<String, String>();
 
         @Override
         public String toString() {
@@ -451,10 +419,10 @@ public class ChartExec {
      *
      * @param possiblePositiveStates
      */
-    private static ArrayList<PossibleState> findPossibleStates() throws ModelException, SCXMLExpressionException, IOException {
-        ArrayList<PossibleState> possiblePositiveStates = new ArrayList<>();
-        ArrayList<String> positive = new ArrayList<>();
-        ArrayList<String> negative = new ArrayList<>();
+    private ArrayList<PossibleState> findPossibleStates() throws ModelException, SCXMLExpressionException, IOException {
+        ArrayList<PossibleState> possiblePositiveStates = new ArrayList<PossibleState>();
+        ArrayList<String> positive = new ArrayList<String>();
+        ArrayList<String> negative = new ArrayList<String>();
         findEvents(positive, negative);
         for (String state : positive) {
             PossibleState possibleState = new PossibleState();
@@ -467,67 +435,14 @@ public class ChartExec {
     }
 
     private static HashMap<String, String> readVarsOut() {
-        HashMap<String, String> result = new HashMap<>();
+        HashMap<String, String> result = new HashMap<String, String>();
         for (String varName : varsOut) {
             result.put(varName, (String) context.get(varName));
         }
         return result;
     }
 
-    private final static AtomicLong nextInt = new AtomicLong(0);
-
-    private static void produceOutput() {
-        String[] outTemplate = new String[]{
-            "var_out_RECORD_TYPE",
-            "var_out_MANIFEST_GENERATION_DATETIME",
-            "var_out_ACCOUNT_NUMBER",
-            "var_out_ACCOUNT_CLASSIFICATION_CODE",
-            "var_out_ACCOUNT_REGISTRATION_CODE",
-            "var_out_PIGGYBACK_ARRANGEMENT_FLAG",
-            "var_out_PIGGYBACK_ARRANGEMENT_FIRM_CRD_NUMBER",
-            "var_out_OPTION_LEVEL_CODE",
-            "var_out_INTERNAL_REPORTING_FIRM_IDENTIFIER",
-            "var_out_FIRM_CRD_NUMBER",
-            "var_out_INTERNAL_REPORTING_BRANCH_IDENTIFIER",
-            "var_out_ACCOUNT_TITLE",
-            "var_out_ACCOUNT_OPEN_DATE",
-            "var_out_EMPLOYEE_ACCOUNT_FLAG",
-            "var_out_MARGIN_ACCOUNT_FLAG",
-            "var_out_SELF_DIRECTED_ACCOUNT_FLAG",
-            "var_out_REGISTERED_REP_INVESTMENT_ADVISER_DISCRETIONARY_ACCOUNT_FLAG",
-            "var_out_CUSTOMER_ACCOUNT_FLAG",
-            "var_out_COMMISSION_BASED_ACCOUNT_FLAG",
-            "var_out_FEE_BASED_ACCOUNT_FLAG",
-            "var_out_DAY_TRADE_REQUIREMENT_METHOD_CALCULATION_CODE",
-            "var_out_DAY_TRADE_CALCULATION_METHOD_CODE",
-            "var_out_PATTERN_DAY_TRADER_CODE",
-            "var_out_DAY_TRADE_REQUIREMENT_METHOD_CALCULATION_CODE",
-            "var_out_DAY_TRADE_CALCULATION_METHOD_CODE",
-            "var_out_PATTERN_DAY_TRADER_CODE",
-            "var_out_ACCOUNT_SERVICES_BY_REP_GROUP_FLAG",
-            "var_out_ACCOUNT_INVESTMENT_HORIZON",
-            "var_out_ACCOUNT_INVESTMENT_HORIZON",
-            "var_out_ACCOUNT_RISK_TOLERANCE_DESCRIPTION",
-            "var_out_HOUSEHOLD_ACCOUNT_NUMBER",
-            "var_out_THIRD_PARTY_DISCRETIONARY_AUTHORITY_NAME"};
-        StringBuilder b = new StringBuilder();
-        for (String var : outTemplate) {
-            if (b.length() > 0) {
-                b.append("|");
-            }
-            String val = context.get(var).toString();
-            switch (val) {
-                case "#{nextint}":
-                    b.append(nextInt.incrementAndGet());
-                    break;
-                default:
-                    b.append(val);
-            }
-        }
-        System.out.println(b.toString());
-    }
-
-    private static void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList) throws ModelException, IOException, SCXMLExpressionException {
+    private void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList) throws ModelException, IOException, SCXMLExpressionException {
         resetStateMachine();
         while (listener.getCurrentState() == null
                 || (listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end"))) {
@@ -543,7 +458,11 @@ public class ChartExec {
                 if (!initialState.varsInspected) {
                     varsVals = readVarsOut();
                 }
-                executor.triggerEvent(new TriggerEvent(initialState.transitionEvent, TriggerEvent.SIGNAL_EVENT));
+                try {
+                    executor.triggerEvent(new TriggerEvent(initialState.transitionEvent, TriggerEvent.SIGNAL_EVENT));
+                } catch (Exception e) {
+                    throw new IOException("Exception while triggering transition event " + initialState.transitionEvent, e);
+                }
                 if (!initialState.varsInspected) {
                     nextVarsVals = readVarsOut();
                     if (varsVals == null || nextVarsVals == null) {
@@ -599,11 +518,11 @@ public class ChartExec {
      * @throws SCXMLExpressionException
      * @throws IOException
      */
-    private static void searchForScenariosDFS() throws ModelException, SCXMLExpressionException, IOException {
+    private void searchForScenariosDFS() throws ModelException, SCXMLExpressionException, IOException {
         log.info("Search for scenarios using depth first search");
-        ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList = new ArrayList<>();
-        ArrayList<String> currentStates = new ArrayList<>();
-        ArrayList<Integer> activePostiveState = new ArrayList<>();
+        ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList = new ArrayList<ArrayList<PossibleState>>();
+        ArrayList<String> currentStates = new ArrayList<String>();
+        ArrayList<Integer> activePostiveState = new ArrayList<Integer>();
 
         // First we have to generate the first level in the depth, so that we have something to start
         // the recursion from
@@ -644,7 +563,7 @@ public class ChartExec {
         }
     }
 
-    private static void searchForScenarios() throws ModelException, SCXMLExpressionException, IOException {
+    private void searchForScenarios() throws ModelException, SCXMLExpressionException, IOException {
         ArrayDeque<ArrayList<String>> stack = new ArrayDeque<>();
         int numberOfScenariosGenerated = 0;
 
@@ -724,9 +643,9 @@ public class ChartExec {
      * @param eventList
      * @return
      */
-    private static ArrayList<String> pruneEvents(ArrayList<String> eventList) {
+    private ArrayList<String> pruneEvents(ArrayList<String> eventList) {
         // Count the number of repetitions of every event
-        ArrayList<String> all = new ArrayList<>();
+        ArrayList<String> all = new ArrayList<String>();
         all.addAll(initialEventsList);
         all.addAll(eventList);
 
@@ -747,17 +666,5 @@ public class ChartExec {
             }
         }
         return eventList;
-    }
-
-    public static void main(String args[]) throws Exception {
-        Logger.getLogger("org.apache").setLevel(Level.WARN);
-        LogInitializer.initialize();
-        parseCommandLine(args);
-        System.out.println("Loglevel " + SystemProperties.logLevel);
-        System.out.println("Loggerlevel " + log.getLevel());
-
-        if (doSanityChecks()) {
-            process();
-        }
     }
 }

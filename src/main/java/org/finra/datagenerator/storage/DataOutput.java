@@ -14,12 +14,21 @@
  * limitations under the License.
  *
  */
-package org.finra.datagenerator.input;
+package org.finra.datagenerator.storage;
 
-import java.io.File;
-import java.util.Collection;
+import java.io.IOException;
 
-public interface BranchGraphReader {
-
-    public BranchGraph readBranchGraphFromFiles(Collection<File> files);
+/**
+ * Interface to allow genericizing data output to be used via a factory
+ * @author Meles
+ *
+ */
+public interface DataOutput {
+	/**
+	 * Outputs data to a specific source
+	 * @param arr - 2-D byte array that writes to file in a line-by-line manner
+	 * @throws IOException
+	 */
+	public void outputData(byte[][] arr) throws IOException;
+	
 }
