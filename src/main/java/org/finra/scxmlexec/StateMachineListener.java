@@ -1,7 +1,6 @@
 package org.finra.scxmlexec;
 
 import java.util.ArrayList;
-
 import org.apache.commons.scxml.SCXMLListener;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
@@ -15,9 +14,12 @@ public class StateMachineListener implements SCXMLListener {
     private TransitionTarget lastState = null;
     private Transition lastTransition = null;
     private static final Logger log = Logger.getLogger(StateMachineListener.class);
+    private static boolean isDebugEnabled = false;
 
     public void reset() {
-        log.debug("RESET");
+        if (isDebugEnabled) {
+            log.debug("RESET");
+        }
         states.clear();
         transitions.clear();
         currentState = null;
@@ -47,21 +49,27 @@ public class StateMachineListener implements SCXMLListener {
 
     @Override
     public void onEntry(TransitionTarget state) {
-        log.debug("Entering state:" + state.getId());
+        if (isDebugEnabled) {
+            log.debug("Entering state:" + state.getId());
+        }
         currentState = state;
         states.add(state);
     }
 
     @Override
     public void onExit(TransitionTarget state) {
-        log.debug("Exiting state:" + state.getId());
+        if (isDebugEnabled) {
+            log.debug("Exiting state:" + state.getId());
+        }
         lastState = state;
     }
 
     @Override
     public void onTransition(TransitionTarget from, TransitionTarget to, Transition transition) {
-        log.debug("Transitioning between:" + from.getId() + " and " + to.getId() + " using event "
-                + transition.getEvent());
+        if (isDebugEnabled) {
+            log.debug("Transitioning between:" + from.getId() + " and " + to.getId() + " using event "
+                    + transition.getEvent());
+        }
         lastTransition = transition;
         transitions.add(transition);
     }

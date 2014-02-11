@@ -10,7 +10,6 @@ import org.finra.datagenerator.SystemProperties;
 
 public class LogInitializer {
 
-    private final static Logger log = Logger.getLogger(LogInitializer.class);
     private static final AtomicBoolean init = new AtomicBoolean(false);
 
     public static void initialize(String loggerLevel) {
@@ -27,7 +26,7 @@ public class LogInitializer {
         String logLevel;
 
         if (loggerLevel != null) {
-            logLevel = loggerLevel;
+            logLevel = loggerLevel.toLowerCase();
         } else {
             logLevel = SystemProperties.logLevel.toLowerCase();
         }
@@ -54,7 +53,6 @@ public class LogInitializer {
 
         Logger.getLogger("org.finra").setLevel(level);
 
-        System.err.println(
-                "Set loglevel to " + level.toString());
+        System.err.println("Set loglevel to " + level.toString());
     }
 }

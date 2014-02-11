@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 mosama.
+ * Copyright 2014 FINRA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.finra.scxmlexec;
 
-import org.apache.commons.scxml.Context;
+import java.util.HashMap;
 
 /**
  *
  * @author mosama
  */
-public interface Translator {
+public interface DataConsumer {
 
-    public void translate(Context context);
+    public void consume(HashMap<String, String> row);
 }

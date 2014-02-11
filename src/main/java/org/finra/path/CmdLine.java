@@ -38,7 +38,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.scxml.model.SCXML;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -47,17 +46,16 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.util.ReflectionUtils;
+import org.apache.hadoop.util.Tool;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.SystemProperties;
 
 /**
  *
  * @author mosama
  */
-public class CmdLine {
+public class CmdLine implements Tool {
 
-    private static final Logger log = Logger.getLogger(CmdLine.class);
     private static final int BUFFER_SIZE = 1024 * 1024;
     private static SequenceFile.Writer writer = null;
     private OutputStream os = null;
@@ -183,7 +181,7 @@ public class CmdLine {
             if (StringUtils.isNotEmpty(stringValue)) {
                 chartExec.setMaxEventReps(Integer.valueOf(stringValue));
             } else {
-                log.error("Unparsable numeric value for option 'r':" + stringValue);
+                System.err.println("Unparsable numeric value for option 'r':" + stringValue);
             }
         }
 
@@ -192,7 +190,7 @@ public class CmdLine {
             if (StringUtils.isNotEmpty(stringValue)) {
                 chartExec.setMaxScenarios(Integer.valueOf(stringValue));
             } else {
-                log.error("Unparsable numeric value for option 's':" + stringValue);
+                System.err.println("Unparsable numeric value for option 's':" + stringValue);
             }
         }
 
@@ -207,16 +205,14 @@ public class CmdLine {
 //        File output = new File("/home/mosama/dataoutput");
 //        OutputStream myos = new BufferedOutputStream(new FileOutputStream(output));
         // Load the SCXML class
-        SCXML scxml = new SCXML();
 
         try {
             Logger.getLogger("org.apache").setLevel(Level.WARN);
             ChartExec chartExec = parseCommandLine(args);
             //chartExec.setOs(myos);
-            System.err.println("Loglevel " + SystemProperties.logLevel);
-            System.err.println("Loggerlevel " + log.getLevel());
 
             chartExec.process();
+            chartExec.close();
         } finally {
             //          myos.close();
         }
@@ -224,5 +220,20 @@ public class CmdLine {
         if (writer != null) {
             writer.close();
         }
+    }
+
+    @Override
+    public int run(String[] strings) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setConf(Configuration c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Configuration getConf() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
