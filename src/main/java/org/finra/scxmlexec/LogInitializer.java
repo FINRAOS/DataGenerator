@@ -1,10 +1,8 @@
 package org.finra.scxmlexec;
 
-import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -15,23 +13,24 @@ public class LogInitializer {
     private final static Logger log = Logger.getLogger(LogInitializer.class);
     private static final AtomicBoolean init = new AtomicBoolean(false);
 
-    public static void initialize() {
+    public static void initialize(String loggerLevel) {
         if (!init.compareAndSet(false, true)) {
             return;
         }
 
-        BasicConfigurator.configure();
-
-        @SuppressWarnings("unchecked")
-        Enumeration<Appender> appenders = (Enumeration<Appender>) Logger.getRootLogger().getAllAppenders();
-        while (appenders.hasMoreElements()) {
-            Appender appender = (Appender) appenders.nextElement();
-            appender.setLayout(new PatternLayout("<%d{yyMMdd HHmmss} %5p %C{1}:%L> %m%n"));
-        }
+        ConsoleAppender consoleAppender = new ConsoleAppender(
+                new PatternLayout("<%d{yyMMdd HHmmss} %5p %C{1}:%L> %m%n"), ConsoleAppender.SYSTEM_ERR);
+        BasicConfigurator.configure(consoleAppender);
 
         Level level;
 
-        String logLevel = SystemProperties.logLevel.toLowerCase();
+        String logLevel;
+
+        if (loggerLevel != null) {
+            logLevel = loggerLevel;
+        } else {
+            logLevel = SystemProperties.logLevel.toLowerCase();
+        }
 
         if (logLevel.equals("all")) {
             level = Level.ALL;
@@ -53,10 +52,9 @@ public class LogInitializer {
             level = Level.WARN;
         }
 
-        Logger.getLogger(
-                "org.finra").setLevel(level);
+        Logger.getLogger("org.finra").setLevel(level);
 
-        System.out.println(
+        System.err.println(
                 "Set loglevel to " + level.toString());
     }
 }

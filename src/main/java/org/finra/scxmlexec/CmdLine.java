@@ -29,9 +29,6 @@
  */
 package org.finra.scxmlexec;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import org.apache.commons.cli.CommandLine;
@@ -41,10 +38,18 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.scxml.model.SCXML;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.SystemProperties;
-import static org.finra.scxmlexec.ChartExec.parseCommandLine;
 
 /**
  *
@@ -53,6 +58,33 @@ import static org.finra.scxmlexec.ChartExec.parseCommandLine;
 public class CmdLine {
 
     private static final Logger log = Logger.getLogger(CmdLine.class);
+    private static final int BUFFER_SIZE = 1024 * 1024;
+    private static SequenceFile.Writer writer = null;
+    private OutputStream os = null;
+
+    private static SequenceFile.Writer getSequenceFileWriter(String fileOutPath) throws Exception {
+        Configuration configuration = new Configuration();
+        Path hdfsOutPath = new Path(fileOutPath);
+        FileSystem fileSystem = FileSystem.get(configuration);
+        String codecClassName = System.getProperty("codecClassName", "org.apache.hadoop.io.compress.SnappyCodec");
+        Class<?> codecClass = Class.forName(codecClassName);
+        CompressionCodec compressionCodec = (CompressionCodec) ReflectionUtils.newInstance(codecClass, configuration);
+        long blocksize = configuration.getLong("dfs.blocksize", 64000000);
+        short replication = (short) configuration.getInt("dfs.replication", 3);
+        return SequenceFile.createWriter(fileSystem,
+                configuration,
+                hdfsOutPath,
+                LongWritable.class,
+                Text.class,
+                BUFFER_SIZE,
+                replication,
+                blocksize,
+                SequenceFile.CompressionType.BLOCK,
+                compressionCodec,
+                null,
+                new SequenceFile.Metadata());
+
+    }
 
     /**
      * Prints the help on the command line
@@ -79,7 +111,7 @@ public class CmdLine {
         }
     }
 
-    public static ChartExec parseCommandLine(String args[]) throws ParseException {
+    public static ChartExec parseCommandLine(String args[]) throws ParseException, Exception {
         // create the command line parser
         CommandLineParser parser = new GnuParser();
 
@@ -91,12 +123,16 @@ public class CmdLine {
                         "comma separated list of the initial variables and their values in the form of var1=val1,var2=val2")
                 .addOption("e", "initalevents", true,
                         "a comma separated list of the initial set of events to trigger before searching for scenarios")
-                .addOption("l", "lengthofscenario", true,
-                        "the number of events to trigger searching for scenarios, default is 5")
+                .addOption("o", "stdout", false,
+                        "write the output to the stdout")
                 .addOption("V", "generatenegative", false,
                         "generate all negative transitions in addition to the positive ones")
                 .addOption("r", "eventreps", true,
                         "the number of times a specific event is allowed to repeat in a scenario. The default is 1")
+                .addOption("H", "hdfssequencefile", true,
+                        "the path of the hdfs sequence file to write to")
+                .addOption("L", "loglevel", true,
+                        "set the log level")
                 .addOption("s", "maxscenarios", true,
                         "Maximum number of scenarios to generate. Default 10,000");
 
@@ -106,6 +142,10 @@ public class CmdLine {
 
         if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
             printHelp(options);
+        }
+
+        if (cmd.hasOption("o")) {
+            chartExec.setOs(System.out);
         }
 
         if (cmd.hasOption("i")) {
@@ -120,13 +160,22 @@ public class CmdLine {
             chartExec.setInitialEvents(cmd.getOptionValue('e'));
         }
 
-        if (cmd.hasOption('l')) {
-            String stringValue = cmd.getOptionValue('l');
-            if (StringUtils.isNotEmpty(stringValue)) {
-                chartExec.setLengthOfScenario(Integer.valueOf(stringValue));
-            } else {
-                log.error("Unparsable numeric value for option 'l':" + stringValue);
-            }
+        if (cmd.hasOption("H")) {
+            String sequenceFile = cmd.getOptionValue('H');
+
+            chartExec.setSequenceFileWriter(writer = getSequenceFileWriter(sequenceFile));
+        }
+
+        /*        if (cmd.hasOption('l')) {
+         String stringValue = cmd.getOptionValue('l');
+         if (StringUtils.isNotEmpty(stringValue)) {
+         chartExec.setLengthOfScenario(Integer.valueOf(stringValue));
+         } else {
+         log.error("Unparsable numeric value for option 'l':" + stringValue);
+         }
+         }*/
+        if (cmd.hasOption('L')) {
+            LogInitializer.initialize(cmd.getOptionValue('L'));
         }
 
         if (cmd.hasOption('r')) {
@@ -155,19 +204,25 @@ public class CmdLine {
     }
 
     public static void main(String args[]) throws Exception {
-        File output = new File("/home/mosama/dataoutput");
-        OutputStream myos = new BufferedOutputStream(new FileOutputStream(output));
+//        File output = new File("/home/mosama/dataoutput");
+//        OutputStream myos = new BufferedOutputStream(new FileOutputStream(output));
+        // Load the SCXML class
+        SCXML scxml = new SCXML();
+
         try {
-            os = myos;
             Logger.getLogger("org.apache").setLevel(Level.WARN);
-            LogInitializer.initialize();
             ChartExec chartExec = parseCommandLine(args);
-            System.out.println("Loglevel " + SystemProperties.logLevel);
-            System.out.println("Loggerlevel " + log.getLevel());
+            //chartExec.setOs(myos);
+            System.err.println("Loglevel " + SystemProperties.logLevel);
+            System.err.println("Loggerlevel " + log.getLevel());
 
             chartExec.process();
         } finally {
-            myos.close();
+            //          myos.close();
+        }
+
+        if (writer != null) {
+            writer.close();
         }
     }
 }

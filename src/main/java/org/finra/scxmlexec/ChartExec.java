@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.scxml.Context;
@@ -25,6 +29,9 @@ import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 
 public class ChartExec {
@@ -120,10 +127,28 @@ public class ChartExec {
         this.initialVariables = initialVariables;
     }
 
-    private static OutputStream os;
+    private OutputStream os = null;
+
+    public OutputStream getOs() {
+        return os;
+    }
+
+    public void setOs(OutputStream os) {
+        this.os = os;
+    }
 
     public String getInputFileName() {
         return inputFileName;
+    }
+
+    private SequenceFile.Writer sequenceFileWriter = null;
+
+    public SequenceFile.Writer getSequenceFileWriter() {
+        return sequenceFileWriter;
+    }
+
+    public void setSequenceFileWriter(SequenceFile.Writer sequenceFileWriter) {
+        this.sequenceFileWriter = sequenceFileWriter;
     }
 
     public void setInputFileName(String inputFileName) {
@@ -162,14 +187,10 @@ public class ChartExec {
         this.maxScenarios = maxScenarios;
     }
 
-    public OutputStream getOutputStream() {
-        return ChartExec.os;
-    }
-
     private boolean doSanityChecks() throws IOException {
-        if (outputVariables == null) {
-            throw new IOException("Cannot continuw with outputVariables=null");
-        }
+        /*        if (outputVariables == null) {
+         throw new IOException("Cannot continuw with outputVariables=null");
+         }*/
 
         if (inputFileName == null) {
             throw new IOException("Error:, input file cannot be null");
@@ -283,7 +304,7 @@ public class ChartExec {
             if (line.contains("var_out")) {
                 int startIndex = line.indexOf("var_out");
                 int lastIndex = startIndex;
-                while (lastIndex < line.length() && (Character.isAlphabetic(line.charAt(lastIndex))
+                while (lastIndex < line.length() && (Character.isLetter(line.charAt(lastIndex))
                         || Character.isDigit(line.charAt(lastIndex))
                         || line.charAt(lastIndex) == '_'
                         || line.charAt(lastIndex) == '-')) {
@@ -511,6 +532,504 @@ public class ChartExec {
         possiblePositiveStatesList.remove(possiblePositiveStatesList.size() - 1);
     }
 
+    private final AtomicLong nextInt = new AtomicLong(0);
+
+    private final String[] words = new String[]{
+        "O'Rielly", "节日快乐", "bonnes fêtes", "חג שמח", "καλές διακοπές", "خوش تعطیلات", "खुश छुट्टियाँ"};
+    // \uFFFE
+    private final Random random = new Random(System.currentTimeMillis());
+    private final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    private final SimpleDateFormat mfformat = new SimpleDateFormat("yyyyMMddHHmmssSS");
+    private final SimpleDateFormat timeformat = new SimpleDateFormat("HHmmssSS");
+    private long lines = 0;
+    private long bytes = 0;
+    private long manifestTimeMs = System.currentTimeMillis() - 1000 * 24 * 3600;
+
+    private final String[] currencyCodes = {
+        "AFG",
+        "ALA",
+        "ALB",
+        "DZA",
+        "ASM",
+        "AND",
+        "AGO",
+        "AIA",
+        "ATA",
+        "ATG",
+        "ARG",
+        "ARM",
+        "ABW",
+        "AUS",
+        "AUT",
+        "AZE",
+        "BHS",
+        "BHR",
+        "BGD",
+        "BRB",
+        "BLR",
+        "BEL",
+        "BLZ",
+        "BEN",
+        "BMU",
+        "BTN",
+        "BOL",
+        "BES",
+        "BIH",
+        "BWA",
+        "BVT",
+        "BRA",
+        "IOT",
+        "BRN",
+        "BGR",
+        "BFA",
+        "BDI",
+        "KHM",
+        "CMR",
+        "CAN",
+        "CPV",
+        "CYM",
+        "CAF",
+        "TCD",
+        "CHL",
+        "CHN",
+        "CXR",
+        "CCK",
+        "COL",
+        "COM",
+        "COG",
+        "COD",
+        "COK",
+        "CRI",
+        "CIV",
+        "HRV",
+        "CUB",
+        "CUW",
+        "CYP",
+        "CZE",
+        "DNK",
+        "DJI",
+        "DMA",
+        "DOM",
+        "ECU",
+        "EGY",
+        "SLV",
+        "GNQ",
+        "ERI",
+        "EST",
+        "ETH",
+        "FRO",
+        "FLK",
+        "FJI",
+        "FIN",
+        "FRA",
+        "GUF",
+        "PYF",
+        "ATF",
+        "GAB",
+        "GMB",
+        "GEO",
+        "DEU",
+        "GHA",
+        "GIB",
+        "GBR",
+        "GRC",
+        "GRL",
+        "GRD",
+        "GLP",
+        "GUM",
+        "GTM",
+        "GGY",
+        "GIN",
+        "GNB",
+        "GUY",
+        "HTI",
+        "HMD",
+        "HND",
+        "HKG",
+        "HUN",
+        "ISL",
+        "IND",
+        "IDN",
+        "IRN",
+        "IRQ",
+        "IRL",
+        "IMN",
+        "ISR",
+        "ITA",
+        "JAM",
+        "JPN",
+        "JEY",
+        "JOR",
+        "KAZ",
+        "KEN",
+        "KIR",
+        "PRK",
+        "KOR",
+        "KWT",
+        "KGZ",
+        "LAO",
+        "LVA",
+        "LBN",
+        "LSO",
+        "LBR",
+        "LBY",
+        "LIE",
+        "LTU",
+        "LUX",
+        "MAC",
+        "MKD",
+        "MDG",
+        "MWI",
+        "MYS",
+        "MDV",
+        "MLI",
+        "MLT",
+        "MHL",
+        "MTQ",
+        "MRT",
+        "MUS",
+        "MYT",
+        "MEX",
+        "FSM",
+        "MDA",
+        "MCO",
+        "MNG",
+        "MNE",
+        "MSR",
+        "MAR",
+        "MOZ",
+        "MMR",
+        "NAM",
+        "NRU",
+        "NPL",
+        "NLD",
+        "ANT",
+        "NCL",
+        "NZL",
+        "NIC",
+        "NER",
+        "NGA",
+        "NIU",
+        "NFK",
+        "MNP",
+        "NOR",
+        "OMN",
+        "PAK",
+        "PLW",
+        "PSE",
+        "PAN",
+        "PNG",
+        "PRY",
+        "PER",
+        "PHL",
+        "PCN",
+        "POL",
+        "PRT",
+        "PRI",
+        "QAT",
+        "REU",
+        "ROU",
+        "RUS",
+        "RWA",
+        "BLM",
+        "SHN",
+        "KNA",
+        "LCA",
+        "MAF",
+        "SPM",
+        "VCT",
+        "WSM",
+        "SMR",
+        "STP",
+        "SAU",
+        "SEN",
+        "SRB",
+        "SYC",
+        "SLE",
+        "SGP",
+        "SXM",
+        "SVK",
+        "SVN",
+        "SLB",
+        "SOM",
+        "ZAF",
+        "SGS",
+        "SSD",
+        "ESP",
+        "LKA",
+        "SDN",
+        "SUR",
+        "SJM",
+        "SWZ",
+        "SWE",
+        "CHE",
+        "SYR",
+        "TWN",
+        "TJK",
+        "TZA",
+        "THA",
+        "TLS",
+        "TGO",
+        "TKL",
+        "TON",
+        "TTO",
+        "TUN",
+        "TUR",
+        "TKM",
+        "TCA",
+        "TUV",
+        "UGA",
+        "UKR",
+        "ARE",
+        "GBR",
+        "USA",
+        "UMI",
+        "URY",
+        "UZB",
+        "VUT",
+        "VAT",
+        "VEN",
+        "VNM",
+        "VGB",
+        "VIR",
+        "WLF",
+        "ESH",
+        "YEM",
+        "ZMB",
+        "ZWE",};
+    int nextCurrencyCode = 0;
+
+    private final String[] productCodes = new String[]{
+        "Equity- Private Placements/IPO",
+        "Equity-Stock",
+        "Equity-Foreign",
+        "Fixed Income-Agency",
+        "Fixed Income-Corporate",
+        "Fixed Income-Government Securities",
+        "Fixed Income-Municipal",
+        "Fixed Income-Negotiable CDs",
+        "Fixed Income-Private Placements",
+        "Securitized Debt Instruments-Asset Backed Securities",
+        "Securitized Debt Instruments-Mortgage Backed Securities",
+        "Derivatives-Foreign Exchange",
+        "Derivatives-Forwards",
+        "Derivatives-Futures",
+        "Derivatives-Options",
+        "Derivatives-Rights",
+        "Derivatives-Swaps",
+        "Derivatives-Warrants",
+        "Variable Products-Systematic Investment Plans",
+        "Variable Products-Variable Annuities",
+        "Variable Products-Variable Life Insurance",
+        "Investment Company Products-Auction Rate Securities",
+        "Investment Company Products-Closed -End Mutual Funds",
+        "Investment Company Products-Exchange Traded Funds",
+        "Investment Company Products-Open-End Mutual Funds",
+        "Investment Company Products-Unit Investment Trusts",
+        "Alternative Investments-Structured Products",};
+    int nextProductCode = 0;
+
+    private void produceOutput() throws IOException {
+        String[] outTemplate = new String[]{
+            /*  1 */"var_out_RECORD_TYPE",
+            /*  3 */ "var_out_MANIFEST_GENERATION_DATETIME",
+            /*  4 */ "var_out_ACCOUNT_NUMBER",
+            /*  5 */ "var_out_TRADE_DATE",
+            /*  6 */ "var_out_POSITION_TYPE_CODE",
+            /*  7 */ "var_out_SECURITY_SYMBOL",
+            /*  8 */ "var_out_OPTIONS_SYMBOLOGY_IDENTIFIER",
+            /*  9 */ "var_out_CUSIP_IDENTIFIER",
+            /* 10 */ "var_out_SEDOL_IDENTIFIER",
+            /* 11 */ "var_out_ISIN_IDENTIFIER",
+            /* 13 */ "var_out_INTERNAL_SECURITY_IDENTIFIER",
+            /* 14 */ "var_out_PRODUCT_TYPE_CODE",
+            /* 15 */ "var_out_BUY_SELL_TRANSACTION_CODE",
+            /* 16 */ "var_out_OPTION_OPEN_CLOSE_INDICATOR",
+            /* 17 */ "var_out_FIRM_CRD_NUMBER",
+            /* 18 */ "var_out_INTERNAL_REPORTING_FIRM_IDENTIFIER",
+            /* 19 */ "var_out_INTERNAL_REPORTING_BRANCH_IDENTIFIER",
+            /* 20 */ "var_out_ORDER_ENTRY_DATE",
+            /* 21 */ "var_out_EXECUTION_TIME",
+            /* 22 */ "var_out_ORDER_ENTRY_TIME",
+            /* 23 */ "var_out_TRANSACTION_QUANTITY",
+            /* 25 */ "var_out_DAY_TRADING_FLAG",
+            /* 26 */ "var_out_INTRA_DAY_HEDGE_CODE",
+            /* 27 */ "var_out_WHEN_ISSUED_TRADE_FLAG",
+            /* 28 */ "var_out_NET_AMOUNT",
+            /* 29 */ "var_out_SETTLEMENT_DATE",
+            /* 30 */ "var_out_EXECUTION_PRICE",
+            /* 31 */ "var_out_TRADE_AS_OF_DATE",
+            /* 32 */ "var_out_CURRENCY_TYPE_CODE",
+            /* 33 */ "var_out_PRINCIPAL_AMOUNT",
+            /* 34 */ "var_out_COMMISSION_AMOUNT",
+            /* 35 */ "var_out_ORDER_NUMBER",
+            /* 36 */ "var_out_ORDER_TRANSACTION_CODE",
+            /* 37 */ "var_out_SOLICITATION_TYPE_CODE",
+            /* 38 */ "var_out_TRANSACTION_CAPACITY_CODE",
+            /* 39 */ "var_out_COMMISSION_PRE_FIGURED_FLAG",
+            /* 40 */ "var_out_MARKUP_MARKDOWN_AMOUNT",
+            /* 41 */ "var_out_FEE_SECTION_31_TRANSACTION_FEE",
+            /* 42 */ "var_out_FEE_OPTION_REGULATORY_FEE",
+            /* 43 */ "var_out_FEE_SERVICE_CHARGE",
+            /* 44 */ "var_out_ACCOUNT_INVESTMENT_HORIZON_DESCRIPTION",
+            /* 45 */ "var_out_ACCOUNT_MARGIN_MAITENANCE_REQUIREMENT_PERCENTAGE",
+            /* 46 */ "var_out_AVERAGE_PRICE_TRANSACTION_FLAG",
+            /* 47 */ "var_out_CLEARING_FIRM_TRADE_REFERENCE_NUMBER",
+            /* 48 */ "var_out_CONTINGENT_DEFERRED_SALES_CHARGECONTINGENT_DEFERRED_SALES_CHARGE",
+            /* 49 */ "var_out_CONTRA_ACCOUNT_NUMBER",
+            /* 50 */ "var_out_CONTRA_CRD_NUMBER",
+            /* 51 */ "var_out_DISCRETIONARY_FLAG",
+            /* 52 */ "var_out_DIVIDENDS_REINVESTED_FLAG",
+            /* 53 */ "var_out_EXCHANGE_CODE",
+            /* 54 */ "var_out_FEE_OTHER",
+            /* 55 */ "var_out_LETTER_OF_INTENT_DATE",
+            /* 56 */ "var_out_LETTER_OF_INTENT_VALUE_AMOUNT",
+            /* 57 */ "var_out_MARGIN_CALL_REFERENCE_NUMBER",
+            /* 58 */ "var_out_MUTUAL_FUND_SHARE_CLASS",
+            /* 59 */ "var_out_ORDER_EXECUTION_SEQUENCE_NUMBER",
+            /* 60 */ "var_out_PS_REFERENCE_NUMBER",
+            /* 61 */ "var_out_PRIVATE_SECURITES_TRANSACTION_FLAG",
+            /* 62 */ "var_out_PUBLIC_OFFERING_PRICE",
+            /* 63 */ "var_out_RIGHTS_OF_ACCUMULATION_VALUE_AMOUNT",
+            /* 64 */ "var_out_SECURITY_DESCRIPTION",
+            /* 65 */ "var_out_TRADE_AWAY_STEP_OUT_FLAG",
+            /* 66 */ "var_out_MARGIN_SELL_OUT_FLAG",
+            /* 68 */ "var_out_REGISTERED_REP_INTERNAL_IDENTIFIER"
+        };
+
+        StringBuilder b = new StringBuilder();
+        for (String var : outTemplate) {
+            if (b.length() > 0) {
+                b.append("|");
+            }
+            Object varObj = context.get(var);
+            String val = "";
+            if (varObj != null) {
+                val = varObj.toString();
+            }
+
+            if (val.equals("#{genTransactionQuantity}")) {
+                val = "PFLOAT(2,2)";
+            }
+
+            if (val.equals("#{genNetAmount}")) {
+                val = "NUMBER(5,3)";
+            }
+
+            if (val.equals("#{genPrincipalAmount}")) {
+                val = "NUMBER(18,5)";
+            }
+
+            if (val.equals("#ProductTypeCode_Cycle")) {
+                String productCode = productCodes[(nextProductCode++) % productCodes.length];
+                b.append(productCode);
+            } else if (val.equals("#{genCurrencyCode}")) {
+                String currencyCode = currencyCodes[(nextCurrencyCode++) % currencyCodes.length];
+                b.append(currencyCode);
+            } else if (val.startsWith("ALPHA(")) {
+                int len = Integer.valueOf(val.substring(6, val.length() - 1));
+                while (len > 0) {
+                    int word = random.nextInt(words.length);
+                    int letter = random.nextInt(words[word].length());
+                    b.append(words[word].charAt(letter));
+                    len--;
+                }
+            } else if (val.startsWith("NUMBER(")) {
+                int wholeDigits;
+                int fractions = 0;
+
+                if (val.contains(",")) {
+                    wholeDigits = Integer.valueOf(val.substring(7, val.indexOf(",")));
+                    fractions = Integer.valueOf(val.substring(val.indexOf(",") + 1,
+                            val.length() - 1));
+                } else {
+                    wholeDigits = Integer.valueOf(val.substring(7, val.length() - 1));
+                }
+
+                if (wholeDigits > 2 && random.nextInt(1000) > 950) {
+                    b.append("-");
+                    wholeDigits--;
+                }
+
+                while (wholeDigits > 0) {
+                    b.append(random.nextInt(10));
+                    wholeDigits--;
+                }
+
+                if (fractions > 0) {
+                    b.append('.');
+                    while (fractions > 0) {
+                        b.append(random.nextInt(10));
+                        fractions--;
+                    }
+                }
+            } else if (val.startsWith("PFLOAT(")) {
+                int wholeDigits;
+                int fractions = 0;
+
+                if (val.contains(",")) {
+                    wholeDigits = Integer.valueOf(val.substring(7, val.indexOf(",")));
+                    fractions = Integer.valueOf(val.substring(val.indexOf(",") + 1,
+                            val.length() - 1));
+                } else {
+                    wholeDigits = Integer.valueOf(val.substring(7, val.length() - 1));
+                }
+
+                while (wholeDigits > 0) {
+                    b.append(random.nextInt(10));
+                    wholeDigits--;
+                }
+
+                if (fractions > 0) {
+                    b.append('.');
+                    while (fractions > 0) {
+                        b.append(random.nextInt(10));
+                        fractions--;
+                    }
+                }
+            } else if (val.equals("#{randomyyyymmddhhmmsscc}")) {
+                manifestTimeMs += random.nextInt(1000);
+                String dateyyyymmddhhsscc = mfformat.format(manifestTimeMs);
+                b.append(dateyyyymmddhhsscc);
+            } else if (val.equals("#{nextint}")) {
+                b.append(nextInt.incrementAndGet());
+            } else if (val.equals("#{randomwords}")) {
+                for (int i = 0; i != 3; i++) {
+                    b.append(words[random.nextInt(words.length)])
+                            .append(" ");
+                }
+            } else if (val.equals("#{randomyyyymmdd}")) {
+                long randTime = System.currentTimeMillis() - random.nextInt(1000) * 3600 * 24 * 365;
+                String dateyyyymmdd = format.format(new Date(randTime));
+                b.append(dateyyyymmdd);
+            } else if (val.equals("#{randomhhmmsscc}")) {
+                long randTime = System.currentTimeMillis() - random.nextInt(1000) * 3600 * 24 * 365;
+                String dateyyyymmdd = timeformat.format(new Date(randTime));
+                b.append(dateyyyymmdd);
+            } else {
+                b.append(val);
+            }
+        }
+
+        b.append("\n");
+        String data = b.toString();
+        bytes += data.getBytes().length;
+        if (os != null) {
+            os.write(data.getBytes());
+        }
+
+        if (sequenceFileWriter != null) {
+            LongWritable key = new LongWritable(lines);
+            Text text = new Text(data);
+            sequenceFileWriter.append(key, text);
+        }
+
+        lines++;
+        if (lines % 1000 == 0) {
+            log.info("Wrote " + lines + " " + bytes + " bytes");
+        }
+    }
+
     /**
      * Do a depth first search looking for scenarios
      *
@@ -564,18 +1083,18 @@ public class ChartExec {
     }
 
     private void searchForScenarios() throws ModelException, SCXMLExpressionException, IOException {
-        ArrayDeque<ArrayList<String>> stack = new ArrayDeque<>();
+        ArrayDeque<ArrayList<String>> stack = new ArrayDeque<ArrayList<String>>();
         int numberOfScenariosGenerated = 0;
 
-        ArrayList<String> positiveEvents = new ArrayList<>();
-        ArrayList<String> negativeEvents = new ArrayList<>();
+        ArrayList<String> positiveEvents = new ArrayList<String>();
+        ArrayList<String> negativeEvents = new ArrayList<String>();
 
         resetStateMachine();
         findEvents(positiveEvents, negativeEvents);
 
         // Add every positive event by itself, since it will be executed after the initial ones
         for (String event : positiveEvents) {
-            ArrayList<String> singleEventList = new ArrayList<>();
+            ArrayList<String> singleEventList = new ArrayList<String>();
             singleEventList.add(event);
             singleEventList = pruneEvents(singleEventList);
 
@@ -588,7 +1107,7 @@ public class ChartExec {
 
         // Check the -ve events
         for (String event : negativeEvents) {
-            ArrayList<String> singleEventList = new ArrayList<>();
+            ArrayList<String> singleEventList = new ArrayList<String>();
             singleEventList.add(event);
             singleEventList = pruneEvents(singleEventList);
 
@@ -609,7 +1128,7 @@ public class ChartExec {
 
             // Add every positive event by itself, since it will be executed after the initial ones
             for (String event : positiveEvents) {
-                ArrayList<String> eventList = new ArrayList<>();
+                ArrayList<String> eventList = new ArrayList<String>();
                 log.debug("Scenario:" + scenario + " new event:" + event);
                 eventList.addAll(scenario);
                 eventList.add(event);
@@ -624,7 +1143,7 @@ public class ChartExec {
 
             // Check the -ve events
             for (String event : negativeEvents) {
-                ArrayList<String> eventList = new ArrayList<>();
+                ArrayList<String> eventList = new ArrayList<String>();
                 eventList.addAll(scenario);
                 eventList.add(event);
                 eventList = pruneEvents(eventList);
@@ -653,7 +1172,7 @@ public class ChartExec {
             return null;
         }
 
-        HashMap<String, Integer> count = new HashMap<>();
+        HashMap<String, Integer> count = new HashMap<String, Integer>();
         for (String event : all) {
             Integer counter = count.get(event);
             if (counter == null) {

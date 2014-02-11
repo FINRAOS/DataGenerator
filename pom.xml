@@ -6,6 +6,13 @@
     <version>1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <repositories>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+    </repositories>
+
     <name>DataGenerator</name>
     <description>A tool that generates test scripts using a given model and templates</description>
     <licenses>
@@ -124,7 +131,7 @@
 
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>org.finra.datagenerator.Caller</Main-Class>
+                                        <Main-Class>org.finra.scxmlexec.CmdLine</Main-Class>
                                         <Build-Number>2</Build-Number>
                                     </manifestEntries>
                                 </transformer>
@@ -189,6 +196,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>0.20.205.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.11.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
@@ -204,11 +225,6 @@
             <version>2.1</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>10.0.1</version>
@@ -217,11 +233,6 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>
             <version>0.7.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-digester3</artifactId>
-            <version>3.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -243,11 +254,6 @@
             <artifactId>spring-core</artifactId>
             <version>3.1.0.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-tools</artifactId>
-            <version>2.0</version>
-        </dependency>
 
         <dependency>
             <groupId>commons-scxml</groupId>
@@ -260,9 +266,10 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>2.1</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-digester3</artifactId>
+            <version>3.2</version>
+            <classifier>with-deps</classifier>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
