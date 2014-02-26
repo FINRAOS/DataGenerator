@@ -402,7 +402,12 @@ public class ChartExec implements Closeable {
             if (condition == null) {
                 positive.add(transitionCode);
             } else {
-                Boolean result = (Boolean) elEvaluator.eval(context, condition);
+                Boolean result;
+                try {
+                    result = (Boolean) elEvaluator.eval(context, condition);
+                } catch (Exception ex) {
+                    throw new RuntimeException("Error while evaluating the condition: " + condition + " in state: " + currentState.getId(), ex);
+                }
                 if (result == null) {
                     throw new ModelException("Condition: " + condition + " evaluates to null");
                 }
@@ -662,6 +667,7 @@ public class ChartExec implements Closeable {
             log.debug("Initial depth trace: " + possiblePositiveStatesList);
         }
 
+        int scenariosCount = 0;
         // Now we have the initial list with sets decompressed
         queue.add(readVarsOut());
         while (true) {
@@ -701,6 +707,20 @@ public class ChartExec implements Closeable {
             }
 
             queue.add(readVarsOut());
+
+            scenariosCount++;
+            if (scenariosCount % 10000 == 0) {
+                log.info("Queue size=" + queue.size());
+            }
+
+            if (queue.size() > 1000000) {
+                log.info("Queue size " + queue.size() + " waiting for 1 sec");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    // Do nothing, since this is the main thread....
+                }
+            }
         }
     }
 
