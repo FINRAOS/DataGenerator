@@ -359,8 +359,7 @@ public class ChartExec implements Closeable {
         String absolutePath = (new File(inputFileName)).getAbsolutePath();
         log.info("Processing file:" + absolutePath);
         varsOut = extractOutputVariables(absolutePath);
-        stateMachine = SCXMLParser.parse(new URL("file://" + absolutePath), null);
-
+        stateMachine = SCXMLParser.parse(new File(absolutePath).toURI().toURL(), null);
         executor = new SCXMLExecutor();
         elEvaluator = new ELEvaluator();
         context = new ELContext();
