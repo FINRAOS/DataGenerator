@@ -1,12 +1,8 @@
 package org.finra.scxmlexec;
 
+import org.apache.log4j.*;
+
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.finra.datagenerator.SystemProperties;
 
 public class LogInitializer {
 
@@ -28,7 +24,7 @@ public class LogInitializer {
         if (loggerLevel != null) {
             logLevel = loggerLevel.toLowerCase();
         } else {
-            logLevel = SystemProperties.logLevel.toLowerCase();
+            logLevel = "default";
         }
 
         if (logLevel.equals("all")) {
