@@ -1,5 +1,8 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.exec;
 
+import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
+import org.finra.datagenerator.exec.ChartExec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +15,7 @@ import java.util.Map;
 /**
  * Created by robbinbr on 3/3/14.
  */
-public class ChartExecTests {
+public class BigChartExecTests {
 
     private ChartExec exec;
     private DefaultDistributor distributor;
@@ -20,7 +23,7 @@ public class ChartExecTests {
     @Before
     public void setUpChartExec() {
         exec = new ChartExec();
-        exec.setInputFileName("src/test/resources/test.xml");
+        exec.setInputFileName("src/test/resources/big.xml");
         distributor = new DefaultDistributor();
     }
 
@@ -38,7 +41,7 @@ public class ChartExecTests {
     @Test
     public void testProcessParallel() throws Exception {
         TestConsumer consumer = new TestConsumer();
-        distributor.setDataConsumer(consumer).setThreadCount(1);
+        distributor.setThreadCount(3).setDataConsumer(consumer);
         exec.setBootstrapMin(3).process(distributor);
 
         System.out.println(consumer.getData());

@@ -1,4 +1,4 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.scxml;
 
 import org.apache.commons.scxml.SCXMLExecutor;
 import org.apache.commons.scxml.SCXMLExpressionException;
@@ -106,7 +106,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     /**
-     * Executes a list of given events. The format is
+     * Executes a list of given events(). The format is
      * [beforeState]-event-[afterState] with the before and after states and
      * their separators optional
      *
@@ -228,7 +228,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             possibleState.id = parts[0];
             possibleState.nextStateName = parts[2];
             possibleState.transitionEvent = parts[1];
-            possibleState.variablesAssignment.putAll(vars);
+            possibleState.getVariablesAssignment().putAll(vars);
             possiblePositiveStates.add(possibleState);
         }
         return possiblePositiveStates;
@@ -247,7 +247,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             this.getStateMachine().setInitial(initialState.nextStateName);
             this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get
                     (initialState.nextStateName));
-            for (Map.Entry<String, String> var : initialState.variablesAssignment.entrySet()) {
+            for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                 this.getRootContext().set(var.getKey(), var.getValue());
             }
             this.reset();
@@ -268,7 +268,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 this.getStateMachine().setInitial(initialState.nextStateName);
                 this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get
                         (initialState.nextStateName));
-                for (Map.Entry<String, String> var : initialState.variablesAssignment.entrySet()) {
+                for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                     this.getRootContext().set(var.getKey(), var.getValue());
                 }
                 this.reset();
@@ -297,14 +297,14 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                                 possibleState.id = initialState.id;
                                 possibleState.nextStateName = initialState.nextStateName;
                                 possibleState.transitionEvent = initialState.transitionEvent;
-                                possibleState.variablesAssignment.putAll(initialState.variablesAssignment);
-                                possibleState.variablesAssignment.put(var.getKey(), val);
+                                possibleState.getVariablesAssignment().putAll(initialState.getVariablesAssignment());
+                                possibleState.getVariablesAssignment().put(var.getKey(), val);
                                 possibleState.varsInspected = true;
                                 states.add(0, possibleState);
                                 //log.debug("Adding:" + possibleState);
                             }
                         } else {
-                            states.get(0).variablesAssignment.put(var.getKey(), nextVal);
+                            states.get(0).getVariablesAssignment().put(var.getKey(), nextVal);
                             states.get(0).varsInspected = true;
                         }
                     }
@@ -312,7 +312,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 }
 
                 // Set the variables
-                for (Map.Entry<String, String> var : initialState.variablesAssignment.entrySet()) {
+                for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                     this.getRootContext().set(var.getKey(), var.getValue());
                 }
             }
@@ -351,8 +351,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         // First we have to generate the first level in the depth, so that we have something to start
         // the recursion from
         //log.debug("Searching for the initial next possible states");
-        traceDepth(possiblePositiveStatesList, varsOut, initialVariablesMap, startState.events, startState
-                .variablesAssignment);
+        traceDepth(possiblePositiveStatesList, varsOut, initialVariablesMap, startState.getEvents(), startState
+                .getVariablesAssignment());
         //log.debug("Initial depth trace: " + possiblePositiveStatesList);
 
         int scenariosCount = 0;
@@ -410,7 +410,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     private String getNextVarToExpand(PossibleState state) {
-        for (Map.Entry<String, String> var : state.variablesAssignment.entrySet()) {
+        for (Map.Entry<String, String> var : state.getVariablesAssignment().entrySet()) {
             if (var.getKey().startsWith("_")) {
                 continue;
             }
@@ -435,7 +435,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     private List<PossibleState> expandStateOnVariable(PossibleState state, String variable) {
-        String fullValue = state.variablesAssignment.get(variable);
+        String fullValue = state.getVariablesAssignment().get(variable);
         String[] values = fullValue.substring(5, fullValue.length() - 1).split(",");
 
         List<PossibleState> stateList = new ArrayList<PossibleState>();
@@ -443,11 +443,11 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         for (String singleValue : values) {
             PossibleState possibleStateInner = new PossibleState();
             possibleStateInner.id = state.id;
-            possibleStateInner.variablesAssignment.putAll(state.variablesAssignment);
-            possibleStateInner.variablesAssignment.put(variable, singleValue);
+            possibleStateInner.getVariablesAssignment().putAll(state.getVariablesAssignment());
+            possibleStateInner.getVariablesAssignment().put(variable, singleValue);
             possibleStateInner.transitionEvent = state.transitionEvent;
             possibleStateInner.nextStateName = state.nextStateName;
-            possibleStateInner.events.addAll(state.events);
+            possibleStateInner.getEvents().addAll(state.getEvents());
             possibleStateInner.varsInspected = true;
             stateList.add(possibleStateInner);
             //log.debug("Adding:" + possibleStateInner);
@@ -467,8 +467,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
         // Initialize states to have start state
         PossibleState startState = new PossibleState();
-        startState.variablesAssignment.putAll(initialVariablesMap);
-        startState.events.addAll(initialEvents);
+        startState.getVariablesAssignment().putAll(initialVariablesMap);
+        startState.getEvents().addAll(initialEvents);
 
         int prevNextLevelSize = 0;
         nextLevel.add(startState);
@@ -483,10 +483,10 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
             for (PossibleState iState : states) {
                 // Get initial variables
-                Map<String, String> stateVariables = iState.variablesAssignment;
+                Map<String, String> stateVariables = iState.getVariablesAssignment();
 
                 // Get initial events
-                List<String> stateEventPrefix = iState.events;
+                List<String> stateEventPrefix = iState.getEvents();
 
                 // Reset ourselves (a state machine) to this state
                 resetStateMachine(varsOut, initialVariablesMap, stateEventPrefix, stateVariables);
@@ -506,9 +506,9 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                     PossibleState possibleState = new PossibleState();
 
                     possibleState.id = this.getListener().getCurrentState().getId();
-                    possibleState.events.addAll(stateEventPrefix);
-                    possibleState.events.add(pEvent.split("-")[1]);
-                    possibleState.variablesAssignment.putAll(readVarsOut(varsOut));
+                    possibleState.getEvents().addAll(stateEventPrefix);
+                    possibleState.getEvents().add(pEvent.split("-")[1]);
+                    possibleState.getVariablesAssignment().putAll(readVarsOut(varsOut));
 
                     // Need to handle the case where a variable has a "set" as its value
                     // We construct a set of "expanded states" starting with the state

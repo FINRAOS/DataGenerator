@@ -1,4 +1,4 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.exec;
 
 import org.apache.log4j.*;
 

@@ -1,4 +1,4 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.scxml;
 
 import java.util.ArrayList;
 import org.apache.commons.scxml.SCXMLListener;

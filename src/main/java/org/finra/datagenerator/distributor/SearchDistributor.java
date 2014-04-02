@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.finra.scxmlexec;
+package org.finra.datagenerator.distributor;
 
-import java.util.HashMap;
+import java.util.List;
 
 /**
  *
- * @author mosama
+ * @author robbinbr
  */
-public interface DataConsumer {
-
-    public void consume(HashMap<String, String> row);
+public interface SearchDistributor {
+    public SearchDistributor setStateMachineText(String stateMachineText);
+    public void distribute(List<SearchProblem> searchProblemList);
 }

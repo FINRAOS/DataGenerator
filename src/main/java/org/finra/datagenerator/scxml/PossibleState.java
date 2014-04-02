@@ -1,4 +1,4 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.scxml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,13 +27,13 @@ public class PossibleState {
     /**
      * The variables that need to be set before jumping to that state
      */
-    final Map<String, String> variablesAssignment = new HashMap<String, String>();
+    private final Map<String, String> variablesAssignment = new HashMap<String, String>();
 
     /**
      * Any events that should be executed between start state and this state
      */
 
-    List<String> events = new ArrayList<String>();
+    private List<String> events = new ArrayList<String>();
 
     @Override
     public String toString() {
@@ -41,8 +41,16 @@ public class PossibleState {
                 "varsInspected:" + varsInspected + ",vars:" + variablesAssignment + ",events:" + events;
     }
 
+    public List<String> getEvents() {
+        return events;
+    }
+
+    public Map<String, String> getVariablesAssignment() {
+        return variablesAssignment;
+    }
+
     @Override
-    public boolean equals(Object a){
+    public boolean equals(Object a) {
         return this.toString().equals(a.toString());
     }
 }

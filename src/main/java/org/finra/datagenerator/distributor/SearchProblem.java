@@ -1,7 +1,8 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.distributor;
 
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.scxml.PossibleState;
 
 import java.util.List;
 import java.util.Map;

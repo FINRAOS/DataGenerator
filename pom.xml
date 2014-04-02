@@ -137,7 +137,7 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>org.finra.scxmlexec.CmdLine</Main-Class>
+                                        <Main-Class>org.finra.datagenerator.CmdLine</Main-Class>
                                         <Build-Number>2</Build-Number>
                                     </manifestEntries>
                                 </transformer>

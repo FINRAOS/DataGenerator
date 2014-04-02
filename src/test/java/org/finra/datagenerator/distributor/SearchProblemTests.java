@@ -1,6 +1,7 @@
-package org.finra.scxmlexec;
+package org.finra.datagenerator.distributor;
 
 import org.apache.commons.io.IOUtils;
+import org.finra.datagenerator.exec.ChartExec;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,8 +31,8 @@ public class SearchProblemTests {
         SearchProblem oneFromJson = SearchProblem.fromJson(json);
 
         Assert.assertTrue(oneFromJson.getVarsOut().equals(one.getVarsOut()));
-        Assert.assertTrue(oneFromJson.getInitialState().events.equals(one.getInitialState().events));
-        Assert.assertTrue(oneFromJson.getInitialState().variablesAssignment.equals(one.getInitialState()
-                .variablesAssignment));
+        Assert.assertTrue(oneFromJson.getInitialState().getEvents().equals(one.getInitialState().getEvents()));
+        Assert.assertTrue(oneFromJson.getInitialState().getVariablesAssignment().equals(one.getInitialState()
+                .getVariablesAssignment()));
     }
 }
