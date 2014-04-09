@@ -15,12 +15,12 @@
  */
 package org.finra.datagenerator.consumer.defaults;
 
-import org.finra.datagenerator.consumer.DataConsumer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.finra.datagenerator.consumer.DataConsumer;
 
 public class DefaultOutput implements DataConsumer {
 
@@ -31,7 +31,7 @@ public class DefaultOutput implements DataConsumer {
     }
 
     @Override
-    public void consume(HashMap<String, String> row) {
+    public void consume(HashMap<String, String> row, AtomicBoolean exitFlag) {
         // Concatenate all data
         StringBuilder b = new StringBuilder(1024);
         for (Entry<String, String> entry : row.entrySet()) {

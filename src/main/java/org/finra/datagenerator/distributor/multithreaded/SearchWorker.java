@@ -1,5 +1,11 @@
 package org.finra.datagenerator.distributor.multithreaded;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchProblem;
@@ -7,17 +13,9 @@ import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 /**
  * Created by robbinbr on 3/14/14.
  */
-
-
 public class SearchWorker implements Runnable {
 
     protected static final Logger log = Logger.getLogger(SearchWorker.class);
@@ -28,9 +26,9 @@ public class SearchWorker implements Runnable {
     private Set<String> varsOut;
     private Map<String, String> initialVariablesMap;
     private List<String> initialEventsList;
+    private final AtomicBoolean exitFlag;
 
-
-    public SearchWorker(SearchProblem problem, String stateMachineText, Queue queue) throws ModelException,
+    public SearchWorker(SearchProblem problem, String stateMachineText, Queue queue, AtomicBoolean exitFlag) throws ModelException,
             IOException, SAXException {
         this.queue = queue;
         this.executor = new DataGeneratorExecutor(stateMachineText);
@@ -38,13 +36,14 @@ public class SearchWorker implements Runnable {
         this.varsOut = problem.getVarsOut();
         this.initialVariablesMap = problem.getInitialVariablesMap();
         this.initialEventsList = problem.getInitialEventsList();
+        this.exitFlag = exitFlag;
     }
 
     @Override
     public void run() {
         try {
             log.info(Thread.currentThread().getName() + " is starting DFS");
-            executor.searchForScenariosDFS(initialState, queue, varsOut, initialVariablesMap, initialEventsList);
+            executor.searchForScenariosDFS(initialState, queue, varsOut, initialVariablesMap, initialEventsList, exitFlag);
             log.info(Thread.currentThread().getName() + " is done with DFS");
         } catch (Exception exc) {
             log.error("Exception has occurred during DFS worker thread", exc);

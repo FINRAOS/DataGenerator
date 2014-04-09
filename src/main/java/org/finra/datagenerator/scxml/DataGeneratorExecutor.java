@@ -1,5 +1,16 @@
 package org.finra.datagenerator.scxml;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.scxml.SCXMLExecutor;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.TriggerEvent;
@@ -13,12 +24,6 @@ import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
 
 /**
  * Created by robbinbr on 3/3/14.
@@ -67,20 +72,17 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     /**
-     * Reset the state machine, set the initial variables, and trigger the
-     * initial events
+     * Reset the state machine, set the initial variables, and trigger the initial events
      *
      * @throws org.apache.commons.scxml.model.ModelException
      */
-
     public void resetStateMachine(Set<String> varsOut, Map<String, String> initialVariablesMap,
-                                  List<String> initialEvents) throws ModelException {
+            List<String> initialEvents) throws ModelException {
         this.resetStateMachine(varsOut, initialVariablesMap, initialEvents, null);
     }
 
-
     public void resetStateMachine(Set<String> varsOut, Map<String, String> initialVariablesMap,
-                                  List<String> initialEvents, Map<String, String> variableOverride) throws
+            List<String> initialEvents, Map<String, String> variableOverride) throws
             ModelException {
         // Go to the initial state
         this.reset();
@@ -106,9 +108,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     /**
-     * Executes a list of given events(). The format is
-     * [beforeState]-event-[afterState] with the before and after states and
-     * their separators optional
+     * Executes a list of given events(). The format is [beforeState]-event-[afterState] with the before and after
+     * states and their separators optional
      *
      * @param commaSeparatedEvents
      * @throws ModelException
@@ -134,7 +135,6 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             this.triggerEvent(new TriggerEvent(eventName, TriggerEvent.SIGNAL_EVENT));
         }
     }
-
 
     public void fireEvents(List<String> events) throws ModelException {
         if (events == null) {
@@ -186,8 +186,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 try {
                     result = (Boolean) this.getEvaluator().eval(this.getRootContext(), condition);
                 } catch (Exception ex) {
-                    throw new RuntimeException("Error while evaluating the condition: " + condition + " in state: " +
-                            currentState.getId(), ex);
+                    throw new RuntimeException("Error while evaluating the condition: " + condition + " in state: "
+                            + currentState.getId(), ex);
                 }
                 if (result == null) {
                     throw new ModelException("Condition: " + condition + " evaluates to null");
@@ -211,8 +211,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     /**
-     * Check all the variables in the context. Generate a state with a list of
-     * variables correctly assigned
+     * Check all the variables in the context. Generate a state with a list of variables correctly assigned
      */
     public ArrayList<PossibleState> findPossibleStates(Set<String> varNames) throws ModelException,
             SCXMLExpressionException, IOException {
@@ -235,8 +234,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     public void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList, Set<String> varsOut,
-                           Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String,
-            String> expandedVars) throws
+            Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, String> expandedVars) throws
             ModelException, IOException, SCXMLExpressionException {
         //log.debug("TraceDepth");
         if (possiblePositiveStatesList.isEmpty()) {
@@ -245,8 +243,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             ArrayList<PossibleState> states = possiblePositiveStatesList.get(possiblePositiveStatesList.size() - 1);
             PossibleState initialState = states.get(0);
             this.getStateMachine().setInitial(initialState.nextStateName);
-            this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get
-                    (initialState.nextStateName));
+            this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get(initialState.nextStateName));
             for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                 this.getRootContext().set(var.getKey(), var.getValue());
             }
@@ -254,7 +251,6 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
 
         //log.debug("Loop start");
-
         while (listener.getCurrentState() == null
                 || (listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end"))) {
             //log.debug("ALL AFTER RESET: " + possiblePositiveStatesList);
@@ -266,15 +262,13 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 //log.debug("**RESET");
                 //log.debug("**SET INIT TO:" + initialState.nextStateName);
                 this.getStateMachine().setInitial(initialState.nextStateName);
-                this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get
-                        (initialState.nextStateName));
+                this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get(initialState.nextStateName));
                 for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                     this.getRootContext().set(var.getKey(), var.getValue());
                 }
                 this.reset();
 
                 //log.debug("current state:" + listener.getCurrentState().getId());
-
                 if (!initialState.varsInspected) {
                     HashMap<String, String> varsVals = readVarsOut(varsOut);
                     //log.debug("varsVals has " + varsVals);
@@ -318,7 +312,6 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             }
 
             //log.debug("ALL BEFORE: " + possiblePositiveStatesList);
-
             ArrayList<PossibleState> nextPositiveStates = findPossibleStates(varsOut);
             //System.err.println("nextPositiveStates: " + nextPositiveStates);
 
@@ -337,9 +330,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * @throws SCXMLExpressionException
      * @throws IOException
      */
-    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String,
-            String> initialVariablesMap,
-                                      List<String> initialEvents) throws ModelException, SCXMLExpressionException,
+    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap, List<String> initialEvents, AtomicBoolean exitFlag)
+            throws ModelException, SCXMLExpressionException,
             IOException, SAXException {
         //log.debug(Thread.currentThread().getName() + " starting DFS on " + startState);
         //log.info("Search for scenarios using depth first search");
@@ -360,7 +352,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         Map<String, String> dataSet = readVarsOut(varsOut);
         //log.debug(Thread.currentThread().getName() + " adding to queue: " + dataSet);
         queue.add(dataSet);
-        while (true) {
+        while (!exitFlag.get()) {
             // Recursively delete one node from the end
             boolean empty;
             do {
@@ -457,8 +449,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     public List<PossibleState> searchForScenarios(Set<String> varsOut, Map<String, String> initialVariablesMap,
-                                                  List<String> initialEvents, int maxEventReps, int maxScenarios,
-                                                  int lengthOfScenario, int minCount) throws ModelException,
+            List<String> initialEvents, int maxEventReps, long maxScenarios,
+            int lengthOfScenario, int minCount) throws ModelException,
             SCXMLExpressionException, IOException, SAXException {
 
         int numberOfScenariosGenerated = 0;
@@ -542,7 +534,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * @return
      */
     private ArrayList<String> pruneEvents(ArrayList<String> eventList, List<String> initialEventsList,
-                                          int maxEventReps, int lengthOfScenario) {
+            int maxEventReps, int lengthOfScenario) {
         // Count the number of repetitions of every event
         ArrayList<String> all = new ArrayList<String>();
         all.addAll(initialEventsList);
@@ -588,6 +580,5 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
 
         //log.info(b);
-
     }
 }

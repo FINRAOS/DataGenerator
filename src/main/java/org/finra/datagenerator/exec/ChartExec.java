@@ -1,15 +1,26 @@
 package org.finra.datagenerator.exec;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.scxml.DataGeneratorExecutor;
-import org.finra.datagenerator.scxml.PossibleState;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
-
-import java.io.*;
-import java.util.*;
+import org.finra.datagenerator.scxml.DataGeneratorExecutor;
+import org.finra.datagenerator.scxml.PossibleState;
 
 public class ChartExec {
 
@@ -29,8 +40,7 @@ public class ChartExec {
 
     private static HashSet<String> varsOut = null;
     /**
-     * The initial set of events to trigger before re-searching for a new
-     * scenario
+     * The initial set of events to trigger before re-searching for a new scenario
      */
     private String initialEvents = null;
 
@@ -53,13 +63,22 @@ public class ChartExec {
 
     private int maxEventReps = 1;
 
-    private int maxScenarios = 10000;
+    private long maxScenarios = -1;
 
     private int bootstrapMin = 0;
     private InputStream inputFileStream;
 
+    /**
+     * Will be shared and used to signal to all threads to exit
+     */
+    private static final AtomicBoolean exitFlag = new AtomicBoolean(false);
+
     public ChartExec() {
         isDebugEnabled = false;
+    }
+
+    public void exit() {
+        exitFlag.set(true);
     }
 
     public ChartExec setBootstrapMin(int depth) {
@@ -96,7 +115,6 @@ public class ChartExec {
 
     @Deprecated
     public ChartExec setInputFileName(String inputFileName) {
-        new File(inputFileName);
         try {
             this.inputFileStream = new FileInputStream(new File(inputFileName));
         } catch (FileNotFoundException e) {
@@ -123,7 +141,7 @@ public class ChartExec {
         return lengthOfScenario;
     }
 
-    public ChartExec setLengthOfScenario(int lengthOfScenario){
+    public ChartExec setLengthOfScenario(int lengthOfScenario) {
         this.lengthOfScenario = lengthOfScenario;
         return this;
     }
@@ -137,11 +155,11 @@ public class ChartExec {
         return this;
     }
 
-    public int getMaxScenarios() {
+    public long getMaxScenarios() {
         return maxScenarios;
     }
 
-    public ChartExec setMaxScenarios(int maxScenarios) {
+    public ChartExec setMaxScenarios(long maxScenarios) {
         this.maxScenarios = maxScenarios;
         return this;
     }
@@ -232,8 +250,8 @@ public class ChartExec {
 
         log.info("Found " + dfsProblems.size() + " states to distribute");
         distributor.setStateMachineText(machineText);
+        distributor.setExitFlag(exitFlag);
         distributor.distribute(dfsProblems);
         log.info("DONE.");
     }
 }
-
