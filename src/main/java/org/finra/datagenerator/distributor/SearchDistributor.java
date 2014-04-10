@@ -16,12 +16,17 @@
 package org.finra.datagenerator.distributor;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
  * @author robbinbr
  */
 public interface SearchDistributor {
+
     public SearchDistributor setStateMachineText(String stateMachineText);
+
     public void distribute(List<SearchProblem> searchProblemList);
+
+    public void setExitFlag(AtomicBoolean exitFlag);
 }
