@@ -85,45 +85,50 @@ public class DefaultDistributor implements SearchDistributor {
             threadPool.execute(worker);
         }
 
-        // Wait for threadPool shutdown to complete
         threadPool.shutdown();
-        while (!threadPool.isTerminated()) {
-            try {
+        try {
+            // Wait for threadPool shutdown to complete
+            while (!threadPool.isTerminated()) {
                 //log.debug("process() is waiting for thread pool to terminate");
                 Thread.sleep(10);
-            } catch (InterruptedException ex) {
             }
-        }
 
-        // Wait for queue to empty (finish processing any pending output)
-        while (!exitFlag.get() && !queue.isEmpty()) {
-            try {
+            // Wait for queue to empty (finish processing any pending output)
+            while (!exitFlag.get() && !queue.isEmpty()) {
                 //log.debug("process() is waiting for queue to empty");
                 Thread.sleep(10);
-            } catch (InterruptedException ex) {
             }
+
+            // This will tell the output thread to exit, unless it's inside a consume call
+            exitFlag.set(true);
+
+            // Now, wait for the output thread to get done
+            outputThread.join();
+            log.info("Exiting...");
+        } catch (InterruptedException ex) {
+            log.info("Interrupted !!... exiting", ex);
         }
     }
 
     private void produceOutput() throws IOException {
         long lines = 0;
-        while (!Thread.interrupted() && !exitFlag.get()) {
-            while (!Thread.interrupted() && queue.isEmpty()) {
-                try {
+        try {
+            while (!Thread.interrupted() && !exitFlag.get()) {
+                while (!Thread.interrupted() && queue.isEmpty()) {
                     Thread.sleep(10);
-                } catch (InterruptedException ex) {
                 }
-            }
 
-            if (!Thread.interrupted()) {
-                HashMap<String, String> row = queue.poll();
-                userDataOutput.consume(row, exitFlag);
-                lines++;
-                if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-                    exitFlag.set(true);
-                    break;
+                if (!Thread.interrupted()) {
+                    HashMap<String, String> row = queue.poll();
+                    userDataOutput.consume(row, exitFlag);
+                    lines++;
+                    if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
+                        exitFlag.set(true);
+                        break;
+                    }
                 }
             }
+        } catch (InterruptedException ex) {
         }
     }
 
