@@ -1,26 +1,20 @@
 package org.finra.datagenerator.exec;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
 import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChartExec {
 
@@ -172,12 +166,13 @@ public class ChartExec {
 
         // Parse the initial events
         if (initialEvents != null) {
-            initialEventsList.addAll(Arrays.asList(StringUtils.split(initialEvents, ",")));
+            Iterable<String> events = Splitter.on(",").split(initialVariables);
+            initialEventsList.addAll(Lists.newArrayList(events));
         }
 
         // Parse the initial variables
         if (initialVariables != null) {
-            String[] vars = StringUtils.split(initialVariables, ",");
+            Iterable<String> vars = Splitter.on(",").split(initialVariables);
             for (String var : vars) {
                 if (var.contains("=")) {
                     String[] assignment = var.split("=");

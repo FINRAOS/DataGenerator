@@ -1,6 +1,8 @@
 package org.finra.datagenerator.exec;
 
-import org.apache.commons.lang.StringUtils;
+import com.google.common.base.Strings;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 
 public class SystemParameter
 {
@@ -21,11 +23,11 @@ public class SystemParameter
 	{
 		param = param.trim();
 		if (param.endsWith("m") | param.endsWith("M"))
-			return param.substring(0, param.length() - 1) + StringUtils.repeat("0", 6);
+			return param.substring(0, param.length() - 1) + Strings.repeat("0", 6);
 		if (param.endsWith("g") | param.endsWith("G"))
-			return param.substring(0, param.length() - 1) + StringUtils.repeat("0", 9);
+			return param.substring(0, param.length() - 1) + Strings.repeat("0", 9);
 		if (param.endsWith("t") | param.endsWith("T"))
-			return param.substring(0, param.length() - 1) + StringUtils.repeat("0", 12);
+			return param.substring(0, param.length() - 1) + Strings.repeat("0", 12);
 		return param;
 	}
 
@@ -35,7 +37,7 @@ public class SystemParameter
 		if (param == null)
 			return defaultValue;
 		param = expandSuffixes(param);
-		if (StringUtils.isNumeric(param))
+		if (Ints.tryParse(param) != null)
 			return Integer.parseInt(param);
 		return defaultValue;
 	}
@@ -46,7 +48,7 @@ public class SystemParameter
 		if (param == null)
 			return defaultValue;
 		param = expandSuffixes(param);
-		if (StringUtils.isNumeric(param))
+		if (Longs.tryParse(param) != null)
 			return Long.parseLong(param);
 		return defaultValue;
 	}
@@ -57,7 +59,7 @@ public class SystemParameter
 		if (param == null)
 			param = defaultValue;
 		param = expandSuffixes(param);
-		if (StringUtils.isNumeric(param))
+		if (Longs.tryParse(param) != null)
 			return Long.parseLong(param);
 		else
 		{
