@@ -20,9 +20,6 @@ import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.exec.ChartExec;
 import org.finra.datagenerator.samples.consumer.SampleMachineConsumer;
 
-/**
- * @author mosama
- */
 public class CmdLine {
 
     private static final DefaultDistributor defaultDist = new DefaultDistributor();
