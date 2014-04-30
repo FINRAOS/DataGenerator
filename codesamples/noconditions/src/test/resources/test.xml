@@ -1,0 +1,37 @@
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:cs="http://commons.apache.org/scxml"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="RECORD_TYPE" target="RECORD_TYPE"/>
+    </state>
+
+    <state id="RECORD_TYPE">
+        <!-- Mandatory -->
+        <onentry>
+            <assign name="var_out_RECORD_TYPE" expr="set:{a,b,c}"/>
+        </onentry>
+        <transition event="REQUEST_IDENTIFIER" target="REQUEST_IDENTIFIER"/>
+    </state>
+
+    <state id="REQUEST_IDENTIFIER">
+        <!-- Mandatory -->
+        <!-- There's nothing going on here -->
+        <onentry>
+            <assign name="var_out_REQUEST_IDENTIFIER" expr="set:{1,2,3}"/>
+        </onentry>
+        <transition event="MANIFEST_GENERATION_DATETIME" target="MANIFEST_GENERATION_DATETIME"/>
+    </state>
+
+    <state id="MANIFEST_GENERATION_DATETIME">
+        <!-- Mandatory -->
+        <onentry>
+            <assign name="var_out_MANIFEST_GENERATION_DATETIME" expr="#{nextint}"/>
+        </onentry>
+        <transition target="end"/>
+    </state>
+    
+<state id="end">
+    </state>
+</scxml>
