@@ -1,5 +1,13 @@
 package org.finra.datagenerator.distributor.multithreaded;
 
+import org.apache.commons.scxml.model.ModelException;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.defaults.DefaultOutput;
+import org.finra.datagenerator.distributor.SearchDistributor;
+import org.finra.datagenerator.distributor.SearchProblem;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -8,13 +16,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.scxml.model.ModelException;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.DefaultOutput;
-import org.finra.datagenerator.distributor.SearchDistributor;
-import org.finra.datagenerator.distributor.SearchProblem;
-import org.xml.sax.SAXException;
 
 /**
  * Created by robbinbr on 3/24/14.
@@ -114,14 +115,16 @@ public class DefaultDistributor implements SearchDistributor {
         long lines = 0;
         try {
             while (!Thread.interrupted() && !exitFlag.get()) {
-                while (!Thread.interrupted() && queue.isEmpty()) {
+                while (!Thread.interrupted() && queue.isEmpty() && !exitFlag.get()) {
                     Thread.sleep(10);
                 }
 
                 if (!Thread.interrupted()) {
                     HashMap<String, String> row = queue.poll();
-                    userDataOutput.consume(row, exitFlag);
-                    lines++;
+                    if(row != null){
+                        userDataOutput.consume(row, exitFlag);
+                        lines++;
+                    }
                     if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
                         exitFlag.set(true);
                         break;
