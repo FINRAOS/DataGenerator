@@ -3,15 +3,16 @@ package org.finra.datagenerator.distributor.multithreaded;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.DefaultOutput;
+import org.finra.datagenerator.consumer.defaults.ChainConsumer;
+import org.finra.datagenerator.consumer.defaults.ConsumerResult;
+import org.finra.datagenerator.consumer.defaults.DefaultConsumer;
+import org.finra.datagenerator.consumer.defaults.OutputStreamConsumer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,10 +28,19 @@ public class DefaultDistributor implements SearchDistributor {
     private int threadCount = 1;
     private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<HashMap<String, String>>();
     private Thread outputThread;
-    private DataConsumer userDataOutput = new DefaultOutput(System.out);
+    private DataConsumer userDataOutput;
     private String stateMachineText;
     private AtomicBoolean exitFlag = null;
     private long maxNumberOfLines = -1;
+
+    private Object lock;
+
+    public DefaultDistributor() {
+        ChainConsumer cc = new ChainConsumer();
+        cc.addConsumer(new DefaultConsumer());
+        cc.addConsumer(new OutputStreamConsumer(System.out));
+        this.userDataOutput = cc;
+    }
 
     public DefaultDistributor setDataConsumer(DataConsumer dataConsumer) {
         this.userDataOutput = dataConsumer;
@@ -71,10 +81,15 @@ public class DefaultDistributor implements SearchDistributor {
 
         // Start search threads (producers)
         ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
+        List<AtomicBoolean> flags = new ArrayList<AtomicBoolean>();
         for (SearchProblem problem : searchProblemList) {
             Runnable worker = null;
+            AtomicBoolean oneFlag = new AtomicBoolean();
+            oneFlag.set(false);
+            flags.add(oneFlag);
             try {
-                worker = new SearchWorker(problem, stateMachineText, queue, exitFlag);
+                worker = new SearchWorker(problem, stateMachineText, queue, oneFlag);
+                threadPool.execute(worker);
             } catch (ModelException e) {
                 log.error("Error while initializing SearchWorker threads", e);
             } catch (SAXException e) {
@@ -82,56 +97,61 @@ public class DefaultDistributor implements SearchDistributor {
             } catch (IOException e) {
                 log.error("Error while initializing SearchWorker threads", e);
             }
-
-            threadPool.execute(worker);
         }
 
         threadPool.shutdown();
         try {
-            // Wait for threadPool shutdown to complete
+            // Wait for exit
             while (!threadPool.isTerminated()) {
-                //log.debug("process() is waiting for thread pool to terminate");
+                log.info("Waiting for threadpool to terminate");
                 Thread.sleep(10);
             }
 
-            // Wait for queue to empty (finish processing any pending output)
-            while (!exitFlag.get() && !queue.isEmpty()) {
-                //log.debug("process() is waiting for queue to empty");
+            while (!exitFlag.get()) {
+                log.info("Waiting for exit");
                 Thread.sleep(10);
+                exitFlag.set(checkAllFlags(flags));
             }
-
-            // This will tell the output thread to exit, unless it's inside a consume call
-            exitFlag.set(true);
 
             // Now, wait for the output thread to get done
             outputThread.join();
-            log.info("Exiting...");
+            log.info("DONE");
         } catch (InterruptedException ex) {
             log.info("Interrupted !!... exiting", ex);
         }
     }
 
+    private boolean checkAllFlags(List<AtomicBoolean> flags) {
+        for (AtomicBoolean flag : flags) {
+            if (!flag.get()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void produceOutput() throws IOException {
         long lines = 0;
-        try {
-            while (!Thread.interrupted() && !exitFlag.get()) {
-                while (!Thread.interrupted() && queue.isEmpty() && !exitFlag.get()) {
-                    Thread.sleep(10);
+        while (!Thread.interrupted() && !exitFlag.get()) {
+            if (!Thread.interrupted()) {
+                HashMap<String, String> row = queue.poll();
+                if (row != null) {
+                    ConsumerResult cr = new ConsumerResult();
+                    for (Map.Entry<String, String> ent : row.entrySet()) {
+                        cr.getDataMap().put(ent.getKey(), ent.getValue());
+                    }
+
+                    exitFlag.set(cr.getExitFlag().get());
+                    userDataOutput.consume(cr);
+                    lines++;
                 }
 
-                if (!Thread.interrupted()) {
-                    HashMap<String, String> row = queue.poll();
-                    if(row != null){
-                        userDataOutput.consume(row, exitFlag);
-                        lines++;
-                    }
-                    if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-                        exitFlag.set(true);
-                        break;
-                    }
+                if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
+                    exitFlag.set(true);
+                    break;
                 }
             }
-        } catch (InterruptedException ex) {
         }
     }
 

@@ -15,36 +15,22 @@
  */
 package org.finra.datagenerator.consumer.defaults;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.finra.datagenerator.consumer.DataConsumer;
 
-public class DefaultOutput implements DataConsumer {
+import java.util.Map.Entry;
 
-    private final OutputStream os;
-
-    public DefaultOutput(OutputStream os) {
-        this.os = os;
-    }
+public class DefaultConsumer implements DataConsumer {
 
     @Override
-    public void consume(HashMap<String, String> row, AtomicBoolean exitFlag) {
+    public void consume(ConsumerResult cr) {
         // Concatenate all data
         StringBuilder b = new StringBuilder(1024);
-        for (Entry<String, String> entry : row.entrySet()) {
+        for (Entry<String, String> entry : cr.getDataMap().entrySet()) {
             if (b.length() > 0) {
                 b.append('|');
             }
             b.append(entry.getValue());
         }
-        b.append("\n");
-        try {
-            os.write(b.toString().getBytes());
-        } catch (IOException ex) {
-            throw new RuntimeException("Error while writing to the output stream", ex);
-        }
+        cr.getRowResults().add(b.toString());
     }
 }

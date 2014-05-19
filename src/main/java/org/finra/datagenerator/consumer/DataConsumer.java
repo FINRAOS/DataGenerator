@@ -15,10 +15,9 @@
  */
 package org.finra.datagenerator.consumer;
 
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.finra.datagenerator.consumer.defaults.ConsumerResult;
 
 public interface DataConsumer {
 
-    public void consume(HashMap<String, String> row, AtomicBoolean exitFlag);
+    public void consume(ConsumerResult cr);
 }

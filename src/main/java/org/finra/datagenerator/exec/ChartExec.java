@@ -65,14 +65,8 @@ public class ChartExec {
     /**
      * Will be shared and used to signal to all threads to exit
      */
-    private static final AtomicBoolean exitFlag = new AtomicBoolean(false);
-
     public ChartExec() {
         isDebugEnabled = false;
-    }
-
-    public void exit() {
-        exitFlag.set(true);
     }
 
     public ChartExec setBootstrapMin(int depth) {
@@ -245,7 +239,7 @@ public class ChartExec {
 
         log.info("Found " + dfsProblems.size() + " states to distribute");
         distributor.setStateMachineText(machineText);
-        distributor.setExitFlag(exitFlag);
+        distributor.setExitFlag(new AtomicBoolean(false));
         distributor.distribute(dfsProblems);
         log.info("DONE.");
     }

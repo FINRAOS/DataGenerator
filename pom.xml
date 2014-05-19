@@ -8,10 +8,10 @@
     <packaging>jar</packaging>
 
     <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>cloudera</id>-->
-            <!--<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>-->
-        <!--</repository>-->
+    <!--<repository>-->
+    <!--<id>cloudera</id>-->
+    <!--<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>-->
+    <!--</repository>-->
     <!--</repositories>-->
 
     <name>DataGenerator</name>
@@ -110,44 +110,6 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.handlers</resource>
-                                </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.schemas</resource>
-                                </transformer>
-
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>org.finra.datagenerator.CmdLine</Main-Class>
-                                        <Build-Number>2</Build-Number>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -201,13 +163,6 @@
     </build>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.hadoop</groupId>-->
-            <!--<artifactId>hadoop-core</artifactId>-->
-            <!--<version>0.20.205.0</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
