@@ -1,34 +1,26 @@
 package org.finra.datagenerator.exec;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.defaults.ConsumerResult;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by robbinbr on 3/3/14.
  */
 public class ChartExecTests {
 
-    private ChartExec exec;
-    private DefaultDistributor distributor;
-
-    @Before
-    public void setUpChartExec() {
-        exec = new ChartExec();
-        exec.setInputFileName("src/test/resources/test.xml");
-        distributor = new DefaultDistributor();
-    }
-
     @Test
     public void testProcess() throws Exception {
+        ChartExec exec = new ChartExec();
+        exec.setInputFileName("src/test/resources/test.xml");
         TestConsumer consumer = new TestConsumer();
+        DefaultDistributor distributor = new DefaultDistributor();
         distributor.setDataConsumer(consumer);
         exec.setBootstrapMin(3).process(distributor);
 
@@ -39,7 +31,11 @@ public class ChartExecTests {
 
     @Test
     public void testProcessParallel() throws Exception {
+        ChartExec exec = new ChartExec();
+        exec.setInputFileName("src/test/resources/test.xml");
+
         TestConsumer consumer = new TestConsumer();
+        DefaultDistributor distributor = new DefaultDistributor();
         distributor.setDataConsumer(consumer).setThreadCount(1);
         exec.setBootstrapMin(3).process(distributor);
 
@@ -53,14 +49,13 @@ public class ChartExecTests {
         private List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
         @Override
-        public void consume(HashMap<String, String> row, AtomicBoolean exitFlag) {
-            data.add(row);
-            System.out.println("Output saw a : " + row);
+        public void consume(ConsumerResult cr) {
+            data.add(cr.getDataMap());
+            System.out.println("Output saw a : " + cr.getDataMap());
         }
 
         public List<Map<String, String>> getData() {
             return data;
         }
     }
-
 }

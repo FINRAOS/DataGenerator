@@ -1,17 +1,18 @@
 package org.finra.datagenerator.distributor.multithreaded;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchProblem;
 import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by robbinbr on 3/14/14.
@@ -48,6 +49,7 @@ public class SearchWorker implements Runnable {
         } catch (Exception exc) {
             log.error("Exception has occurred during DFS worker thread", exc);
         }
-    }
 
+        exitFlag.set(true);
+    }
 }
