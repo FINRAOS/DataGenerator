@@ -14,11 +14,12 @@
 package org.finra.datagenerator.samples.consumer;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.defaults.ConsumerResult;
 
 public class SampleMachineConsumer implements DataConsumer {
 
@@ -28,8 +29,9 @@ public class SampleMachineConsumer implements DataConsumer {
     private final Random rand = new Random(System.currentTimeMillis());
 
     @Override
-    public void consume(HashMap<String, String> originalRow, AtomicBoolean exitFlag) {
+    public void consume(ConsumerResult cr) {
         // Go through our templates and fill them with values
+        Map<String, String> originalRow = cr.getDataMap();
         HashMap<String, String> outputValues = new HashMap<>();
 
         for (Entry<String, String> entry : originalRow.entrySet()) {
@@ -48,4 +50,5 @@ public class SampleMachineConsumer implements DataConsumer {
         // Using the values, compile our output. In our case, we will just write it to the console
         System.out.println("Row=" + outputValues.toString());
     }
+
 }
