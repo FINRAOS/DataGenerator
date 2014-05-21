@@ -14,16 +14,25 @@ public class ConsumerResult {
     private final List<String> rowResults = new ArrayList<String>();
     private final Map<String, String> dataMap = new HashMap<String, String>();
     private final AtomicBoolean exitFlag = new AtomicBoolean();
+    private final long maxNumberOfLines;
 
-    public List<String> getRowResults(){
+    public ConsumerResult(long maxNumberOfLines) {
+        this.maxNumberOfLines = maxNumberOfLines;
+    }
+
+    public List<String> getRowResults() {
         return rowResults;
     }
 
-    public Map<String, String> getDataMap(){
+    public Map<String, String> getDataMap() {
         return dataMap;
     }
 
-    public AtomicBoolean getExitFlag(){
+    public AtomicBoolean getExitFlag() {
         return exitFlag;
+    }
+
+    public long getMaxNumberOfLines() {
+        return maxNumberOfLines;
     }
 }
