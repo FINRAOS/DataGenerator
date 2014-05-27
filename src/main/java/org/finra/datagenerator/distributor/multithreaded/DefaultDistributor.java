@@ -1,5 +1,15 @@
 package org.finra.datagenerator.distributor.multithreaded;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
@@ -10,13 +20,6 @@ import org.finra.datagenerator.consumer.defaults.OutputStreamConsumer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by robbinbr on 3/24/14.
@@ -84,11 +87,8 @@ public class DefaultDistributor implements SearchDistributor {
         List<AtomicBoolean> flags = new ArrayList<AtomicBoolean>();
         for (SearchProblem problem : searchProblemList) {
             Runnable worker = null;
-            AtomicBoolean oneFlag = new AtomicBoolean();
-            oneFlag.set(false);
-            flags.add(oneFlag);
             try {
-                worker = new SearchWorker(problem, stateMachineText, queue, oneFlag);
+                worker = new SearchWorker(problem, stateMachineText, queue, exitFlag);
                 threadPool.execute(worker);
             } catch (ModelException e) {
                 log.error("Error while initializing SearchWorker threads", e);
@@ -103,12 +103,12 @@ public class DefaultDistributor implements SearchDistributor {
         try {
             // Wait for exit
             while (!threadPool.isTerminated()) {
-                log.info("Waiting for threadpool to terminate");
+                log.debug("Waiting for threadpool to terminate");
                 Thread.sleep(10);
             }
 
             while (!exitFlag.get()) {
-                log.info("Waiting for exit");
+                log.debug("Waiting for exit");
                 Thread.sleep(10);
                 exitFlag.set(checkAllFlags(flags));
             }
@@ -137,12 +137,11 @@ public class DefaultDistributor implements SearchDistributor {
             if (!Thread.interrupted()) {
                 HashMap<String, String> row = queue.poll();
                 if (row != null) {
-                    ConsumerResult cr = new ConsumerResult();
+                    ConsumerResult cr = new ConsumerResult(maxNumberOfLines, exitFlag);
                     for (Map.Entry<String, String> ent : row.entrySet()) {
                         cr.getDataMap().put(ent.getKey(), ent.getValue());
                     }
 
-                    exitFlag.set(cr.getExitFlag().get());
                     userDataOutput.consume(cr);
                     lines++;
                 }
@@ -152,6 +151,10 @@ public class DefaultDistributor implements SearchDistributor {
                     break;
                 }
             }
+        }
+
+        if (exitFlag.get()) {
+            log.info("Exiting, exitFlag=true");
         }
     }
 
