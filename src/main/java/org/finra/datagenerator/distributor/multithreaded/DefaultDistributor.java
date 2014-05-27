@@ -137,12 +137,11 @@ public class DefaultDistributor implements SearchDistributor {
             if (!Thread.interrupted()) {
                 HashMap<String, String> row = queue.poll();
                 if (row != null) {
-                    ConsumerResult cr = new ConsumerResult(maxNumberOfLines);
+                    ConsumerResult cr = new ConsumerResult(maxNumberOfLines, exitFlag);
                     for (Map.Entry<String, String> ent : row.entrySet()) {
                         cr.getDataMap().put(ent.getKey(), ent.getValue());
                     }
 
-                    exitFlag.set(cr.getExitFlag().get());
                     userDataOutput.consume(cr);
                     lines++;
                 }

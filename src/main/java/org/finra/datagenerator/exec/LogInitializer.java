@@ -48,7 +48,7 @@ public class LogInitializer {
         } else if (logLevel.equals("warn")) {
             level = Level.WARN;
         } else {
-            level = Level.WARN;
+            level = Level.INFO;
         }
 
         Logger.getRootLogger().setLevel(Level.OFF);

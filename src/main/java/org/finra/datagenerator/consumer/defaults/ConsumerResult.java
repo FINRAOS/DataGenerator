@@ -13,11 +13,12 @@ public class ConsumerResult {
 
     private final List<String> rowResults = new ArrayList<String>();
     private final Map<String, String> dataMap = new HashMap<String, String>();
-    private final AtomicBoolean exitFlag = new AtomicBoolean();
+    private final AtomicBoolean exitFlag;
     private final long maxNumberOfLines;
 
-    public ConsumerResult(long maxNumberOfLines) {
+    public ConsumerResult(long maxNumberOfLines, AtomicBoolean exitFlag) {
         this.maxNumberOfLines = maxNumberOfLines;
+        this.exitFlag = exitFlag;
     }
 
     public List<String> getRowResults() {
