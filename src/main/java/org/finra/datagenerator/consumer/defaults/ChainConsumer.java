@@ -1,6 +1,7 @@
 package org.finra.datagenerator.consumer.defaults;
 
 import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.writer.OutputWriter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public class ChainConsumer implements DataConsumer {
 
     private final List<DataConsumer> chain = new ArrayList<DataConsumer>();
+    private List<OutputWriter> ow = new ArrayList<OutputWriter>();
 
     public List<DataConsumer> getChain() {
         return chain;
@@ -21,11 +23,19 @@ public class ChainConsumer implements DataConsumer {
         return this;
     }
 
+    public ChainConsumer addOutputWriter(OutputWriter ow) {
+        this.ow.add(ow);
+        return this;
+    }
 
     @Override
     public void consume(ConsumerResult cr) {
         for (DataConsumer dc : chain) {
             dc.consume(cr);
         }
-    }
+
+        for(OutputWriter oneOw : ow){
+            oneOw.writeOutput(cr);
+        }
+   }
 }
