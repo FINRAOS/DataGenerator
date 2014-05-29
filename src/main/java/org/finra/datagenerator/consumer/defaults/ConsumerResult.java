@@ -29,4 +29,16 @@ public class ConsumerResult {
     public long getMaxNumberOfLines() {
         return maxNumberOfLines;
     }
+
+    public String getPipeDelimited(){
+        StringBuilder b = new StringBuilder(1024);
+        for (Map.Entry<String, String> entry : getDataMap().entrySet()) {
+            if (b.length() > 0) {
+                b.append('|');
+            }
+            b.append(entry.getValue());
+        }
+
+        return b.toString();
+    }
 }
