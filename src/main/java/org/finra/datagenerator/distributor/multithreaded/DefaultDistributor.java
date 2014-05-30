@@ -1,7 +1,16 @@
 package org.finra.datagenerator.distributor.multithreaded;
 
+import org.apache.commons.scxml.model.ModelException;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.defaults.ChainConsumer;
+import org.finra.datagenerator.consumer.defaults.ConsumerResult;
+import org.finra.datagenerator.distributor.SearchDistributor;
+import org.finra.datagenerator.distributor.SearchProblem;
+import org.finra.datagenerator.writer.DefaultWriter;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,16 +19,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.scxml.model.ModelException;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.ChainConsumer;
-import org.finra.datagenerator.consumer.defaults.ConsumerResult;
-import org.finra.datagenerator.consumer.defaults.DefaultConsumer;
-import org.finra.datagenerator.consumer.defaults.OutputStreamConsumer;
-import org.finra.datagenerator.distributor.SearchDistributor;
-import org.finra.datagenerator.distributor.SearchProblem;
-import org.xml.sax.SAXException;
 
 /**
  * Created by robbinbr on 3/24/14.
@@ -40,8 +39,7 @@ public class DefaultDistributor implements SearchDistributor {
 
     public DefaultDistributor() {
         ChainConsumer cc = new ChainConsumer();
-        cc.addConsumer(new DefaultConsumer());
-        cc.addConsumer(new OutputStreamConsumer(System.out));
+        cc.addOutputWriter(new DefaultWriter(System.out));
         this.userDataOutput = cc;
     }
 
@@ -84,7 +82,6 @@ public class DefaultDistributor implements SearchDistributor {
 
         // Start search threads (producers)
         ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
-        List<AtomicBoolean> flags = new ArrayList<AtomicBoolean>();
         for (SearchProblem problem : searchProblemList) {
             Runnable worker = null;
             try {
@@ -110,7 +107,6 @@ public class DefaultDistributor implements SearchDistributor {
             while (!exitFlag.get()) {
                 log.debug("Waiting for exit");
                 Thread.sleep(10);
-                exitFlag.set(checkAllFlags(flags));
             }
 
             // Now, wait for the output thread to get done
@@ -119,16 +115,6 @@ public class DefaultDistributor implements SearchDistributor {
         } catch (InterruptedException ex) {
             log.info("Interrupted !!... exiting", ex);
         }
-    }
-
-    private boolean checkAllFlags(List<AtomicBoolean> flags) {
-        for (AtomicBoolean flag : flags) {
-            if (!flag.get()) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void produceOutput() throws IOException {

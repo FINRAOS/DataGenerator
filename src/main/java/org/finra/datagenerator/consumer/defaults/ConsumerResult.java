@@ -1,8 +1,6 @@
 package org.finra.datagenerator.consumer.defaults;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -11,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ConsumerResult {
 
-    private final List<String> rowResults = new ArrayList<String>();
     private final Map<String, String> dataMap = new HashMap<String, String>();
     private final AtomicBoolean exitFlag;
     private final long maxNumberOfLines;
@@ -19,10 +16,6 @@ public class ConsumerResult {
     public ConsumerResult(long maxNumberOfLines, AtomicBoolean exitFlag) {
         this.maxNumberOfLines = maxNumberOfLines;
         this.exitFlag = exitFlag;
-    }
-
-    public List<String> getRowResults() {
-        return rowResults;
     }
 
     public Map<String, String> getDataMap() {
@@ -35,5 +28,17 @@ public class ConsumerResult {
 
     public long getMaxNumberOfLines() {
         return maxNumberOfLines;
+    }
+
+    public String getPipeDelimited(){
+        StringBuilder b = new StringBuilder(1024);
+        for (Map.Entry<String, String> entry : getDataMap().entrySet()) {
+            if (b.length() > 0) {
+                b.append('|');
+            }
+            b.append(entry.getValue());
+        }
+
+        return b.toString();
     }
 }
