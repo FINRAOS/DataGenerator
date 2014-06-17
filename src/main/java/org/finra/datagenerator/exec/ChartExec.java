@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
 public class ChartExec {
 
     protected static final Logger log = Logger.getLogger(ChartExec.class);
@@ -206,6 +205,7 @@ public class ChartExec {
                             + "'.");
                 }
                 String varName = line.substring(startIndex, lastIndex);
+                log.info("Found variable: " + varName);
                 outputVars.add(varName);
             }
             line = bReader.readLine();
