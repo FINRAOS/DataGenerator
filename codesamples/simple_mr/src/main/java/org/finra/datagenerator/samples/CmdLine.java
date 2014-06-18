@@ -54,7 +54,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.AbstractHandler;
 import org.mortbay.log.Log;
 
-public class CmdLineHdfs extends Configured implements Tool {
+public class CmdLine extends Configured implements Tool {
 
     private static final int BUFFER_SIZE = 1024 * 1024;
     private static DefaultDistributor defaultDist = null;
@@ -230,7 +230,7 @@ public class CmdLineHdfs extends Configured implements Tool {
     }
 
     public static void main(String args[]) throws Exception {
-        CmdLineHdfs cmd = new CmdLineHdfs();
+        CmdLine cmd = new CmdLine();
         Configuration conf = new Configuration();
         int res = ToolRunner.run(conf, cmd, args);
         System.exit(res);
