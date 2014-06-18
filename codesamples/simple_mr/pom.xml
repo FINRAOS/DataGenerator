@@ -3,12 +3,12 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.finra.datagenerator.samples</groupId>
-    <artifactId>noconditions</artifactId>
+    <artifactId>simple_mr</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>noconditions</name>
-    <description>DataGenerator sample code that does not involve conditions</description>
+    <name>simple_mr</name>
+    <description>DataGenerator sample code that can be run on MR</description>
     <licenses>
         <license>
             <name>APACHE V2.0</name>
