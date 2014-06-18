@@ -25,8 +25,11 @@ public class CmdLine {
     private static final DefaultDistributor defaultDist = new DefaultDistributor();
 
     public static void main(String args[]) throws Exception {
-        ChartExec chartExec = new ChartExec();
-        InputStream is = CmdLine.class.getResourceAsStream("/samplemachine.xml");
+        
+    	ChartExec chartExec = new ChartExec();
+        
+    	//will default to samplemachine, but you could specify a different file if you choose to
+        InputStream is = CmdLine.class.getResourceAsStream("/" + (args.length == 0 ? "samplemachine" : args[0]) + ".xml");
 
         chartExec.setInputFileStream(is);
 

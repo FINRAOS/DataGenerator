@@ -1,0 +1,35 @@
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:cs="http://commons.apache.org/scxml"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="SETV1" target="SETV1"/>
+    </state>
+
+    <state id="SETV1">
+        <onentry>
+            <assign name="var_out_V1" expr="set:{A,B,C}"/>
+        </onentry>
+        <transition event="SETV2" target="SETV2"/>
+    </state>
+
+    <state id="SETV2">
+        <onentry>
+            <assign name="var_out_V2" expr="set:{1,2,3}"/>
+            <assign name="var_out_V3" expr="#{customplaceholder}"/>
+        </onentry>
+        <transition event="SETV3" target="SETV3"/>
+    </state>
+    
+    <state id="SETV3">
+        <onentry>
+            <assign name="var_out_V4" expr="#{divideBy2}"/>
+        </onentry>
+        <transition event="end" target="end"/>
+    </state>
+
+    <state id="end">
+        <!-- We're done -->
+    </state>
+</scxml>
