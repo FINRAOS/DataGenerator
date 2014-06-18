@@ -13,15 +13,11 @@
  */
 package org.finra.datagenerator.samples.consumer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.consumer.defaults.ConsumerResult;
@@ -33,14 +29,7 @@ public class SampleMachineConsumer implements DataConsumer {
     private final int myTemplateHashCode = "#{customplaceholder}".hashCode();
     private final int divideBy2HashCode = "#{divideBy2}".hashCode();
     private final Random rand = new Random(System.currentTimeMillis());
-    private final Context context;
-    public SampleMachineConsumer(){
-    	this.context = null;
-    }
-    public SampleMachineConsumer(Context context){
-    	this.context = context;
-    }
-    
+
     @Override
     public void consume(ConsumerResult cr) {
     	// Go through our templates and fill them with values
@@ -67,18 +56,8 @@ public class SampleMachineConsumer implements DataConsumer {
         }
 
         // Using the values, compile our output. In our case, we will just write it to the console
-        if(context == null){
-        	System.out.println("Row=" + outputValues.toString());
-        //for HDFS we each mapper will write to thier own context
-        }else{
-        	try {
-				context.write(NullWritable.get(), new Text(outputValues.toString()));
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        }
+        System.out.println("Row=" + outputValues.toString());
+       
     }
 
 }
