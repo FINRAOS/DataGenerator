@@ -13,11 +13,17 @@
  */
 package org.finra.datagenerator.samples.consumer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -34,6 +40,8 @@ public class SampleMachineConsumer implements DataConsumer {
     private final int divideBy2HashCode = "#{divideBy2}".hashCode();
     private final Random rand = new Random(System.currentTimeMillis());
     private final Context context;
+    private final AtomicLong lines = new AtomicLong(0);
+    
     public SampleMachineConsumer(){
     	this.context = null;
     }
@@ -43,9 +51,11 @@ public class SampleMachineConsumer implements DataConsumer {
     
     @Override
     public void consume(ConsumerResult cr) {
+    	AtomicBoolean exitFlag = cr.getExitFlag();
+    	
     	// Go through our templates and fill them with values
         Map<String, String> originalRow = cr.getDataMap();
-        HashMap<String, String> outputValues = new HashMap<>();
+        HashMap<String, String> outputValues = new HashMap<String, String>();
         
         for (Entry<String, String> entry : originalRow.entrySet()) {
             String value = entry.getValue();
@@ -64,6 +74,7 @@ public class SampleMachineConsumer implements DataConsumer {
                 value = "" + Integer.valueOf(outputValues.get("var_out_V3")) / 2;
             }
             outputValues.put(entry.getKey(), value);
+            
         }
 
         // Using the values, compile our output. In our case, we will just write it to the console
@@ -72,13 +83,79 @@ public class SampleMachineConsumer implements DataConsumer {
         //for HDFS we each mapper will write to thier own context
         }else{
         	try {
-				context.write(NullWritable.get(), new Text(outputValues.toString()));
+				lines.addAndGet(1);
+	        	context.write(NullWritable.get(), new Text(outputValues.toString()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
         }
+        
+        if (exit.get()) {
+            log.info("Exit is true, setting exitflag to true");
+            exitFlag.set(true);
+            if (reportingThread != null) {
+                reportingThread.interrupt();
+            }
+        }
+
     }
+        
+    String reportingHost = null;
+    Thread reportingThread = null;
+    long lastReportedLineCount = 0;
+    AtomicBoolean exit = new AtomicBoolean(false);
+
+    public void setReportingHost(String hostPort) {
+            this.reportingHost = hostPort;
+            reportingThread = new Thread() {
+                @Override
+                public void run() {
+                    while (!this.isInterrupted()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+
+                        
+						long currentLineCount = lines.get();
+                        long delta = currentLineCount - lastReportedLineCount;
+                        lastReportedLineCount = currentLineCount;
+
+                        // Report the delta
+                        String url = "http://" + reportingHost + "/" + delta;
+                        String response = getUrlContents(url);
+                        if (response.contains("exit")) {
+                            exit.set(true);
+                        }
+                    }
+                }
+            };
+            reportingThread.setDaemon(true);
+            reportingThread.start();
+    }
+
+	private static String getUrlContents(String theUrl) {
+	    StringBuilder content = new StringBuilder();
+	    try {
+	        URL url = new URL(theUrl);
+	
+	        URLConnection urlConnection = url.openConnection();
+	        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+	        
+	        String line;
+	        while ((line = bufferedReader.readLine()) != null) {
+	            content.append(line).append("\n");
+	        }
+	        bufferedReader.close();
+	    } catch (IOException e) {
+	        log.error(e);
+	    	log.error("Error while reading: " + theUrl);
+	    }
+	    log.info(content.toString());
+	    return content.toString();
+}
 
 }

@@ -45,7 +45,6 @@ import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.exec.ChartExec;
 import org.finra.datagenerator.exec.LogInitializer;
-import org.finra.datagenerator.samples.consumer.SampleMachineConsumer;
 import org.finra.datagenerator.samples.distributor.hdfs.HDFSDistributor;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
@@ -56,7 +55,6 @@ import org.mortbay.log.Log;
 
 public class CmdLine extends Configured implements Tool {
 
-    private static final int BUFFER_SIZE = 1024 * 1024;
     private static DefaultDistributor defaultDist = null;
     private static HDFSDistributor hdfsDist = null;
     private Configuration configuration = null;
@@ -65,7 +63,7 @@ public class CmdLine extends Configured implements Tool {
     private static Server server;
     private static Handler jettyHandler;
     private static int maxScenarios;
-    private static AtomicLong globalLineCounter;
+    private static AtomicLong globalLineCounter = new AtomicLong(0);
     static final AtomicLong time = new AtomicLong(System.currentTimeMillis());
     static final long startTime = System.currentTimeMillis();
     static long lastCount = 0;
@@ -239,14 +237,10 @@ public class CmdLine extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         try {
-        	Log.info("defaultDist is " + defaultDist);
         	Logger.getLogger("org.apache").setLevel(Level.WARN);
 
             ChartExec chartExec = parseCommandLine(args);
-//            defaultDist = new DefaultDistributor();
-//            defaultDist.setDataConsumer(new SampleMachineConsumer());
-          
-            Log.info("defaultDist is " + defaultDist);
+
             if (defaultDist != null) {
                 chartExec.process(defaultDist);
             } else {
@@ -254,8 +248,11 @@ public class CmdLine extends Configured implements Tool {
                 hdfsDist.setOutputFileDir("dg-result");
                 chartExec.process(hdfsDist);
             }
-        } finally {
-        	 Log.info("Something bad happened");
+        } catch(Exception e){
+        	Log.warn(e);
+        	throw e;
+        }finally {
+        	 Log.info("Data Generation Complete");
         }
 
         return 0;
@@ -276,18 +273,19 @@ public class CmdLine extends Configured implements Tool {
         jettyHandler = new AbstractHandler() {
             @Override
             public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch) throws IOException, ServletException {
-                response.setContentType("text/plain");
-                if (maxScenarios > -1) {
+            	response.setContentType("text/plain");
+            	if (maxScenarios > -1) {
                     String delta = request.getRequestURI().substring(1); // Skip the /
                     if (StringUtils.isNumeric(delta)) {
                         long increment = Long.valueOf(delta);
                         long currentCount = globalLineCounter.addAndGet(increment);
-                        String status = "Lines:" + currentCount;
+                        String status = "Lines:" + currentCount + " MaxScenarios: " + maxScenarios;
                         if (currentCount < maxScenarios) {
-                            response.getWriter().write("ok " + currentCount);
+                            
+                        	response.getWriter().write("ok " + currentCount);
                             status += " ok";
                         } else {
-                            response.getWriter().write("exit " + currentCount);
+                         	response.getWriter().write("exit " + currentCount);
                             status += " exit";
                         }
                         long thisTime = System.currentTimeMillis();
@@ -299,7 +297,7 @@ public class CmdLine extends Configured implements Tool {
                                     double avgRate = 1000.0 * currentCount / (thisTime - startTime);
                                     double instRate = 1000.0 * (currentCount - lastCount) / (thisTime - oldValue);
                                     lastCount = currentCount;
-                                    System.out.println(status + " AvgRage:" + ((int) avgRate) + " lines/sec  instRate:" + ((int) instRate) + " lines/sec");
+                                    System.out.println(status + " AvgRate:" + ((int) avgRate) + " lines/sec  instRate:" + ((int) instRate) + " lines/sec");
                                 }
                             }
                         }
