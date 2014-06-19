@@ -49,6 +49,7 @@ public class DataGeneratorMapper extends Mapper<LongWritable, Text, LongWritable
     	log.info("Entering the mapper");
         // Prepare DataConsumer
         SampleMachineConsumer wrappingConsumer = new SampleMachineConsumer(context);
+        wrappingConsumer.setReportingHost(reportingHost);
         distributor.setDataConsumer(wrappingConsumer);
         distributor.setExitFlag(new AtomicBoolean(false));
 
@@ -63,12 +64,5 @@ public class DataGeneratorMapper extends Mapper<LongWritable, Text, LongWritable
         distributor.distribute(problemList);
 
         log.info("Writing results");
-
-        // Write results to context
-/*        for (String line : wrappingConsumer.getResults()) {
-         long val = counter.getAndIncrement();
-         log.info(val + "," + line);
-         context.write(new LongWritable(val), new Text(line));
-         }*/
     }
 }
