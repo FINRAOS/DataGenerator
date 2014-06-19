@@ -45,7 +45,6 @@ import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.exec.ChartExec;
 import org.finra.datagenerator.exec.LogInitializer;
-import org.finra.datagenerator.samples.consumer.SampleMachineConsumer;
 import org.finra.datagenerator.samples.distributor.hdfs.HDFSDistributor;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
@@ -56,7 +55,6 @@ import org.mortbay.log.Log;
 
 public class CmdLine extends Configured implements Tool {
 
-    private static final int BUFFER_SIZE = 1024 * 1024;
     private static DefaultDistributor defaultDist = null;
     private static HDFSDistributor hdfsDist = null;
     private Configuration configuration = null;
@@ -239,14 +237,10 @@ public class CmdLine extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         try {
-        	Log.info("defaultDist is " + defaultDist);
         	Logger.getLogger("org.apache").setLevel(Level.WARN);
 
             ChartExec chartExec = parseCommandLine(args);
-//            defaultDist = new DefaultDistributor();
-//            defaultDist.setDataConsumer(new SampleMachineConsumer());
-          
-            Log.info("defaultDist is " + defaultDist);
+
             if (defaultDist != null) {
                 chartExec.process(defaultDist);
             } else {
