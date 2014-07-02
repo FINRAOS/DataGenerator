@@ -226,8 +226,9 @@ public class ChartExec {
 
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
 
+        int i = 0;
         for (PossibleState state : bfsStates) {
-            dfsProblems.add(new SearchProblem(state, varsOut, initialVariablesMap, initialEventsList));
+            dfsProblems.add(new SearchProblem(state, varsOut, initialVariablesMap, initialEventsList, bfsStates.size(), i++));
         }
 
         return dfsProblems;

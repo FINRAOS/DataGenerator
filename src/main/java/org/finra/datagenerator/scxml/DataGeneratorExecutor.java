@@ -280,7 +280,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                         String nextVal = var.getValue();
                         //log.debug("key:" + var.getKey());
                         //log.debug("val:" + nextVal);
-                        if (nextVal.length() > 5 && nextVal.startsWith("set:{")) {
+                        if (nextVal != null && nextVal.length() > 5 && nextVal.startsWith("set:{")) {
                             // Remove the set:{ and }
                             String[] vals = nextVal.substring(5, nextVal.length() - 1).split(",");
 
