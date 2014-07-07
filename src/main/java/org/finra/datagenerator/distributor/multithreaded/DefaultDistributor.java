@@ -3,17 +3,13 @@ package org.finra.datagenerator.distributor.multithreaded;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.ChainConsumer;
-import org.finra.datagenerator.consumer.defaults.ConsumerResult;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
-import org.finra.datagenerator.writer.DefaultWriter;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -29,24 +25,12 @@ public class DefaultDistributor implements SearchDistributor {
 
     private int threadCount = 1;
     private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<HashMap<String, String>>();
-    private Thread outputThread;
     private DataConsumer userDataOutput;
     private String stateMachineText;
     private AtomicBoolean exitFlag = null;
     private long maxNumberOfLines = -1;
 
     private Object lock;
-
-    public DefaultDistributor() {
-        ChainConsumer cc = new ChainConsumer();
-        cc.addOutputWriter(new DefaultWriter(System.out));
-        this.userDataOutput = cc;
-    }
-
-    public DefaultDistributor setDataConsumer(DataConsumer dataConsumer) {
-        this.userDataOutput = dataConsumer;
-        return this;
-    }
 
     public DefaultDistributor setMaxNumberOfLines(long numberOfLines) {
         this.maxNumberOfLines = numberOfLines;
@@ -55,6 +39,12 @@ public class DefaultDistributor implements SearchDistributor {
 
     public DefaultDistributor setThreadCount(int threadCount) {
         this.threadCount = threadCount;
+        return this;
+    }
+
+    @Override
+    public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
+        this.userDataOutput = dataConsumer;
         return this;
     }
 
@@ -68,7 +58,7 @@ public class DefaultDistributor implements SearchDistributor {
     public void distribute(List<SearchProblem> searchProblemList) {
 
         // Start output thread (consumer)
-        outputThread = new Thread() {
+        Thread outputThread = new Thread() {
             @Override
             public void run() {
                 try {
@@ -123,12 +113,7 @@ public class DefaultDistributor implements SearchDistributor {
             if (!Thread.interrupted()) {
                 HashMap<String, String> row = queue.poll();
                 if (row != null) {
-                    ConsumerResult cr = new ConsumerResult(maxNumberOfLines, exitFlag);
-                    for (Map.Entry<String, String> ent : row.entrySet()) {
-                        cr.getDataMap().put(ent.getKey(), ent.getValue());
-                    }
-
-                    userDataOutput.consume(cr);
+                    userDataOutput.consume(row);
                     lines++;
                 }
 
@@ -145,8 +130,9 @@ public class DefaultDistributor implements SearchDistributor {
     }
 
     @Override
-    public void setExitFlag(AtomicBoolean exitFlag) {
+    public DefaultDistributor setExitFlag(AtomicBoolean exitFlag) {
         this.exitFlag = exitFlag;
+        return this;
     }
 
 }

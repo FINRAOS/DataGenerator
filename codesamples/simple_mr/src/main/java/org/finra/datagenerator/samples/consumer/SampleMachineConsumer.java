@@ -29,10 +29,10 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.ConsumerResult;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataTransformer;
 
-public class SampleMachineConsumer implements DataConsumer {
+public class SampleMachineConsumer implements DataTransformer {
 
     protected static final Logger log = Logger.getLogger(SampleMachineConsumer.class);
 
@@ -50,7 +50,7 @@ public class SampleMachineConsumer implements DataConsumer {
     }
     
     @Override
-    public void consume(ConsumerResult cr) {
+    public void consume(DataPipe cr) {
     	AtomicBoolean exitFlag = cr.getExitFlag();
     	
     	// Go through our templates and fill them with values

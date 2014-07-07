@@ -19,10 +19,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.ConsumerResult;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataTransformer;
 
-public class SampleMachineConsumer implements DataConsumer {
+public class SampleMachineConsumer implements DataTransformer {
 
     protected static final Logger log = Logger.getLogger(SampleMachineConsumer.class);
 
@@ -31,7 +31,7 @@ public class SampleMachineConsumer implements DataConsumer {
     private final Random rand = new Random(System.currentTimeMillis());
 
     @Override
-    public void consume(ConsumerResult cr) {
+    public void consume(DataPipe cr) {
     	// Go through our templates and fill them with values
         Map<String, String> originalRow = cr.getDataMap();
         HashMap<String, String> outputValues = new HashMap<>();
