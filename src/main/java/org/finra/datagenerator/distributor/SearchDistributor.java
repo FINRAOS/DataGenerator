@@ -28,5 +28,5 @@ public interface SearchDistributor {
 
     public void distribute(List<SearchProblem> searchProblemList);
 
-    public void setExitFlag(AtomicBoolean exitFlag);
+    public void setFlag(String name, AtomicBoolean flag);
 }

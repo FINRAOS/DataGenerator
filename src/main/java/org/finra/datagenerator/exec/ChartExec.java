@@ -1,7 +1,18 @@
 package org.finra.datagenerator.exec;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchDistributor;
@@ -9,12 +20,8 @@ import org.finra.datagenerator.distributor.SearchProblem;
 import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 public class ChartExec {
 
@@ -240,7 +247,7 @@ public class ChartExec {
 
         log.info("Found " + dfsProblems.size() + " states to distribute");
         distributor.setStateMachineText(machineText);
-        distributor.setExitFlag(new AtomicBoolean(false));
+//        distributor.setExitFlag(new AtomicBoolean(false));
         distributor.distribute(dfsProblems);
         log.info("DONE.");
     }
