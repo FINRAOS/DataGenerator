@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by robbinbr on 3/24/14.
  */
 public class DefaultDistributor implements SearchDistributor {
-
     protected static final Logger log = Logger.getLogger(DefaultDistributor.class);
 
     private int threadCount = 1;
@@ -34,8 +33,6 @@ public class DefaultDistributor implements SearchDistributor {
     private String stateMachineText;
     private Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
     private long maxNumberOfLines = -1;
-
-    private Object lock;
 
     public DefaultDistributor() {
         ChainConsumer cc = new ChainConsumer();
@@ -101,7 +98,7 @@ public class DefaultDistributor implements SearchDistributor {
             // Wait for exit
             while (!threadPool.isTerminated()) {
                 log.debug("Waiting for threadpool to terminate");
-                Thread.sleep(10);
+                Thread.sleep(1000);
             }
 
             while (!isSomeFlagTrue(flags)) {
