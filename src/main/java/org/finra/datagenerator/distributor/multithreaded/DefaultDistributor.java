@@ -138,9 +138,9 @@ public class DefaultDistributor implements SearchDistributor {
 			}
 		}
 
-        if (flags.get("exit").get()) {
-            log.info("Exiting, exit flag ('exit') is true");
-        }
+		if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
+			log.info("Exiting, exit flag ('exit') is true");
+		}
     }
 
     public static boolean isSomeFlagTrue(Map<String, AtomicBoolean> flags) {
