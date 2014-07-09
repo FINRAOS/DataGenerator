@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by robbinbr on 3/24/14.
  */
 public class DefaultDistributor implements SearchDistributor {
-
     protected static final Logger log = Logger.getLogger(DefaultDistributor.class);
 
     private int threadCount = 1;
@@ -32,10 +31,8 @@ public class DefaultDistributor implements SearchDistributor {
     private Thread outputThread;
     private DataConsumer userDataOutput;
     private String stateMachineText;
-    private AtomicBoolean exitFlag = null;
+    private Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
     private long maxNumberOfLines = -1;
-
-    private Object lock;
 
     public DefaultDistributor() {
         ChainConsumer cc = new ChainConsumer();
@@ -85,7 +82,7 @@ public class DefaultDistributor implements SearchDistributor {
         for (SearchProblem problem : searchProblemList) {
             Runnable worker = null;
             try {
-                worker = new SearchWorker(problem, stateMachineText, queue, exitFlag);
+                worker = new SearchWorker(problem, stateMachineText, queue, flags);
                 threadPool.execute(worker);
             } catch (ModelException e) {
                 log.error("Error while initializing SearchWorker threads", e);
@@ -101,12 +98,12 @@ public class DefaultDistributor implements SearchDistributor {
             // Wait for exit
             while (!threadPool.isTerminated()) {
                 log.debug("Waiting for threadpool to terminate");
-                Thread.sleep(10);
+                Thread.sleep(1000);
             }
 
-            while (!exitFlag.get()) {
-                log.debug("Waiting for exit");
-                Thread.sleep(10);
+            while (!isSomeFlagTrue(flags)) {
+                log.debug("Waiting for exit...");
+                Thread.sleep(1000);
             }
 
             // Now, wait for the output thread to get done
@@ -119,34 +116,44 @@ public class DefaultDistributor implements SearchDistributor {
 
     private void produceOutput() throws IOException {
         long lines = 0;
-        while (!Thread.interrupted() && !exitFlag.get()) {
-            if (!Thread.interrupted()) {
-                HashMap<String, String> row = queue.poll();
-                if (row != null) {
-                    ConsumerResult cr = new ConsumerResult(maxNumberOfLines, exitFlag);
-                    for (Map.Entry<String, String> ent : row.entrySet()) {
-                        cr.getDataMap().put(ent.getKey(), ent.getValue());
-                    }
+		while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
+			HashMap<String, String> row = queue.poll();
+			if (row != null) {
+				ConsumerResult cr = new ConsumerResult(maxNumberOfLines, flags);
+				for (Map.Entry<String, String> ent : row.entrySet()) {
+					cr.getDataMap().put(ent.getKey(), ent.getValue());
+				}
 
-                    userDataOutput.consume(cr);
-                    lines++;
-                }
+				userDataOutput.consume(cr);
+				lines++;
+			} else {
+				if (flags.containsKey("exit") && flags.containsKey("exit")) {
+					break;
+				}
+			}
 
-                if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-                    exitFlag.set(true);
-                    break;
-                }
-            }
-        }
+			if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
+				flags.put("exitNow", new AtomicBoolean(true));
+				break;
+			}
+		}
 
-        if (exitFlag.get()) {
-            log.info("Exiting, exitFlag=true");
-        }
+		if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
+			log.info("Exiting, exit flag ('exit') is true");
+		}
     }
 
+    public static boolean isSomeFlagTrue(Map<String, AtomicBoolean> flags) {
+        for (AtomicBoolean flag : flags.values()) {
+        	if (flag.get()) {
+        		return true;
+        	}
+        }
+        return false;
+    }
+    
     @Override
-    public void setExitFlag(AtomicBoolean exitFlag) {
-        this.exitFlag = exitFlag;
-    }
-
+	public void setFlag(String name, AtomicBoolean flag) {
+		flags.put(name, flag);
+	}
 }

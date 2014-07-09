@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.commons.scxml.SCXMLExecutor;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.TriggerEvent;
@@ -22,6 +23,7 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -330,7 +332,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * @throws SCXMLExpressionException
      * @throws IOException
      */
-    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap, List<String> initialEvents, AtomicBoolean exitFlag)
+    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, AtomicBoolean> flags)
             throws ModelException, SCXMLExpressionException,
             IOException, SAXException {
         //log.debug(Thread.currentThread().getName() + " starting DFS on " + startState);
@@ -352,7 +354,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         Map<String, String> dataSet = readVarsOut(varsOut);
         //log.debug(Thread.currentThread().getName() + " adding to queue: " + dataSet);
         queue.add(dataSet);
-        while (!exitFlag.get()) {
+        while (!DefaultDistributor.isSomeFlagTrue(flags)) {
             // Recursively delete one node from the end
             boolean empty;
             do {

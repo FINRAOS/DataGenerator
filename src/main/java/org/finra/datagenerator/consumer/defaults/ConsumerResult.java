@@ -8,22 +8,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by RobbinBr on 5/18/2014.
  */
 public class ConsumerResult {
-
     private final Map<String, String> dataMap = new HashMap<String, String>();
-    private final AtomicBoolean exitFlag;
+    private Map<String, AtomicBoolean> flags;
     private final long maxNumberOfLines;
 
-    public ConsumerResult(long maxNumberOfLines, AtomicBoolean exitFlag) {
+    public ConsumerResult(long maxNumberOfLines, Map<String, AtomicBoolean> flags) {
         this.maxNumberOfLines = maxNumberOfLines;
-        this.exitFlag = exitFlag;
+        this.flags = flags;
     }
 
     public Map<String, String> getDataMap() {
         return dataMap;
     }
 
-    public AtomicBoolean getExitFlag() {
-        return exitFlag;
+    public Map<String, AtomicBoolean> getFlags() {
+        return flags;
     }
 
     public long getMaxNumberOfLines() {
