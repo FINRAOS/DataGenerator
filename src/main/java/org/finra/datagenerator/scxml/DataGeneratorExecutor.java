@@ -268,6 +268,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 //log.debug("**SET INIT TO:" + initialState.nextStateName);
                 this.getStateMachine().setInitial(initialState.nextStateName);
                 this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get(initialState.nextStateName));
+
                 for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                     this.getRootContext().set(var.getKey(), var.getValue());
                 }
@@ -458,7 +459,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         int lengthOfScenario, int minCount) throws ModelException,
         SCXMLExpressionException, IOException, SAXException {
 
-        log.info("Inside search for scenarios");
+        //log.info("Inside search for scenarios");
         int numberOfScenariosGenerated = 0;
         // Next-level PossibleStates
         List<PossibleState> nextLevel = new ArrayList<PossibleState>();
@@ -475,14 +476,14 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         while ((nextLevel.size() < minCount) && (minCount > 0)) {
             prevNextLevelSize = nextLevel.size();
             levels++;
-            log.info("At level:" + levels + " current size:" + prevNextLevelSize);
+            //log.info("At level:" + levels + " current size:" + prevNextLevelSize);
             // Initialize list of states for this depth
             List<PossibleState> states = new ArrayList<PossibleState>();
             states.addAll(nextLevel);
             nextLevel = new ArrayList<PossibleState>();
 
             for (PossibleState iState : states) {
-                log.info("Expanding state: " + iState.id);
+                //log.info("Expanding state: " + iState.id);
                 // Get initial variables
                 Map<String, String> stateVariables = iState.getVariablesAssignment();
 
@@ -494,10 +495,12 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 if (iState.id != null) {
                     this.getStateMachine().setInitial(iState.id);
                     this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get(iState.id));
+
+                    //this.reset() moved up before the for loop, potential fix for infinite loop issue
+                    this.reset();
                     for (Map.Entry<String, String> var : iState.getVariablesAssignment().entrySet()) {
                         this.getRootContext().set(var.getKey(), var.getValue());
                     }
-                    this.reset();
                 } else {
                     resetStateMachine(varsOut, initialVariablesMap, stateEventPrefix, stateVariables);
                 }
@@ -511,10 +514,10 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                     // fire the event
                     List<String> singleEventList = new ArrayList<String>();
                     singleEventList.add(pEvent);
-                    log.info("Current state:" + this.getListener().getCurrentState().getId());
-                    log.info("Firing:" + singleEventList);
+                    //log.info("Current state:" + this.getListener().getCurrentState().getId());
+                    //log.info("Firing:" + singleEventList);
                     fireEvents(singleEventList);
-                    log.info("Now in state:" + this.getListener().getCurrentState().getId());
+                    //log.info("Now in state:" + this.getListener().getCurrentState().getId());
 
                     // Construct our current state, so that we can save it
                     PossibleState possibleState = new PossibleState();
