@@ -249,10 +249,10 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             PossibleState initialState = states.get(0);
             this.getStateMachine().setInitial(initialState.nextStateName);
             this.getStateMachine().setInitialTarget((TransitionTarget) this.getStateMachine().getTargets().get(initialState.nextStateName));
-            this.reset();
             for (Map.Entry<String, String> var : initialState.getVariablesAssignment().entrySet()) {
                 this.getRootContext().set(var.getKey(), var.getValue());
             }
+            this.reset();
         }
 
         //log.debug("Loop start");
