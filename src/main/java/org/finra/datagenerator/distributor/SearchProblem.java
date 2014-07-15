@@ -1,18 +1,15 @@
 package org.finra.datagenerator.distributor;
 
 import com.google.gson.Gson;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.scxml.PossibleState;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.scxml.PossibleState;
 
 /**
  * Created by robbinbr on 3/14/14.
  */
-
-
 public class SearchProblem {
 
     protected static final Logger log = Logger.getLogger(SearchProblem.class);
@@ -22,17 +19,30 @@ public class SearchProblem {
     private Set<String> varsOut;
     private Map<String, String> initialVariablesMap;
     private List<String> initialEventsList;
+    private int totalNumberOfProblems;
+    private int thisProblemIndex;
 
-    public static SearchProblem fromJson(String json){
+    public static SearchProblem fromJson(String json) {
         return gson.fromJson(json, SearchProblem.class);
     }
 
     public SearchProblem(PossibleState initialState, Set<String> varsOut,
-                         Map<String, String> initialVariablesMap, List<String> initialEventsList) {
+            Map<String, String> initialVariablesMap, List<String> initialEventsList,
+            int totalNumberOfProblems, int thisProblemIndex) {
         this.initialState = initialState;
         this.varsOut = varsOut;
         this.initialVariablesMap = initialVariablesMap;
         this.initialEventsList = initialEventsList;
+        this.totalNumberOfProblems = totalNumberOfProblems;
+        this.thisProblemIndex = thisProblemIndex;
+    }
+
+    public int getTotalNumberOfProblems() {
+        return totalNumberOfProblems;
+    }
+
+    public int getThisProblemIndex() {
+        return thisProblemIndex;
     }
 
     public PossibleState getInitialState() {
@@ -51,7 +61,7 @@ public class SearchProblem {
         return initialEventsList;
     }
 
-    public String toJson(){
+    public String toJson() {
         return gson.toJson(this);
     }
 }

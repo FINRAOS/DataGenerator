@@ -27,9 +27,9 @@ public class SearchWorker implements Runnable {
     private Set<String> varsOut;
     private Map<String, String> initialVariablesMap;
     private List<String> initialEventsList;
-    private final AtomicBoolean exitFlag;
+    private Map<String, AtomicBoolean> flags;
 
-    public SearchWorker(SearchProblem problem, String stateMachineText, Queue queue, AtomicBoolean exitFlag) throws ModelException,
+    public SearchWorker(SearchProblem problem, String stateMachineText, Queue queue, Map<String, AtomicBoolean> flags) throws ModelException,
             IOException, SAXException {
         this.queue = queue;
         this.executor = new DataGeneratorExecutor(stateMachineText);
@@ -37,19 +37,19 @@ public class SearchWorker implements Runnable {
         this.varsOut = problem.getVarsOut();
         this.initialVariablesMap = problem.getInitialVariablesMap();
         this.initialEventsList = problem.getInitialEventsList();
-        this.exitFlag = exitFlag;
+        this.flags = flags;
     }
 
     @Override
     public void run() {
         try {
             log.info(Thread.currentThread().getName() + " is starting DFS");
-            executor.searchForScenariosDFS(initialState, queue, varsOut, initialVariablesMap, initialEventsList, exitFlag);
+            executor.searchForScenariosDFS(initialState, queue, varsOut, initialVariablesMap, initialEventsList, flags);
             log.info(Thread.currentThread().getName() + " is done with DFS");
         } catch (Exception exc) {
             log.error("Exception has occurred during DFS worker thread", exc);
         }
 
-        exitFlag.set(true);
+        flags.put("exit", new AtomicBoolean(true));
     }
 }

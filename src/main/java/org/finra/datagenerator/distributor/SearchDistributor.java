@@ -24,11 +24,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author robbinbr
  */
 public interface SearchDistributor {
-    public SearchDistributor setExitFlag(AtomicBoolean exitFlag);
-
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
     public SearchDistributor setStateMachineText(String stateMachineText);
 
     public void distribute(List<SearchProblem> searchProblemList);
+
+    public void setFlag(String name, AtomicBoolean flag);
 }

@@ -1,20 +1,29 @@
 package org.finra.datagenerator.exec;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
 import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
+import org.finra.datagenerator.utils.ScXmlUtils;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 public class ChartExec {
 
@@ -185,33 +194,8 @@ public class ChartExec {
     }
 
     private HashSet<String> extractOutputVariables(String stateMachineText) throws IOException {
-        InputStream is = new ByteArrayInputStream(stateMachineText.getBytes());
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(is));
-
-        HashSet<String> outputVars = new HashSet<String>();
-        String line = bReader.readLine();
-        while (line != null) {
-            if (line.contains("var_out")) {
-                int startIndex = line.indexOf("var_out");
-                int lastIndex = startIndex;
-                while (lastIndex < line.length() && (Character.isLetter(line.charAt(lastIndex))
-                        || Character.isDigit(line.charAt(lastIndex))
-                        || line.charAt(lastIndex) == '_'
-                        || line.charAt(lastIndex) == '-')) {
-                    lastIndex++;
-                }
-                if (lastIndex == line.length()) {
-                    throw new IOException("Reached the end of the line while parsing variable name in line: '" + line
-                            + "'.");
-                }
-                String varName = line.substring(startIndex, lastIndex);
-                log.info("Found variable: " + varName);
-                outputVars.add(varName);
-            }
-            line = bReader.readLine();
-        }
-
-        return outputVars;
+        Set<String> names = ScXmlUtils.getAttributesValues(stateMachineText, "assign", "name");
+        return (HashSet<String>) names;
     }
 
     public List<SearchProblem> prepare(String stateMachineText) throws Exception {
@@ -226,8 +210,9 @@ public class ChartExec {
 
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
 
+        int i = 0;
         for (PossibleState state : bfsStates) {
-            dfsProblems.add(new SearchProblem(state, varsOut, initialVariablesMap, initialEventsList));
+            dfsProblems.add(new SearchProblem(state, varsOut, initialVariablesMap, initialEventsList, bfsStates.size(), i++));
         }
 
         return dfsProblems;
@@ -239,7 +224,7 @@ public class ChartExec {
 
         log.info("Found " + dfsProblems.size() + " states to distribute");
         distributor.setStateMachineText(machineText);
-        distributor.setExitFlag(new AtomicBoolean(false));
+//        distributor.setExitFlag(new AtomicBoolean(false));
         distributor.distribute(dfsProblems);
         log.info("DONE.");
     }
