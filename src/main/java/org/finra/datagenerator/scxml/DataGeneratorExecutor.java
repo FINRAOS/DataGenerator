@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +25,7 @@ import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
+import org.finra.datagenerator.utils.ScXmlUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -31,10 +33,10 @@ import org.xml.sax.SAXException;
  * Created by robbinbr on 3/3/14.
  */
 public class DataGeneratorExecutor extends SCXMLExecutor {
-
     protected static final Logger log = Logger.getLogger(DataGeneratorExecutor.class);
 
     private StateMachineListener listener;
+    private final static String setPrefix = "set:{";
 
     public DataGeneratorExecutor() throws ModelException {
         super();
@@ -205,13 +207,26 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     private HashMap<String, String> readVarsOut(Set<String> varsOut) {
-        HashMap<String, String> result = new HashMap<String, String>();
+    	HashMap<String, String> result = new HashMap<String, String>();
         for (String varName : varsOut) {
             result.put(varName, (String) this.getRootContext().get(varName));
         }
         return result;
     }
 
+    private Map<String, Map<String, String>> readVarsOut(Map<String, Set<String>> varsOut) {
+    	Map<String, Map<String, String>> result = new HashMap<String, Map<String,String>>();
+    	for (String stepName : varsOut.keySet()) {
+    		Set<String> stepVars = varsOut.get(stepName);
+    		Map<String, String> stepVarsOut = new HashMap<String, String>();
+    		for (String varNamr : stepVars) {
+    			stepVarsOut.put(varNamr, (String) this.getRootContext().get(varNamr));
+    		}
+    		result.put(stepName, stepVarsOut);
+    	}
+        return result;
+    }
+    
     /**
      * Check all the variables in the context. Generate a state with a list of variables correctly assigned
      */
@@ -235,12 +250,12 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         return possiblePositiveStates;
     }
 
-    public void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList, Set<String> varsOut,
+    public void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList, Map<String, Set<String>> varsOut,
             Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, String> expandedVars) throws
             ModelException, IOException, SCXMLExpressionException {
         //log.debug("TraceDepth");
         if (possiblePositiveStatesList.isEmpty()) {
-            this.resetStateMachine(varsOut, initialVariablesMap, initialEvents, expandedVars);
+            this.resetStateMachine(ScXmlUtils.mapSetToSet(varsOut), initialVariablesMap, initialEvents, expandedVars);
         } else {
             ArrayList<PossibleState> states = possiblePositiveStatesList.get(possiblePositiveStatesList.size() - 1);
             PossibleState initialState = states.get(0);
@@ -253,8 +268,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
 
         //log.debug("Loop start");
-        while (listener.getCurrentState() == null
-                || (listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end"))) {
+        while (listener.getCurrentState() == null || (listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end"))) {
             //log.debug("ALL AFTER RESET: " + possiblePositiveStatesList);
             // Replay the last initial state
             /*for (ArrayList<PossibleState> states : possiblePositiveStatesList)*/
@@ -272,39 +286,39 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
                 //log.debug("current state:" + listener.getCurrentState().getId());
                 if (!initialState.varsInspected) {
-                    HashMap<String, String> varsVals = readVarsOut(varsOut);
+                   Map<String, Map<String, String>> varsVals = readVarsOut(varsOut);
+                   Map<String, String> varsValsSimple = readVarsOut(ScXmlUtils.mapSetToSet(varsOut));
                     //log.debug("varsVals has " + varsVals);
                     //log.debug("Vars not initialzed, initializing");
-                    if (varsVals == null || varsVals.isEmpty()) {
+                    if (varsValsSimple == null || varsValsSimple.isEmpty()) {
                         throw new IOException("Empty or null varsVals");
                     }
-                    for (Map.Entry<String, String> var : varsVals.entrySet()) {
-                        String nextVal = var.getValue();
-                        //log.debug("key:" + var.getKey());
-                        //log.debug("val:" + nextVal);
-                        if (nextVal != null && nextVal.length() > 5 && nextVal.startsWith("set:{")) {
-                            // Remove the set:{ and }
-                            String[] vals = nextVal.substring(5, nextVal.length() - 1).split(",");
-
-                            // Delete this state from the list
-                            states.remove(0);
-                            for (String val : vals) {
-                                PossibleState possibleState = new PossibleState();
-                                possibleState.id = initialState.id;
-                                possibleState.nextStateName = initialState.nextStateName;
-                                possibleState.transitionEvent = initialState.transitionEvent;
-                                possibleState.getVariablesAssignment().putAll(initialState.getVariablesAssignment());
-                                possibleState.getVariablesAssignment().put(var.getKey(), val);
-                                possibleState.varsInspected = true;
-                                states.add(0, possibleState);
-                                //log.debug("Adding:" + possibleState);
-                            }
-                        } else {
-                            states.get(0).getVariablesAssignment().put(var.getKey(), nextVal);
-                            states.get(0).varsInspected = true;
+                    
+					for (String stepName : varsVals.keySet()) {
+						String[][] varsValsForStepMultiplied = multiplyValues(varsVals.get(stepName));
+						if (null != varsValsForStepMultiplied) {
+							String[] tt = varsValsForStepMultiplied[0];
+							states.remove(0);
+							for(int i = 1; i < varsValsForStepMultiplied.length ; i++) {
+								PossibleState possibleState = new PossibleState();
+	                            possibleState.id = initialState.id;
+	                            possibleState.nextStateName = initialState.nextStateName;
+	                            possibleState.transitionEvent = initialState.transitionEvent;
+	                            possibleState.getVariablesAssignment().putAll(initialState.getVariablesAssignment());
+								for (int y = 0; y < tt.length; y++) {
+	                                possibleState.getVariablesAssignment().put(tt[y], varsValsForStepMultiplied[i][y]);
+	                            }
+								 possibleState.varsInspected = true;
+	                             states.add(0, possibleState);
+							}
+						} else {
+							for (Entry<String, String> rr : varsVals.get(stepName).entrySet()) {
+								states.get(0).getVariablesAssignment().put(rr.getKey(), rr.getValue());
+	                            states.get(0).varsInspected = true;
+							}
                         }
-                    }
-                    initialState = states.get(0);
+						initialState = states.get(0);
+					}
                 }
 
                 // Set the variables
@@ -314,7 +328,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             }
 
             //log.debug("ALL BEFORE: " + possiblePositiveStatesList);
-            ArrayList<PossibleState> nextPositiveStates = findPossibleStates(varsOut);
+            ArrayList<PossibleState> nextPositiveStates = findPossibleStates(ScXmlUtils.mapSetToSet(varsOut));
             //System.err.println("nextPositiveStates: " + nextPositiveStates);
 
             possiblePositiveStatesList.add(nextPositiveStates);
@@ -332,7 +346,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * @throws SCXMLExpressionException
      * @throws IOException
      */
-    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, AtomicBoolean> flags)
+    public void searchForScenariosDFS(PossibleState startState, Queue queue, Map<String, Set<String>> varsOut, Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, AtomicBoolean> flags)
             throws ModelException, SCXMLExpressionException,
             IOException, SAXException {
         //log.debug(Thread.currentThread().getName() + " starting DFS on " + startState);
@@ -345,13 +359,12 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         // First we have to generate the first level in the depth, so that we have something to start
         // the recursion from
         //log.debug("Searching for the initial next possible states");
-        traceDepth(possiblePositiveStatesList, varsOut, initialVariablesMap, startState.getEvents(), startState
-                .getVariablesAssignment());
+        traceDepth(possiblePositiveStatesList, varsOut, initialVariablesMap, startState.getEvents(), startState.getVariablesAssignment());
         //log.debug("Initial depth trace: " + possiblePositiveStatesList);
 
         int scenariosCount = 0;
         // Now we have the initial list with sets decompressed
-        Map<String, String> dataSet = readVarsOut(varsOut);
+        Map<String, String> dataSet = readVarsOut(ScXmlUtils.mapSetToSet(varsOut));
         //log.debug(Thread.currentThread().getName() + " adding to queue: " + dataSet);
         queue.add(dataSet);
         while (!DefaultDistributor.isSomeFlagTrue(flags)) {
@@ -383,7 +396,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             traceDepth(possiblePositiveStatesList, varsOut, initialVariablesMap, initialEvents, null);
             //log.debug("**After finding next, depth trace: " + possiblePositiveStatesList);
 
-            dataSet = readVarsOut(varsOut);
+            dataSet = readVarsOut(ScXmlUtils.mapSetToSet(varsOut));
             //log.debug(Thread.currentThread().getName() + " adding to queue: " + dataSet);
             queue.add(dataSet);
 
@@ -535,8 +548,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * @param eventList
      * @return
      */
-    private ArrayList<String> pruneEvents(ArrayList<String> eventList, List<String> initialEventsList,
-            int maxEventReps, int lengthOfScenario) {
+    private ArrayList<String> pruneEvents(ArrayList<String> eventList, List<String> initialEventsList, int maxEventReps, int lengthOfScenario) {
         // Count the number of repetitions of every event
         ArrayList<String> all = new ArrayList<String>();
         all.addAll(initialEventsList);
@@ -580,7 +592,67 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             }
             b.append(event);
         }
-
-        //log.info(b);
     }
+    
+    private String[][] multiplyValues(Map<String, String> varsValsForStep) {
+		Map<String, String[]> values = new HashMap<String, String[]>();
+		List<String> keys = new ArrayList<String>();
+		
+		for (Entry<String, String> varsValForStep : varsValsForStep.entrySet()) {
+			String aValue = varsValForStep.getValue();
+			keys.add(varsValForStep.getKey());
+			String[] vals = extractSetValues(aValue);
+			if (null != vals) {
+				values.put(varsValForStep.getKey(), vals);
+			}
+		}
+		
+		if (values.size() == 0) {
+			return null;
+		}
+		
+		int resultLength = 1;
+		for(String key : values.keySet()) {
+			resultLength *= values.get(key).length;
+		}
+
+		// go through result matrix and fill it
+		// one row for columns names 
+		String[][] resultAsArray = new String[resultLength + 1][varsValsForStep.size()];
+
+		//set column names
+		for(int i = 0; i < varsValsForStep.size(); i++ ) {
+			resultAsArray[0][i] = keys.get(i); 
+		}
+		
+		int stepSize = 1;
+		
+		int i = 0;
+		for(String valueKey : varsValsForStep.keySet()) {
+			String value = varsValsForStep.get(valueKey);
+			if (value.contains(setPrefix)) {
+				String[] value1 = values.get(valueKey);
+				int step = resultLength / (value1.length * stepSize);
+				for(int y1 = 0; y1 < resultLength; y1++) {
+					resultAsArray[y1 + 1][i] = value1[(y1/step)%value1.length];
+				}
+				stepSize *= 2;				
+			} else {
+				for(int y2 = 1; y2 <= resultLength; y2++) {
+					resultAsArray[y2][i] = value;
+				}
+			}
+			i++;
+		}
+		
+		return resultAsArray;
+	}
+    
+	private String[] extractSetValues(String aValue) {
+		if (aValue != null && aValue.length() > setPrefix.length() && aValue.startsWith(setPrefix)) {
+			// Remove the set:{ and }
+			return aValue.substring(setPrefix.length(), aValue.length() - 1).split(",");
+		}
+		return null;
+	}
 }

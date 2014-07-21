@@ -24,13 +24,12 @@ public class SearchWorker implements Runnable {
     private PossibleState initialState;
     private Queue queue;
     private DataGeneratorExecutor executor;
-    private Set<String> varsOut;
+    private Map<String, Set<String>> varsOut;
     private Map<String, String> initialVariablesMap;
     private List<String> initialEventsList;
     private Map<String, AtomicBoolean> flags;
 
-    public SearchWorker(SearchProblem problem, String stateMachineText, Queue queue, Map<String, AtomicBoolean> flags) throws ModelException,
-            IOException, SAXException {
+    public SearchWorker(SearchProblem problem, String stateMachineText, Queue queue, Map<String, AtomicBoolean> flags) throws ModelException, IOException, SAXException {
         this.queue = queue;
         this.executor = new DataGeneratorExecutor(stateMachineText);
         this.initialState = problem.getInitialState();

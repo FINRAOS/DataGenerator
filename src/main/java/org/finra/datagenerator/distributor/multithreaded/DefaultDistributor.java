@@ -140,7 +140,6 @@ public class DefaultDistributor implements SearchDistributor {
 
 		if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
 			log.info("Exiting, exit flag ('exit') is true");
-			//System.out.println("Exiting, exit flag ('exit') is true");
 		}
     }
 
