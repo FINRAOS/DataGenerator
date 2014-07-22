@@ -8,13 +8,12 @@ import java.util.Map;
 /**
  * Created by robbinbr on 3/11/14.
  */
-
 /**
  * Defines a possible state that a state can be in. A possible state is a
  * combination of a state and values for variables.
  */
-
 public class PossibleState {
+
     String id;
     /**
      * The name of the next state
@@ -32,13 +31,12 @@ public class PossibleState {
     /**
      * Any events that should be executed between start state and this state
      */
-
     private List<String> events = new ArrayList<String>();
 
     @Override
     public String toString() {
-        return "id=" + id + ",next:" + nextStateName + ",trans:" + transitionEvent + "," +
-                "varsInspected:" + varsInspected + ",vars:" + variablesAssignment + ",events:" + events;
+        return "{id=" + id + ",next:" + nextStateName + ",trans:" + transitionEvent + ","
+                + "varsInspected:" + varsInspected + ",vars:" + variablesAssignment + ",events:" + events + "}\n";
     }
 
     public List<String> getEvents() {
