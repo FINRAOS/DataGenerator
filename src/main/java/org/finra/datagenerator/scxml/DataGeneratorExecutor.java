@@ -37,6 +37,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
     private StateMachineListener listener;
     private final static String setPrefix = "set:{";
+    private final int maxCombinationsInsideStep = 10000;
 
     public DataGeneratorExecutor() throws ModelException {
         super();
@@ -295,7 +296,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                     }
                     
 					for (String stepName : varsVals.keySet()) {
-						String[][] varsValsForStepMultiplied = multiplyValues(varsVals.get(stepName));
+						String[][] varsValsForStepMultiplied = multiplyValues(varsVals.get(stepName), stepName);
 						if (null != varsValsForStepMultiplied) {
 							String[] tt = varsValsForStepMultiplied[0];
 							states.remove(0);
@@ -594,7 +595,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
     }
     
-    private String[][] multiplyValues(Map<String, String> varsValsForStep) {
+    private String[][] multiplyValues(Map<String, String> varsValsForStep, String stepName) {
 		Map<String, String[]> values = new HashMap<String, String[]>();
 		List<String> keys = new ArrayList<String>();
 		
@@ -615,6 +616,10 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 		for(String key : values.keySet()) {
 			resultLength *= values.get(key).length;
 		}
+		
+		if (resultLength > maxCombinationsInsideStep) {
+			throw new RuntimeException("Oops! We have '" + resultLength +"' combinations inside '" + stepName + "' step, but '" + maxCombinationsInsideStep + "' is max allowed. Fix your test case, please!");
+		}
 
 		// go through result matrix and fill it
 		// one row for columns names 
@@ -633,6 +638,10 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 			if (value.contains(setPrefix)) {
 				String[] value1 = values.get(valueKey);
 				int step = resultLength / (value1.length * stepSize);
+				if (step < 1) {
+					step = 1;
+				}
+				
 				for(int y1 = 0; y1 < resultLength; y1++) {
 					resultAsArray[y1 + 1][i] = value1[(y1/step)%value1.length];
 				}
