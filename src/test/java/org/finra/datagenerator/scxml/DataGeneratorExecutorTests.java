@@ -3,6 +3,7 @@ package org.finra.datagenerator.scxml;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.ModelException;
+import org.finra.datagenerator.utils.ScXmlUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +19,7 @@ import java.util.*;
 public class DataGeneratorExecutorTests {
 
     private DataGeneratorExecutor executor;
-    private Set<String> varsOut;
+    private Map<String, Set<String>> varsOut;
     private Map<String, String> initialVarsMap;
     private List<String> initialEvents;
 
@@ -26,13 +27,22 @@ public class DataGeneratorExecutorTests {
     public void setUpExecutor() throws ModelException, SAXException, IOException {
         executor = new DataGeneratorExecutor(FileUtils.readFileToString(new File("src/test/resources/test.xml")));
 
-        varsOut = new HashSet<String>();
-        varsOut.addAll(Arrays.asList(new String[]{"var_out_RECORD_TYPE", "var_out_REQUEST_IDENTIFIER",
-                "var_out_MANIFEST_GENERATION_DATETIME"}));
-
+        varsOut = new HashMap<String, Set<String>>();
+        Set<String> var1 = new HashSet<String>();
+        var1.add("var_out_RECORD_TYPE");
+        varsOut.put("RECORD_TYPE", var1);
+        
+        Set<String> var2 = new HashSet<String>();
+        var2.add("var_out_REQUEST_IDENTIFIER");
+        varsOut.put("REQUEST_IDENTIFIER", var2);
+        
+        Set<String> var3 = new HashSet<String>();
+        var1.add("var_out_MANIFEST_GENERATION_DATETIME");
+        varsOut.put("MANIFEST_GENERATION_DATETIME", var3);
+    
         initialVarsMap = new HashMap<String, String>();
         initialEvents = new ArrayList<String>();
-        executor.resetStateMachine(varsOut, initialVarsMap, initialEvents);
+        executor.resetStateMachine(ScXmlUtils.mapSetToSet(varsOut), initialVarsMap, initialEvents);
     }
 
     @Test
@@ -75,8 +85,7 @@ public class DataGeneratorExecutorTests {
 
     @Test
     public void testBFSOneLevel() throws ModelException, SCXMLExpressionException, SAXException, IOException {
-        List<PossibleState> statesAfterBFS = executor.searchForScenarios(varsOut, initialVarsMap, initialEvents, 5,
-                10000, 50, 3);
+        List<PossibleState> statesAfterBFS = executor.searchForScenarios(ScXmlUtils.mapSetToSet(varsOut), initialVarsMap, initialEvents, 5, 10000, 50, 3);
         Assert.assertEquals(3, statesAfterBFS.size());
         Assert.assertEquals("a", statesAfterBFS.get(0).getVariablesAssignment().get("var_out_RECORD_TYPE"));
         Assert.assertEquals("b", statesAfterBFS.get(1).getVariablesAssignment().get("var_out_RECORD_TYPE"));
@@ -85,7 +94,7 @@ public class DataGeneratorExecutorTests {
 
     @Test
     public void testBFSTwoLevels() throws ModelException, SCXMLExpressionException, SAXException, IOException {
-        List<PossibleState> statesAfterBFS = executor.searchForScenarios(varsOut, initialVarsMap, initialEvents, 5,
+        List<PossibleState> statesAfterBFS = executor.searchForScenarios(ScXmlUtils.mapSetToSet(varsOut), initialVarsMap, initialEvents, 5,
                 10000, 50, 9);
         Assert.assertEquals(9, statesAfterBFS.size());
         Assert.assertEquals("a", statesAfterBFS.get(0).getVariablesAssignment().get("var_out_RECORD_TYPE"));

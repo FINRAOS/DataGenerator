@@ -1,17 +1,14 @@
 package org.finra.datagenerator.exec;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -41,7 +38,7 @@ public class ChartExec {
      */
     private String initialVariables = null;
 
-    private static HashSet<String> varsOut = null;
+    private static Map<String, Set<String>> varsOut = null;
     /**
      * The initial set of events to trigger before re-searching for a new scenario
      */
@@ -193,9 +190,8 @@ public class ChartExec {
         return true;
     }
 
-    private HashSet<String> extractOutputVariables(String stateMachineText) throws IOException {
-        Set<String> names = ScXmlUtils.getAttributesValues(stateMachineText, "assign", "name");
-        return (HashSet<String>) names;
+    private Map<String, Set<String>> extractOutputVariables(String stateMachineText) throws IOException {
+        return ScXmlUtils.getAttributesValuesForNodes(stateMachineText, "assign", "name");
     }
 
     public List<SearchProblem> prepare(String stateMachineText) throws Exception {
@@ -205,7 +201,7 @@ public class ChartExec {
 
         varsOut = extractOutputVariables(stateMachineText);
         // Get BFS-generated states for bootstrapping parallel search
-        List<PossibleState> bfsStates = executor.searchForScenarios(varsOut, initialVariablesMap, initialEventsList,
+        List<PossibleState> bfsStates = executor.searchForScenarios(ScXmlUtils.mapSetToSet(varsOut), initialVariablesMap, initialEventsList,
                 maxEventReps, maxScenarios, lengthOfScenario, bootstrapMin);
 
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
@@ -224,7 +220,6 @@ public class ChartExec {
 
         log.info("Found " + dfsProblems.size() + " states to distribute");
         distributor.setStateMachineText(machineText);
-//        distributor.setExitFlag(new AtomicBoolean(false));
         distributor.distribute(dfsProblems);
         log.info("DONE.");
     }

@@ -16,7 +16,7 @@ public class SearchProblem {
     private static final Gson gson = new Gson();
 
     private PossibleState initialState;
-    private Set<String> varsOut;
+    private Map<String, Set<String>> varsOut;
     private Map<String, String> initialVariablesMap;
     private List<String> initialEventsList;
     private int totalNumberOfProblems;
@@ -26,8 +26,7 @@ public class SearchProblem {
         return gson.fromJson(json, SearchProblem.class);
     }
 
-    public SearchProblem(PossibleState initialState, Set<String> varsOut,
-            Map<String, String> initialVariablesMap, List<String> initialEventsList,
+    public SearchProblem(PossibleState initialState, Map<String, Set<String>> varsOut, Map<String, String> initialVariablesMap, List<String> initialEventsList,
             int totalNumberOfProblems, int thisProblemIndex) {
         this.initialState = initialState;
         this.varsOut = varsOut;
@@ -49,7 +48,7 @@ public class SearchProblem {
         return initialState;
     }
 
-    public Set<String> getVarsOut() {
+    public Map<String, Set<String>> getVarsOut() {
         return varsOut;
     }
 
