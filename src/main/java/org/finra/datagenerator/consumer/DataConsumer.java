@@ -26,9 +26,8 @@ public class DataConsumer {
     private DataPipe dataPipe = null;
     private final List<DataTransformer> dataTransformers = new ArrayList<DataTransformer>();
     private List<DataWriter> dataWriters = new ArrayList<DataWriter>();
+    private Map<String, AtomicBoolean> flags;
 
-
-    private final AtomicBoolean exitFlag = new AtomicBoolean();
     private long maxNumberOfLines = 10000;
 
     private String reportingHost = null;
@@ -58,8 +57,13 @@ public class DataConsumer {
         return this;
     }
 
-    public AtomicBoolean getExitFlag() {
-        return this.exitFlag;
+    public DataConsumer setFlags(Map<String, AtomicBoolean> flags) {
+        this.flags = flags;
+        return this;
+    }
+
+    public Map<String, AtomicBoolean> getFlags() {
+        return flags;
     }
 
     public long getMaxNumberOfLines() {
