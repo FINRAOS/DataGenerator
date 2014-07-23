@@ -50,6 +50,6 @@ public class SearchWorker implements Runnable {
             log.error("Exception has occurred during DFS worker thread", exc);
         }
 
-        flags.put("exit", new AtomicBoolean(true));
+        //flags.put("exit", new AtomicBoolean(true));
     }
 }

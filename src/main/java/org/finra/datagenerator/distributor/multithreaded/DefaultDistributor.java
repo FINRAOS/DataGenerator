@@ -101,10 +101,8 @@ public class DefaultDistributor implements SearchDistributor {
                 Thread.sleep(1000);
             }
 
-            while (!isSomeFlagTrue(flags)) {
-                log.debug("Waiting for exit...");
-                Thread.sleep(1000);
-            }
+            //alert the output thread that the worker threads are done
+            flags.put("exit", new AtomicBoolean(true));
 
             // Now, wait for the output thread to get done
             outputThread.join();
