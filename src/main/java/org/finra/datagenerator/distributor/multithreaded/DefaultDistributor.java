@@ -31,7 +31,7 @@ public class DefaultDistributor implements SearchDistributor {
     private Thread outputThread;
     private DataConsumer userDataOutput;
     private String stateMachineText;
-    private Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
+    private final Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
     private long maxNumberOfLines = -1;
 
     public DefaultDistributor() {
