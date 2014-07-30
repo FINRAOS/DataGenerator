@@ -3,6 +3,9 @@ package org.finra.datagenerator.consumer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Created by RobbinBr on 7/2/2014.
  */
@@ -45,18 +48,18 @@ public class DataPipeTests {
     }
 
     @Test
-    public void testDefaultDataConsumerAccess(){
+    public void testDefaultDataConsumerAccess() {
         DataPipe thePipe = new DataPipe();
         DataConsumer dc = thePipe.getDataConsumer();
+        dc.setFlags(new Hashtable<String, AtomicBoolean>());
 
         Assert.assertNotNull(dc);
         Assert.assertNotNull(dc.getFlags());
-        Assert.assertFalse(dc.getFlags().get(0).get());
         Assert.assertEquals(10000, dc.getMaxNumberOfLines());
     }
 
     @Test
-    public void testCustomDataConsumerAccess(){
+    public void testCustomDataConsumerAccess() {
         DataConsumer dc = new DataConsumer();
         DataPipe thePipe = new DataPipe(dc);
 

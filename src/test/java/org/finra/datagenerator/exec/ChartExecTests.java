@@ -2,8 +2,8 @@ package org.finra.datagenerator.exec;
 
 import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.consumer.DataPipe;
-import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.consumer.DataTransformer;
+import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,27 +25,28 @@ public class ChartExecTests {
         consumer.addDataTransformer(testTransformer);
         DefaultDistributor distributor = new DefaultDistributor();
         distributor.setDataConsumer(consumer);
-        exec.setBootstrapMin(3).process(distributor);
+        exec.setBootstrapMin(0).process(distributor);
 
         System.out.println(testTransformer.getData());
 
         Assert.assertEquals(9, testTransformer.getData().size());
     }
 
-//    @Test
-//    public void testProcessParallel() throws Exception {
-//        ChartExec exec = new ChartExec();
-//        exec.setInputFileName("src/test/resources/test.xml");
-//
-//        TestTransformer consumer = new TestTransformer();
-//        DefaultDistributor distributor = new DefaultDistributor();
-//        distributor.setDataConsumer(consumer).setThreadCount(1);
-//        exec.setBootstrapMin(3).process(distributor);
-//
-//        System.out.println(consumer.getData());
-//
-//        Assert.assertEquals(9, consumer.getData().size());
-//    }
+    @Test
+    public void testProcessParallel() throws Exception {
+        ChartExec exec = new ChartExec();
+        exec.setInputFileName("src/test/resources/test.xml");
+
+        TestTransformer transformer = new TestTransformer();
+        DefaultDistributor distributor = new DefaultDistributor();
+        distributor.setDataConsumer(new DataConsumer().addDataTransformer(transformer));
+        distributor.setThreadCount(3);
+        exec.setBootstrapMin(3).process(distributor);
+
+        System.out.println(transformer.getData());
+
+        Assert.assertEquals(9, transformer.getData().size());
+    }
 
     private class TestTransformer implements DataTransformer {
 

@@ -14,6 +14,7 @@ public class DataPipe {
 
     public DataPipe() {
         dataConsumer = new DataConsumer();
+
     }
 
     public DataPipe(DataConsumer dataConsumer) {
