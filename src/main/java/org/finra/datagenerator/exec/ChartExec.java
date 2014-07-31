@@ -66,7 +66,7 @@ public class ChartExec {
 
     private int maxEventReps = 1;
 
-    private long maxScenarios = -1;
+    private long maxRecords = -1;
 
     private int bootstrapMin = 0;
     private InputStream inputFileStream;
@@ -153,11 +153,11 @@ public class ChartExec {
     }
 
     public long getMaxScenarios() {
-        return maxScenarios;
+        return maxRecords;
     }
 
-    public ChartExec setMaxScenarios(long maxScenarios) {
-        this.maxScenarios = maxScenarios;
+    public ChartExec setMaxRecords(long maxRecords) {
+        this.maxRecords = maxRecords;
         return this;
     }
 
@@ -206,7 +206,7 @@ public class ChartExec {
         varsOut = extractOutputVariables(stateMachineText);
         // Get BFS-generated states for bootstrapping parallel search
         List<PossibleState> bfsStates = executor.searchForScenarios(varsOut, initialVariablesMap, initialEventsList,
-                maxEventReps, maxScenarios, lengthOfScenario, bootstrapMin);
+                maxEventReps, maxRecords, lengthOfScenario, bootstrapMin);
 
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
 

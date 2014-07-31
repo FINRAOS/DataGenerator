@@ -27,7 +27,7 @@ public class DefaultDistributor implements SearchDistributor {
     private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<HashMap<String, String>>();
     private DataConsumer userDataOutput;
     private String stateMachineText;
-    private Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
+    private final Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
     private long maxNumberOfLines = -1;
 
     private Object lock;
