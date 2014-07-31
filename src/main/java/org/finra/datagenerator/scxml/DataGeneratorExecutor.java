@@ -217,13 +217,13 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
     private Map<String, Map<String, String>> readVarsOut(Map<String, Set<String>> varsOut) {
     	Map<String, Map<String, String>> result = new HashMap<String, Map<String,String>>();
-    	for (String stepName : varsOut.keySet()) {
-    		Set<String> stepVars = varsOut.get(stepName);
-    		Map<String, String> stepVarsOut = new HashMap<String, String>();
-    		for (String varNamr : stepVars) {
-    			stepVarsOut.put(varNamr, (String) this.getRootContext().get(varNamr));
+    	for (String stateName : varsOut.keySet()) {
+    		Set<String> stateVars = varsOut.get(stateName);
+    		Map<String, String> stateVarsOut = new HashMap<String, String>();
+    		for (String varNamr : stateVars) {
+    			stateVarsOut.put(varNamr, (String) this.getRootContext().get(varNamr));
     		}
-    		result.put(stepName, stepVarsOut);
+    		result.put(stateName, stateVarsOut);
     	}
         return result;
     }
@@ -290,31 +290,31 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                    Map<String, Map<String, String>> varsVals = readVarsOut(varsOut);
                    Map<String, String> varsValsSimple = readVarsOut(ScXmlUtils.mapSetToSet(varsOut));
                     //log.debug("varsVals has " + varsVals);
-                    //log.debug("Vars not initialzed, initializing");
+                    //log.debug("Vars not initialized, initializing");
                     if (varsValsSimple == null || varsValsSimple.isEmpty()) {
                         throw new IOException("Empty or null varsVals");
                     }
                     
-					for (String stepName : varsVals.keySet()) {
-						String[][] varsValsForStepMultiplied = multiplyValues(varsVals.get(stepName), stepName);
-						if (null != varsValsForStepMultiplied) {
-							String[] tt = varsValsForStepMultiplied[0];
+					for (String stateName : varsVals.keySet()) {
+						String[][] varsValsForStateMultiplied = multiplyValues(varsVals.get(stateName), stateName);
+						if (null != varsValsForStateMultiplied) {
+							String[] varNamesForThisState = varsValsForStateMultiplied[0];
 							states.remove(0);
-							for(int i = 1; i < varsValsForStepMultiplied.length ; i++) {
+							for(int i = 1; i < varsValsForStateMultiplied.length ; i++) {
 								PossibleState possibleState = new PossibleState();
 	                            possibleState.id = initialState.id;
 	                            possibleState.nextStateName = initialState.nextStateName;
 	                            possibleState.transitionEvent = initialState.transitionEvent;
 	                            possibleState.getVariablesAssignment().putAll(initialState.getVariablesAssignment());
-								for (int y = 0; y < tt.length; y++) {
-	                                possibleState.getVariablesAssignment().put(tt[y], varsValsForStepMultiplied[i][y]);
+								for (int y = 0; y < varNamesForThisState.length; y++) {
+	                                possibleState.getVariablesAssignment().put(varNamesForThisState[y], varsValsForStateMultiplied[i][y]);
 	                            }
 								 possibleState.varsInspected = true;
 	                             states.add(0, possibleState);
 							}
 						} else {
-							for (Entry<String, String> rr : varsVals.get(stepName).entrySet()) {
-								states.get(0).getVariablesAssignment().put(rr.getKey(), rr.getValue());
+							for (Entry<String, String> simpleVarEntry : varsVals.get(stateName).entrySet()) {
+								states.get(0).getVariablesAssignment().put(simpleVarEntry.getKey(), simpleVarEntry.getValue());
 	                            states.get(0).varsInspected = true;
 							}
                         }
@@ -595,7 +595,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
     }
     
-    private String[][] multiplyValues(Map<String, String> varsValsForStep, String stepName) {
+    private String[][] multiplyValues(Map<String, String> varsValsForStep, String stateName) {
 		Map<String, String[]> values = new HashMap<String, String[]>();
 		List<String> keys = new ArrayList<String>();
 		
@@ -618,7 +618,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 		}
 		
 		if (resultLength > maxCombinationsInsideStep) {
-			throw new RuntimeException("Oops! We have '" + resultLength +"' combinations inside '" + stepName + "' step, but '" + maxCombinationsInsideStep + "' is max allowed. Fix your test case, please!");
+			throw new RuntimeException("Oops! We have '" + resultLength +"' combinations inside '" + stateName + "' state, but '" + maxCombinationsInsideStep + "' is max allowed. Fix your test case, please!");
 		}
 
 		// go through result matrix and fill it
@@ -630,22 +630,22 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 			resultAsArray[0][i] = keys.get(i); 
 		}
 		
-		int stepSize = 1;
+		int stateSize = 1;
 		
 		int i = 0;
 		for(String valueKey : varsValsForStep.keySet()) {
 			String value = varsValsForStep.get(valueKey);
 			if (value.contains(setPrefix)) {
 				String[] value1 = values.get(valueKey);
-				int step = resultLength / (value1.length * stepSize);
-				if (step < 1) {
-					step = 1;
+				int state = resultLength / (value1.length * stateSize);
+				if (state < 1) {
+					state = 1;
 				}
 				
 				for(int y1 = 0; y1 < resultLength; y1++) {
-					resultAsArray[y1 + 1][i] = value1[(y1/step)%value1.length];
+					resultAsArray[y1 + 1][i] = value1[(y1/state)%value1.length];
 				}
-				stepSize *= 2;				
+				stateSize *= 2;				
 			} else {
 				for(int y2 = 1; y2 <= resultLength; y2++) {
 					resultAsArray[y2][i] = value;
