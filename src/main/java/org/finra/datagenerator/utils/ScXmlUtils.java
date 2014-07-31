@@ -58,7 +58,7 @@ public class ScXmlUtils {
 				if (null != element) {
 					NamedNodeMap attributes = element.getAttributes();
 					if (null != attributes) {
-						Node attributeName = attributes.getNamedItem("name");
+						Node attributeName = attributes.getNamedItem(propertyName);
 						if (null != attributeName ) {
 							String grandParenAttribute = getGrandParentValue(element, "id");
 							if (values.containsKey(grandParenAttribute)) {
