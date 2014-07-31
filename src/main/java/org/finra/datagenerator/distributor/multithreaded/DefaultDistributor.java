@@ -94,10 +94,8 @@ public class DefaultDistributor implements SearchDistributor {
                 Thread.sleep(1000);
             }
 
-            while (!isSomeFlagTrue(flags)) {
-                log.debug("Waiting for exit...");
-                Thread.sleep(1000);
-            }
+            //alert the output thread that the worker threads are done
+            flags.put("exit", new AtomicBoolean(true));
 
             // Now, wait for the output thread to get done
             outputThread.join();
@@ -109,39 +107,39 @@ public class DefaultDistributor implements SearchDistributor {
 
     private void produceOutput() throws IOException {
         long lines = 0;
-		while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
-			HashMap<String, String> row = queue.poll();
-			if (row != null) {
-				userDataOutput.consume(row);
-				lines++;
-			} else {
-				if (flags.containsKey("exit") && flags.containsKey("exit")) {
-					break;
-				}
-			}
+        while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
+            HashMap<String, String> row = queue.poll();
+            if (row != null) {
+                userDataOutput.consume(row);
+                lines++;
+            } else {
+                if (flags.containsKey("exit") && flags.containsKey("exit")) {
+                    break;
+                }
+            }
 
-			if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-				flags.put("exitNow", new AtomicBoolean(true));
-				break;
-			}
-		}
+            if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
+                flags.put("exitNow", new AtomicBoolean(true));
+                break;
+            }
+        }
 
-		if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
-			log.info("Exiting, exit flag ('exit') is true");
-		}
+        if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
+            log.info("Exiting, exit flag ('exit') is true");
+        }
     }
 
     public static boolean isSomeFlagTrue(Map<String, AtomicBoolean> flags) {
         for (AtomicBoolean flag : flags.values()) {
-        	if (flag.get()) {
-        		return true;
-        	}
+            if (flag.get()) {
+                return true;
+            }
         }
         return false;
     }
 
     @Override
-	public void setFlag(String name, AtomicBoolean flag) {
-		flags.put(name, flag);
-	}
+    public void setFlag(String name, AtomicBoolean flag) {
+        flags.put(name, flag);
+    }
 }

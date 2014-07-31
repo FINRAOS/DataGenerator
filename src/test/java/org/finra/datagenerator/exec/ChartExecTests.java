@@ -17,7 +17,23 @@ import java.util.Map;
 public class ChartExecTests {
 
     @Test
-    public void testProcess() throws Exception {
+    public void testProcessMinThree() throws Exception {
+        ChartExec exec = new ChartExec();
+        exec.setInputFileName("src/test/resources/test.xml");
+        DataConsumer consumer = new DataConsumer();
+        TestTransformer testTransformer = new TestTransformer();
+        consumer.addDataTransformer(testTransformer);
+        DefaultDistributor distributor = new DefaultDistributor();
+        distributor.setDataConsumer(consumer);
+        exec.setBootstrapMin(3).process(distributor);
+
+        System.out.println(testTransformer.getData());
+
+        Assert.assertEquals(9, testTransformer.getData().size());
+    }
+
+    @Test
+    public void testProcessMinZero() throws Exception {
         ChartExec exec = new ChartExec();
         exec.setInputFileName("src/test/resources/test.xml");
         DataConsumer consumer = new DataConsumer();
@@ -32,8 +48,9 @@ public class ChartExecTests {
         Assert.assertEquals(9, testTransformer.getData().size());
     }
 
+
     @Test
-    public void testProcessParallel() throws Exception {
+    public void testProcessParallelThreeByThree() throws Exception {
         ChartExec exec = new ChartExec();
         exec.setInputFileName("src/test/resources/test.xml");
 
