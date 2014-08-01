@@ -3,6 +3,8 @@ logs
 target
 *.class
 
+nb-configuration.xml
+
 # Package Files #
 *.jar
 *.war
