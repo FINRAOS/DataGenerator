@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public interface SearchDistributor {
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
-    public SearchDistributor setStateMachineText(String stateMachineText);
+    SearchDistributor setStateMachineText(String stateMachineText);
 
-    public void distribute(List<SearchProblem> searchProblemList);
+    void distribute(List<SearchProblem> searchProblemList);
 
-    public void setFlag(String name, AtomicBoolean flag);
+    void setFlag(String name, AtomicBoolean flag);
 }
