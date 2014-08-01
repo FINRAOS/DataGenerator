@@ -219,9 +219,16 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     /**
      * Check all the variables in the context. Generate a state with a list of
      * variables correctly assigned
+     *
+     * @param varNames a set of variable names
+     * @return a list of possible states
+     * @throws org.apache.commons.scxml.model.ModelException due to errors from
+     * findEvent
+     * @throws org.apache.commons.scxml.SCXMLExpressionException due to errors
+     * from findEvent
      */
     public ArrayList<PossibleState> findPossibleStates(Set<String> varNames) throws ModelException,
-            SCXMLExpressionException, IOException {
+            SCXMLExpressionException {
         //log.debug("findPossibleStates");
         ArrayList<PossibleState> possiblePositiveStates = new ArrayList<PossibleState>();
         ArrayList<String> positive = new ArrayList<String>();
@@ -242,7 +249,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
     public void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList, Set<String> varsOut,
             Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, String> expandedVars) throws
-            ModelException, IOException, SCXMLExpressionException {
+            ModelException, SCXMLExpressionException {
         //log.debug("TraceDepth");
         if (possiblePositiveStatesList.isEmpty()) {
             this.resetStateMachine(varsOut, initialVariablesMap, initialEvents, expandedVars);
@@ -282,7 +289,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                     //log.debug("varsVals has " + varsVals);
                     //log.debug("Vars not initialzed, initializing");
                     if (varsVals == null || varsVals.isEmpty()) {
-                        throw new IOException("Empty or null varsVals");
+                        throw new ModelException("Empty or null varsVals");
                     }
                     for (Map.Entry<String, String> var : varsVals.entrySet()) {
                         String nextVal = var.getValue();
@@ -334,20 +341,18 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     /**
      * Do a depth first search looking for scenarios
      *
-     * @param startState
-     * @param queue
-     * @param varsOut
-     * @param initialVariablesMap
-     * @param initialEvents
-     * @param flags
-     * @throws ModelException
-     * @throws SCXMLExpressionException
-     * @throws IOException
-     * @throws SAXException
+     * @param startState the start state
+     * @param queue a queue where the output will be placed
+     * @param varsOut a list of names of the output variables
+     * @param initialVariablesMap initial values of variables
+     * @param initialEvents initial events to fire
+     * @param flags a map of shared flags
+     * @throws ModelException thrown due to errors from traceDepth
+     * @throws SCXMLExpressionException thrown due to errors from traceDepth
      */
     public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap,
             List<String> initialEvents, Map<String, AtomicBoolean> flags)
-            throws ModelException, SCXMLExpressionException, IOException, SAXException {
+            throws ModelException, SCXMLExpressionException {
         //log.debug(Thread.currentThread().getName() + " starting DFS on " + startState);
         //log.info("Search for scenarios using depth first search");
 
