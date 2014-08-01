@@ -1,7 +1,5 @@
 package org.finra.datagenerator.distributor.multithreaded;
 
-=======
->>>>>>> Lots of checkstyle fixes
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +26,10 @@ public class DefaultDistributor implements SearchDistributor {
     protected static final Logger log = Logger.getLogger(DefaultDistributor.class);
 
     private int threadCount = 1;
-    private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<HashMap<String, String>>();
+    private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<>();
     private DataConsumer userDataOutput;
     private String stateMachineText;
-    private final Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
+    private final Map<String, AtomicBoolean> flags = new HashMap<>();
     private long maxNumberOfLines = -1;
 
     private Object lock;
@@ -81,11 +79,7 @@ public class DefaultDistributor implements SearchDistributor {
             try {
                 worker = new SearchWorker(problem, stateMachineText, queue, flags);
                 threadPool.execute(worker);
-            } catch (ModelException e) {
-                log.error("Error while initializing SearchWorker threads", e);
-            } catch (SAXException e) {
-                log.error("Error while initializing SearchWorker threads", e);
-            } catch (IOException e) {
+            } catch (ModelException | SAXException | IOException e) {
                 log.error("Error while initializing SearchWorker threads", e);
             }
         }
