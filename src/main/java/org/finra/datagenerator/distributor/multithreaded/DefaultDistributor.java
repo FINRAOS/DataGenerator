@@ -32,8 +32,6 @@ public class DefaultDistributor implements SearchDistributor {
     private final Map<String, AtomicBoolean> flags = new HashMap<>();
     private long maxNumberOfLines = -1;
 
-    private Object lock;
-
     public DefaultDistributor setMaxNumberOfLines(long numberOfLines) {
         this.maxNumberOfLines = numberOfLines;
         return this;
