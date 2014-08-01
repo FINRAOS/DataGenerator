@@ -13,22 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.finra.datagenerator.distributor;
+package org.finra.datagenerator.consumer;
 
-import org.finra.datagenerator.consumer.DataConsumer;
+public interface DataTransformer {
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-/**
- * @author robbinbr
- */
-public interface SearchDistributor {
-    public SearchDistributor setDataConsumer(DataConsumer dataConsumer);
-
-    public SearchDistributor setStateMachineText(String stateMachineText);
-
-    public void distribute(List<SearchProblem> searchProblemList);
-
-    public void setFlag(String name, AtomicBoolean flag);
+    public void transform(DataPipe cr);
 }

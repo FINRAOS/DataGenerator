@@ -3,11 +3,8 @@ package org.finra.datagenerator.distributor.multithreaded;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.ChainConsumer;
-import org.finra.datagenerator.consumer.defaults.ConsumerResult;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
-import org.finra.datagenerator.writer.DefaultWriter;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -28,22 +25,12 @@ public class DefaultDistributor implements SearchDistributor {
 
     private int threadCount = 1;
     private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<HashMap<String, String>>();
-    private Thread outputThread;
     private DataConsumer userDataOutput;
     private String stateMachineText;
     private final Map<String, AtomicBoolean> flags = new HashMap<String, AtomicBoolean>();
     private long maxNumberOfLines = -1;
 
-    public DefaultDistributor() {
-        ChainConsumer cc = new ChainConsumer();
-        cc.addOutputWriter(new DefaultWriter(System.out));
-        this.userDataOutput = cc;
-    }
-
-    public DefaultDistributor setDataConsumer(DataConsumer dataConsumer) {
-        this.userDataOutput = dataConsumer;
-        return this;
-    }
+    private Object lock;
 
     public DefaultDistributor setMaxNumberOfLines(long numberOfLines) {
         this.maxNumberOfLines = numberOfLines;
@@ -52,6 +39,12 @@ public class DefaultDistributor implements SearchDistributor {
 
     public DefaultDistributor setThreadCount(int threadCount) {
         this.threadCount = threadCount;
+        return this;
+    }
+
+    @Override
+    public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
+        this.userDataOutput = dataConsumer;
         return this;
     }
 
@@ -65,7 +58,7 @@ public class DefaultDistributor implements SearchDistributor {
     public void distribute(List<SearchProblem> searchProblemList) {
 
         // Start output thread (consumer)
-        outputThread = new Thread() {
+        Thread outputThread = new Thread() {
             @Override
             public void run() {
                 try {
@@ -114,44 +107,39 @@ public class DefaultDistributor implements SearchDistributor {
 
     private void produceOutput() throws IOException {
         long lines = 0;
-		while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
-			HashMap<String, String> row = queue.poll();
-			if (row != null) {
-				ConsumerResult cr = new ConsumerResult(maxNumberOfLines, flags);
-				for (Map.Entry<String, String> ent : row.entrySet()) {
-					cr.getDataMap().put(ent.getKey(), ent.getValue());
-				}
+        while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
+            HashMap<String, String> row = queue.poll();
+            if (row != null) {
+                userDataOutput.consume(row);
+                lines++;
+            } else {
+                if (flags.containsKey("exit") && flags.containsKey("exit")) {
+                    break;
+                }
+            }
 
-				userDataOutput.consume(cr);
-				lines++;
-			} else {
-				if (flags.containsKey("exit") && flags.containsKey("exit")) {
-					break;
-				}
-			}
+            if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
+                flags.put("exitNow", new AtomicBoolean(true));
+                break;
+            }
+        }
 
-			if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-				flags.put("exitNow", new AtomicBoolean(true));
-				break;
-			}
-		}
-
-		if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
-			log.info("Exiting, exit flag ('exit') is true");
-		}
+        if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
+            log.info("Exiting, exit flag ('exit') is true");
+        }
     }
 
     public static boolean isSomeFlagTrue(Map<String, AtomicBoolean> flags) {
         for (AtomicBoolean flag : flags.values()) {
-        	if (flag.get()) {
-        		return true;
-        	}
+            if (flag.get()) {
+                return true;
+            }
         }
         return false;
     }
-    
+
     @Override
-	public void setFlag(String name, AtomicBoolean flag) {
-		flags.put(name, flag);
-	}
+    public void setFlag(String name, AtomicBoolean flag) {
+        flags.put(name, flag);
+    }
 }
