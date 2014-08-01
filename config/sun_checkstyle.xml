@@ -74,6 +74,7 @@
     <!-- See http://checkstyle.sf.net/config_header.html   -->
     <module name="Header">
         <property name="headerFile" value="config/java.header"/>
+	<property name="fileExtensions" value="java"/>
     </module>
 
 

@@ -49,7 +49,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         initExecutor(xml);
     }
 
-    public void initExecutor(SCXML stateMachine) throws ModelException {
+    private void initExecutor(SCXML stateMachine) throws ModelException {
         ELEvaluator elEvaluator = new ELEvaluator();
         ELContext context = new ELContext();
         this.listener = new StateMachineListener();
@@ -76,6 +76,9 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * Reset the state machine, set the initial variables, and trigger the
      * initial events
      *
+     * @param varsOut the set of output variables
+     * @param initialVariablesMap initial variables values
+     * @param initialEvents initial events to fire on reset
      * @throws org.apache.commons.scxml.model.ModelException
      */
     public void resetStateMachine(Set<String> varsOut, Map<String, String> initialVariablesMap,
@@ -157,7 +160,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     }
 
     public void findEvents(List<String> positive, List<String> negative) throws ModelException,
-            SCXMLExpressionException, IOException {
+            SCXMLExpressionException {
         positive.clear();
         negative.clear();
         TransitionTarget currentState = listener.getCurrentState();
@@ -171,12 +174,12 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
             // In our case we should only have one target always
             if (targets == null) {
-                throw new IOException("Found null targets for transition: " + transition.getEvent() + " in state: "
+                throw new ModelException("Found null targets for transition: " + transition.getEvent() + " in state: "
                         + currentState.getId());
             }
 
             if (targets.size() > 1 || targets.isEmpty()) {
-                throw new IOException("Found incorrect number of targets:" + targets.size() + "for transition: "
+                throw new ModelException("Found incorrect number of targets:" + targets.size() + "for transition: "
                         + transition.getEvent() + " in state: " + currentState.getId());
             }
 
@@ -331,13 +334,20 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
     /**
      * Do a depth first search looking for scenarios
      *
+     * @param startState
+     * @param queue
+     * @param varsOut
+     * @param initialVariablesMap
+     * @param initialEvents
+     * @param flags
      * @throws ModelException
      * @throws SCXMLExpressionException
      * @throws IOException
+     * @throws SAXException
      */
-    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, AtomicBoolean> flags)
-            throws ModelException, SCXMLExpressionException,
-            IOException, SAXException {
+    public void searchForScenariosDFS(PossibleState startState, Queue queue, Set<String> varsOut, Map<String, String> initialVariablesMap,
+            List<String> initialEvents, Map<String, AtomicBoolean> flags)
+            throws ModelException, SCXMLExpressionException, IOException, SAXException {
         //log.debug(Thread.currentThread().getName() + " starting DFS on " + startState);
         //log.info("Search for scenarios using depth first search");
 
@@ -398,7 +408,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    // Do nothing, since this is the main thread....
+                    log.info("Interrupted ", ex);
                 }
             }
         }
@@ -466,10 +476,23 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
     }
 
+    /**
+     *
+     * @param varsOut set of output variables names
+     * @param initialVariablesMap initial variables values
+     * @param initialEvents initial events to fire on reset
+     * @param maxScenarios maximum number of scenarios to generate
+     * @param minCount minimum number of scenarios to look for
+     * @return a list of possible states
+     *
+     * @throws ModelException if an error occurs during firing the events or
+     * setting the start state
+     * @throws SCXMLExpressionException if an error occurs while firing the
+     * events
+     */
     public List<PossibleState> searchForScenarios(Set<String> varsOut, Map<String, String> initialVariablesMap,
-            List<String> initialEvents, int maxEventReps, long maxScenarios,
-            int lengthOfScenario, int minCount) throws ModelException,
-            SCXMLExpressionException, IOException, SAXException {
+            List<String> initialEvents, long maxScenarios, int minCount)
+            throws ModelException, SCXMLExpressionException {
 
         //log.info("Inside search for scenarios");
         //int numberOfScenariosGenerated = 0;
@@ -505,7 +528,9 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 List<String> stateEventPrefix = iState.getEvents();
 
                 if (iState.id != null && iState.id.equalsIgnoreCase("end")) {
-                    throw new RuntimeException("Could not achieve the required bootstrap " + minCount + " without reaching the end state. Achieved problem split: " + prevNextLevelSize + ". Please either change your model or reduce the required split");
+                    throw new RuntimeException("Could not achieve the required bootstrap " + minCount
+                            + " without reaching the end state. Achieved problem split: " + prevNextLevelSize
+                            + ". Please either change your model or reduce the required split");
                 }
 
                 // Reset ourselves (a state machine) to this state

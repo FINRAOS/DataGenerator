@@ -36,16 +36,12 @@ public class ChartExec {
 
     private static HashSet<String> varsOut = null;
     /**
-     * The initial set of events to trigger before re-searching for a new scenario
+     * The initial set of events to trigger before re-searching for a new
+     * scenario
      */
     private String initialEvents = null;
 
     private static final ArrayList<String> initialEventsList = new ArrayList<String>();
-
-    /**
-     * Length of scenario
-     */
-    private int lengthOfScenario = 5;
 
     /**
      * Generate -ve scenarios
@@ -56,8 +52,6 @@ public class ChartExec {
      * Initial variables map
      */
     private static final HashMap<String, String> initialVariablesMap = new HashMap<String, String>();
-
-    private int maxEventReps = 1;
 
     private long maxRecords = -1;
 
@@ -106,9 +100,8 @@ public class ChartExec {
     public ChartExec setInputFileName(String inputFileName) {
         try {
             this.inputFileStream = new FileInputStream(new File(inputFileName));
-        }
-        catch (FileNotFoundException e) {
-            log.error("Error creating InputStream for file "+inputFileName, e);
+        } catch (FileNotFoundException e) {
+            log.error("Error creating InputStream for file " + inputFileName, e);
         }
         return this;
     }
@@ -127,24 +120,6 @@ public class ChartExec {
         return this;
     }
 
-    public int getLengthOfScenario() {
-        return lengthOfScenario;
-    }
-
-    public ChartExec setLengthOfScenario(int lengthOfScenario) {
-        this.lengthOfScenario = lengthOfScenario;
-        return this;
-    }
-
-    public int getMaxEventReps() {
-        return maxEventReps;
-    }
-
-    public ChartExec setMaxEventReps(int maxEventReps) {
-        this.maxEventReps = maxEventReps;
-        return this;
-    }
-
     public long getMaxScenarios() {
         return maxRecords;
     }
@@ -156,29 +131,29 @@ public class ChartExec {
 
     private boolean doSanityChecks() throws IOException {
 
-        if (inputFileStream==null) {
+        if (inputFileStream == null) {
             throw new IOException("Error:, input file cannot be null");
         }
 
         // Parse the initial events
-        if (initialEvents!=null) {
+        if (initialEvents != null) {
             Iterable<String> events = Splitter.on(",").split(initialVariables);
             initialEventsList.addAll(Lists.newArrayList(events));
         }
 
         // Parse the initial variables
-        if (initialVariables!=null) {
+        if (initialVariables != null) {
             Iterable<String> vars = Splitter.on(",").split(initialVariables);
-            for(String var : vars){
+            for (String var : vars) {
                 if (var.contains("=")) {
                     String[] assignment = var.split("=");
-                    if (assignment[0]==null||assignment[1]==null||assignment[0].length()==0
-                            ||assignment[1].length()==0) {
-                        throw new IOException("Error while processing initial variable assignment for: "+var);
+                    if (assignment[0] == null || assignment[1] == null || assignment[0].length() == 0
+                            || assignment[1].length() == 0) {
+                        throw new IOException("Error while processing initial variable assignment for: " + var);
                     }
                     initialVariablesMap.put(assignment[0], assignment[1]);
                 } else {
-                    throw new IOException("Error while processing initial variable assignment for: "+var);
+                    throw new IOException("Error while processing initial variable assignment for: " + var);
                 }
             }
         }
@@ -199,12 +174,12 @@ public class ChartExec {
         varsOut = extractOutputVariables(stateMachineText);
         // Get BFS-generated states for bootstrapping parallel search
         List<PossibleState> bfsStates = executor.searchForScenarios(varsOut, initialVariablesMap, initialEventsList,
-                maxEventReps, maxRecords, lengthOfScenario, bootstrapMin);
+                maxRecords, bootstrapMin);
 
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
 
         int i = 0;
-        for(PossibleState state : bfsStates){
+        for (PossibleState state : bfsStates) {
             dfsProblems.add(new SearchProblem(state, varsOut, initialVariablesMap, initialEventsList, bfsStates.size(), i++));
         }
 
@@ -215,7 +190,7 @@ public class ChartExec {
         String machineText = IOUtils.toString(inputFileStream, "UTF-8");
         List<SearchProblem> dfsProblems = prepare(machineText);
 
-        log.info("Found "+dfsProblems.size()+" states to distribute");
+        log.info("Found " + dfsProblems.size() + " states to distribute");
         distributor.setStateMachineText(machineText);
 //        distributor.setExitFlag(new AtomicBoolean(false));
         distributor.distribute(dfsProblems);
