@@ -15,16 +15,16 @@
  */
 package org.finra.datagenerator.distributor;
 
-import org.finra.datagenerator.consumer.DataConsumer;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.finra.datagenerator.consumer.DataConsumer;
 
 /**
  * @author robbinbr
  */
 public interface SearchDistributor {
-    public SearchDistributor setDataConsumer(DataConsumer dataConsumer);
+
+    SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
     SearchDistributor setStateMachineText(String stateMachineText);
 

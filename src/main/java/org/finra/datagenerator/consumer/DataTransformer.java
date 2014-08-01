@@ -17,5 +17,5 @@ package org.finra.datagenerator.consumer;
 
 public interface DataTransformer {
 
-    public void transform(DataPipe cr);
+    void transform(DataPipe cr);
 }
