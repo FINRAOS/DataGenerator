@@ -1,9 +1,5 @@
 package org.finra.datagenerator.consumer;
 
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.reporting.ReportingHandler;
-import org.finra.datagenerator.writer.DataWriter;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,11 +13,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.reporting.ReportingHandler;
+import org.finra.datagenerator.writer.DataWriter;
 
 /**
  * Created by RobbinBr on 5/18/2014.
  */
 public class DataConsumer {
+
     private static final Logger log = Logger.getLogger(DataConsumer.class);
     private DataPipe dataPipe = null;
     private final List<DataTransformer> dataTransformers = new ArrayList<DataTransformer>();

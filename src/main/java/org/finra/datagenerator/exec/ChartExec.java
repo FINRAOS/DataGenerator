@@ -1,19 +1,17 @@
 package org.finra.datagenerator.exec;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchDistributor;
@@ -22,14 +20,9 @@ import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
 import org.finra.datagenerator.utils.ScXmlUtils;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
 public class ChartExec {
 
     protected static final Logger log = Logger.getLogger(ChartExec.class);
-
-    private static boolean isDebugEnabled = false;
 
     /**
      * A comma separated list of variables to be passed to the OutputFormatter
@@ -43,16 +36,12 @@ public class ChartExec {
 
     private static HashSet<String> varsOut = null;
     /**
-     * The initial set of events to trigger before re-searching for a new scenario
+     * The initial set of events to trigger before re-searching for a new
+     * scenario
      */
     private String initialEvents = null;
 
     private static final ArrayList<String> initialEventsList = new ArrayList<String>();
-
-    /**
-     * Length of scenario
-     */
-    private int lengthOfScenario = 5;
 
     /**
      * Generate -ve scenarios
@@ -64,8 +53,6 @@ public class ChartExec {
      */
     private static final HashMap<String, String> initialVariablesMap = new HashMap<String, String>();
 
-    private int maxEventReps = 1;
-
     private long maxRecords = -1;
 
     private int bootstrapMin = 0;
@@ -75,7 +62,6 @@ public class ChartExec {
      * Will be shared and used to signal to all threads to exit
      */
     public ChartExec() {
-        isDebugEnabled = false;
     }
 
     public ChartExec setBootstrapMin(int depth) {
@@ -134,24 +120,6 @@ public class ChartExec {
         return this;
     }
 
-    public int getLengthOfScenario() {
-        return lengthOfScenario;
-    }
-
-    public ChartExec setLengthOfScenario(int lengthOfScenario) {
-        this.lengthOfScenario = lengthOfScenario;
-        return this;
-    }
-
-    public int getMaxEventReps() {
-        return maxEventReps;
-    }
-
-    public ChartExec setMaxEventReps(int maxEventReps) {
-        this.maxEventReps = maxEventReps;
-        return this;
-    }
-
     public long getMaxScenarios() {
         return maxRecords;
     }
@@ -206,7 +174,7 @@ public class ChartExec {
         varsOut = extractOutputVariables(stateMachineText);
         // Get BFS-generated states for bootstrapping parallel search
         List<PossibleState> bfsStates = executor.searchForScenarios(varsOut, initialVariablesMap, initialEventsList,
-                maxEventReps, maxRecords, lengthOfScenario, bootstrapMin);
+                maxRecords, bootstrapMin);
 
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
 

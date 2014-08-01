@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 FINRA.
+ * Copyright 2014 DataGenerator Contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,20 @@
  */
 package org.finra.datagenerator.distributor;
 
-import org.finra.datagenerator.consumer.DataConsumer;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.finra.datagenerator.consumer.DataConsumer;
 
 /**
  * @author robbinbr
  */
 public interface SearchDistributor {
-    public SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
-    public SearchDistributor setStateMachineText(String stateMachineText);
+    SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
-    public void distribute(List<SearchProblem> searchProblemList);
+    SearchDistributor setStateMachineText(String stateMachineText);
 
-    public void setFlag(String name, AtomicBoolean flag);
+    void distribute(List<SearchProblem> searchProblemList);
+
+    void setFlag(String name, AtomicBoolean flag);
 }

@@ -74,10 +74,12 @@
     <!-- See http://checkstyle.sf.net/config_header.html   -->
     <module name="Header">
         <property name="headerFile" value="config/java.header"/>
+	<property name="fileExtensions" value="java"/>
     </module>
 
 
     <module name="TreeWalker">
+	<module name="GenericWhitespace"/>
 
         <property name="cacheFile" value="${checkstyle.cache.file}"/>
 
@@ -143,9 +145,8 @@
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround">
-            <property name="tokens" value="ASSIGN"/>
-        </module>
+        <module name="WhitespaceAround" />
+
         <!-- Modifier Checks                                    -->
         <!-- See http://checkstyle.sf.net/config_modifiers.html -->
         <module name="ModifierOrder"/>

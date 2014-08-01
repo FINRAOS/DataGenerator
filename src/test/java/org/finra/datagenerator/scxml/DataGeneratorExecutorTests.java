@@ -1,5 +1,14 @@
 package org.finra.datagenerator.scxml;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.ModelException;
@@ -7,10 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Created by robbinbr on 3/3/14.
@@ -28,7 +33,7 @@ public class DataGeneratorExecutorTests {
 
         varsOut = new HashSet<String>();
         varsOut.addAll(Arrays.asList(new String[]{"var_out_RECORD_TYPE", "var_out_REQUEST_IDENTIFIER",
-                "var_out_MANIFEST_GENERATION_DATETIME"}));
+            "var_out_MANIFEST_GENERATION_DATETIME"}));
 
         initialVarsMap = new HashMap<String, String>();
         initialEvents = new ArrayList<String>();
@@ -75,8 +80,8 @@ public class DataGeneratorExecutorTests {
 
     @Test
     public void testBFSOneLevel() throws ModelException, SCXMLExpressionException, SAXException, IOException {
-        List<PossibleState> statesAfterBFS = executor.searchForScenarios(varsOut, initialVarsMap, initialEvents, 5,
-                10000, 50, 3);
+        List<PossibleState> statesAfterBFS = executor.searchForScenarios(varsOut, initialVarsMap, initialEvents,
+                10000, 3);
         Assert.assertEquals(3, statesAfterBFS.size());
         Assert.assertEquals("a", statesAfterBFS.get(0).getVariablesAssignment().get("var_out_RECORD_TYPE"));
         Assert.assertEquals("b", statesAfterBFS.get(1).getVariablesAssignment().get("var_out_RECORD_TYPE"));
@@ -85,8 +90,8 @@ public class DataGeneratorExecutorTests {
 
     @Test
     public void testBFSTwoLevels() throws ModelException, SCXMLExpressionException, SAXException, IOException {
-        List<PossibleState> statesAfterBFS = executor.searchForScenarios(varsOut, initialVarsMap, initialEvents, 5,
-                10000, 50, 9);
+        List<PossibleState> statesAfterBFS = executor.searchForScenarios(varsOut, initialVarsMap, initialEvents,
+                10000, 9);
         Assert.assertEquals(9, statesAfterBFS.size());
         Assert.assertEquals("a", statesAfterBFS.get(0).getVariablesAssignment().get("var_out_RECORD_TYPE"));
         Assert.assertEquals("1", statesAfterBFS.get(0).getVariablesAssignment().get("var_out_REQUEST_IDENTIFIER"));

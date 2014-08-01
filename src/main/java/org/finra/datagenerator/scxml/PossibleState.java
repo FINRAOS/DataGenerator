@@ -49,6 +49,14 @@ public class PossibleState {
 
     @Override
     public boolean equals(Object a) {
+        if (!(a instanceof PossibleState)) {
+            return false;
+        }
         return this.toString().equals(a.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
     }
 }

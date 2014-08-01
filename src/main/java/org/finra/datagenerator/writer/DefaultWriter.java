@@ -1,10 +1,9 @@
 package org.finra.datagenerator.writer;
 
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
-
 import java.io.IOException;
 import java.io.OutputStream;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataPipe;
 
 /**
  * Created by robbinbr on 5/28/2014.
@@ -12,10 +11,10 @@ import java.io.OutputStream;
 public class DefaultWriter implements DataWriter {
 
     protected static final Logger log = Logger.getLogger(DefaultWriter.class);
-    private OutputStream os;
+    private final OutputStream os;
     private String[] outTemplate;
 
-    public DefaultWriter(OutputStream os, String[] outTemplate) {
+    public DefaultWriter(OutputStream os) {
         this.os = os;
     }
 
