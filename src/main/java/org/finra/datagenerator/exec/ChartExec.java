@@ -1,19 +1,17 @@
 package org.finra.datagenerator.exec;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.distributor.SearchDistributor;
@@ -22,14 +20,9 @@ import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
 import org.finra.datagenerator.utils.ScXmlUtils;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
 public class ChartExec {
 
     protected static final Logger log = Logger.getLogger(ChartExec.class);
-
-    private static boolean isDebugEnabled = false;
 
     /**
      * A comma separated list of variables to be passed to the OutputFormatter
@@ -75,7 +68,6 @@ public class ChartExec {
      * Will be shared and used to signal to all threads to exit
      */
     public ChartExec() {
-        isDebugEnabled = false;
     }
 
     public ChartExec setBootstrapMin(int depth) {
@@ -114,8 +106,9 @@ public class ChartExec {
     public ChartExec setInputFileName(String inputFileName) {
         try {
             this.inputFileStream = new FileInputStream(new File(inputFileName));
-        } catch (FileNotFoundException e) {
-            log.error("Error creating InputStream for file " + inputFileName, e);
+        }
+        catch (FileNotFoundException e) {
+            log.error("Error creating InputStream for file "+inputFileName, e);
         }
         return this;
     }
@@ -163,29 +156,29 @@ public class ChartExec {
 
     private boolean doSanityChecks() throws IOException {
 
-        if (inputFileStream == null) {
+        if (inputFileStream==null) {
             throw new IOException("Error:, input file cannot be null");
         }
 
         // Parse the initial events
-        if (initialEvents != null) {
+        if (initialEvents!=null) {
             Iterable<String> events = Splitter.on(",").split(initialVariables);
             initialEventsList.addAll(Lists.newArrayList(events));
         }
 
         // Parse the initial variables
-        if (initialVariables != null) {
+        if (initialVariables!=null) {
             Iterable<String> vars = Splitter.on(",").split(initialVariables);
-            for (String var : vars) {
+            for(String var : vars){
                 if (var.contains("=")) {
                     String[] assignment = var.split("=");
-                    if (assignment[0] == null || assignment[1] == null || assignment[0].length() == 0
-                            || assignment[1].length() == 0) {
-                        throw new IOException("Error while processing initial variable assignment for: " + var);
+                    if (assignment[0]==null||assignment[1]==null||assignment[0].length()==0
+                            ||assignment[1].length()==0) {
+                        throw new IOException("Error while processing initial variable assignment for: "+var);
                     }
                     initialVariablesMap.put(assignment[0], assignment[1]);
                 } else {
-                    throw new IOException("Error while processing initial variable assignment for: " + var);
+                    throw new IOException("Error while processing initial variable assignment for: "+var);
                 }
             }
         }
@@ -211,7 +204,7 @@ public class ChartExec {
         List<SearchProblem> dfsProblems = new ArrayList<SearchProblem>();
 
         int i = 0;
-        for (PossibleState state : bfsStates) {
+        for(PossibleState state : bfsStates){
             dfsProblems.add(new SearchProblem(state, varsOut, initialVariablesMap, initialEventsList, bfsStates.size(), i++));
         }
 
@@ -222,7 +215,7 @@ public class ChartExec {
         String machineText = IOUtils.toString(inputFileStream, "UTF-8");
         List<SearchProblem> dfsProblems = prepare(machineText);
 
-        log.info("Found " + dfsProblems.size() + " states to distribute");
+        log.info("Found "+dfsProblems.size()+" states to distribute");
         distributor.setStateMachineText(machineText);
 //        distributor.setExitFlag(new AtomicBoolean(false));
         distributor.distribute(dfsProblems);
