@@ -9,8 +9,8 @@ import java.util.Map;
  * Created by robbinbr on 3/11/14.
  */
 /**
- * Defines a possible state that a state can be in. A possible state is a
- * combination of a state and values for variables.
+ * Defines a possible state that a state can be in. A possible state is a combination of a state and values for
+ * variables.
  */
 public class PossibleState {
 
@@ -35,8 +35,8 @@ public class PossibleState {
 
     @Override
     public String toString() {
-        return "{id=" + id + ",next:" + nextStateName + ",trans:" + transitionEvent + ","
-                + "varsInspected:" + varsInspected + ",vars:" + variablesAssignment + ",events:" + events + "}\n";
+        return "{id="+id+",next:"+nextStateName+",trans:"+transitionEvent+","
+                +"varsInspected:"+varsInspected+",vars:"+variablesAssignment+",events:"+events+"}\n";
     }
 
     public List<String> getEvents() {
@@ -49,6 +49,14 @@ public class PossibleState {
 
     @Override
     public boolean equals(Object a) {
+        if (!(a instanceof PossibleState)) {
+            return false;
+        }
         return this.toString().equals(a.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
     }
 }
