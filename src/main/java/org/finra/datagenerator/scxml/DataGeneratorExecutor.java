@@ -256,7 +256,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
 
         //log.debug("Loop start");
         while (listener.getCurrentState() == null
-                || (listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end"))) {
+                || listener.getCurrentState() != null && !listener.getCurrentState().getId().equals("end")) {
             //log.debug("ALL AFTER RESET: " + possiblePositiveStatesList);
             // Replay the last initial state
             /*for (ArrayList<PossibleState> states : possiblePositiveStatesList)*/
@@ -342,8 +342,6 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         //log.info("Search for scenarios using depth first search");
 
         ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList = new ArrayList<ArrayList<PossibleState>>();
-        ArrayList<String> currentStates = new ArrayList<String>();
-        ArrayList<Integer> activePostiveState = new ArrayList<Integer>();
 
         // First we have to generate the first level in the depth, so that we have something to start
         // the recursion from
@@ -367,7 +365,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                 }
                 empty = false;
                 int lastDepth = possiblePositiveStatesList.size() - 1;
-                PossibleState removed = possiblePositiveStatesList.get(lastDepth).remove(0);
+                possiblePositiveStatesList.get(lastDepth).remove(0);
 
                 //log.debug("Removing: " + removed.nextStateName);
                 if (possiblePositiveStatesList.get(lastDepth).isEmpty()) {
@@ -487,7 +485,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         nextLevel.add(startState);
 
         //int levels = 0;
-        while ((nextLevel.size() < minCount) && (minCount > 0)) {
+        while (nextLevel.size() < minCount && minCount > 0) {
 
             //System.out.println("***** Current state:\n" + nextLevel.toString());
             prevNextLevelSize = nextLevel.size();
@@ -560,60 +558,5 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
 
         return nextLevel;
-    }
-
-    /**
-     * Delete the scenario if an event is repeated more than maxEventReps times
-     *
-     * @param eventList
-     * @return
-     */
-    private ArrayList<String> pruneEvents(ArrayList<String> eventList, List<String> initialEventsList,
-            int maxEventReps, int lengthOfScenario) {
-        // Count the number of repetitions of every event
-        ArrayList<String> all = new ArrayList<String>();
-        all.addAll(initialEventsList);
-        all.addAll(eventList);
-
-        if (all.size() > lengthOfScenario) {
-            return null;
-        }
-
-        HashMap<String, Integer> count = new HashMap<String, Integer>();
-        for (String event : all) {
-            Integer counter = count.get(event);
-            if (counter == null) {
-                counter = 0;
-            }
-            counter++;
-            count.put(event, counter);
-            if (counter > maxEventReps) {
-                return null;
-            }
-        }
-        return eventList;
-    }
-
-    private void printEvents(String type, ArrayList<String> events, List<String> initialEventsList) {
-        StringBuilder b = new StringBuilder();
-        b.append(type);
-
-        if (initialEventsList != null) {
-            b
-                    .append(initialEventsList)
-                    .append(",");
-        }
-
-        boolean firstEvent = true;
-        for (String event : events) {
-            if (firstEvent) {
-                firstEvent = false;
-            } else {
-                b.append(",");
-            }
-            b.append(event);
-        }
-
-        //log.info(b);
     }
 }
