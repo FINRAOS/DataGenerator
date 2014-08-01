@@ -70,6 +70,13 @@
     </module>
     -->
 
+    <!-- Checks for Headers                                -->
+    <!-- See http://checkstyle.sf.net/config_header.html   -->
+    <module name="Header">
+        <property name="headerFile" value="config/java.header"/>
+    </module>
+
+
     <module name="TreeWalker">
 
         <property name="cacheFile" value="${checkstyle.cache.file}"/>
@@ -106,20 +113,6 @@
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
-
-        <!-- Checks for Headers                                -->
-        <!-- See http://checkstyle.sf.net/config_header.html   -->
-        <!-- <module name="Header">                            -->
-        <!-- The follow property value demonstrates the ability     -->
-        <!-- to have access to ANT properties. In this case it uses -->
-        <!-- the ${basedir} property to allow Checkstyle to be run  -->
-        <!-- from any directory within a project. See property      -->
-        <!-- expansion,                                             -->
-        <!-- http://checkstyle.sf.net/config.html#properties        -->
-        <!-- <property                                              -->
-        <!--     name="headerFile"                                  -->
-        <!--     value="${basedir}/java.header"/>                   -->
-        <!-- </module> -->
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
