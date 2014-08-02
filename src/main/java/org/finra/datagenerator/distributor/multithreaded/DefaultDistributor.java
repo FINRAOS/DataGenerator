@@ -34,8 +34,6 @@ import org.xml.sax.SAXException;
 /**
  * Created by robbinbr on 3/24/14.
  */
-
-
 public class DefaultDistributor implements SearchDistributor {
 
     /**
@@ -52,7 +50,9 @@ public class DefaultDistributor implements SearchDistributor {
 
     /**
      * Sets the maximum number of lines to generate
-     * @param numberOfLines a long containing the maximum number of lines to generate
+     *
+     * @param numberOfLines a long containing the maximum number of lines to
+     * generate
      * @return a reference to the current DefaultDistributor
      */
     public DefaultDistributor setMaxNumberOfLines(long numberOfLines) {
@@ -62,6 +62,7 @@ public class DefaultDistributor implements SearchDistributor {
 
     /**
      * Sets the number of threads to use
+     *
      * @param threadCount an int containing the thread count
      * @return a reference to the current DefaultDistributor
      */
@@ -155,9 +156,11 @@ public class DefaultDistributor implements SearchDistributor {
 
     /**
      * Returns true if any of the flags is true
+     *
      * @param flags a map of atomic integers
      * @return a boolean
-     * @todo needs to be refactored or removed when flags are changed
+     *
+     * TODO: needs to be refactored or removed when flags are changed
      */
     public static boolean isSomeFlagTrue(Map<String, AtomicBoolean> flags) {
         for (AtomicBoolean flag : flags.values()) {

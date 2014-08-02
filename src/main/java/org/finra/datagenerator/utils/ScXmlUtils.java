@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 DataGenerator Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.finra.datagenerator.utils;
 
 import java.io.IOException;
@@ -15,12 +30,32 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class ScXmlUtils {
+/**
+ * SCXML utility class
+ */
+public final class ScXmlUtils {
 
+    /**
+     * Logger
+     */
     protected static final Logger log = Logger.getLogger(ScXmlUtils.class);
 
+    private ScXmlUtils() {
+
+    }
+
+    /**
+     * Returns a set of attribute values appearing inside or under a given node
+     *
+     * @param documentXml a {@link String} containing an XML document
+     * @param nodeName the name of the node under which to start searching for
+     * the propertyName
+     * @param propertyName a String containing the property name to search for
+     * @return a {@link Set} of {@link String}s containing the values of the
+     * propertyName searched for
+     */
     public static Set<String> getAttributesValues(String documentXml, String nodeName, String propertyName) {
-        Set<String> values = new HashSet<String>();
+        Set<String> values = new HashSet<>();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -39,13 +74,7 @@ public class ScXmlUtils {
                     }
                 }
             }
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException("Error while parsing the SCXML file", e);
-        } catch (SAXException e) {
-            throw new RuntimeException("Error while parsing the SCXML file", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Error while parsing the SCXML file", e);
-        } catch (DOMException e) {
+        } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
             throw new RuntimeException("Error while parsing the SCXML file", e);
         }
 
