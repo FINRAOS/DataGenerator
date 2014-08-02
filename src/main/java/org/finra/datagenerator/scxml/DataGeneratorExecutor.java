@@ -1,9 +1,23 @@
+/*
+ * Copyright 2014 DataGenerator Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.finra.datagenerator.scxml;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,25 +45,51 @@ import org.xml.sax.SAXException;
  */
 public class DataGeneratorExecutor extends SCXMLExecutor {
 
+    /**
+     * Logger
+     */
     protected static final Logger log = Logger.getLogger(DataGeneratorExecutor.class);
 
     private StateMachineListener listener;
 
+    /**
+     * Default public constructor
+     *
+     * @throws ModelException if errors happen during the super class
+     * initialization {@link SCXMLExecutor}
+     */
     public DataGeneratorExecutor() throws ModelException {
         super();
     }
 
-    public DataGeneratorExecutor(String stateMachineText) throws ModelException, SAXException, IOException {
+    /**
+     * Given the state chart xml text, initializes the DataGeneratorExecutor
+     *
+     * @param stateMachineText a String containing the SCXML text for the state
+     * machine
+     * @throws ModelException if errors occur during interpreting the XML as
+     * SCXML
+     * @throws SAXException if errors occur during parsing the XML
+     * @throws IOException if errors occur during parsing
+     */
+    public DataGeneratorExecutor(final String stateMachineText) throws ModelException, SAXException, IOException {
         InputStream is = new ByteArrayInputStream(stateMachineText.getBytes());
         SCXML stateMachine = SCXMLParser.parse(new InputSource(is), null);
         initExecutor(stateMachine);
     }
 
-    public DataGeneratorExecutor(SCXML xml) throws ModelException {
+    /**
+     * Given the state chart xml model, initializes the DataGeneratorExecutor
+     *
+     * @param xml an {@link SCXML} model of the state machine
+     * @throws ModelException if errors occur during interpreting the state
+     * machine
+     */
+    public DataGeneratorExecutor(final SCXML xml) throws ModelException {
         initExecutor(xml);
     }
 
-    private void initExecutor(SCXML stateMachine) throws ModelException {
+    private void initExecutor(final SCXML stateMachine) throws ModelException {
         ELEvaluator elEvaluator = new ELEvaluator();
         ELContext context = new ELContext();
         this.listener = new StateMachineListener();
@@ -60,11 +100,6 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         this.addListener(stateMachine, listener);
 
         this.reset();
-    }
-
-    public void initExecutor(URL fileUrl) throws ModelException, SAXException, IOException {
-        SCXML stateMachine = SCXMLParser.parse(fileUrl, null);
-        initExecutor(stateMachine);
     }
 
     public StateMachineListener getListener() {
@@ -79,13 +114,26 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * @param varsOut the set of output variables
      * @param initialVariablesMap initial variables values
      * @param initialEvents initial events to fire on reset
-     * @throws org.apache.commons.scxml.model.ModelException
+     * @throws ModelException if errors happen during reset
      */
     public void resetStateMachine(Set<String> varsOut, Map<String, String> initialVariablesMap,
             List<String> initialEvents) throws ModelException {
         this.resetStateMachine(varsOut, initialVariablesMap, initialEvents, null);
     }
 
+    /**
+     * Resets the state machine to the start, then fires the initial events and
+     * assigns the initial values of variables to initialVariablesMap
+     *
+     * @param varsOut a set of the names of the output variables
+     * @param initialVariablesMap a map containing the initial value assignments
+     * of variables
+     * @param initialEvents initial events to fire after resetting
+     * @param variableOverride override the values of variables with the current
+     * map. Useful when a variable should have been expanded at that point.
+     * @throws ModelException thwon due to errors calling go or due to errors
+     * from fireEvents
+     */
     public void resetStateMachine(Set<String> varsOut, Map<String, String> initialVariablesMap,
             List<String> initialEvents, Map<String, String> variableOverride) throws
             ModelException {
@@ -117,8 +165,8 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
      * [beforeState]-event-[afterState] with the before and after states and
      * their separators optional
      *
-     * @param commaSeparatedEvents
-     * @throws ModelException
+     * @param commaSeparatedEvents a comma separated lists of events to fire
+     * @throws ModelException thrown due to errors in triggerEvent
      */
     public void fireEvents(String commaSeparatedEvents) throws ModelException {
         if (commaSeparatedEvents == null) {
@@ -142,6 +190,13 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
     }
 
+    /**
+     * Fires a list of given events
+     *
+     * @param events a list of the ids of the events to fire
+     *
+     * @throws ModelException thrown upon errors when calling triggerEvent
+     */
     public void fireEvents(List<String> events) throws ModelException {
         if (events == null) {
             return;
@@ -159,8 +214,17 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         }
     }
 
-    public void findEvents(List<String> positive, List<String> negative) throws ModelException,
-            SCXMLExpressionException {
+    /**
+     * Finds a list of positive and negative events given the current state of
+     * the state machine.
+     *
+     * @param positive a list to be filled with the possible positive
+     * transitions
+     * @param negative a list to be filled with the possible negative
+     * transitions
+     * @throws ModelException thrown if we reach a null target or null condition
+     */
+    public void findEvents(List<String> positive, List<String> negative) throws ModelException {
         positive.clear();
         negative.clear();
         TransitionTarget currentState = listener.getCurrentState();
@@ -247,6 +311,23 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         return possiblePositiveStates;
     }
 
+    /**
+     * Given a certain point in the state machine, this function will attempt to
+     * trace the leftmost path down until it finds 'end'
+     *
+     * @param possiblePositiveStatesList A list of the levels until the end
+     * state. Inside every level, a list is given breadthwise of the states at
+     * that level.
+     * @param varsOut a set of string listing the names of the output variables
+     * @param initialVariablesMap initial variables assignment map
+     * @param initialEvents a list of initial events to be fired when resetting
+     * the state machine
+     * @param expandedVars values of variables after expanding sets
+     * @throws ModelException Can be thrown due to errors while resetting the
+     * state machine or due to null variables.
+     * @throws SCXMLExpressionException thrown due to errors when attempting to
+     * find the next possible states
+     */
     public void traceDepth(ArrayList<ArrayList<PossibleState>> possiblePositiveStatesList, Set<String> varsOut,
             Map<String, String> initialVariablesMap, List<String> initialEvents, Map<String, String> expandedVars) throws
             ModelException, SCXMLExpressionException {

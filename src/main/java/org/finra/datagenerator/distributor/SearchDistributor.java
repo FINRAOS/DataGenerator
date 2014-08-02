@@ -49,12 +49,11 @@ public interface SearchDistributor {
     void distribute(List<SearchProblem> searchProblemList);
 
     /**
-     * @todo Buggy !! this function is adding a new instance of AromicBoolen and
+     * TODO: Buggy !! this function is adding a new instance of AromicBoolen and
      * not setting the value of a current atomic boolean
+     *
      * @param name the name of the flag
      * @param flag the value of the flag
-     *
-     * @TODO: Redesign
      */
     void setFlag(String name, AtomicBoolean flag);
 }

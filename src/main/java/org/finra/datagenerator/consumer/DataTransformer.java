@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 FINRA.
+ * Copyright 2014 DataGenerator Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,15 @@
  */
 package org.finra.datagenerator.consumer;
 
+/**
+ * Applies transformations on a given data
+ */
 public interface DataTransformer {
 
+    /**
+     * Applies transformations on a given data
+     *
+     * @param cr a reference to DataPipe from which to read the current map
+     */
     void transform(DataPipe cr);
 }
