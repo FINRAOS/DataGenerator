@@ -36,9 +36,11 @@ public class DefaultWriter implements DataWriter {
      * Constructor
      *
      * @param os the output stream to use in writing
+     * @param outTemplate the output template to format writing
      */
-    public DefaultWriter(final OutputStream os) {
+    public DefaultWriter(final OutputStream os, final String[] outTemplate) {
         this.os = os;
+        this.outTemplate = outTemplate;
     }
 
     @Override

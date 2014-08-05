@@ -131,12 +131,14 @@ public class DataConsumer {
      * calls every dataWriter in sequence.
      *
      * @param initialVars a map containing the initial variables assignments
+     * @return the number of lines written
+     *
      * TODO: Exceptions are not properly handled in case one writer or one
      * transformer breaks. In case one transformer breaks the exception should
      * definitely go the called. If one writer fails we should continue with the
      * rest of the writers and report the exception in the logs.
      */
-    public void consume(Map<String, String> initialVars) {
+    public int consume(Map<String, String> initialVars) {
         this.dataPipe = new DataPipe(this);
 
         // Set initial variables
@@ -153,6 +155,8 @@ public class DataConsumer {
         for (DataWriter oneOw : dataWriters) {
             oneOw.writeOutput(dataPipe);
         }
+
+        return 1;
     }
 
     /**
