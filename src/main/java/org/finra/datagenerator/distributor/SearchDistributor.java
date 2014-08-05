@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 FINRA.
+ * Copyright 2014 DataGenerator Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,43 @@ package org.finra.datagenerator.distributor;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.finra.datagenerator.consumer.DataConsumer;
 
 /**
- *
  * @author robbinbr
  */
 public interface SearchDistributor {
 
-    public SearchDistributor setStateMachineText(String stateMachineText);
+    /**
+     * Sets the data consumer
+     *
+     * @param dataConsumer the DataConsumer
+     * @return a reference to the current SearchDistributor
+     */
+    SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
-    public void distribute(List<SearchProblem> searchProblemList);
+    /**
+     * Sets the state machine XML
+     *
+     * @param stateMachineText a String containing the state machine XML
+     * @return a reference to the current SearchDistributor
+     */
+    SearchDistributor setStateMachineText(String stateMachineText);
 
-    public void setFlag(String name, AtomicBoolean flag);
+    /**
+     * Distributes the list of the problems
+     *
+     * @param searchProblemList a list containing the search problems to
+     * distribute
+     */
+    void distribute(List<SearchProblem> searchProblemList);
+
+    /**
+     * TODO: Buggy !! this function is adding a new instance of AromicBoolen and
+     * not setting the value of a current atomic boolean
+     *
+     * @param name the name of the flag
+     * @param flag the value of the flag
+     */
+    void setFlag(String name, AtomicBoolean flag);
 }

@@ -76,54 +76,78 @@
 
     <build>
         <plugins>
-<!--             <plugin> -->
-<!--                 <groupId>org.jacoco</groupId> -->
-<!--                 <artifactId>jacoco-maven-plugin</artifactId> -->
-<!--                 <version>0.6.3.201306030806</version> -->
-<!--                 <configuration> -->
-<!--                     <destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile> -->
-<!--                     <datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile> -->
-<!--                 </configuration> -->
-<!--                 <executions> -->
-<!--                     <execution> -->
-<!--                         <id>jacoco-initialize</id> -->
-<!--                         <goals> -->
-<!--                             <goal>prepare-agent</goal> -->
-<!--                         </goals> -->
-<!--                     </execution> -->
-<!--                     <execution> -->
-<!--                         <id>jacoco-site</id> -->
-<!--                         <phase>package</phase> -->
-<!--                         <goals> -->
-<!--                             <goal>report</goal> -->
-<!--                         </goals> -->
-<!--                     </execution> -->
-<!--                 </executions> -->
-<!--             </plugin> -->
+            <!--             <plugin> -->
+            <!--                 <groupId>org.jacoco</groupId> -->
+            <!--                 <artifactId>jacoco-maven-plugin</artifactId> -->
+            <!--                 <version>0.6.3.201306030806</version> -->
+            <!--                 <configuration> -->
+            <!--                     <destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile> -->
+            <!--                     <datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile> -->
+            <!--                 </configuration> -->
+            <!--                 <executions> -->
+            <!--                     <execution> -->
+            <!--                         <id>jacoco-initialize</id> -->
+            <!--                         <goals> -->
+            <!--                             <goal>prepare-agent</goal> -->
+            <!--                         </goals> -->
+            <!--                     </execution> -->
+            <!--                     <execution> -->
+            <!--                         <id>jacoco-site</id> -->
+            <!--                         <phase>package</phase> -->
+            <!--                         <goals> -->
+            <!--                             <goal>report</goal> -->
+            <!--                         </goals> -->
+            <!--                     </execution> -->
+            <!--                 </executions> -->
+            <!--             </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.10</version>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.1</version>
                 <executions>
                     <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <printFailingErrors>true</printFailingErrors>
+                            <failOnViolation>true</failOnViolation>
+                            <verbose>true</verbose>
+                            <minimumPriority>0</minimumPriority>
+                            <rulesets>
+                                <ruleset>rulesets/java/basic.xml</ruleset>
+                                <ruleset>rulesets/java/strictexception.xml</ruleset>
+                            </rulesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.12.1</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
                         <configuration>
                             <configLocation>config/sun_checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
-                            <failOnViolation>false</failOnViolation>
-                            <failsOnError>false</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <failsOnError>true</failsOnError>
                         </configuration>
                         <goals>
                             <goal>check</goal>
@@ -262,8 +286,12 @@
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.2.1.v20140609</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

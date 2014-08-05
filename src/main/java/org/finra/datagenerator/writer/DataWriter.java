@@ -15,38 +15,17 @@
  */
 package org.finra.datagenerator.writer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataPipe;
 
 /**
  * Created by robbinbr on 5/28/2014.
  */
-public class DefaultWriter implements DataWriter {
+public interface DataWriter {
 
     /**
-     * Logger
-     */
-    protected static final Logger log = Logger.getLogger(DefaultWriter.class);
-    private final OutputStream os;
-    private String[] outTemplate;
-
-    /**
-     * Constructor
+     * Writes an output to a given data pipe
      *
-     * @param os the output stream to use in writing
+     * @param cr the DataPipe to write to
      */
-    public DefaultWriter(final OutputStream os) {
-        this.os = os;
-    }
-
-    @Override
-    public void writeOutput(DataPipe cr) {
-        try {
-            os.write(cr.getPipeDelimited(outTemplate).getBytes());
-        } catch (IOException e) {
-            log.error("IOException in DefaultConsumer", e);
-        }
-    }
+    void writeOutput(DataPipe cr);
 }

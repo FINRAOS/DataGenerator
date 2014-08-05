@@ -1,7 +1,8 @@
 package org.finra.datagenerator.exec;
 
 import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.defaults.ConsumerResult;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,40 +17,60 @@ import java.util.Map;
 public class ChartExecTests {
 
     @Test
-    public void testProcess() throws Exception {
+    public void testProcessMinThree() throws Exception {
         ChartExec exec = new ChartExec();
         exec.setInputFileName("src/test/resources/test.xml");
-        TestConsumer consumer = new TestConsumer();
+        DataConsumer consumer = new DataConsumer();
+        TestTransformer testTransformer = new TestTransformer();
+        consumer.addDataTransformer(testTransformer);
         DefaultDistributor distributor = new DefaultDistributor();
         distributor.setDataConsumer(consumer);
         exec.setBootstrapMin(3).process(distributor);
 
-        System.out.println(consumer.getData());
+        System.out.println(testTransformer.getData());
 
-        Assert.assertEquals(9, consumer.getData().size());
+        Assert.assertEquals(9, testTransformer.getData().size());
     }
 
     @Test
-    public void testProcessParallel() throws Exception {
+    public void testProcessMinZero() throws Exception {
+        ChartExec exec = new ChartExec();
+        exec.setInputFileName("src/test/resources/test.xml");
+        DataConsumer consumer = new DataConsumer();
+        TestTransformer testTransformer = new TestTransformer();
+        consumer.addDataTransformer(testTransformer);
+        DefaultDistributor distributor = new DefaultDistributor();
+        distributor.setDataConsumer(consumer);
+        exec.setBootstrapMin(0).process(distributor);
+
+        System.out.println(testTransformer.getData());
+
+        Assert.assertEquals(9, testTransformer.getData().size());
+    }
+
+
+    @Test
+    public void testProcessParallelThreeByThree() throws Exception {
         ChartExec exec = new ChartExec();
         exec.setInputFileName("src/test/resources/test.xml");
 
-        TestConsumer consumer = new TestConsumer();
+        TestTransformer transformer = new TestTransformer();
         DefaultDistributor distributor = new DefaultDistributor();
-        distributor.setDataConsumer(consumer).setThreadCount(1);
+        distributor.setDataConsumer(new DataConsumer().addDataTransformer(transformer));
+        distributor.setThreadCount(3);
         exec.setBootstrapMin(3).process(distributor);
 
-        System.out.println(consumer.getData());
+        System.out.println(transformer.getData());
 
-        Assert.assertEquals(9, consumer.getData().size());
+        Assert.assertEquals(9, transformer.getData().size());
     }
 
-    private class TestConsumer implements DataConsumer {
+    private class TestTransformer implements DataTransformer {
 
         private List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
         @Override
-        public void consume(ConsumerResult cr) {
+        public void transform(DataPipe cr) {
             data.add(cr.getDataMap());
             System.out.println("Output saw a : " + cr.getDataMap());
         }

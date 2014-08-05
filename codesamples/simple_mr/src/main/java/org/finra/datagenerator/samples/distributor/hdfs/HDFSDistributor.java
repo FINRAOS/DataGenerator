@@ -15,7 +15,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
 
@@ -35,7 +35,7 @@ public class HDFSDistributor implements SearchDistributor {
     private Path mapperInputFilePath;
     private Path mapperOutputFilePath;
     private String mapperOutputFileName;
-    private DataConsumer dataConsumer;
+    private DataTransformer dataTransformer;
     private long maxNumberOfLines;
     private String reportingHost;
 
