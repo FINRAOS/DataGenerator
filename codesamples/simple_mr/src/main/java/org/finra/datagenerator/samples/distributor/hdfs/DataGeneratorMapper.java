@@ -31,9 +31,6 @@ public class DataGeneratorMapper extends Mapper<LongWritable, Text, LongWritable
 
     @Override
     public void setup(final Context context) {
-
-        //DataConsumer dataConsumer = gson.fromJson(context.getConfiguration().get("dataConsumer"), DataConsumer.class);
-        //distributor.setDataConsumer(dataConsumer);
         distributor.setStateMachineText(context.getConfiguration().get("stateMachineText"));
         distributor.setMaxNumberOfLines(context.getConfiguration().getLong("maxNumberOfLines", 100000));
 
@@ -51,7 +48,6 @@ public class DataGeneratorMapper extends Mapper<LongWritable, Text, LongWritable
         SampleMachineConsumer wrappingConsumer = new SampleMachineConsumer(context);
         wrappingConsumer.setReportingHost(reportingHost);
         distributor.setDataConsumer(wrappingConsumer);
-        distributor.setExitFlag(new AtomicBoolean(false));
 
         // Prepare Problems (only one)
         List<SearchProblem> problemList = new ArrayList<SearchProblem>();
