@@ -74,6 +74,7 @@ public class DefaultDistributor implements SearchDistributor {
     @Override
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
         this.userDataOutput = dataConsumer;
+        dataConsumer.setFlags(flags);
         return this;
     }
 
@@ -135,8 +136,7 @@ public class DefaultDistributor implements SearchDistributor {
         while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
             HashMap<String, String> row = queue.poll();
             if (row != null) {
-                userDataOutput.consume(row);
-                lines++;
+                lines += userDataOutput.consume(row);
             } else {
                 if (flags.containsKey("exit") && flags.containsKey("exit")) {
                     break;
