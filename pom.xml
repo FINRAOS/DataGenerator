@@ -129,7 +129,7 @@
 					<verbose>true</verbose>
 					<rulesets>
 						<ruleset>/rulesets/java/braces.xml</ruleset>
-<!-- 						<ruleset>/rulesets/java/strictexception.xml</ruleset> -->
+						<ruleset>/rulesets/java/strictexception.xml</ruleset>
 					</rulesets>
 				</configuration>
 				<executions>
