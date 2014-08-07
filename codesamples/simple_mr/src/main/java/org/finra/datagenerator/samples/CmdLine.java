@@ -1,4 +1,5 @@
-package org.finra.datagenerator.samples;/*
+package org.finra.datagenerator.samples;
+/*
  * Copyright 2014 mosama.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -185,15 +186,6 @@ public class CmdLine extends Configured implements Tool {
             LogInitializer.initialize("WARN");
         }
         
-        if (cmd.hasOption('r')) {
-            String stringValue = cmd.getOptionValue('r');
-            if (StringUtils.isNotEmpty(stringValue)) {
-                chartExec.setMaxEventReps(Integer.valueOf(stringValue));
-            } else {
-                System.err.println("Unparsable numeric value for option 'r':" + stringValue);
-            }
-        }
-        
         if (cmd.hasOption('m')) {
             String stringValue = cmd.getOptionValue('m');
             if (StringUtils.isNotEmpty(stringValue)) {
@@ -206,7 +198,6 @@ public class CmdLine extends Configured implements Tool {
         if (cmd.hasOption('s')) {
             String stringValue = cmd.getOptionValue('s');
             if (StringUtils.isNotEmpty(stringValue)) {
-                chartExec.setMaxScenarios(maxScenarios = Integer.valueOf(stringValue));
                 if (defaultDist != null) {
                     defaultDist.setMaxNumberOfLines(Long.parseLong(stringValue));
                 }

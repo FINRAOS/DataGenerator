@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
@@ -35,11 +36,15 @@ public class HDFSDistributor implements SearchDistributor {
     private Path mapperInputFilePath;
     private Path mapperOutputFilePath;
     private String mapperOutputFileName;
-    private DataTransformer dataTransformer;
     private long maxNumberOfLines;
     private String reportingHost;
 
-    private AtomicBoolean exitFlag = new AtomicBoolean(false);
+    public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
+        return this;
+    }
+
+    public void setFlag(String name, AtomicBoolean flag) {
+    }
 
     public HDFSDistributor setFileRoot(String fileRoot) {
         this.hdfsFileRoot = fileRoot;
@@ -175,8 +180,4 @@ public class HDFSDistributor implements SearchDistributor {
         }
     }
 
-    @Override
-    public void setExitFlag(AtomicBoolean exitFlag) {
-        this.exitFlag = exitFlag;
-    }
 }

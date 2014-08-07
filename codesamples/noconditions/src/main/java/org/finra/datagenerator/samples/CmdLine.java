@@ -16,9 +16,11 @@ package org.finra.datagenerator.samples;
 import java.io.InputStream;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.exec.ChartExec;
-import org.finra.datagenerator.samples.consumer.SampleMachineConsumer;
+import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
+import org.finra.datagenerator.writer.DefaultWriter;
 
 public class CmdLine {
 
@@ -36,10 +38,15 @@ public class CmdLine {
         // Usually, this should be more than the number of threads you intend to run
         chartExec.setBootstrapMin(1);
 
+        //Prepare the consumer with the proper writer and transformer
+        DataConsumer consumer = new DataConsumer();
+        consumer.addDataTransformer(new SampleMachineTransformer());
+        consumer.addDataWriter(new DefaultWriter(System.out, new String[] {"var_out_V1", "var_out_V2", "var_out_V3"}));
+
         // In usual cases, that should be >4
         defaultDist.setThreadCount(1);
 
-        defaultDist.setDataConsumer(new SampleMachineConsumer());
+        defaultDist.setDataConsumer(consumer);
         Logger.getLogger("org.apache").setLevel(Level.WARN);
 
         chartExec.process(defaultDist);
