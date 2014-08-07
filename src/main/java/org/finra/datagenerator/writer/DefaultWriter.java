@@ -47,6 +47,7 @@ public class DefaultWriter implements DataWriter {
     public void writeOutput(DataPipe cr) {
         try {
             os.write(cr.getPipeDelimited(outTemplate).getBytes());
+            os.write("\n".getBytes());
         } catch (IOException e) {
             log.error("IOException in DefaultConsumer", e);
         }
