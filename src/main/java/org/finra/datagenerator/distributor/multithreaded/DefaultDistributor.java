@@ -138,7 +138,7 @@ public class DefaultDistributor implements SearchDistributor {
             if (row != null) {
                 lines += userDataOutput.consume(row);
             } else {
-                if (flags.containsKey("exit") && flags.containsKey("exit")) {
+                if (flags.containsKey("exit") || flags.containsKey("exitNow")) {
                     break;
                 }
             }
