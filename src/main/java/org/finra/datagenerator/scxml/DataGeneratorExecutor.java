@@ -44,12 +44,9 @@ import org.xml.sax.SAXException;
  * Created by robbinbr on 3/3/14.
  */
 public class DataGeneratorExecutor extends SCXMLExecutor {
-
-    /**
-     * Logger
-     */
     protected static final Logger log = Logger.getLogger(DataGeneratorExecutor.class);
 
+    private final static String setPrefix = "set:{";
     private StateMachineListener listener;
 
     /**
@@ -372,32 +369,60 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
                     if (varsVals == null || varsVals.isEmpty()) {
                         throw new ModelException("Empty or null varsVals");
                     }
+                    ArrayList<PossibleState> newStates = new ArrayList<PossibleState>();
                     for (Map.Entry<String, String> var : varsVals.entrySet()) {
                         String nextVal = var.getValue();
                         //log.debug("key:" + var.getKey());
                         //log.debug("val:" + nextVal);
-                        if (nextVal != null && nextVal.length() > 5 && nextVal.startsWith("set:{")) {
+                        if (nextVal != null && nextVal.length() > setPrefix.length() && nextVal.startsWith(setPrefix)) {
                             // Remove the set:{ and }
-                            String[] vals = nextVal.substring(5, nextVal.length() - 1).split(",");
+                            String[] vals = nextVal.substring(setPrefix.length(), nextVal.length() - 1).split(",");
 
-                            // Delete this state from the list
-                            states.remove(0);
-                            for (String val : vals) {
-                                PossibleState possibleState = new PossibleState();
-                                possibleState.id = initialState.id;
-                                possibleState.nextStateName = initialState.nextStateName;
-                                possibleState.transitionEvent = initialState.transitionEvent;
-                                possibleState.getVariablesAssignment().putAll(initialState.getVariablesAssignment());
-                                possibleState.getVariablesAssignment().put(var.getKey(), val);
-                                possibleState.varsInspected = true;
-                                states.add(0, possibleState);
-                                //log.debug("Adding:" + possibleState);
+                            if (null != newStates && newStates.size() > 0) {
+                                ArrayList<PossibleState> newStatesNextLevel = new ArrayList<PossibleState>();
+                                while (newStates.size() > 0) {
+                                    PossibleState currentNewState = newStates.get(0);
+                                    for (String val : vals) {
+                                        PossibleState possibleState = new PossibleState();
+                                        possibleState.id = currentNewState.id;
+                                        possibleState.nextStateName = currentNewState.nextStateName;
+                                        possibleState.transitionEvent = currentNewState.transitionEvent;
+                                        possibleState.getVariablesAssignment().putAll(currentNewState.getVariablesAssignment());
+                                        possibleState.getVariablesAssignment().put(var.getKey(), val);
+                                        possibleState.varsInspected = true;
+                                        newStatesNextLevel.add(0, possibleState);
+                                    }
+                                    newStates.remove(0);
+                                }
+                                newStates.addAll(newStatesNextLevel);
+                            } else {
+                                states.remove(0);
+                                for (String val : vals) {
+                                    PossibleState possibleState = new PossibleState();
+                                    possibleState.id = initialState.id;
+                                    possibleState.nextStateName = initialState.nextStateName;
+                                    possibleState.transitionEvent = initialState.transitionEvent;
+                                    possibleState.getVariablesAssignment().putAll(initialState.getVariablesAssignment());
+                                    possibleState.getVariablesAssignment().put(var.getKey(), val);
+                                    possibleState.varsInspected = true;
+                                    newStates.add(0, possibleState);
+                                }
                             }
                         } else {
-                            states.get(0).getVariablesAssignment().put(var.getKey(), nextVal);
-                            states.get(0).varsInspected = true;
+                            if (null != states && states.size() > 0) {
+                                states.get(0).getVariablesAssignment().put(var.getKey(), nextVal);
+                                states.get(0).varsInspected = true;    
+                            } else if (null != newStates && newStates.size() > 0) {
+                                newStates.get(0).getVariablesAssignment().put(var.getKey(), nextVal);
+                                newStates.get(0).varsInspected = true;
+                            }
                         }
                     }
+                    
+                    if (null != newStates && newStates.size() > 0) {
+                        states.addAll(newStates);
+                    }
+                    
                     initialState = states.get(0);
                 }
 
@@ -507,7 +532,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
             }
             String nextVal = var.getValue();
 
-            if (nextVal.length() > 5 && nextVal.startsWith("set:{")) {
+            if (nextVal.length() > setPrefix.length() && nextVal.startsWith(setPrefix)) {
                 return var.getKey();
             }
         }
