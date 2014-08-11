@@ -67,7 +67,7 @@ public final class ScXmlUtils {
                 if (null != element) {
                     NamedNodeMap attributes = element.getAttributes();
                     if (null != attributes) {
-                        Node attributeName = attributes.getNamedItem("name");
+                        Node attributeName = attributes.getNamedItem(propertyName);
                         if (null != attributeName) {
                             values.add(attributeName.getNodeValue());
                         }

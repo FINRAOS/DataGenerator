@@ -110,10 +110,28 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                    <failOnViolation>true</failOnViolation>
+                    <verbose>true</verbose>
+                    <rulesets>
+                        <ruleset>/rulesets/java/braces.xml</ruleset>
+                        <ruleset>/rulesets/java/strictexception.xml</ruleset>
+                    </rulesets>
+                </configuration>
                 <executions>
                     <execution>
                         <id>test</id>
@@ -121,19 +139,10 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                        <configuration>
-                            <printFailingErrors>true</printFailingErrors>
-                            <failOnViolation>true</failOnViolation>
-                            <verbose>true</verbose>
-                            <minimumPriority>0</minimumPriority>
-                            <rulesets>
-                                <ruleset>rulesets/java/basic.xml</ruleset>
-                                <ruleset>rulesets/java/strictexception.xml</ruleset>
-                            </rulesets>
-                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
+               </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -182,7 +191,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
@@ -193,7 +201,6 @@
             <version>2.11.0</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -239,7 +246,6 @@
             <artifactId>spring-core</artifactId>
             <version>3.1.0.RELEASE</version>
         </dependency>
-
         <dependency>
             <groupId>commons-scxml</groupId>
             <artifactId>commons-scxml</artifactId>

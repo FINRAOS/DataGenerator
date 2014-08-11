@@ -9,7 +9,9 @@
 
     <state id="SETV1">
         <onentry>
-            <assign name="var_out_V1" expr="set:{A,B,C}"/>
+            <assign name="var_out_V1_1" expr="set:{A1,B1,C1}"/>
+            <assign name="var_out_V1_2" expr="set:{A2,B2,C2}"/>
+            <assign name="var_out_V1_3" expr="77"/>
         </onentry>
         <transition event="SETV2" target="SETV2"/>
     </state>

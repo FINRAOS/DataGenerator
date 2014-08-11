@@ -41,7 +41,7 @@ public class CmdLine {
         //Prepare the consumer with the proper writer and transformer
         DataConsumer consumer = new DataConsumer();
         consumer.addDataTransformer(new SampleMachineTransformer());
-        consumer.addDataWriter(new DefaultWriter(System.out, new String[] {"var_out_V1", "var_out_V2", "var_out_V3"}));
+        consumer.addDataWriter(new DefaultWriter(System.out, new String[] {"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3"}));
 
         // In usual cases, that should be >4
         defaultDist.setThreadCount(1);
