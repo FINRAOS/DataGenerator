@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.scxml.DataGeneratorModelException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -75,7 +76,7 @@ public final class ScXmlUtils {
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
-            throw new RuntimeException("Error while parsing the SCXML file", e);
+            throw new DataGeneratorModelException("Error while parsing the SCXML file", e);
         }
 
         return values;
