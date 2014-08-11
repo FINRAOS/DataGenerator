@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by RobbinBr on 7/2/2014.
  */
-public class DataPipeTests {
+public class DataPipeTest {
 
     @Test
     public void testDataMap() {
