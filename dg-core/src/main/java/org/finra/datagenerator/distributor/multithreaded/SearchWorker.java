@@ -54,12 +54,12 @@ public class SearchWorker implements Runnable {
      * @param stateMachineText the xml text of the state machine
      * @param queue a queue that will receive the results
      * @param flags shared flags
-     * @throws ModelException IOException due to errors instantiating the
-     * {@link DataGeneratorExecutor}
-     * @throws IOException due to errors instantiating the
-     * {@link DataGeneratorExecutor}
-     * @throws SAXException due to errors instantiating the
-     * {@link DataGeneratorExecutor}
+     * @throws org.apache.commons.scxml.model.ModelException IOException due to errors instantiating the
+     * {@link org.finra.datagenerator.scxml.DataGeneratorExecutor}
+     * @throws java.io.IOException due to errors instantiating the
+     * {@link org.finra.datagenerator.scxml.DataGeneratorExecutor}
+     * @throws org.xml.sax.SAXException due to errors instantiating the
+     * {@link org.finra.datagenerator.scxml.DataGeneratorExecutor}
      */
     public SearchWorker(final SearchProblem problem, final String stateMachineText,
             final Queue queue, final Map<String, AtomicBoolean> flags) throws ModelException,

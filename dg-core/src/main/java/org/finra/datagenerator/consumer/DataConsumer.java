@@ -165,7 +165,7 @@ public class DataConsumer {
      *
      * @param path the path at the reporting host where the request should be
      * sent
-     * @return a {@link Future} that wraps this activity
+     * @return a {@link java.util.concurrent.Future} that wraps this activity
      */
     public Future<String> sendRequest(final String path) {
         return sendRequest(path, null);
@@ -178,7 +178,7 @@ public class DataConsumer {
      * @param path the path at the reporting host which the request will be made
      * @param reportingHandler the handler to receive the response once executed
      * and recieved
-     * @return a {@link Future} for handing the request
+     * @return a {@link java.util.concurrent.Future} for handing the request
      */
     public Future<String> sendRequest(final String path, final ReportingHandler reportingHandler) {
         return threadPool.submit(new Callable<String>() {
