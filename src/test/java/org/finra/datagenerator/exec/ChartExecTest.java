@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by robbinbr on 3/3/14.
  */
-public class ChartExecTests {
+public class ChartExecTest {
 
     @Test
     public void testProcessMinThree() throws Exception {

@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 /**
  * Created by RobbinBr on 7/2/2014.
  */
-public class DataConsumerTests {
+public class DataConsumerTest {
 
     private Server server = null;
     private int requestCount = 0;

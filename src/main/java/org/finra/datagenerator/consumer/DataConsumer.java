@@ -183,7 +183,7 @@ public class DataConsumer {
     public Future<String> sendRequest(final String path, final ReportingHandler reportingHandler) {
         return threadPool.submit(new Callable<String>() {
             @Override
-            public String call() throws Exception {
+            public String call() {
                 String response = getResponse(path);
 
                 if (reportingHandler != null) {

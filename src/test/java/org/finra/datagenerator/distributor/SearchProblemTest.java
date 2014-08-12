@@ -16,13 +16,14 @@ import org.junit.Test;
 /**
  * Created by robbinbr on 3/3/14.
  */
-public class SearchProblemTests {
+public class SearchProblemTest {
 
     @Test
     public void testToJsonAndFromJson() throws FileNotFoundException, IOException,
             NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         ChartExec chartExec = new ChartExec();
         InputStream inputFileStream = new FileInputStream(new File("src/test/resources/test.xml"));
+        chartExec.setInputFileStream(inputFileStream);
         String machineText = IOUtils.toString(inputFileStream, "UTF-8");
         chartExec.setBootstrapMin(3);
 

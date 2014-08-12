@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 /**
  * Created by robbinbr on 3/3/14.
  */
-public class DataGeneratorExecutorTests {
+public class DataGeneratorExecutorTest {
 
     private DataGeneratorExecutor executor;
     private Set<String> varsOut;
