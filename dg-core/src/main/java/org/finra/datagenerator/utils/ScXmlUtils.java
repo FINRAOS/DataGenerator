@@ -52,7 +52,7 @@ public final class ScXmlUtils {
      * @param nodeName the name of the node under which to start searching for
      * the propertyName
      * @param propertyName a String containing the property name to search for
-     * @return a {@link Set} of {@link String}s containing the values of the
+     * @return a {@link java.util.Set} of {@link String}s containing the values of the
      * propertyName searched for
      */
     public static Set<String> getAttributesValues(String documentXml, String nodeName, String propertyName) {

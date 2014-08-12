@@ -146,7 +146,7 @@ public class ChartExec {
      *
      * @param inputFileName a string containing the input file name
      * @return a reference to the current ChartExec
-     * @deprecated Use {@link ChartExec#setInputFileStream(java.io.InputStream)}
+     * @deprecated Use {@link org.finra.datagenerator.exec.ChartExec#setInputFileStream(java.io.InputStream)}
      * instead
      */
     @Deprecated
