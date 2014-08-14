@@ -2,6 +2,7 @@ dependency-reduced-pom.xml
 logs
 target
 *.class
+*.iml
 
 nb-configuration.xml
 
