@@ -1,2 +1,0 @@
-Before building the samples under this folder, make sure to run
-"mvn install -DskipTests" under the DataGenerator folder.

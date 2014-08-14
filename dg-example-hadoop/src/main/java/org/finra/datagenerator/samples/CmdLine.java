@@ -1,6 +1,5 @@
-package org.finra.datagenerator.samples;
 /*
- * Copyright 2014 mosama.
+ * Copyright 2014 DataGenerator Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +14,7 @@ package org.finra.datagenerator.samples;
  * limitations under the License.
  */
 
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package org.finra.datagenerator.samples;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -34,6 +23,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.scxml.SCXMLExpressionException;
+import org.apache.commons.scxml.model.ModelException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -43,38 +34,49 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.NetworkConnector;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.exec.ChartExec;
 import org.finra.datagenerator.exec.LogInitializer;
 import org.finra.datagenerator.samples.distributor.hdfs.HDFSDistributor;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.AbstractHandler;
 import org.mortbay.log.Log;
+import org.xml.sax.SAXException;
 
-public class CmdLine extends Configured implements Tool {
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Collection;
 
-    private static DefaultDistributor defaultDist = null;
-    private static HDFSDistributor hdfsDist = null;
-    private Configuration configuration = null;
-    static int listeningPort;
-    static String hostName;
+/**
+ * An example of distributing Data Generator over Hadoop HDFS
+ * using Hadoop MapReduce.
+ */
+public final class CmdLine extends Configured implements Tool {
+
+    private static DefaultDistributor defaultDist;
+    private static HDFSDistributor hdfsDist;
+    private Configuration configuration;
     private static Server server;
-    private static Handler jettyHandler;
-    private static int maxScenarios;
-    private static AtomicLong globalLineCounter = new AtomicLong(0);
-    static final AtomicLong time = new AtomicLong(System.currentTimeMillis());
-    static final long startTime = System.currentTimeMillis();
-    static long lastCount = 0;
-    
+    private String hostName;
+    private long listeningPort;
+    private static final long START_TIME = System.currentTimeMillis();
+
     /**
      * Prints the help on the command line
      *
-     * @param options
+     * @param options Options object from commons-cli
      */
-    public static void printHelp(Options options) {
+    public static void printHelp(final Options options) {
         Collection<Option> c = options.getOptions();
         System.out.println("Command line options are:");
         int longestLongOption = 0;
@@ -98,7 +100,15 @@ public class CmdLine extends Configured implements Tool {
         }
     }
 
-    public ChartExec parseCommandLine(String args[]) throws ParseException, Exception {
+    /**
+     * Parse command line arguments for the example
+     *
+     * @param args Command-line arguments for HDFS example
+     * @return a ChartExec object resulting from the parsing of command-line options
+     * @throws ParseException when args cannot be parsed
+     * @throws IOException    when input file cannot be found
+     */
+    public ChartExec parseCommandLine(final String[] args) throws ParseException, IOException {
         // create the command line parser
         CommandLineParser parser = new GnuParser();
 
@@ -108,32 +118,31 @@ public class CmdLine extends Configured implements Tool {
                 .addOption("i", "inputfile", true, "the scxml input file")
                 .addOption("v", "initialvariables", true,
                         "comma separated list of the initial variables and their values in the form of var1=val1,"
-                        + "var2=val2"
+                                + "var2=val2"
                 )
-              
+
                 .addOption("e", "initalevents", true,
                         "a comma separated list of the initial set of events to trigger before searching for scenarios")
                 .addOption("n", "numberoftimes", true,
-                        "an integer, the number of time to run the template of a row")
+                        "an integer, the number of TIME to run the template of a row")
                 .addOption("H", "hdfssequencefile", true,
                         "the path of the hdfs sequence file to write to")
                 .addOption("L", "loglevel", true,
                         "set the log level")
-                 .addOption("s", "maxscenarios", true,
+                .addOption("s", "maxscenarios", true,
                         "Maximum number of scenarios to generate. Default 10,000")
                 .addOption("d", "dist", true, "distribution method (shared or hdfs). Default is shared.")
                 .addOption("libjars", true, "Needed for MR Job")
-        		.addOption("m", "minbootstrapstates", true,
-                "Minimum number of states to explore using BFS before using parallel DFS search. Default is 0"
-                + " (no BFS).");
+                .addOption("m", "minbootstrapstates", true,
+                        "Minimum number of states to explore using BFS before using parallel DFS search. Default is 0"
+                                + " (no BFS).");
 
-   
+
         CommandLine cmd = parser.parse(options, args);
 
         runJetty();
         ChartExec chartExec = new ChartExec();
-       
-  
+
 
         defaultDist = new DefaultDistributor();
         if (cmd.hasOption("d")) {
@@ -141,7 +150,7 @@ public class CmdLine extends Configured implements Tool {
             if (StringUtils.isNotEmpty(stringValue)) {
                 if (stringValue.equals("hdfs")) {
                     Log.info("Setting to HDFSDistributor");
-                	hdfsDist = new HDFSDistributor().setFileRoot("brownbag_demo").setReportingHost(hostName + ":" + listeningPort);;
+                    hdfsDist = new HDFSDistributor().setFileRoot("brownbag_demo").setReportingHost(hostName + ":" + listeningPort);
                     defaultDist = null;
                 }
             } else {
@@ -185,7 +194,7 @@ public class CmdLine extends Configured implements Tool {
         } else {
             LogInitializer.initialize("WARN");
         }
-        
+
         if (cmd.hasOption('m')) {
             String stringValue = cmd.getOptionValue('m');
             if (StringUtils.isNotEmpty(stringValue)) {
@@ -207,8 +216,8 @@ public class CmdLine extends Configured implements Tool {
             } else {
                 System.err.println("Unparsable numeric value for option 's':" + stringValue);
             }
-        }else if (!cmd.hasOption('s')){
-        	if (defaultDist != null) {
+        } else if (!cmd.hasOption('s')) {
+            if (defaultDist != null) {
                 defaultDist.setMaxNumberOfLines(10000);
             }
             if (hdfsDist != null) {
@@ -218,39 +227,46 @@ public class CmdLine extends Configured implements Tool {
         return chartExec;
     }
 
-    public static void main(String args[]) throws Exception {
+    /**
+     * Entry point for this example
+     * <p/>
+     * Uses HDFS ToolRunner to wrap processing of
+     *
+     * @param args Command-line arguments for HDFS example
+     */
+    public static void main(String[] args) {
         CmdLine cmd = new CmdLine();
         Configuration conf = new Configuration();
-        int res = ToolRunner.run(conf, cmd, args);
+        int res = 0;
+        try {
+            res = ToolRunner.run(conf, cmd, args);
+        } catch (Exception e) {
+            System.err.println("Error while running MR job");
+            e.printStackTrace();
+        }
         System.exit(res);
     }
 
     @Override
-    public int run(String[] args) throws Exception {
-        try {
-        	Logger.getLogger("org.apache").setLevel(Level.WARN);
+    public int run(final String[] args) throws ModelException, SCXMLExpressionException, SAXException, IOException, ParseException {
+        Logger.getLogger("org.apache").setLevel(Level.WARN);
 
-            ChartExec chartExec = parseCommandLine(args);
+        ChartExec chartExec = parseCommandLine(args);
 
-            if (defaultDist != null) {
-                chartExec.process(defaultDist);
-            } else {
-                hdfsDist.setConfiguration(this.configuration);
-                hdfsDist.setOutputFileDir("dg-result");
-                chartExec.process(hdfsDist);
-            }
-        } catch(Exception e){
-        	Log.warn(e);
-        	throw e;
-        }finally {
-        	 Log.info("Data Generation Complete");
+        if (defaultDist != null) {
+            chartExec.process(defaultDist);
+        } else {
+            hdfsDist.setConfiguration(this.configuration);
+            hdfsDist.setOutputFileDir("dg-result");
+            chartExec.process(hdfsDist);
         }
+
 
         return 0;
     }
 
     @Override
-    public void setConf(Configuration c) {
+    public void setConf(final Configuration c) {
         this.configuration = c;
     }
 
@@ -258,59 +274,55 @@ public class CmdLine extends Configured implements Tool {
     public Configuration getConf() {
         return configuration;
     }
-    
-    private static void runJetty() throws Exception {
+
+    /**
+     * Start the Jetty server. Return the hostname
+     *
+     * @return a String with the hostname, or null if something went wrong
+     * @throws UnknownHostException when
+     */
+    private String runJetty() throws UnknownHostException {
+        if (server != null) {
+            try {
+                server.stop();
+                server = null;
+            } catch (Exception e) {
+                System.err.println("Error while stopping server");
+                e.printStackTrace();
+                return null;
+            }
+        }
+
         server = new Server(0);
-        jettyHandler = new AbstractHandler() {
+        Handler jettyHandler = new AbstractHandler() {
+
             @Override
-            public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch) throws IOException, ServletException {
-            	response.setContentType("text/plain");
-            	if (maxScenarios > -1) {
-                    String delta = request.getRequestURI().substring(1); // Skip the /
-                    if (StringUtils.isNumeric(delta)) {
-                        long increment = Long.valueOf(delta);
-                        long currentCount = globalLineCounter.addAndGet(increment);
-                        String status = "Lines:" + currentCount + " MaxScenarios: " + maxScenarios;
-                        if (currentCount < maxScenarios) {
-                            
-                        	response.getWriter().write("ok " + currentCount);
-                            status += " ok";
-                        } else {
-                         	response.getWriter().write("exit " + currentCount);
-                            status += " exit";
-                        }
-                        long thisTime = System.currentTimeMillis();
-                        if (thisTime - time.get() > 1000) {
-                            synchronized (time) {
-                                if (thisTime - time.get() > 1000) {
-                                    long oldValue = time.get();
-                                    time.set(thisTime);
-                                    double avgRate = 1000.0 * currentCount / (thisTime - startTime);
-                                    double instRate = 1000.0 * (currentCount - lastCount) / (thisTime - oldValue);
-                                    lastCount = currentCount;
-                                    System.out.println(status + " AvgRate:" + ((int) avgRate) + " lines/sec  instRate:" + ((int) instRate) + " lines/sec");
-                                }
-                            }
-                        }
-                    } else {
-                        response.getWriter().write("ERROR:" + delta + " is not numeric");
-                    }
-                } else {
-                    response.getWriter().write("ok " + maxScenarios);
-                }
-                ((Request) request).setHandled(true);
+            public void handle(String s, Request request,
+                               HttpServletRequest httpServletRequest,
+                               HttpServletResponse response) throws IOException, ServletException {
+                response.setContentType("text/plain");
+                response.getWriter().write(request.getRequestURI().substring(1));
+                request.setHandled(true);
             }
         };
 
         // Select any available port
         server.setHandler(jettyHandler);
+        try {
+            server.start();
+        } catch (Exception e) {
+            System.err.println("Error while starting server");
+            e.printStackTrace();
+        }
 
-        server.start();
+        int port = -3;
+
         Connector[] connectors = server.getConnectors();
-        listeningPort = connectors[0].getLocalPort();
-        hostName = InetAddress.getLocalHost().getHostName();
+        if (connectors[0] instanceof NetworkConnector) {
+            NetworkConnector nc = (NetworkConnector) connectors[0];
+            port = nc.getLocalPort();
+        }
 
-        System.out.println(
-                "Listening on port: " + listeningPort);
+        return InetAddress.getLocalHost().getHostName() + ":" + port;
     }
 }

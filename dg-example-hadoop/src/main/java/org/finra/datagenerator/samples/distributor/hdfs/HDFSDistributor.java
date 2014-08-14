@@ -1,9 +1,22 @@
+/*
+ * Copyright 2014 DataGenerator Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.finra.datagenerator.samples.distributor.hdfs;
 
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -16,19 +29,22 @@ import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.distributor.SearchProblem;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by robbinbr on 3/24/14.
  */
 public class HDFSDistributor implements SearchDistributor {
 
-    protected static final Logger log = Logger.getLogger(HDFSDistributor.class);
+    private static final Logger log = Logger.getLogger(HDFSDistributor.class);
 
     private static final String ENCODING = "UTF-8";
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     private String stateMachineText;
     private String hdfsFileRoot;
@@ -39,13 +55,34 @@ public class HDFSDistributor implements SearchDistributor {
     private long maxNumberOfLines;
     private String reportingHost;
 
+    // TODO: This method is not actually doing anything?
+
+    /**
+     * Set the DataConsumer object
+     *
+     * @param dataConsumer the DataConsumer which should be used by this Distributor (Writers, Transformers, and Reporters
+     *                     should be configured)
+     * @return the current object, with DataConsumer set
+     */
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
         return this;
     }
 
+    /**
+     * Set a flag
+     *
+     * @param name the name of the flag
+     * @param flag the value of the flag
+     */
     public void setFlag(String name, AtomicBoolean flag) {
     }
 
+    /**
+     * Set the file root on HDFS where files (temp and final) can be written
+     *
+     * @param fileRoot A valid HDFS location with space for the output of the data generation
+     * @return An updated HDFSDistributor with hdfsFileRoot set
+     */
     public HDFSDistributor setFileRoot(String fileRoot) {
         this.hdfsFileRoot = fileRoot;
         this.mapperInputFilePath = new Path(hdfsFileRoot + "/input.dat");
@@ -55,11 +92,23 @@ public class HDFSDistributor implements SearchDistributor {
         return this;
     }
 
+    /**
+     * Set the reporting host port for this Distributor
+     *
+     * @param hostPort The port number to use when reporting
+     * @return An updated HDFSDistributor with the host port set
+     */
     public HDFSDistributor setReportingHost(String hostPort) {
         this.reportingHost = hostPort;
         return this;
     }
 
+    /**
+     * Set the output file directory (to be appended to hdfsFileRoot)
+     *
+     * @param fileName Path from hdfsFileRoot
+     * @return an updated HDFSDistributor with output file name set
+     */
     public HDFSDistributor setOutputFileDir(String fileName) {
         this.mapperOutputFileName = fileName;
         if (hdfsFileRoot != null) {
@@ -68,16 +117,36 @@ public class HDFSDistributor implements SearchDistributor {
         return this;
     }
 
+    /**
+     * Set the HDFS Configuration for this distributor (should be the same instance configured for the
+     * MapReduce job by ToolRunner)
+     *
+     * @param configuration A configuration instance to use for Mapper tasks
+     * @return An updated HDFSDistributor with Configuration object set
+     */
     public HDFSDistributor setConfiguration(Configuration configuration) {
         this.configuration = new JobConf(configuration);
         return this;
     }
 
+    /**
+     * Set the XML text for the state machine serving as an input model for data generation
+     *
+     * @param stateMachineText a String containing the state machine XML
+     * @return An updated SearchDistributor with state machine text set
+     */
     @Override
     public SearchDistributor setStateMachineText(String stateMachineText) {
         this.stateMachineText = stateMachineText;
         return this;
     }
+
+    /**
+     * Set the max number of lines which should be written by this Distributor
+     *
+     * @param maxNumberOfLines Maximum number of lines to be written by this Distributor
+     * @return An updated SearchDistributor with a maximum line count set
+     */
 
     public SearchDistributor setMaxNumberOfLines(long maxNumberOfLines) {
         this.maxNumberOfLines = maxNumberOfLines;
@@ -159,10 +228,17 @@ public class HDFSDistributor implements SearchDistributor {
         return ret;
     }
 
+    /**
+     * Convert a set of SearchProblem objects to Strings of JSON text, writing the array to
+     * the HDFS location given by the HDFS file root. The written file serves as input to the
+     * Mapper tasks (one Mapper per line in the file, which is also one SearchProblem)
+     *
+     * @param problems A List of Search Problems to write
+     * @throws IOException if the file cannot be written to HDFS
+     */
     public void writeProblemsToHDFS(List<SearchProblem> problems) throws IOException {
         FileSystem fs = FileSystem.get(configuration);
         log.info("hdfsFileRoot = " + hdfsFileRoot);
-        FSDataOutputStream out = fs.create(mapperInputFilePath);
 
         StringBuilder sb = new StringBuilder();
         for (SearchProblem problem : problems) {
@@ -171,12 +247,10 @@ public class HDFSDistributor implements SearchDistributor {
             sb.append("\n");
         }
 
-        try {
+        try (FSDataOutputStream out = fs.create(mapperInputFilePath)) {
             out.write(sb.toString().getBytes());
         } catch (IOException e) {
             log.error("Problem writing " + mapperInputFilePath + " prior to MR job execution");
-        } finally {
-            out.close();
         }
     }
 
