@@ -53,7 +53,11 @@ public class CSPExecutor {
     }
 
     private void DFSinternal(int depth, Map<String, String> variables, Queue queue, Map<String, AtomicBoolean> flags) {
-        if (depth >= csp.levels.size() || !flags.isEmpty()) {
+        if (!flags.isEmpty()) {
+            return;
+        }
+
+        if (depth >= csp.levels.size()) {
             Map<String, String> result = new HashMap<>(variables);
             queue.add(result);
 
