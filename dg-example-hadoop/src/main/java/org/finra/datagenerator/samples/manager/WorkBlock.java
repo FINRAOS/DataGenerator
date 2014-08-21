@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.finra.datagenerator.manager;
+package org.finra.datagenerator.samples.manager;
 
 /**
  * Marshall Peters

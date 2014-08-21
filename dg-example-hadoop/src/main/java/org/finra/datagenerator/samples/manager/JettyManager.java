@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.finra.datagenerator.manager;
+package org.finra.datagenerator.samples.manager;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.AbstractHandler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.NetworkConnector;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -164,8 +165,8 @@ public class JettyManager implements WorkManager {
         try {
             server = new Server(0);
             jettyHandler = new AbstractHandler() {
-                public void handle(String target, HttpServletRequest request, HttpServletResponse response,
-                                   int dispatch) throws IOException, ServletException {
+                public void handle(String target, Request req, HttpServletRequest request,
+                                   HttpServletResponse response) throws IOException, ServletException {
                     response.setContentType("text/plain");
 
                     String[] operands = request.getRequestURI().split("/");
@@ -207,7 +208,8 @@ public class JettyManager implements WorkManager {
             // Select any available port
             server.start();
             Connector[] connectors = server.getConnectors();
-            listeningPort = connectors[0].getLocalPort();
+            NetworkConnector nc = (NetworkConnector) connectors[0];
+            listeningPort = nc.getLocalPort();
             hostName = InetAddress.getLocalHost().getHostName();
         } catch (Exception e) {  //NOPMD
             System.out.println(e.getStackTrace());
