@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class CSPSearchWorker implements Runnable {
 
-    private PartialSolution root;
+    private CSPPossibleState root;
     private ConstraintSatisfactionProblem csp;
     private Queue queue;
     private Map<String, AtomicBoolean> flags;
 
-    public CSPSearchWorker(PartialSolution root, ConstraintSatisfactionProblem csp, Queue queue, Map<String, AtomicBoolean> flags) {
+    public CSPSearchWorker(CSPPossibleState root, ConstraintSatisfactionProblem csp, Queue queue, Map<String, AtomicBoolean> flags) {
         this.root = root;
         this.csp = csp;
         this.queue = queue;

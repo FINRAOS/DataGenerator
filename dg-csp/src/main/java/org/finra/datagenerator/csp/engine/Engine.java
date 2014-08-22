@@ -9,7 +9,9 @@ import java.io.InputStream;
  * Date: 8/21/14
  */
 public interface Engine {
-    Frontier process(SearchDistributor distributor);
-    Frontier setModelByInputFileStream(InputStream inputFileStream);
-    Frontier setModelByText(String model);
+    void process(SearchDistributor distributor);
+    void setModelByInputFileStream(InputStream inputFileStream);
+    void setModelByText(String model);
+
+    Engine setBootstrapMin(int min);
 }

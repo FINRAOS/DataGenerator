@@ -1,33 +1,40 @@
 package org.finra.datagenerator.csp;
 
 import org.finra.datagenerator.csp.constraints.Constraint;
+import org.finra.datagenerator.csp.engine.Engine;
+import org.finra.datagenerator.csp.engine.Frontier;
+import org.finra.datagenerator.csp.parse.CSPParser;
+import org.finra.datagenerator.distributor.SearchDistributor;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: K24364 Marshall Peters
  * Date: 8/11/14
  */
-public class CSPExecutor {
+public class CSPExecutor implements Engine {
 
     private ConstraintSatisfactionProblem csp;
+    private int bootStrap;
 
     public CSPExecutor(ConstraintSatisfactionProblem csp) {
         this.csp = csp;
     }
 
-    public List<PartialSolution> BFSplit(int min) {
-        List<PartialSolution> bootStrap = new LinkedList<PartialSolution>();
+    private List<CSPPossibleState> bfs(int min) {
+        List<CSPPossibleState> bootStrap = new LinkedList<CSPPossibleState>();
 
-        PartialSolution root = new PartialSolution();
+        CSPPossibleState root = new CSPPossibleState();
         root.variables = new HashMap<String,String>();
         root.depth = 0;
         bootStrap.add(root);
 
         while (bootStrap.size() < min) {
-            PartialSolution split = bootStrap.remove(0);
+            CSPPossibleState split = bootStrap.remove(0);
 
             ConstraintSatisfactionProblem.ProblemLevel level = csp.levels.get(split.depth);
             String variable = level.variable;
@@ -36,7 +43,7 @@ public class CSPExecutor {
             for (String domain: level.domain) {
                 split.variables.put(variable, domain);
                 if (constraint.satisfied(split.variables)) {
-                    PartialSolution newSplit = new PartialSolution();
+                    CSPPossibleState newSplit = new CSPPossibleState();
                     newSplit.variables = new HashMap<String,String>(split.variables);
                     newSplit.depth = split.depth + 1;
 
@@ -48,32 +55,30 @@ public class CSPExecutor {
         return bootStrap;
     }
 
-    public void DFS(Queue queue, PartialSolution start, Map<String, AtomicBoolean> flags) {
-        DFSinternal(start.depth, start.variables, queue, flags);
+    public void process(SearchDistributor distributor) {
+        List<Frontier> frontiers = new LinkedList<Frontier>();
+
+        for (CSPPossibleState p: bfs(bootStrap)) {
+            Frontier frontier = new CSPFrontier(csp, p);
+        }
+
+        distributor.distribute(frontiers);
     }
 
-    private void DFSinternal(int depth, Map<String, String> variables, Queue queue, Map<String, AtomicBoolean> flags) {
-        if (!flags.isEmpty()) {
-            return;
-        }
+    public void setModelByInputFileStream(InputStream inputFileStream) {
+        Reader reader = new InputStreamReader(inputFileStream);
+        CSPParser parse = new CSPParser(reader);
+        csp = parse.parse();
+    }
 
-        if (depth >= csp.levels.size()) {
-            Map<String, String> result = new HashMap<>(variables);
-            queue.add(result);
+    public void setModelByText(String model) {
+        Reader reader = new StringReader(model);
+        CSPParser parse = new CSPParser(reader);
+        csp = parse.parse();
+    }
 
-            return;
-        }
-
-        ConstraintSatisfactionProblem.ProblemLevel level = csp.levels.get(depth);
-        String variable = level.variable;
-        Constraint constraint = level.progressCheck;
-
-        for (String domain: level.domain) {
-            variables.put(variable, domain);
-            if (constraint.satisfied(variables))
-                DFSinternal(depth + 1, variables, queue, flags);
-        }
-
-        variables.remove(variable);
+    public Engine setBootstrapMin(int min) {
+        bootStrap = min;
+        return this;
     }
 }

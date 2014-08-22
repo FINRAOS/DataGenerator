@@ -65,7 +65,7 @@ public class CSPDistributor {
         this.csp = csp;
     }
 
-    public void distribute(List<PartialSolution> searchProblemList) {
+    public void distribute(List<CSPPossibleState> searchProblemList) {
 
         // Start output thread (consumer)
         Thread outputThread = new Thread() {
@@ -82,7 +82,7 @@ public class CSPDistributor {
 
         // Start search threads (producers)
         ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
-        for (PartialSolution problem : searchProblemList) {
+        for (CSPPossibleState problem : searchProblemList) {
             Runnable worker = null;
             try {
                 worker = new CSPSearchWorker(problem, csp, queue, flags);

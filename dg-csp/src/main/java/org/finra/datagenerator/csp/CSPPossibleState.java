@@ -7,7 +7,7 @@ import java.util.Map;
  * User: K24364 Marshall Peters
  * Date: 8/14/14
  */
-public class PartialSolution {
+public class CSPPossibleState {
     public Map<String, String> variables;
     public int depth;
 

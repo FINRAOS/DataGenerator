@@ -1,6 +1,5 @@
 package org.finra.datagenerator.csp.engine;
 
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -10,5 +9,5 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Date: 8/21/14
  */
 public interface Frontier {
-    void searchForScenarios(Queue queue, Map<String, AtomicBoolean> flags);
+    void searchForScenarios(Queue queue, AtomicBoolean flag);
 }
