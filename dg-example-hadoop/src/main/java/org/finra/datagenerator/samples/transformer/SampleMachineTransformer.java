@@ -36,16 +36,19 @@ public class SampleMachineTransformer implements DataTransformer {
      * @param cr a reference to DataPipe from which to read the current map
      */
     public void transform(DataPipe cr) {
-        for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
-            String value = entry.getValue();
+        Map<String, String> map = cr.getDataMap();
+
+        for (String key : map.keySet()) {
+            String value = map.get(key);
 
             if (value.equals("#{customplaceholder}")) {
                 // Generate a random number
                 int ran = rand.nextInt();
-                entry.setValue(String.valueOf(ran));
+                map.put(key, String.valueOf(ran));
             } else if (value.equals("#{divideBy2}")) {
-                String result = String.valueOf(Integer.getInteger(cr.getDataMap().get("var_out_V3")) / 2);
-                entry.setValue(result);
+                String i = map.get("var_out_V3");
+                String result = String.valueOf(Integer.valueOf(i) / 2);
+                map.put(key, result);
             }
         }
     }

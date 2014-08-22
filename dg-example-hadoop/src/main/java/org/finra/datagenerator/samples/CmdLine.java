@@ -193,6 +193,8 @@ public final class CmdLine extends Configured implements Tool {
         }
 
         LineCountManager jetty = new LineCountManager(maxLines, 500);
+        jetty.prepareServer();
+        jetty.prepareStatus();
         hdfsDist = hdfsDist.setFileRoot("brownbag_demo").setReportingHost(jetty.getHostName()
                 + ":" + jetty.getListeningPort());
 

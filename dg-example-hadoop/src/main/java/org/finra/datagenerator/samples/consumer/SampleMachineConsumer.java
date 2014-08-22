@@ -87,7 +87,7 @@ public class SampleMachineConsumer extends DataConsumer {
             long delta = currentLineCount - lastReportedLineCount;
             lastReportedLineCount = currentLineCount;
 
-            sendRequest(String.valueOf(delta), handler);
+            sendRequest("this/report/" + String.valueOf(delta), handler);
 
             nextReport = time + reportGap;
         }
@@ -103,11 +103,12 @@ public class SampleMachineConsumer extends DataConsumer {
             String newBlock = this.sendRequestSync("this/request/block");
             LineCountManager.LineCountBlock block = new LineCountManager.LineCountBlock(0, 0);
 
-            if (!newBlock.contains("exit")) {
-                block.buildFromResponse(newBlock);
+            if (newBlock.contains("exit")) {
                 getFlags().put("exitNow", new AtomicBoolean(true));
                 makeReport(true);
                 return true;
+            } else {
+                block.buildFromResponse(newBlock);
             }
 
             currentRow = block.getStart();
