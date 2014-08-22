@@ -1,11 +1,8 @@
 package org.finra.datagenerator.csp;
 
 import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.csp.parse.CSPParser;
+import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.writer.DefaultWriter;
-
-import java.io.StringReader;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,26 +22,18 @@ public class Test {
             "@END";
 
     public static void main(String args[]) {
-        StringReader reader = new StringReader(eightLonelyRooks);
-        CSPParser parse = new CSPParser(reader);
-        ConstraintSatisfactionProblem csp = parse.parse();
+        CSPExecutor exec = new CSPExecutor();
+        exec.setModelByText(eightLonelyRooks);
+        exec.setBootstrapMin(10);
 
-        System.out.println(csp.toString() + "\n\n");
-
-        CSPExecutor exec = new CSPExecutor(csp);
-        List<PartialSolution> bootStrap = exec.BFSplit(8);
-
-        System.out.println(bootStrap.toString() + "\n\n");
-
-        CSPDistributor dist = new CSPDistributor();
-        dist.setCsp(csp);
+        DefaultDistributor dist = new DefaultDistributor();
         dist.setMaxNumberOfLines(45000);
         dist.setThreadCount(8);
 
         DataConsumer consumer = new DataConsumer();
         consumer.addDataWriter(new DefaultWriter(System.out, new String[]{"1", "2", "3", "4", "5", "6", "7", "8"}));
-        dist.setUserDataOutput(consumer);
+        dist.setDataConsumer(consumer);
 
-        dist.distribute(bootStrap);
+        exec.process(dist);
     }
 }

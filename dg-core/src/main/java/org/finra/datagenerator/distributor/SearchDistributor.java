@@ -15,9 +15,11 @@
  */
 package org.finra.datagenerator.distributor;
 
+import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.engine.Frontier;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.finra.datagenerator.consumer.DataConsumer;
 
 /**
  * @author robbinbr
@@ -33,20 +35,12 @@ public interface SearchDistributor {
     SearchDistributor setDataConsumer(DataConsumer dataConsumer);
 
     /**
-     * Sets the state machine XML
-     *
-     * @param stateMachineText a String containing the state machine XML
-     * @return a reference to the current SearchDistributor
-     */
-    SearchDistributor setStateMachineText(String stateMachineText);
-
-    /**
      * Distributes the list of the problems
      *
-     * @param searchProblemList a list containing the search problems to
+     * @param frontierList a list containing the search problems to
      * distribute
      */
-    void distribute(List<SearchProblem> searchProblemList);
+    void distribute(List<Frontier> frontierList);
 
     /**
      * TODO: Buggy !! this function is adding a new instance of AromicBoolen and

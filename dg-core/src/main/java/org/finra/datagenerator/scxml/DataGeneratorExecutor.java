@@ -26,7 +26,6 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -471,7 +470,7 @@ public class DataGeneratorExecutor extends SCXMLExecutor {
         Map<String, String> dataSet = readVarsOut(varsOut);
         //log.debug(Thread.currentThread().getName() + " adding to queue: " + dataSet);
         queue.add(dataSet);
-        while (!DefaultDistributor.isSomeFlagTrue(flags)) {
+        while (flags.isEmpty()) {
             // Recursively delete one node from the end
             boolean empty;
             do {

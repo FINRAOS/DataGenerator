@@ -15,19 +15,12 @@
  */
 package org.finra.datagenerator.distributor.multithreaded;
 
-import java.io.IOException;
-import java.util.List;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.engine.Frontier;
+
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.scxml.SCXMLExpressionException;
-import org.apache.commons.scxml.model.ModelException;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.distributor.SearchProblem;
-import org.finra.datagenerator.scxml.DataGeneratorExecutor;
-import org.finra.datagenerator.scxml.PossibleState;
-import org.xml.sax.SAXException;
 
 /**
  * Created by robbinbr on 3/14/14.
@@ -39,48 +32,27 @@ public class SearchWorker implements Runnable {
      */
     private static final Logger log = Logger.getLogger(SearchWorker.class);
 
-    private final PossibleState initialState;
-    private final Queue queue;
-    private final DataGeneratorExecutor executor;
-    private final Set<String> varsOut;
-    private final Map<String, String> initialVariablesMap;
-    private final List<String> initialEventsList;
-    private final Map<String, AtomicBoolean> flags;
+    private final Frontier frontier;
+    private final Queue<Map<String, String>> queue;
+    private final AtomicBoolean flag;
 
     /**
      * Public constructor
      *
-     * @param problem the problem to search
-     * @param stateMachineText the xml text of the state machine
-     * @param queue a queue that will receive the results
-     * @param flags shared flags
-     * @throws org.apache.commons.scxml.model.ModelException IOException due to errors instantiating the
-     * {@link org.finra.datagenerator.scxml.DataGeneratorExecutor}
-     * @throws java.io.IOException due to errors instantiating the
-     * {@link org.finra.datagenerator.scxml.DataGeneratorExecutor}
-     * @throws org.xml.sax.SAXException due to errors instantiating the
-     * {@link org.finra.datagenerator.scxml.DataGeneratorExecutor}
+     * @param frontier the problem to search
+     * @param queue    a queue that will receive the results
+     * @param flag     shared exit flag
      */
-    public SearchWorker(final SearchProblem problem, final String stateMachineText,
-            final Queue queue, final Map<String, AtomicBoolean> flags) throws ModelException,
-            IOException, SAXException {
+    public SearchWorker(final Frontier frontier, final Queue queue, final AtomicBoolean flag) {
         this.queue = queue;
-        this.executor = new DataGeneratorExecutor(stateMachineText);
-        this.initialState = problem.getInitialState();
-        this.varsOut = problem.getVarsOut();
-        this.initialVariablesMap = problem.getInitialVariablesMap();
-        this.initialEventsList = problem.getInitialEventsList();
-        this.flags = flags;
+        this.frontier = frontier;
+        this.flag = flag;
     }
 
     @Override
     public void run() {
-        try {
-            log.info(Thread.currentThread().getName() + " is starting DFS");
-            executor.searchForScenariosDFS(initialState, queue, varsOut, initialVariablesMap, initialEventsList, flags);
-            log.info(Thread.currentThread().getName() + " is done with DFS");
-        } catch (ModelException | SCXMLExpressionException exc) {
-            log.error("Exception has occurred during DFS worker thread", exc);
-        }
+        log.info(Thread.currentThread().getName() + " is starting DFS");
+        frontier.searchForScenarios(queue, flag);
+        log.info(Thread.currentThread().getName() + " is done with DFS");
     }
 }

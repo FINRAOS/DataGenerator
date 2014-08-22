@@ -1,7 +1,7 @@
 package org.finra.datagenerator.csp;
 
 import org.finra.datagenerator.csp.constraints.Constraint;
-import org.finra.datagenerator.csp.engine.Frontier;
+import org.finra.datagenerator.engine.Frontier;
 
 import java.util.HashMap;
 import java.util.Map;

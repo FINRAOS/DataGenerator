@@ -15,21 +15,19 @@
  */
 package org.finra.datagenerator.distributor.multithreaded;
 
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.distributor.SearchDistributor;
+import org.finra.datagenerator.engine.Frontier;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.scxml.model.ModelException;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataConsumer;
-import org.finra.datagenerator.distributor.SearchDistributor;
-import org.finra.datagenerator.distributor.SearchProblem;
-import org.xml.sax.SAXException;
 
 /**
  * Created by robbinbr on 3/24/14.
@@ -44,15 +42,15 @@ public class DefaultDistributor implements SearchDistributor {
     private int threadCount = 1;
     private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<>();
     private DataConsumer userDataOutput;
-    private String stateMachineText;
-    private final Map<String, AtomicBoolean> flags = new HashMap<>();
+    private final AtomicBoolean searchExitFlag = new AtomicBoolean(false);
+    private final AtomicBoolean hardExitFlag = new AtomicBoolean(false);
     private long maxNumberOfLines = -1;
 
     /**
      * Sets the maximum number of lines to generate
      *
      * @param numberOfLines a long containing the maximum number of lines to
-     * generate
+     *                      generate
      * @return a reference to the current DefaultDistributor
      */
     public DefaultDistributor setMaxNumberOfLines(long numberOfLines) {
@@ -74,18 +72,12 @@ public class DefaultDistributor implements SearchDistributor {
     @Override
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
         this.userDataOutput = dataConsumer;
-        dataConsumer.setFlags(flags);
+        //dataConsumer.setFlags(flags);
         return this;
     }
 
     @Override
-    public SearchDistributor setStateMachineText(String stateMachine) {
-        this.stateMachineText = stateMachine;
-        return this;
-    }
-
-    @Override
-    public void distribute(List<SearchProblem> searchProblemList) {
+    public void distribute(List<Frontier> frontierList) {
 
         // Start output thread (consumer)
         Thread outputThread = new Thread() {
@@ -102,14 +94,10 @@ public class DefaultDistributor implements SearchDistributor {
 
         // Start search threads (producers)
         ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
-        for (SearchProblem problem : searchProblemList) {
+        for (Frontier frontier : frontierList) {
             Runnable worker = null;
-            try {
-                worker = new SearchWorker(problem, stateMachineText, queue, flags);
-                threadPool.execute(worker);
-            } catch (ModelException | SAXException | IOException e) {
-                log.error("Error while initializing SearchWorker threads", e);
-            }
+            worker = new SearchWorker(frontier, queue, searchExitFlag);
+            threadPool.execute(worker);
         }
 
         threadPool.shutdown();
@@ -121,7 +109,7 @@ public class DefaultDistributor implements SearchDistributor {
             }
 
             //alert the output thread that the worker threads are done
-            flags.put("exit", new AtomicBoolean(true));
+            searchExitFlag.set(true);
 
             // Now, wait for the output thread to get done
             outputThread.join();
@@ -133,46 +121,32 @@ public class DefaultDistributor implements SearchDistributor {
 
     private void produceOutput() throws IOException {
         long lines = 0;
-        while (!Thread.interrupted() && (!flags.containsKey("exitNow") || !flags.get("exitNow").get())) {
+        while (!Thread.interrupted() && !hardExitFlag.get()) {
             HashMap<String, String> row = queue.poll();
             if (row != null) {
                 lines += userDataOutput.consume(row);
             } else {
-                if (flags.containsKey("exit") || flags.containsKey("exitNow")) {
+                if (searchExitFlag.get()) {
+                    break;
+                } else if (hardExitFlag.get()) {
+                    searchExitFlag.set(true);
                     break;
                 }
             }
 
             if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-                flags.put("exitNow", new AtomicBoolean(true));
+                hardExitFlag.set(true);
                 break;
             }
         }
 
-        if (null != flags && flags.containsKey("exit") && flags.get("exit").get()) {
+        if (searchExitFlag.get()) {
             log.info("Exiting, exit flag ('exit') is true");
         }
     }
 
-    /**
-     * Returns true if any of the flags is true
-     *
-     * @param flags a map of atomic integers
-     * @return a boolean
-     *
-     * TODO: needs to be refactored or removed when flags are changed
-     */
-    public static boolean isSomeFlagTrue(Map<String, AtomicBoolean> flags) {
-        for (AtomicBoolean flag : flags.values()) {
-            if (flag.get()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void setFlag(String name, AtomicBoolean flag) {
-        flags.put(name, flag);
+
     }
 }

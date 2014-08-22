@@ -1,10 +1,10 @@
 package org.finra.datagenerator.csp;
 
 import org.finra.datagenerator.csp.constraints.Constraint;
-import org.finra.datagenerator.csp.engine.Engine;
-import org.finra.datagenerator.csp.engine.Frontier;
 import org.finra.datagenerator.csp.parse.CSPParser;
 import org.finra.datagenerator.distributor.SearchDistributor;
+import org.finra.datagenerator.engine.Engine;
+import org.finra.datagenerator.engine.Frontier;
 
 import java.io.*;
 import java.util.HashMap;
@@ -20,10 +20,6 @@ public class CSPExecutor implements Engine {
 
     private ConstraintSatisfactionProblem csp;
     private int bootStrap;
-
-    public CSPExecutor(ConstraintSatisfactionProblem csp) {
-        this.csp = csp;
-    }
 
     private List<CSPPossibleState> bfs(int min) {
         List<CSPPossibleState> bootStrap = new LinkedList<CSPPossibleState>();
@@ -60,6 +56,7 @@ public class CSPExecutor implements Engine {
 
         for (CSPPossibleState p: bfs(bootStrap)) {
             Frontier frontier = new CSPFrontier(csp, p);
+            frontiers.add(frontier);
         }
 
         distributor.distribute(frontiers);

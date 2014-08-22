@@ -17,16 +17,6 @@ package org.finra.datagenerator.exec;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.ModelException;
@@ -37,6 +27,17 @@ import org.finra.datagenerator.scxml.DataGeneratorExecutor;
 import org.finra.datagenerator.scxml.PossibleState;
 import org.finra.datagenerator.utils.ScXmlUtils;
 import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Executes a state chart
@@ -263,9 +264,8 @@ public class ChartExec {
         List<SearchProblem> dfsProblems = prepare(machineText);
 
         log.info("Found " + dfsProblems.size() + " states to distribute");
-        distributor.setStateMachineText(machineText);
 //        distributor.setExitFlag(new AtomicBoolean(false));
-        distributor.distribute(dfsProblems);
+        //distributor.distribute(dfsProblems);
         log.info("DONE.");
     }
 }
