@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+extraProperties=
+projectKey=org.finra.datagenerator\:dg-example-default
+serverUrl=http\://localhost\:9000
+version=2

@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+extraProperties=
+projectKey=org.finra.datagenerator\:dg-example-hadoop
+serverUrl=http\://localhost\:9000
+version=2
