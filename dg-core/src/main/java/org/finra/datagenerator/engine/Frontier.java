@@ -16,6 +16,7 @@
 
 package org.finra.datagenerator.engine;
 
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,5 +35,5 @@ public interface Frontier {
      * @param queue the queue
      * @param flag the exit flag
      */
-    void searchForScenarios(Queue queue, AtomicBoolean flag);
+    void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag);
 }

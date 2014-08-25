@@ -43,7 +43,7 @@ public class SearchWorker implements Runnable {
      * @param queue    a queue that will receive the results
      * @param flag     shared exit flag
      */
-    public SearchWorker(final Frontier frontier, final Queue queue, final AtomicBoolean flag) {
+    public SearchWorker(final Frontier frontier, final Queue<Map<String, String>> queue, final AtomicBoolean flag) {
         this.queue = queue;
         this.frontier = frontier;
         this.flag = flag;

@@ -21,8 +21,8 @@ import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.engine.Frontier;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +40,7 @@ public class DefaultDistributor implements SearchDistributor {
     protected static final Logger log = Logger.getLogger(DefaultDistributor.class);
 
     private int threadCount = 1;
-    private final Queue<HashMap<String, String>> queue = new ConcurrentLinkedQueue<>();
+    private final Queue<Map<String, String>> queue = new ConcurrentLinkedQueue<>();
     private DataConsumer userDataOutput;
     private final AtomicBoolean searchExitFlag = new AtomicBoolean(false);
     private final AtomicBoolean hardExitFlag = new AtomicBoolean(false);
@@ -122,7 +122,7 @@ public class DefaultDistributor implements SearchDistributor {
     private void produceOutput() throws IOException {
         long lines = 0;
         while (!Thread.interrupted() && !hardExitFlag.get()) {
-            HashMap<String, String> row = queue.poll();
+            Map<String, String> row = queue.poll();
             if (row != null) {
                 lines += userDataOutput.consume(row);
             } else {
