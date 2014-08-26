@@ -1,5 +1,6 @@
 package org.finra.datagenerator.csp;
 
+import com.google.gson.Gson;
 import org.finra.datagenerator.csp.constraints.Constraint;
 import org.finra.datagenerator.engine.Frontier;
 
@@ -16,9 +17,13 @@ public class CSPFrontier implements Frontier {
     private ConstraintSatisfactionProblem csp;
     private CSPPossibleState root;
 
+    private Gson GSON;
+
     public CSPFrontier(ConstraintSatisfactionProblem csp, CSPPossibleState root) {
         this.csp = csp;
         this.root = root;
+
+        GSON = new Gson();
     }
 
     public void searchForScenarios(Queue queue, AtomicBoolean flag) {
@@ -48,5 +53,13 @@ public class CSPFrontier implements Frontier {
         }
 
         variables.remove(variable);
+    }
+
+    public Frontier fromJson(String json) {
+        return GSON.fromJson(json, CSPFrontier.class);
+    }
+
+    public String toJson() {
+        return GSON.toJson(this);
     }
 }

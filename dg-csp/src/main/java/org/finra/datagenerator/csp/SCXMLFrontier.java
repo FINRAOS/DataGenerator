@@ -1,5 +1,6 @@
 package org.finra.datagenerator.csp;
 
+import com.google.gson.Gson;
 import org.apache.commons.scxml.Context;
 import org.apache.commons.scxml.SCXMLExecutor;
 import org.apache.commons.scxml.SCXMLExpressionException;
@@ -30,6 +31,8 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
     private PossibleState root;
 
+    private Gson GSON;
+
     public SCXMLFrontier(PossibleState possibleState, SCXML model) {
         root = possibleState;
 
@@ -40,6 +43,8 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
         this.setEvaluator(elEvaluator);
         this.setRootContext(context);
+
+        GSON = new Gson();
     }
 
     public void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag) {
@@ -132,4 +137,11 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
         }
     }
 
+    public Frontier fromJson(String json) {
+        return GSON.fromJson(json, SCXMLFrontier.class);
+    }
+
+    public String toJson() {
+        return GSON.toJson(this);
+    }
 }

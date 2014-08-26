@@ -36,4 +36,19 @@ public interface Frontier {
      * @param flag the exit flag
      */
     void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag);
+
+    /**
+     * Takes a Json description of a frontier and returns a Frontier built from the description
+     *
+     * @param json the json description
+     * @return the build Frontier
+     */
+    Frontier fromJson(String json);
+
+    /**
+     * Produces a Json description of the Frontier
+     *
+     * @return the json description
+     */
+    String toJson();
 }
