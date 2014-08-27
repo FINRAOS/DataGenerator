@@ -39,9 +39,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Marshall Peters
@@ -66,6 +68,34 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     }
 
     /**
+     * Searches the model for all variable assignments and makes a default map of those variables, setting them to ""
+     *
+     * @return the default variable assignment map
+     */
+    private Map<String, String> fillInitialVariables() {
+        Map<String, TransitionTarget> targets = model.getChildren();
+
+        Set<String> variables = new HashSet<>();
+        for (TransitionTarget target : targets.values()) {
+            OnEntry entry = target.getOnEntry();
+            List<Action> actions = entry.getActions();
+            for (Action action : actions) {
+                if (action instanceof Assign) {
+                    String variable = ((Assign) action).getName();
+                    variables.add(variable);
+                }
+            }
+        }
+
+        Map<String, String> result = new HashMap<>();
+        for (String variable : variables) {
+            result.put(variable, "");
+        }
+
+        return result;
+    }
+
+    /**
      * Performs a partial BFS on model until the search frontier reaches the desired bootstrap size
      *
      * @param min the desired bootstrap size
@@ -76,7 +106,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         List<PossibleState> bootStrap = new LinkedList<>();
 
         TransitionTarget initial = model.getInitialTarget();
-        PossibleState initialState = new PossibleState(initial, new HashMap<String, String>());
+        PossibleState initialState = new PossibleState(initial, fillInitialVariables());
         bootStrap.add(initialState);
 
         while (bootStrap.size() < min) {
@@ -177,7 +207,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         }
 
         List<Frontier> frontiers = new LinkedList<>();
-        for (PossibleState p: bootStrap) {
+        for (PossibleState p : bootStrap) {
             SCXMLFrontier dge = new SCXMLFrontier(p, model);
             frontiers.add(dge);
         }
@@ -194,7 +224,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         try {
             this.model = SCXMLParser.parse(new InputSource(inputFileStream), null);
             this.setStateMachine(this.model);
-        } catch (IOException|SAXException|ModelException e) {
+        } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
         }
     }
@@ -209,7 +239,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
             InputStream is = new ByteArrayInputStream(model.getBytes());
             this.model = SCXMLParser.parse(new InputSource(is), null);
             this.setStateMachine(this.model);
-        } catch (IOException|SAXException|ModelException e) {
+        } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
         }
     }
