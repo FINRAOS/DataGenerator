@@ -3,6 +3,7 @@ package org.finra.datagenerator.csp;
 import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.engine.Engine;
+import org.finra.datagenerator.engine.scxml.SCXMLEngine;
 import org.finra.datagenerator.writer.DefaultWriter;
 
 /**
@@ -57,8 +58,8 @@ public class Test2 {
         exec.setBootstrapMin(10);
 
         DefaultDistributor dist = new DefaultDistributor();
-        dist.setMaxNumberOfLines(45000);
-        dist.setThreadCount(10);
+        dist.setMaxNumberOfLines(20);
+        dist.setThreadCount(1);
 
         DataConsumer consumer = new DataConsumer();
         consumer.addDataWriter(new DefaultWriter(System.out, new String[]{"var_out_RECORD_TYPE_2", "var_out_RECORD_TYPE", "var_out_REQUEST_IDENTIFIER", "var_out_MANIFEST_GENERATION_DATETIME"}));

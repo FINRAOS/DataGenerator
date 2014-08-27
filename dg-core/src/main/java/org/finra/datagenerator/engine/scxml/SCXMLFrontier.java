@@ -1,4 +1,20 @@
-package org.finra.datagenerator.csp;
+/*
+ * Copyright 2014 DataGenerator Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.finra.datagenerator.engine.scxml;
 
 import com.google.gson.Gson;
 import org.apache.commons.scxml.Context;
@@ -14,8 +30,6 @@ import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.finra.datagenerator.engine.Frontier;
 
-import java.lang.Boolean;
-import java.lang.String;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,11 +43,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
-    private PossibleState root;
+    private final PossibleState root;
 
-    private Gson GSON;
+    private final Gson gson;
 
-    public SCXMLFrontier(PossibleState possibleState, SCXML model) {
+    /**
+     * Constructor
+     *
+     * @param possibleState the root node of the model and partial variable assignment to start a dfs from
+     * @param model the model text
+     */
+    public SCXMLFrontier(final PossibleState possibleState, final SCXML model) {
         root = possibleState;
 
         this.setStateMachine(model);
@@ -44,9 +64,16 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
         this.setEvaluator(elEvaluator);
         this.setRootContext(context);
 
-        GSON = new Gson();
+        gson = new Gson();
     }
 
+    /**
+     * Performs a DFS on the model, starting from root, placing results in the queue
+     * Just a public wrapper for private dfs function
+     *
+     * @param queue the results queue
+     * @param flag used to stop the search before completion
+     */
     public void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag) {
         dfs(queue, flag, root);
     }
@@ -137,11 +164,22 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
         }
     }
 
+    /**
+     * Produces a new SCXMLFrontier from a json string
+     *
+     * @param json the frontier json description
+     * @return the new SCXMLFrontier
+     */
     public Frontier fromJson(String json) {
-        return GSON.fromJson(json, SCXMLFrontier.class);
+        return gson.fromJson(json, SCXMLFrontier.class);
     }
 
+    /**
+     * Produces a json description of this frontier
+     *
+     * @return the frontier json description
+     */
     public String toJson() {
-        return GSON.toJson(this);
+        return gson.toJson(this);
     }
 }

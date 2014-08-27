@@ -1,4 +1,20 @@
-package org.finra.datagenerator.csp;
+/*
+ * Copyright 2014 DataGenerator Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.finra.datagenerator.engine.scxml;
 
 import org.apache.commons.scxml.Context;
 import org.apache.commons.scxml.SCXMLExecutor;
@@ -22,7 +38,7 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.Boolean;import java.lang.String;import java.util.HashMap;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +52,9 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     private SCXML model;
     private int bootStrapMin;
 
+    /**
+     * Constructor
+     */
     public SCXMLEngine() {
         super();
 
@@ -46,6 +65,13 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         this.setRootContext(context);
     }
 
+    /**
+     * Performs a partial BFS on model until the search frontier reaches the desired bootstrap size
+     *
+     * @param min the desired bootstrap size
+     * @return a list of found PossibleState
+     * @throws ModelException if the desired bootstrap can not be reached
+     */
     public List<PossibleState> bfs(int min) throws ModelException {
         List<PossibleState> bootStrap = new LinkedList<>();
 
@@ -137,6 +163,11 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         return bootStrap;
     }
 
+    /**
+     * Performs the BFS and gives the results to a distributor to distribute
+     *
+     * @param distributor the distributor
+     */
     public void process(SearchDistributor distributor) {
         List<PossibleState> bootStrap;
         try {
@@ -154,6 +185,11 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         distributor.distribute(frontiers);
     }
 
+    /**
+     * Sets the SCXML model with an InputStream
+     *
+     * @param inputFileStream the model input stream
+     */
     public void setModelByInputFileStream(InputStream inputFileStream) {
         try {
             this.model = SCXMLParser.parse(new InputSource(inputFileStream), null);
@@ -163,6 +199,11 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         }
     }
 
+    /**
+     * Sets the SCXML model with a string
+     *
+     * @param model the model text
+     */
     public void setModelByText(String model) {
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
@@ -173,6 +214,12 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         }
     }
 
+    /**
+     * bootstrapMin setter
+     *
+     * @param min sets the desired bootstrap min
+     * @return this
+     */
     public Engine setBootstrapMin(int min) {
         bootStrapMin = min;
         return this;
