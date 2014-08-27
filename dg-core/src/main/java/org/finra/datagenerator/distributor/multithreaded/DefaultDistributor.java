@@ -72,7 +72,7 @@ public class DefaultDistributor implements SearchDistributor {
     @Override
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
         this.userDataOutput = dataConsumer;
-        //dataConsumer.setFlags(flags);
+        dataConsumer.setExitFlag(hardExitFlag);
         return this;
     }
 

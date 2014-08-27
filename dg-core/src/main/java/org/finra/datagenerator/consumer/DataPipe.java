@@ -45,15 +45,15 @@ public class DataPipe {
     }
 
     /**
-     * Constructor sets a max number of lines and shares a map of flags with the
+     * Constructor sets a max number of lines and shares an exit flag with the
      * DataPipe
      *
      * @param maxNumberOfLines a long containing the maximum number of lines
      * expected to flow through this pipe
-     * @param flags a map of AtomicBoolean flags
+     * @param flag an AtomicBoolean exit flag
      */
-    public DataPipe(final long maxNumberOfLines, final Map<String, AtomicBoolean> flags) {
-        this.dataConsumer = new DataConsumer().setMaxNumberOfLines(maxNumberOfLines).setFlags(flags);
+    public DataPipe(final long maxNumberOfLines, final AtomicBoolean flag) {
+        this.dataConsumer = new DataConsumer().setMaxNumberOfLines(maxNumberOfLines).setExitFlag(flag);
     }
 
     public DataConsumer getDataConsumer() {

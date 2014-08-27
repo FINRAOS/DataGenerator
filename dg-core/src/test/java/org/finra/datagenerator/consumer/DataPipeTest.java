@@ -3,7 +3,6 @@ package org.finra.datagenerator.consumer;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -51,10 +50,10 @@ public class DataPipeTest {
     public void testDefaultDataConsumerAccess() {
         DataPipe thePipe = new DataPipe();
         DataConsumer dc = thePipe.getDataConsumer();
-        dc.setFlags(new Hashtable<String, AtomicBoolean>());
+        dc.setExitFlag(new AtomicBoolean(false));
 
         Assert.assertNotNull(dc);
-        Assert.assertNotNull(dc.getFlags());
+        Assert.assertNotNull(dc.getExitFlag());
         Assert.assertEquals(10000, dc.getMaxNumberOfLines());
     }
 

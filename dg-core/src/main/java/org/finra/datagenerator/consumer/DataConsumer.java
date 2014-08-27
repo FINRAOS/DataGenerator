@@ -15,6 +15,10 @@
  */
 package org.finra.datagenerator.consumer;
 
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.reporting.ReportingHandler;
+import org.finra.datagenerator.writer.DataWriter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,9 +32,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.reporting.ReportingHandler;
-import org.finra.datagenerator.writer.DataWriter;
 
 /**
  * Created by RobbinBr on 5/18/2014.
@@ -41,7 +42,7 @@ public class DataConsumer {
     private DataPipe dataPipe;
     private final List<DataTransformer> dataTransformers = new ArrayList<>();
     private final List<DataWriter> dataWriters = new ArrayList<>();
-    private Map<String, AtomicBoolean> flags;
+    private AtomicBoolean hardExitFlag;
 
     private long maxNumberOfLines = 10000;
 
@@ -100,18 +101,18 @@ public class DataConsumer {
     }
 
     /**
-     * Setter for flags
+     * Setter for exit flag
      *
-     * @param flags a reference to a map of flags
+     * @param flag a reference to an AtomicBoolean
      * @return a reference to the current DataConsumer
      */
-    public DataConsumer setFlags(Map<String, AtomicBoolean> flags) {
-        this.flags = flags;
+    public DataConsumer setExitFlag(AtomicBoolean flag) {
+        hardExitFlag = flag;
         return this;
     }
 
-    public Map<String, AtomicBoolean> getFlags() {
-        return flags;
+    public AtomicBoolean getExitFlag() {
+        return hardExitFlag;
     }
 
     public long getMaxNumberOfLines() {
