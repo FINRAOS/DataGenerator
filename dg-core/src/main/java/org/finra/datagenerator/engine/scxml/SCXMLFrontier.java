@@ -16,7 +16,6 @@
 
 package org.finra.datagenerator.engine.scxml;
 
-import com.google.gson.Gson;
 import org.apache.commons.scxml.Context;
 import org.apache.commons.scxml.SCXMLExecutor;
 import org.apache.commons.scxml.SCXMLExpressionException;
@@ -45,8 +44,6 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
     private final PossibleState root;
 
-    private final Gson gson;
-
     /**
      * Constructor
      *
@@ -63,8 +60,6 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
         this.setEvaluator(elEvaluator);
         this.setRootContext(context);
-
-        gson = new Gson();
     }
 
     /**
@@ -164,22 +159,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
         }
     }
 
-    /**
-     * Produces a new SCXMLFrontier from a json string
-     *
-     * @param json the frontier json description
-     * @return the new SCXMLFrontier
-     */
-    public Frontier fromJson(String json) {
-        return gson.fromJson(json, SCXMLFrontier.class);
-    }
-
-    /**
-     * Produces a json description of this frontier
-     *
-     * @return the frontier json description
-     */
-    public String toJson() {
-        return gson.toJson(this);
+    public PossibleState getRoot() {
+        return root;
     }
 }

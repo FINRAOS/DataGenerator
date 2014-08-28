@@ -20,13 +20,16 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.distributor.SearchProblem;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
+import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.SCXMLGapper;
 import org.finra.datagenerator.samples.consumer.SampleMachineConsumer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by robbinbr on 4/7/2014.
@@ -35,12 +38,13 @@ public class DataGeneratorMapper extends Mapper<LongWritable, Text, LongWritable
 
     private static final Logger log = Logger.getLogger(DataGeneratorMapper.class);
     private String reportingHost;
+    private String modelText;
 
     private final DefaultDistributor distributor = new DefaultDistributor();
 
     @Override
     public void setup(final Context context) {
-        distributor.setStateMachineText(context.getConfiguration().get("stateMachineText"));
+        modelText = context.getConfiguration().get("stateMachineText");
         distributor.setMaxNumberOfLines(context.getConfiguration().getLong("maxNumberOfLines", 100000));
 
         reportingHost = context.getConfiguration().get("reportingHost", "NOTFOUND");
@@ -59,8 +63,18 @@ public class DataGeneratorMapper extends Mapper<LongWritable, Text, LongWritable
         distributor.setDataConsumer(wrappingConsumer);
 
         // Prepare Problems (only one)
-        List<SearchProblem> problemList = new ArrayList<SearchProblem>();
-        SearchProblem problem = SearchProblem.fromJson(value.toString());
+        List<Frontier> problemList = new ArrayList<>();
+
+        SCXMLGapper gapper = new SCXMLGapper();
+        String[] frontier = value.toString().split("\\|");
+        String variables = frontier[1];
+        String target = frontier[0];
+        Map<String, String> decomposition = new HashMap<>();
+        decomposition.put("model", modelText);
+        decomposition.put("target", target);
+        decomposition.put("variables", variables);
+        Frontier problem = gapper.reproduce(decomposition);
+
         log.info(value.toString());
         problemList.add(problem);
         log.info("We have " + problemList.size() + " Problems");

@@ -16,12 +16,13 @@
 
 package org.finra.datagenerator.samples;
 
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.ModelException;
@@ -34,14 +35,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.exec.ChartExec;
+import org.finra.datagenerator.engine.Engine;
+import org.finra.datagenerator.engine.scxml.SCXMLEngine;
 import org.finra.datagenerator.exec.LogInitializer;
 import org.finra.datagenerator.samples.distributor.hdfs.HDFSDistributor;
 import org.finra.datagenerator.samples.manager.LineCountManager;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -91,7 +91,7 @@ public final class CmdLine extends Configured implements Tool {
      * @throws ParseException when args cannot be parsed
      * @throws IOException    when input file cannot be found
      */
-    public ChartExec parseCommandLine(final String[] args) throws ParseException, IOException {
+    public Engine parseCommandLine(final String[] args) throws ParseException, IOException {
         // create the command line parser
         CommandLineParser parser = new GnuParser();
 
@@ -99,13 +99,6 @@ public final class CmdLine extends Configured implements Tool {
         final Options options = new Options()
                 .addOption("h", "help", false, "print help.")
                 .addOption("i", "inputfile", true, "the scxml input file")
-                .addOption("v", "initialvariables", true,
-                        "comma separated list of the initial variables and their values in the form of var1=val1,"
-                                + "var2=val2"
-                )
-
-                .addOption("e", "initalevents", true,
-                        "a comma separated list of the initial set of events to trigger before searching for scenarios")
                 .addOption("n", "numberoftimes", true,
                         "an integer, the number of TIME to run the template of a row")
                 .addOption("H", "hdfssequencefile", true,
@@ -118,23 +111,18 @@ public final class CmdLine extends Configured implements Tool {
                         "Minimum number of states to explore using BFS before using parallel DFS search. Default is 0"
                                 + " (no BFS).");
 
-
         CommandLine cmd = parser.parse(options, args);
-
-        ChartExec chartExec = new ChartExec();
-
+        Engine chartExec = new SCXMLEngine();
         hdfsDist = new HDFSDistributor();
 
-
         if (cmd.hasOption("i")) {
-            if (hdfsDist != null) {
-                Path inFile = new Path(cmd.getOptionValue('i'));
-                FileSystem fs = FileSystem.get(this.getConf());
-                FSDataInputStream in = fs.open(inFile);
-                chartExec.setInputFileStream(in);
-            } else {
-                chartExec.setInputFileStream(new FileInputStream(new File(cmd.getOptionValue('i'))));
-            }
+            Path inFile = new Path(cmd.getOptionValue('i'));
+            FileSystem fs = FileSystem.get(this.getConf());
+            FSDataInputStream in = fs.open(inFile);
+            String model = IOUtils.toString(in, "UTF-8");
+
+            chartExec.setModelByText(model);
+            hdfsDist.setStateMachineText(model);
         } else {
             System.err.println("\nERROR: you must state option -i with an input file\n");
         }
@@ -147,15 +135,6 @@ public final class CmdLine extends Configured implements Tool {
         if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
             printHelp(options);
         }
-
-        if (cmd.hasOption("v")) {
-            chartExec.setInitialVariables(cmd.getOptionValue('v'));
-        }
-
-        if (cmd.hasOption("e")) {
-            chartExec.setInitialEvents(cmd.getOptionValue('e'));
-        }
-
 
         if (cmd.hasOption('L')) {
             LogInitializer.initialize(cmd.getOptionValue('L'));
@@ -178,21 +157,16 @@ public final class CmdLine extends Configured implements Tool {
             maxLines = Long.valueOf(stringValue);
 
             if (StringUtils.isNotEmpty(stringValue)) {
-                if (hdfsDist != null) {
-                    hdfsDist.setMaxNumberOfLines(maxLines);
-                }
+                hdfsDist.setMaxNumberOfLines(maxLines);
             } else {
                 System.err.println("Unparsable numeric value for option 's':" + stringValue);
             }
         } else if (!cmd.hasOption('s')) {
             maxLines = 10000;
-
-            if (hdfsDist != null) {
-                hdfsDist.setMaxNumberOfLines(maxLines);
-            }
+            hdfsDist.setMaxNumberOfLines(maxLines);
         }
 
-        LineCountManager jetty = new LineCountManager(maxLines, 500);
+        LineCountManager jetty = new LineCountManager(maxLines, 500000);
         jetty.prepareServer();
         jetty.prepareStatus();
         hdfsDist = hdfsDist.setFileRoot("brownbag_demo").setReportingHost(jetty.getHostName()
@@ -224,7 +198,7 @@ public final class CmdLine extends Configured implements Tool {
     public int run(final String[] args) throws ModelException, SCXMLExpressionException, SAXException, IOException, ParseException {
         Logger.getLogger("org.apache").setLevel(Level.WARN);
 
-        ChartExec chartExec = parseCommandLine(args);
+        Engine chartExec = parseCommandLine(args);
 
         hdfsDist.setConfiguration(this.configuration);
         hdfsDist.setOutputFileDir("dg-result");

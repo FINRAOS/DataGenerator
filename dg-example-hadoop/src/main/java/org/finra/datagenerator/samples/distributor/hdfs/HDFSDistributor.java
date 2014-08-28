@@ -30,10 +30,12 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.distributor.SearchDistributor;
-import org.finra.datagenerator.distributor.SearchProblem;
+import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.SCXMLGapper;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -135,7 +137,6 @@ public class HDFSDistributor implements SearchDistributor {
      * @param stateMachineText a String containing the state machine XML
      * @return An updated SearchDistributor with state machine text set
      */
-    @Override
     public SearchDistributor setStateMachineText(String stateMachineText) {
         this.stateMachineText = stateMachineText;
         return this;
@@ -154,7 +155,7 @@ public class HDFSDistributor implements SearchDistributor {
     }
 
     @Override
-    public void distribute(List<SearchProblem> searchProblemList) {
+    public void distribute(List<Frontier> searchProblemList) {
         // We need to write the List out to a file on HDFS
         // That file will be input into the MR job
 
@@ -236,13 +237,16 @@ public class HDFSDistributor implements SearchDistributor {
      * @param problems A List of Search Problems to write
      * @throws IOException if the file cannot be written to HDFS
      */
-    public void writeProblemsToHDFS(List<SearchProblem> problems) throws IOException {
+    public void writeProblemsToHDFS(List<Frontier> problems) throws IOException {
         FileSystem fs = FileSystem.get(configuration);
         log.info("hdfsFileRoot = " + hdfsFileRoot);
 
         StringBuilder sb = new StringBuilder();
-        for (SearchProblem problem : problems) {
-            String problemString = problem.toJson();
+        for (Frontier problem : problems) {
+            SCXMLGapper gapper = new SCXMLGapper();
+            Map<String, String> decomposition = gapper.decompose(problem, stateMachineText);
+            String problemString = decomposition.get("target") + "|" + decomposition.get("variables") + "|";
+
             sb.append(problemString.replace("\n", "").replace("\t", "").replace("\r", ""));
             sb.append("\n");
         }
