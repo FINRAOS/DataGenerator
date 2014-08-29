@@ -129,20 +129,25 @@ public class DefaultDistributor implements SearchDistributor {
                 if (searchExitFlag.get()) {
                     break;
                 } else if (hardExitFlag.get()) {
-                    searchExitFlag.set(true);
                     break;
                 }
             }
 
             if (maxNumberOfLines != -1 && lines >= maxNumberOfLines) {
-                hardExitFlag.set(true);
                 break;
             }
         }
 
         if (searchExitFlag.get()) {
-            log.info("Exiting, exit flag ('exit') is true");
+            log.info("Exiting, search exit flag is true");
         }
+
+        if (hardExitFlag.get()) {
+            log.info("Exiting, consumer exit flag is true");
+        }
+
+        searchExitFlag.set(true);
+        hardExitFlag.set(true);
     }
 
     @Override

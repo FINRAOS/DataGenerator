@@ -71,7 +71,7 @@ public class SCXMLGapper {
         StringBuilder packedVariables = new StringBuilder();
         for (Map.Entry<String, String> variable : variables.entrySet()) {
             packedVariables.append(variable.getKey());
-            packedVariables.append(",");
+            packedVariables.append("::");
             packedVariables.append(variable.getValue());
             packedVariables.append(";");
         }
@@ -95,7 +95,7 @@ public class SCXMLGapper {
         Map<String, String> variables = new HashMap<>();
         String[] assignments = decomposition.get("variables").split(";");
         for (int i = 0; i < assignments.length; i++) {
-            String[] a = assignments[i].split(",");
+            String[] a = assignments[i].split("::");
             if (a.length == 2) {
                 variables.put(a[0], a[1]);
             } else {
