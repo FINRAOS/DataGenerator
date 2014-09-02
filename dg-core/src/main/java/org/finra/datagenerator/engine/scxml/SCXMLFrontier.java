@@ -27,6 +27,7 @@ import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
+import org.apache.log4j.Logger;
 import org.finra.datagenerator.engine.Frontier;
 
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
     private final PossibleState root;
+    private static final Logger log = Logger.getLogger(SCXMLFrontier.class);
 
     /**
      * Constructor
@@ -83,6 +85,16 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
         //reached end of chart, valid assignment found
         if (nextState.getId().equalsIgnoreCase("end")) {
             queue.add(state.variables);
+
+            if (queue.size() > 10000) {
+                log.info("Queue size " + queue.size() + ", waiting");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    log.info("Interrupted ", ex);
+                }
+            }
+
             return;
         }
 
