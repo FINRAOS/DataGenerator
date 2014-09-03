@@ -1,0 +1,31 @@
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="BULK_ASSIGN" target="BULK_ASSIGN"/>
+    </state>
+
+    <state id="BULK_ASSIGN">
+        <onentry>
+            <assign name="var_out_RECORD_TYPE" expr="set:{a,b,c,d,e,f,g}"/>
+            <assign name="var_out_RECORD_TYPE_2" expr="set:{a,b,c,d,e,f,g}"/>
+            <assign name="var_out_RECORD_TYPE_3" expr="set:{a,b,c,d,e,f,g}"/>
+            <assign name="var_out_RECORD_TYPE_4" expr="Lorem"/>
+            <assign name="var_out_RECORD_TYPE_5" expr="Ipsum"/>
+            <assign name="var_out_RECORD_TYPE_6" expr="Doler"/>
+        </onentry>
+        <transition event="ASSIGN_WITH_CONDITIONS" target="ASSIGN_WITH_CONDITIONS"/>
+    </state>
+
+    <state id="ASSIGN_WITH_CONDITIONS">
+        <onentry>
+            <assign name="var_out_RECORD_TYPE_7" expr="set:{1,2,3}"/>
+            <assign name="var_out_RECORD_TYPE_8" expr="set:{1,2,3}"/>
+        </onentry>
+        <transition event="end" target="end" cond="${var_out_RECORD_TYPE_7 != var_out_RECORD_TYPE_8}"/>
+    </state>
+    
+<state id="end">
+    </state>
+</scxml>
