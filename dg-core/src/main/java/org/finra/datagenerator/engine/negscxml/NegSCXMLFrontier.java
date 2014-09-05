@@ -103,9 +103,11 @@ public class NegSCXMLFrontier extends SCXMLExecutor implements Frontier {
         List<NegPossibleState> expand = new LinkedList<>();
 
         expandPositive(state, expand);
-        expandNegative(state, expand);
+        if (state.negVariable == null) {
+            expandNegative(state, expand);
+        }
 
-        for (NegPossibleState e: expand) {
+        for (NegPossibleState e : expand) {
             dfs(queue, flag, e);
         }
     }
@@ -117,9 +119,9 @@ public class NegSCXMLFrontier extends SCXMLExecutor implements Frontier {
      *
      * A cartesian product of core with set in essence
      *
-     * @param core the set of current variable assignments
+     * @param core     the set of current variable assignments
      * @param variable the new variable
-     * @param set the set of values variable will take on
+     * @param set      the set of values variable will take on
      * @return the product
      */
     private List<Map<String, String>> takeProduct(List<Map<String, String>> core, String variable, String[] set) {
@@ -159,12 +161,14 @@ public class NegSCXMLFrontier extends SCXMLExecutor implements Frontier {
      * For a given state in the state chart, every transition out from that state is checked against every possible
      * variable assignment; those combinations satisfying the transition condition are added to the bootstrap list
      *
-     * @param nextState the state whose transitions are checked and which was expanded to get the variable assignments
-     * @param product a list of variable assignment maps
+     * @param nextState        the state whose transitions are checked and which was expanded
+     *                         to get the variable assignments
+     * @param product          a list of variable assignment maps
      * @param negativeVariable the variable with a negative value, or null
-     * @param bootStrap the bootstrap list
+     * @param bootStrap        the bootstrap list
      */
-    private void checkTransactions(TransitionTarget nextState, List<Map<String, String>> product, String negativeVariable, List<NegPossibleState> bootStrap) {
+    private void checkTransactions(TransitionTarget nextState, List<Map<String, String>> product,
+                                   String negativeVariable, List<NegPossibleState> bootStrap) {
         //go through every transition and see which of the products are valid, adding them to the list
         List<Transition> transitions = nextState.getTransitionsList();
 
@@ -186,8 +190,8 @@ public class NegSCXMLFrontier extends SCXMLExecutor implements Frontier {
      * Checks if a variable assignment satisfies a condition for a transition
      * Conditions ivolving the negative variable are ignored
      *
-     * @param variables the assignments
-     * @param condition the condition
+     * @param variables        the assignments
+     * @param condition        the condition
      * @param negativeVariable the negative variable
      */
     private Boolean checkTransaction(Map<String, String> variables, String condition, String negativeVariable) {

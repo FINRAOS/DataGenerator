@@ -150,7 +150,8 @@ public class NegSCXMLEngine extends SCXMLExecutor implements Engine {
      * @param negativeVariable the variable with a negative value, or null
      * @param bootStrap the bootstrap list
      */
-    private void checkTransactions(TransitionTarget nextState, List<Map<String, String>> product, String negativeVariable, List<NegPossibleState> bootStrap) {
+    private void checkTransactions(TransitionTarget nextState, List<Map<String, String>> product,
+                                   String negativeVariable, List<NegPossibleState> bootStrap) {
         //go through every transition and see which of the products are valid, adding them to the list
         List<Transition> transitions = nextState.getTransitionsList();
 

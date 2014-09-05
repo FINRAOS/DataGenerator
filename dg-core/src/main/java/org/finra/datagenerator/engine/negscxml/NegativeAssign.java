@@ -50,7 +50,19 @@ public class NegativeAssign extends Action {
         this.expr = expr;
     }
 
-    public void execute(EventDispatcher eventDispatcher, ErrorReporter errorReporter, SCInstance scInstance, Log log, Collection collection) throws ModelException, SCXMLExpressionException {
+    /**
+     * Required by the abstract Action class, does not do anything
+     *
+     * @param eventDispatcher unused
+     * @param errorReporter unused
+     * @param scInstance unused
+     * @param log unused
+     * @param collection unused
+     * @throws ModelException unused
+     * @throws SCXMLExpressionException unused
+     */
+    public void execute(EventDispatcher eventDispatcher, ErrorReporter errorReporter, SCInstance scInstance, Log log,
+                        Collection collection) throws ModelException, SCXMLExpressionException {
         //The engine will handle all this manually
     }
 }
