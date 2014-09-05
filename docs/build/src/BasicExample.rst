@@ -4,16 +4,12 @@ Eight Lonely Rooks - A Basic Example
 The Problem
 -----------
 
-The eight lonely rooks problem is a simple chess based problem: place eight rooks on the chess board such that none of the rooks can attack each other. We can use DataGenerator to solve 
-
-this problem, outputting every possible arrangement of rooks as test data for use elsewhere.
+The eight lonely rooks problem is a simple chess based problem: place eight rooks on the chess board such that none of the rooks can attack each other. We can use DataGenerator to solve this problem, outputting every possible arrangement of rooks as test data for use elsewhere.
 
 Modeling the Problem with SCXML
 -------------------------------
 
-To put eight rooks on a chess board such that none attack each other, all eight ranks and all eight files will have one rook on them. Knowing this simplifies the SCXML model we need to 
-
-describe the problem::
+To put eight rooks on a chess board such that none attack each other, all eight ranks and all eight files will have one rook on them. Knowing this simplifies the SCXML model we need to describe the problem::
 
     <scxml xmlns="http://www.w3.org/2005/07/scxml" xmlns:cs="http://commons.apache.org/scxml"
         version="1.0" initial="start">
@@ -91,13 +87,7 @@ describe the problem::
         </state>
     </scxml>
 
-The model assumes that rook number 'n' will be on the nth rank. A rook's placement only has degrees of freedom over the files. Expressed as SCXML, we have a state in the state machine for 
-
-each rook. Each rook's state sets the rook's rank to the assumed value and sets the rook's file to be any of the eight files. For each rook, it requires that the rook's file not equal the 
-
-files of any of the preceding rooks. During the search over the SCXML state machine, any search branches that assign two rooks the same rank will be pruned by a lack of forward 
-
-transitions.
+The model assumes that rook number 'n' will be on the nth rank. A rook's placement only has degrees of freedom over the files. Expressed as SCXML, we have a state in the state machine for each rook. Each rook's state sets the rook's rank to the assumed value and sets the rook's file to be any of the eight files. For each rook, it requires that the rook's file not equal the files of any of the preceding rooks. During the search over the SCXML state machine, any search branches that assign two rooks the same rank will be pruned by a lack of forward transitions.
 
 Solving with DataGenerator
 --------------------------
@@ -134,9 +124,7 @@ The number of solutions to the eight lonely rooks problem is relatively small (8
         }
     }
 
-The Main class makes an SCXMLEngine, loads the SCXML state machine seen above from the resources folder, and requests a bootstrap of 64. Ten threads process the 64 Frontiers produced by the 
-
-bootstrap, overseen by a DefaultDistributor. It uses the standard DataConsumer with a custom DataWriter that produces chess style notation instead of pipe delineated output::
+The Main class makes an SCXMLEngine, loads the SCXML state machine seen above from the resources folder, and requests a bootstrap of 64. Ten threads process the 64 Frontiers produced by the bootstrap, overseen by a DefaultDistributor. It uses the standard DataConsumer with a custom DataWriter that produces chess style notation instead of pipe delineated output::
 
     import org.finra.datagenerator.consumer.DataPipe;
     import org.finra.datagenerator.writer.DataWriter;
@@ -175,7 +163,7 @@ bootstrap, overseen by a DefaultDistributor. It uses the standard DataConsumer w
         }
     }
 
-Some resulting output::
+Some resulting output, 10 lines of many thousand::
 
     a1 d2 b3 c4 e5 g6 h7 f8
     a1 d2 b3 c4 e5 h6 f7 g8
@@ -187,5 +175,4 @@ Some resulting output::
     a1 g2 b3 c4 d5 f6 h7 e8
     a1 d2 b3 c4 f5 e6 h7 g8
     a1 g2 b3 c4 d5 h6 e7 f8
-    a1 d2 b3 c4 f5 g6 e7 h8
 
