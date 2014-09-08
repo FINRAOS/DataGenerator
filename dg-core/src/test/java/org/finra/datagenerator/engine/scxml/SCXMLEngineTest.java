@@ -29,6 +29,9 @@ import java.util.List;
  */
 public class SCXMLEngineTest {
 
+    /**
+     * Multiple variable assignments using set:{}
+     */
     @Test
     public void testMultiVariableAssignment() {
         SCXMLEngine e = new SCXMLEngine();
@@ -50,6 +53,9 @@ public class SCXMLEngineTest {
         }
     }
 
+    /**
+     * All variables have a default assignment of ""
+     */
     @Test
     public void testInitiallyEmptyAssignment() {
         SCXMLEngine e = new SCXMLEngine();
@@ -77,6 +83,9 @@ public class SCXMLEngineTest {
         }
     }
 
+    /**
+     * Throws exception when reaching end state
+     */
     @Test
     public void testExceptionAtEndState() {
         SCXMLEngine e = new SCXMLEngine();

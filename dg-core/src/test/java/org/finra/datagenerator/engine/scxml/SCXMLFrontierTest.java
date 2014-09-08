@@ -38,6 +38,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SCXMLFrontierTest {
 
+    /**
+     * Multiple variable assignments using set:{}
+     */
     @Test
     public void testMultiVariableAssignment() {
         SCXMLEngine e = new SCXMLEngine();
@@ -66,6 +69,9 @@ public class SCXMLFrontierTest {
         }
     }
 
+    /**
+     * Test the ability of the exit flag to stop the DFS in SCXMLFrontier
+     */
     @Test
     public void testExitFlag() {
         SCXMLEngine e = new SCXMLEngine();

@@ -34,38 +34,42 @@ import java.util.List;
  */
 public class SCXMLGapperTest {
 
-    static String bigTest = "<scxml xmlns=\"http://www.w3.org/2005/07/scxml\"\n" +
-            "       version=\"1.0\"\n" +
-            "       initial=\"start\">\n" +
-            "\n" +
-            "    <state id=\"start\">\n" +
-            "        <transition event=\"BULK_ASSIGN\" target=\"BULK_ASSIGN\"/>\n" +
-            "    </state>\n" +
-            "\n" +
-            "    <state id=\"BULK_ASSIGN\">\n" +
-            "        <onentry>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE\" expr=\"set:{a,b,c,d,e,f,g}\"/>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_2\" expr=\"set:{a,b,c,d,e,f,g}\"/>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_3\" expr=\"set:{a,b,c,d,e,f,g}\"/>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_4\" expr=\"Lorem\"/>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_5\" expr=\"Ipsum\"/>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_6\" expr=\"Doler\"/>\n" +
-            "        </onentry>\n" +
-            "        <transition event=\"ASSIGN_WITH_CONDITIONS\" target=\"ASSIGN_WITH_CONDITIONS\"/>\n" +
-            "    </state>\n" +
-            "\n" +
-            "    <state id=\"ASSIGN_WITH_CONDITIONS\">\n" +
-            "        <onentry>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_7\" expr=\"set:{1,2,3}\"/>\n" +
-            "            <assign name=\"var_out_RECORD_TYPE_8\" expr=\"set:{1,2,3}\"/>\n" +
-            "        </onentry>\n" +
-            "        <transition event=\"end\" target=\"end\" cond=\"${var_out_RECORD_TYPE_7 != var_out_RECORD_TYPE_8}\"/>\n" +
-            "    </state>\n" +
-            "    \n" +
-            "<state id=\"end\">\n" +
-            "    </state>\n" +
-            "</scxml>";
+    static String bigTest = "<scxml xmlns=\"http://www.w3.org/2005/07/scxml\"\n"
+            + "       version=\"1.0\"\n"
+            + "       initial=\"start\">\n"
+            + "\n"
+            + "    <state id=\"start\">\n"
+            + "        <transition event=\"BULK_ASSIGN\" target=\"BULK_ASSIGN\"/>\n"
+            + "    </state>\n"
+            + "\n"
+            + "    <state id=\"BULK_ASSIGN\">\n"
+            + "        <onentry>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE\" expr=\"set:{a,b,c,d,e,f,g}\"/>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_2\" expr=\"set:{a,b,c,d,e,f,g}\"/>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_3\" expr=\"set:{a,b,c,d,e,f,g}\"/>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_4\" expr=\"Lorem\"/>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_5\" expr=\"Ipsum\"/>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_6\" expr=\"Doler\"/>\n"
+            + "        </onentry>\n"
+            + "        <transition event=\"ASSIGN_WITH_CONDITIONS\" target=\"ASSIGN_WITH_CONDITIONS\"/>\n"
+            + "    </state>\n"
+            + "\n"
+            + "    <state id=\"ASSIGN_WITH_CONDITIONS\">\n"
+            + "        <onentry>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_7\" expr=\"set:{1,2,3}\"/>\n"
+            + "            <assign name=\"var_out_RECORD_TYPE_8\" expr=\"set:{1,2,3}\"/>\n"
+            + "        </onentry>\n"
+            + "        <transition event=\"end\" target=\"end\" cond=\"${var_out_RECORD_TYPE_7"
+            + " != var_out_RECORD_TYPE_8}\"/>\n"
+            + "    </state>\n"
+            + "    \n"
+            + "<state id=\"end\">\n"
+            + "    </state>\n"
+            + "</scxml>";
 
+    /**
+     * Test SCXMLGapper's ability to decompose and recompose an SCXMLFrontier with none of the variables set
+     */
     @Test
     public void testDecomposeAndReproduceInitial() {
         SCXMLEngine e = new SCXMLEngine();
@@ -103,6 +107,9 @@ public class SCXMLGapperTest {
         }
     }
 
+    /**
+     * Test SCXMLGapper's ability to decompose and recompose an SCXMLFrontier
+     */
     @Test
     public void testDecomposeAndRecompose() {
         SCXMLEngine e = new SCXMLEngine();
