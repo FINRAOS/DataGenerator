@@ -25,6 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class DataPipeTest {
 
+    /**
+     * Tests the DataPipe's variable map
+     */
     @Test
     public void testDataMap() {
         DataPipe thePipe = new DataPipe();
@@ -43,6 +46,9 @@ public class DataPipeTest {
         Assert.assertEquals("var5val", thePipe.getDataMap().get("var5"));
     }
 
+    /**
+     * Tests getPipeDelimited
+     */
     @Test
     public void testGetPipeDelimited() {
         DataPipe thePipe = new DataPipe();
@@ -61,6 +67,9 @@ public class DataPipeTest {
         Assert.assertEquals("var1val|var2val|var3val|var4val|var5val", thePipe.getPipeDelimited(outTemplate));
     }
 
+    /**
+     * Tests flag access
+     */
     @Test
     public void testDefaultDataConsumerAccess() {
         DataPipe thePipe = new DataPipe();
@@ -72,6 +81,9 @@ public class DataPipeTest {
         Assert.assertEquals(10000, dc.getMaxNumberOfLines());
     }
 
+    /**
+     * Tests access of custom consumers to DefaultConsumer methods
+     */
     @Test
     public void testCustomDataConsumerAccess() {
         DataConsumer dc = new DataConsumer();

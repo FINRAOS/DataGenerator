@@ -1,3 +1,19 @@
+<!-- -->
+<!-- Copyright 2014 DataGenerator Contributors -->
+<!-- -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -->
+<!--      http://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+<!-- -->
+
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
        xmlns:cs="http://commons.apache.org/scxml"
        version="1.0"
@@ -28,38 +44,42 @@
         </onentry>
         <transition event="SETV4" target="SETV4"/>
     </state>
-	
-	<state id="SETV4">
+
+    <state id="SETV4">
         <onentry>
             <assign name="var_out_V5" expr="set:{CAT,DOG,BIRD,HORSE,ANT,WASP,EAGLE,FALCON,HUMAN,PARASITE}"/>
         </onentry>
         <transition event="SETV5" target="SETV5"/>
     </state>
 
-	<state id="SETV5">
+    <state id="SETV5">
         <onentry>
             <assign name="var_out_V6" expr="set:{1A,1B,1C,1D,1E,1F,1G,1H,2A,2B,2C,2D,2E,2F,2G,2H}"/>
         </onentry>
         <transition event="SETV6" target="SETV6"/>
     </state>
-	<state id="SETV6">
+
+    <state id="SETV6">
         <onentry>
             <assign name="var_out_V7" expr="set:{NORTH AMERICA, SOUTH AMERICA, ASIA, AFRICA, ANTARCTICA, EUROPE, AUSTRALIA}"/>
         </onentry>
         <transition event="SETV7" target="SETV7"/>
     </state>
-	<state id="SETV7">
+
+    <state id="SETV7">
         <onentry>
             <assign name="var_out_V8" expr="set:{MORNING, AFTERNOON, EVENING, LATE-NIGHT}"/>
         </onentry>
         <transition event="SETV8" target="SETV8"/>
     </state>
-	<state id="SETV8">
+
+    <state id="SETV8">
         <onentry>
             <assign name="var_out_V9" expr="set:{A1,A2,A3,A4,A5,B1,B2,B3,B4,B5}"/>
         </onentry>
         <transition event="end" target="end"/>
     </state>
+
     <state id="end">
         <!-- We're done -->
     </state>
