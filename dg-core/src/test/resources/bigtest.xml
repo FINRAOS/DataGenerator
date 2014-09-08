@@ -15,37 +15,31 @@
 <!-- -->
 
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
-       xmlns:cs="http://commons.apache.org/scxml"
        version="1.0"
        initial="start">
 
     <state id="start">
-        <transition event="RECORD_TYPE" target="RECORD_TYPE"/>
+        <transition event="BULK_ASSIGN" target="BULK_ASSIGN"/>
     </state>
 
-    <state id="RECORD_TYPE">
-        <!-- Mandatory -->
+    <state id="BULK_ASSIGN">
         <onentry>
-            <assign name="var_out_RECORD_TYPE" expr="set:{a,b,c}"/>
+            <assign name="var_out_RECORD_TYPE" expr="set:{a,b,c,d,e,f,g}"/>
+            <assign name="var_out_RECORD_TYPE_2" expr="set:{a,b,c,d,e,f,g}"/>
+            <assign name="var_out_RECORD_TYPE_3" expr="set:{a,b,c,d,e,f,g}"/>
+            <assign name="var_out_RECORD_TYPE_4" expr="Lorem"/>
+            <assign name="var_out_RECORD_TYPE_5" expr="Ipsum"/>
+            <assign name="var_out_RECORD_TYPE_6" expr="Doler"/>
         </onentry>
-        <transition event="REQUEST_IDENTIFIER" target="REQUEST_IDENTIFIER"/>
+        <transition event="ASSIGN_WITH_CONDITIONS" target="ASSIGN_WITH_CONDITIONS"/>
     </state>
 
-    <state id="REQUEST_IDENTIFIER">
-        <!-- Mandatory -->
-        <!-- There's nothing going on here -->
+    <state id="ASSIGN_WITH_CONDITIONS">
         <onentry>
-            <assign name="var_out_REQUEST_IDENTIFIER" expr="set:{1,2,3}"/>
+            <assign name="var_out_RECORD_TYPE_7" expr="set:{1,2,3}"/>
+            <assign name="var_out_RECORD_TYPE_8" expr="set:{1,2,3}"/>
         </onentry>
-        <transition event="MANIFEST_GENERATION_DATETIME" target="MANIFEST_GENERATION_DATETIME"/>
-    </state>
-
-    <state id="MANIFEST_GENERATION_DATETIME">
-        <!-- Mandatory -->
-        <onentry>
-            <assign name="var_out_MANIFEST_GENERATION_DATETIME" expr="#{nextint}"/>
-        </onentry>
-        <transition target="end"/>
+        <transition event="end" target="end" cond="${var_out_RECORD_TYPE_7 != var_out_RECORD_TYPE_8}"/>
     </state>
     
 <state id="end">

@@ -1,6 +1,25 @@
+/*
+ * Copyright 2014 DataGenerator Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.finra.datagenerator.consumer;
 
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.NetworkConnector;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.finra.datagenerator.reporting.ReportingHandler;
 import org.finra.datagenerator.writer.DataWriter;
@@ -23,8 +42,8 @@ import java.util.concurrent.Future;
  */
 public class DataConsumerTest {
 
-    private Server server = null;
-    private int requestCount = 0;
+    private Server server;
+    private int requestCount;
 
     private String runJetty() throws Exception {
         requestCount = 0;
@@ -38,7 +57,8 @@ public class DataConsumerTest {
         Handler jettyHandler = new AbstractHandler() {
 
             @Override
-            public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse response) throws IOException, ServletException {
+            public void handle(String s, Request request, HttpServletRequest httpServletRequest,
+                               HttpServletResponse response) throws IOException, ServletException {
                 response.setContentType("text/plain");
                 response.getWriter().write(request.getRequestURI().substring(1));
                 requestCount++;
@@ -52,7 +72,7 @@ public class DataConsumerTest {
         int port = -3;
 
         Connector[] connectors = server.getConnectors();
-        if(connectors[0] instanceof NetworkConnector){
+        if (connectors[0] instanceof NetworkConnector) {
             NetworkConnector nc = (NetworkConnector) connectors[0];
             port = nc.getLocalPort();
         }
@@ -61,6 +81,9 @@ public class DataConsumerTest {
     }
 
 
+    /**
+     * Tests initial values
+     */
     @Test
     public void testInitialValues() {
         TestTransformerWriter theTransformerWriter = new TestTransformerWriter();
@@ -86,6 +109,9 @@ public class DataConsumerTest {
 
     }
 
+    /**
+     * Tests writers
+     */
     @Test
     public void testWriter() {
         TestTransformerWriter theTransformerWriter = new TestTransformerWriter();
@@ -114,6 +140,9 @@ public class DataConsumerTest {
         Assert.assertEquals("var5val", firstMap.get("var5"));
     }
 
+    /**
+     * Tests transformers
+     */
     @Test
     public void testTransformer() {
         TestTransformerWriter theTransformerWriter = new TestTransformerWriter();
@@ -142,6 +171,11 @@ public class DataConsumerTest {
         Assert.assertEquals("transformed_var5val", firstMap.get("var5"));
     }
 
+    /**
+     * Tests sending a request with no handling
+     *
+     * @throws Exception exception
+     */
     @Test
     public void testSendRequestNoHandling() throws Exception {
         String reportingHost = runJetty();
@@ -152,6 +186,11 @@ public class DataConsumerTest {
         Assert.assertEquals("test1", response.get().trim());
     }
 
+    /**
+     * Tests sending a synchronized request
+     *
+     * @throws Exception exception
+     */
     @Test
     public void testSendRequestSync() throws Exception {
         String reportingHost = runJetty();
@@ -162,6 +201,11 @@ public class DataConsumerTest {
         Assert.assertEquals("test1", response.trim());
     }
 
+    /**
+     * Tests sending a request from the writer
+     *
+     * @throws Exception exception
+     */
     @Test
     public void testSendRequestFromWriter() throws Exception {
         String reportingHost = runJetty();

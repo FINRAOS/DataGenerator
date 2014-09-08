@@ -152,6 +152,10 @@
                         <configuration>
                             <configLocation>dg/config/sun_checkstyle.xml</configLocation>
                             <headerLocation>dg/config/java.header</headerLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeResources>true</includeResources>
+                            <includeTestResources>true</includeTestResources>
+                            <resourceIncludes>**/*.*</resourceIncludes>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failOnViolation>true</failOnViolation>
