@@ -104,7 +104,7 @@ public class SampleMachineConsumer extends DataConsumer {
             LineCountManager.LineCountBlock block = new LineCountManager.LineCountBlock(0, 0);
 
             if (newBlock.contains("exit")) {
-                getFlags().put("exitNow", new AtomicBoolean(true));
+                getExitFlag().set(true);
                 makeReport(true);
                 return true;
             } else {
@@ -117,7 +117,7 @@ public class SampleMachineConsumer extends DataConsumer {
             makeReport(false);
 
             if (exit.get()) {
-                getFlags().put("exitNow", new AtomicBoolean(true));
+                getExitFlag().set(true);
                 return true;
             }
         }
