@@ -24,6 +24,7 @@ import org.apache.commons.scxml.env.jsp.ELEvaluator;
 import org.apache.commons.scxml.io.SCXMLParser;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.Assign;
+import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.SCXML;
@@ -215,6 +216,13 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         distributor.distribute(frontiers);
     }
 
+    private List<CustomAction> customActions() {
+        List<CustomAction> actions = new LinkedList<>();
+        CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
+        actions.add(pos);
+        return actions;
+    }
+
     /**
      * Sets the SCXML model with an InputStream
      *
@@ -222,7 +230,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
      */
     public void setModelByInputFileStream(InputStream inputFileStream) {
         try {
-            this.model = SCXMLParser.parse(new InputSource(inputFileStream), null);
+            this.model = SCXMLParser.parse(new InputSource(inputFileStream), null, customActions());
             this.setStateMachine(this.model);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
@@ -237,7 +245,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     public void setModelByText(String model) {
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
-            this.model = SCXMLParser.parse(new InputSource(is), null);
+            this.model = SCXMLParser.parse(new InputSource(is), null, customActions());
             this.setStateMachine(this.model);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();

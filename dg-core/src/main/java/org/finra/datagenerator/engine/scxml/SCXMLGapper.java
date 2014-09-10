@@ -17,6 +17,8 @@
 package org.finra.datagenerator.engine.scxml;
 
 import org.apache.commons.scxml.io.SCXMLParser;
+import org.apache.commons.scxml.model.Assign;
+import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.TransitionTarget;
@@ -28,6 +30,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,10 +42,17 @@ public class SCXMLGapper {
 
     private SCXML model;
 
+    private List<CustomAction> customActions() {
+        List<CustomAction> actions = new LinkedList<>();
+        CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
+        actions.add(pos);
+        return actions;
+    }
+
     private void setModel(String model) {
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
-            this.model = SCXMLParser.parse(new InputSource(is), null);
+            this.model = SCXMLParser.parse(new InputSource(is), null, customActions());
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
         }
