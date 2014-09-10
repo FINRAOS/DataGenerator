@@ -19,6 +19,7 @@ package org.finra.datagenerator.engine.negscxml;
 import org.apache.commons.scxml.model.TransitionTarget;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Marshall Peters
@@ -27,16 +28,16 @@ import java.util.Map;
 public class NegPossibleState {
     final TransitionTarget nextState;
     final Map<String, String> variables;
-    final String negVariable;
+    final Set<String> negVariable;
 
     /**
      * Constructor
      *
      * @param nextState the next state to expand as part of a search over an SCXML model
      * @param variables variables assigned so far in the search
-     * @param negVariable the single variable with a negative value assignment, or null if none exists
+     * @param negVariable the set of variables with a negative value assignment, or null if none exists
      */
-    public NegPossibleState(final TransitionTarget nextState, final Map<String, String> variables, final String negVariable) {
+    public NegPossibleState(final TransitionTarget nextState, final Map<String, String> variables, final Set<String> negVariable) {
         this.nextState = nextState;
         this.variables = variables;
         this.negVariable = negVariable;
@@ -48,6 +49,6 @@ public class NegPossibleState {
      * @return the id of next state and the state of assigned variables
      */
     public String toString() {
-        return "<" + nextState.getId() + ";" + variables.toString() + ";" + negVariable + ">";
+        return "<" + nextState.getId() + ";" + variables.toString() + ";" + negVariable.toString() + ">";
     }
 }
