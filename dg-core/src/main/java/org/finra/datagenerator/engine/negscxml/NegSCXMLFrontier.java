@@ -108,4 +108,8 @@ public class NegSCXMLFrontier extends NegSCXMLCommons implements Frontier {
     public NegPossibleState getRoot() {
         return root;
     }
+
+    public int getNegative() {
+        return negative;
+    }
 }
