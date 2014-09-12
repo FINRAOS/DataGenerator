@@ -28,6 +28,32 @@ import java.util.regex.Pattern;
 public class EquivalenceClassTransformer implements DataTransformer {
 
     private Random random;
+    private final String[] words = new String[]{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789"};
+    private final String[] currencyCodes = {
+            "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD",
+            "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF",
+            "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP",
+            "BYR", "BZD", "CAD", "CDF", "CHE", "CHF", "CHW", "CLF",
+            "CLP", "CNY", "COP", "COU", "CRC", "CUC", "CUP", "CVE",
+            "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB",
+            "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD",
+            "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF",
+            "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD",
+            "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD",
+            "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL",
+            "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT",
+            "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MXV", "MYR",
+            "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR",
+            "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR",
+            "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG",
+            "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD",
+            "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP",
+            "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "USN",
+            "USS", "UYI", "UYU", "UZS", "VEF", "VND", "VUV", "WST",
+            "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD",
+            "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XSU", "XTS",
+            "XUA", "XXX", "YER", "ZAR", "ZMK", "ZWL"
+    };
 
     /**
      * Constructor
@@ -36,7 +62,61 @@ public class EquivalenceClassTransformer implements DataTransformer {
         random = new Random(System.currentTimeMillis());
     }
 
-    private String generateFromRegex(String regex) {
+    private void alpha(StringBuilder b, int len) {
+        while (len > 0) {
+            int word = random.nextInt(words.length);
+            int letter = random.nextInt(words[word].length());
+            b.append(words[word].charAt(letter));
+            len--;
+        }
+    }
+
+    private void alphaWithSpaces(StringBuilder b, int len) {
+        int nextSpacePos = len - random.nextInt(9);
+
+        while (len > 0) {
+            if (len != nextSpacePos) {
+                int word = random.nextInt(words.length);
+                int letter = random.nextInt(words[word].length());
+                b.append(words[word].charAt(letter));
+            } else {
+                b.append(" ");
+                nextSpacePos = len - random.nextInt(9);
+            }
+            len--;
+        }
+    }
+
+    private void number(StringBuilder b, int wholeDigits, int fractions) {
+        while (wholeDigits > 0) {
+            b.append(random.nextInt(10));
+            wholeDigits--;
+        }
+
+        if (fractions > 0) {
+            b.append('.');
+            while (fractions > 0) {
+                b.append(random.nextInt(10));
+                fractions--;
+            }
+        }
+    }
+
+    private void ssn(StringBuilder b) {
+        for (int i = 0; i != 3; i++) {
+            b.append(random.nextInt(10));
+        }
+        b.append("-");
+        for (int i = 0; i != 2; i++) {
+            b.append(random.nextInt(10));
+        }
+        b.append("-");
+        for (int i = 0; i != 4; i++) {
+            b.append(random.nextInt(10));
+        }
+    }
+
+    private void generateFromRegex(StringBuilder r, String regex) {
         StringBuilder b = new StringBuilder();
 
         Pattern p = Pattern.compile(regex);
@@ -87,7 +167,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
             }
         }
 
-        return b.toString();
+        r.append(b.toString());
     }
 
     /**
@@ -114,10 +194,42 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     expr = "";
                 }
 
+                StringBuilder b = new StringBuilder();
+
                 switch (macro) {
-                    case "regex": entry.setValue(generateFromRegex(expr));
-                    default: break;
+                    case "regex":
+                        generateFromRegex(b, expr);
+                        break;
+                    case "alpha":
+                        alpha(b, Integer.valueOf(expr));
+                        break;
+                    case "alphaWithSpaces":
+                        alphaWithSpaces(b, Integer.valueOf(expr));
+                        break;
+                    case "number":
+                        String[] lengths = expr.split(",");
+
+                        int whole = Integer.valueOf(lengths[0]);
+                        int decimal = 0;
+                        if (lengths.length == 2) {
+                            decimal = Integer.valueOf(lengths[1]);
+                        }
+
+                        number(b, whole, decimal);
+
+                        break;
+                    case "ssn":
+                        ssn(b);
+                        break;
+                    case "currency":
+                        b.append(currencyCodes[random.nextInt(currencyCodes.length)]);
+                        break;
+                    default:
+                        b.append(value);
+                        break;
                 }
+
+                entry.setValue(b.toString());
             }
         }
     }
