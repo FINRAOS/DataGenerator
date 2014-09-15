@@ -24,11 +24,14 @@ import org.apache.commons.scxml.env.jsp.ELEvaluator;
 import org.apache.commons.scxml.io.SCXMLParser;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.Assign;
+import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.engine.Engine;
 import org.finra.datagenerator.engine.Frontier;
@@ -53,6 +56,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
     private SCXML model;
     private int bootStrapMin;
+    private Map<String, DataTransformer> transformations;
 
     /**
      * Constructor
@@ -151,6 +155,21 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
                 }
             }
 
+            //apply every transform tag to the results of the cartesian product
+            for (Action action : actions) {
+                if (action instanceof Transform) {
+                    String name = ((Transform) action).getName();
+                    DataTransformer tr = transformations.get(name);
+                    DataPipe pipe = new DataPipe(0, null);
+
+                    for (Map<String, String> p : product) {
+                        pipe.getDataMap().putAll(p);
+                        tr.transform(pipe);
+                        p.putAll(pipe.getDataMap());
+                    }
+                }
+            }
+
             //go through every transition and see which of the products are valid, adding them to the list
             List<Transition> transitions = nextState.getTransitionsList();
 
@@ -215,6 +234,13 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         distributor.distribute(frontiers);
     }
 
+    private List<CustomAction> customActions() {
+        List<CustomAction> actions = new LinkedList<>();
+        CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
+        actions.add(pos);
+        return actions;
+    }
+
     /**
      * Sets the SCXML model with an InputStream
      *
@@ -222,7 +248,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
      */
     public void setModelByInputFileStream(InputStream inputFileStream) {
         try {
-            this.model = SCXMLParser.parse(new InputSource(inputFileStream), null);
+            this.model = SCXMLParser.parse(new InputSource(inputFileStream), null, customActions());
             this.setStateMachine(this.model);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
@@ -237,7 +263,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     public void setModelByText(String model) {
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
-            this.model = SCXMLParser.parse(new InputSource(is), null);
+            this.model = SCXMLParser.parse(new InputSource(is), null, customActions());
             this.setStateMachine(this.model);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
@@ -253,5 +279,9 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     public Engine setBootstrapMin(int min) {
         bootStrapMin = min;
         return this;
+    }
+
+    public void setTransformations(Map<String, DataTransformer> transformations) {
+        this.transformations = transformations;
     }
 }
