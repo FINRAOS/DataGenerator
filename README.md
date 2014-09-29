@@ -32,21 +32,61 @@ mvn package
 mvn test
 ```
 
-DataGenerator Class architecture diagram
-------------------------------------------------
-![DataGenerator class diagram](http://finraos.github.io/DataGenerator/imgs/DataGenClassDiagram.png)
 
-(**NOTE:** This does not include all classes included in the DataGenerator package)
-
-
-License Type
+License
 ------------------------------------
 The DataGenerator project is licensed under [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
-
 =======
-DataGenerator
+Overview
 =============
 
-Primary goals of test automation should be increased coverage, decreased manual effort and flexibility to accommodate changing requirements.  DataGenerator is a new testing tool that supports these goals. This tool supports requirements specification and test case specification in terms of work  flows and data equivalence classes. By using templates, the format of the test data produced is highly customizable, and has the ability to include  dynamically calculated test expectations. The combined use of straightforward specification inputs, tool-assured test case coverage, and  customizable output enables a tester to achieve increased coverage in less time, while maintaining the flexibility to adapt to requirements changes.  In an agile software development environment, modifications to the specification input and output templates are all that’s required to get the tests re-generated.  This reduces time spent on test case generation and requirements gathering and alleviates gaps between requirements and test cases generated which  strengthens behavior-driven development.
+Data Generator generates pattern using two pieces of user provided information:
+
+1. An SCXML state chart representing interactions between different states, and setting values to output variables
+2. A user [Transformer]http://finraos.github.io/DataGenerator/apis/v2.0/org/finra/datagenerator/consumer/DataTransformer.html) that formats the variables and stores them.
+
+The user can optionally provide their own [distributor](http://finraos.github.io/DataGenerator/apis/v2.0/org/finra/datagenerator/distributor/SearchDistributor.html) that distributes the search of bigger problems on systems like hadoop. By default, DataGenerator will use a multithreaded distributor.
+
+=============
+Quick start
+=============
+
+For the full coompilable code please see the [noconditions sample](https://github.com/FINRAOS/DataGenerator/tree/master/codesamples/noconditions)
+
+First step, define an SCXML model:
+```sh
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:cs="http://commons.apache.org/scxml"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="SETV1" target="SETV1"/>
+    </state>
+
+    <state id="SETV1">
+        <onentry>
+            <assign name="var_out_V1" expr="set:{A,B,C}"/>
+        </onentry>
+        <transition event="SETV2" target="SETV2"/>
+    </state>
+
+    <state id="SETV2">
+        <onentry>
+            <assign name="var_out_V2" expr="set:{1,2,3}"/>
+            <assign name="var_out_V3" expr="#{customplaceholder}"/>
+        </onentry>
+        <transition event="end" target="end"/>
+    </state>
+
+    <state id="end">
+        <!-- We're done -->
+    </state>
+</scxml>
+```
+
+This model contains three variables controlled by two states. The transition between those states is unconditional. The first variable var_out_V1 can have any of the values A,B and C. The second variable var_out_V2 can have any of the values 1,2 and 3. The third variable is set to a template that the user will replace with a custom value in a later stage.
+
+
