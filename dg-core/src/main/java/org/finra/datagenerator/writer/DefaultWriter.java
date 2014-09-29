@@ -15,12 +15,15 @@
  */
 package org.finra.datagenerator.writer;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataPipe;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
+ * Orders result variables based on a template and writes them seperated by pipe characters to a given OutputStream.
+ *
  * Created by robbinbr on 5/28/2014.
  */
 public class DefaultWriter implements DataWriter {

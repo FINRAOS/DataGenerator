@@ -27,8 +27,6 @@ public interface ReportingHost {
 
     /**
      * Cleanup
-     *
-     * TODO: why not implement Closeable ??
      */
     void cleanup();
 

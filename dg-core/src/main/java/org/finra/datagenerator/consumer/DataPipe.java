@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Wrapper for search results.
+ *
  * Created by RobbinBr on 5/18/2014.
  */
 public class DataPipe {
