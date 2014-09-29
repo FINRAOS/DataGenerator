@@ -150,8 +150,4 @@ public class DefaultDistributor implements SearchDistributor {
         hardExitFlag.set(true);
     }
 
-    @Override
-    public void setFlag(String name, AtomicBoolean flag) {
-
-    }
 }

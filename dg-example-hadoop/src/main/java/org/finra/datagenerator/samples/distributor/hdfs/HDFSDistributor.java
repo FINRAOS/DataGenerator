@@ -36,7 +36,6 @@ import org.finra.datagenerator.engine.scxml.SCXMLGapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by robbinbr on 3/24/14.
@@ -68,15 +67,6 @@ public class HDFSDistributor implements SearchDistributor {
      */
     public SearchDistributor setDataConsumer(DataConsumer dataConsumer) {
         return this;
-    }
-
-    /**
-     * Set a flag
-     *
-     * @param name the name of the flag
-     * @param flag the value of the flag
-     */
-    public void setFlag(String name, AtomicBoolean flag) {
     }
 
     /**
