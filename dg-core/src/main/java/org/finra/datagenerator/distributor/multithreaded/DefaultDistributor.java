@@ -30,6 +30,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Uses a multithreaded approach to process Frontiers in parallel. 
+ *
  * Created by robbinbr on 3/24/14.
  */
 public class DefaultDistributor implements SearchDistributor {

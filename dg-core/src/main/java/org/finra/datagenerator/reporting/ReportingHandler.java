@@ -24,8 +24,6 @@ public interface ReportingHandler {
      * Handles a request.
      *
      * @param response a String containing the response
-     *
-     * TODO: This should also take in the request string at least
      */
     void handleResponse(String response);
 }

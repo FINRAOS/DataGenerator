@@ -21,8 +21,9 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created with IntelliJ IDEA.
- * User: k24364 Marshall Peters
+ * Represents a partial search produced by an Engine's bootstrapping.
+ * 
+ * Marshall Peters
  * Date: 8/21/14
  */
 public interface Frontier {

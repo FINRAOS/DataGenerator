@@ -21,8 +21,9 @@ import org.finra.datagenerator.distributor.SearchDistributor;
 import java.io.InputStream;
 
 /**
- * Created with IntelliJ IDEA.
- * User: k24364 Marshall Peters
+ * Performs the bootstrapping search on a data model, producing Frontiers for a SearchDistributor to distribute. 
+ *
+ * Marshall Peters
  * Date: 8/21/14
  */
 public interface Engine {

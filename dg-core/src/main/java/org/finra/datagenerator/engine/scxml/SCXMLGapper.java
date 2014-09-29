@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Provides serialization tools for SCXMLFrontier.
+ *
  * Marshall Peters
  * Date: 8/28/14
  */

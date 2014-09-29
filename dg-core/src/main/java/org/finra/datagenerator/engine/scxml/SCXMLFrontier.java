@@ -38,6 +38,8 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Frontier implementation for generating data with SCXML state machine models.
+ *
  * Marshall Peters
  * Date: 8/26/14
  */

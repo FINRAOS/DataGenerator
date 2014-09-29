@@ -34,6 +34,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Processes search results produced by a SearchDistributor.
+ *
  * Created by RobbinBr on 5/18/2014.
  */
 public class DataConsumer {
@@ -133,11 +135,6 @@ public class DataConsumer {
      *
      * @param initialVars a map containing the initial variables assignments
      * @return the number of lines written
-     *
-     * TODO: Exceptions are not properly handled in case one writer or one
-     * transformer breaks. In case one transformer breaks the exception should
-     * definitely go the called. If one writer fails we should continue with the
-     * rest of the writers and report the exception in the logs.
      */
     public int consume(Map<String, String> initialVars) {
         this.dataPipe = new DataPipe(this);
