@@ -53,10 +53,10 @@ The user can optionally provide their own [distributor](http://finraos.github.io
 Quick start
 =============
 
-For the full coompilable code please see the [noconditions sample](https://github.com/FINRAOS/DataGenerator/tree/master/codesamples/noconditions)
+For the full coompilable code please see the [default example](https://github.com/FINRAOS/DataGenerator/blob/master/dg-example-default/)
 
 First step, define an SCXML model:
-```sh
+```xml
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
        xmlns:cs="http://commons.apache.org/scxml"
        version="1.0"
@@ -68,7 +68,9 @@ First step, define an SCXML model:
 
     <state id="SETV1">
         <onentry>
-            <assign name="var_out_V1" expr="set:{A,B,C}"/>
+            <assign name="var_out_V1_1" expr="set:{A1,B1,C1}"/>
+            <assign name="var_out_V1_2" expr="set:{A2,B2,C2}"/>
+            <assign name="var_out_V1_3" expr="77"/>
         </onentry>
         <transition event="SETV2" target="SETV2"/>
     </state>
@@ -87,6 +89,65 @@ First step, define an SCXML model:
 </scxml>
 ```
 
-This model contains three variables controlled by two states. The transition between those states is unconditional. The first variable var_out_V1 can have any of the values A,B and C. The second variable var_out_V2 can have any of the values 1,2 and 3. The third variable is set to a template that the user will replace with a custom value in a later stage.
+This model contains five variables controlled by two states. The transition between those states is unconditional. One of those variables is always constant ( var_out_V1_3 ). Three will acquire every value from a set ( var_out_V1_1, var_out_V1_2 and var_out_V2 ). var_out_V3 will be set to a holder value that will be replaced by the user at a later point.
 
+The second step will be to write a [Transformer](http://finraos.github.io/DataGenerator/apis/v2.0/org/finra/datagenerator/consumer/DataTransformer.html). The code is [here](https://github.com/FINRAOS/DataGenerator/blob/master/dg-example-default/src/main/java/org/finra/datagenerator/samples/transformer/SampleMachineTransformer.java)
 
+```java
+public class SampleMachineTransformer implements DataTransformer {
+
+    private static final Logger log = Logger.getLogger(SampleMachineTransformer.class);
+    private final Random rand = new Random(System.currentTimeMillis());
+
+    /**
+     * The transform method for this DataTransformer
+     * @param cr a reference to DataPipe from which to read the current map
+     */
+    public void transform(DataPipe cr) {
+        for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
+            String value = entry.getValue();
+
+            if (value.equals("#{customplaceholder}")) {
+                // Generate a random number
+                int ran = rand.nextInt();
+                entry.setValue(String.valueOf(ran));
+            }
+        }
+    }
+
+}
+```
+The above transformer will intercept every generated row, and convert the place holder "#customplaceholder" with a random number.
+
+The last step will be writing a main function that ties both pieces together. Code is [here](https://github.com/FINRAOS/DataGenerator/blob/master/dg-example-default/src/main/java/org/finra/datagenerator/samples/CmdLine.java)
+```java
+    public static void main(String[] args) {
+
+        Engine engine = new SCXMLEngine();
+
+        //will default to samplemachine, but you could specify a different file if you choose to
+        InputStream is = CmdLine.class.getResourceAsStream("/" + (args.length == 0 ? "samplemachine" : args[0]) + ".xml");
+
+        engine.setModelByInputFileStream(is);
+
+        // Usually, this should be more than the number of threads you intend to run
+        engine.setBootstrapMin(1);
+
+        //Prepare the consumer with the proper writer and transformer
+        DataConsumer consumer = new DataConsumer();
+        consumer.addDataTransformer(new SampleMachineTransformer());
+        consumer.addDataWriter(new DefaultWriter(System.out,
+                new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3"}));
+
+        //Prepare the distributor
+        DefaultDistributor defaultDistributor = new DefaultDistributor();
+        defaultDistributor.setThreadCount(1);
+        defaultDistributor.setDataConsumer(consumer);
+        Logger.getLogger("org.apache").setLevel(Level.WARN);
+
+        engine.process(defaultDistributor);
+    }
+```
+The first few lines will open an input stream on the SCXML file and pass the stream to the engine. Calling setBootStrapMin will attempt to split the graph generated from the state chart to at least the given number of splits. Here we passed 1 but in case you will execute the same code over hadoop or use a multithreaded version, you will need to increase that number to be at least the number of threads or mappers you wish to run. The rest of the code will set our transformer to the engine and create a writer based on the DefaultWriter. The function of the writer is to write the output to the user's desired destination.
+
+The final piece sets the number of threads and called engine.process.
