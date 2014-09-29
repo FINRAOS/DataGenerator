@@ -11,6 +11,7 @@ Maven dependency
     <artifactId>DataGenerator</artifactId>
     <version>1.0</version>
 </dependency>
+```
 
 Building
 ------------
