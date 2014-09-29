@@ -19,7 +19,6 @@ import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.engine.Frontier;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author robbinbr
@@ -42,12 +41,4 @@ public interface SearchDistributor {
      */
     void distribute(List<Frontier> frontierList);
 
-    /**
-     * TODO: Buggy !! this function is adding a new instance of AromicBoolen and
-     * not setting the value of a current atomic boolean
-     *
-     * @param name the name of the flag
-     * @param flag the value of the flag
-     */
-    void setFlag(String name, AtomicBoolean flag);
 }
