@@ -2,10 +2,20 @@ Contributing
 ------------
 We encourage contribution from the open source community to make DataGenerator better. Please refer to the [development](http://finraos.github.io/DataGenerator/index.html#get_involved) page for more information on how to contribute to this project.
 
+Maven dependency
+-----------------
+
+```sh
+<dependency>
+    <groupId>org.finra.datagenerator</groupId>
+    <artifactId>DataGenerator</artifactId>
+    <version>1.0</version>
+</dependency>
 
 Building
 ------------
 DataGenerator uses Maven for build. Please install Maven by downloading it from [here](http://maven.apache.org/download.cgi).
+
 ```sh
 # Clone DataGenerator git repo
 git clone git://github.com/FINRAOS/DataGenerator.git
