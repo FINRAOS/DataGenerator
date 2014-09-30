@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Quick Start &mdash; DataGenerator 1.0 documentation</title>
+    <title>Quick Start &mdash; Data Generator 2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.0',
+        VERSION:     '2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DataGenerator 1.0 documentation" href="index.html" /> 
+    <link rel="top" title="Data Generator 2.0 documentation" href="index.html" />
+    <link rel="next" title="Example: Eight Lonely Rooks" href="BasicExample.html" />
+    <link rel="prev" title="Introduction" href="Introduction.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +36,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="index.html">DataGenerator 1.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="BasicExample.html" title="Example: Eight Lonely Rooks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Introduction.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Data Generator 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -45,15 +53,100 @@
             
   <div class="section" id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<p>This section provides the steps to quickly get started with Data Generator. Before you start, make sure you have the latest version of DataDynamo and the JDK. Use the links below in case you don&#8217;t have them setup.</p>
-<ol class="arabic simple">
-<li>Download the latest version of the DataGenerator, here&#8217;s a link to the zip file from the master branch: <a class="reference external" href="https://github.com/FINRAOS/DataGenerator/archive/master.zip">https://github.com/FINRAOS/DataGenerator/archive/master.zip</a></li>
-<li>Install the latest JDK <a class="reference external" href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></li>
-</ol>
-<p>The function of DataGenerator is to generate test scripts, that should help the user acheive a higher level of automation.</p>
-<div class="section" id="dependency-generation">
-<h2>Dependency Generation<a class="headerlink" href="#dependency-generation" title="Permalink to this headline">¶</a></h2>
-<p>A sample file containing an example DataGenerator specification was prepared, which you can download here ( Fix link ).</p>
+<p>Here&#8217;s the quickest route to getting &#8220;up and running&#8221; with DG.</p>
+<p>Install Java and Maven installed on your system if you do not have them already. If you do not have an existing Maven project, you can create one within your favorite IDE, or by using the <a class="reference external" href="http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html">Maven Quickstart Archetype</a>. If you have an existing Maven project, you can add the DG Core dependency to your POM using these coordinates:</p>
+<div class="highlight-python"><pre>&lt;dependency&gt;
+         &lt;groupId&gt;org.finra.datagenerator&lt;/groupId&gt;
+         &lt;artifactId&gt;dg-core&lt;/artifactId&gt;
+         &lt;version&gt;2.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+</div>
+<p>For this example, we will use the built-in <a class="reference internal" href="SCXMLDataModels.html"><em>SCXML Data Models</em></a> and <a class="reference internal" href="Multithreaded.html"><em>Multithreaded Usage</em></a>. The following model defines three variables,
+with two variables having multiple possible values, and one having a value of &#8220;customplaceholder&#8221;, to be set by a custom transformer:</p>
+<div class="highlight-python"><pre>&lt;scxml xmlns="http://www.w3.org/2005/07/scxml"
+        xmlns:cs="http://commons.apache.org/scxml"
+        version="1.0"
+        initial="start"&gt;
+
+        &lt;state id="start"&gt;
+                &lt;transition event="SETV1" target="SETV1"/&gt;
+        &lt;/state&gt;
+
+        &lt;state id="SETV1"&gt;
+                &lt;onentry&gt;
+                        &lt;assign name="var_out_V1_1" expr="set:{A1,B1,C1}"/&gt;
+                        &lt;assign name="var_out_V1_2" expr="set:{A2,B2,C2}"/&gt;
+                        &lt;assign name="var_out_V1_3" expr="77"/&gt;
+                &lt;/onentry&gt;
+                &lt;transition event="SETV2" target="SETV2"/&gt;
+        &lt;/state&gt;
+
+        &lt;state id="SETV2"&gt;
+                &lt;onentry&gt;
+                        &lt;assign name="var_out_V2" expr="set:{1,2,3}"/&gt;
+                        &lt;assign name="var_out_V3" expr="#{customplaceholder}"/&gt;
+                &lt;/onentry&gt;
+                &lt;transition event="end" target="end"/&gt;
+        &lt;/state&gt;
+
+        &lt;state id="end"&gt;
+                &lt;!-- We're done --&gt;
+        &lt;/state&gt;
+&lt;/scxml&gt;</pre>
+</div>
+<p>Now we need a transformer capable of interpreting the &#8220;customplaceholder&#8221; used in the assignment of V3. Let&#8217;s say that &#8220;customplaceholder&#8221;
+represents the need the insert a random number into the dataset. We can construct a custom DataTransformer to transform &#8220;customplaceholder&#8221;
+into a random integer:</p>
+<div class="highlight-python"><pre>public class SampleMachineTransformer implements DataTransformer {
+
+         private static final Logger log = Logger.getLogger(SampleMachineTransformer.class);
+         private final Random rand = new Random(System.currentTimeMillis());
+
+         /**
+          * The transform method for this DataTransformer
+          * @param cr a reference to DataPipe from which to read the current map
+          */
+         public void transform(DataPipe cr) {
+             for (Map.Entry&lt;String, String&gt; entry : cr.getDataMap().entrySet()) {
+                 String value = entry.getValue();
+
+                 if (value.equals("#{customplaceholder}")) {
+                     // Generate a random number
+                     int ran = rand.nextInt();
+                     entry.setValue(String.valueOf(ran));
+                 }
+             }
+         }
+}</pre>
+</div>
+<p>Finally, we can create a driver for our data generation which configures an SCXMLEngine to use a DefaultDistributor and DataConsumer to solve
+our problem:</p>
+<div class="highlight-python"><pre>public static void main(String[] args) {
+
+            Engine engine = new SCXMLEngine();
+
+            //will default to samplemachine, but you could specify a different file if you choose to
+            InputStream is = CmdLine.class.getResourceAsStream("/" + (args.length == 0 ? "samplemachine" : args[0]) + ".xml");
+
+            engine.setModelByInputFileStream(is);
+
+            // Usually, this should be more than the number of threads you intend to run
+            engine.setBootstrapMin(1);
+
+            //Prepare the consumer with the proper writer and transformer
+            DataConsumer consumer = new DataConsumer();
+            consumer.addDataTransformer(new SampleMachineTransformer());
+            consumer.addDataWriter(new DefaultWriter(System.out,
+                            new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3"}));
+
+            //Prepare the distributor
+            DefaultDistributor defaultDistributor = new DefaultDistributor();
+            defaultDistributor.setThreadCount(1);
+            defaultDistributor.setDataConsumer(consumer);
+            Logger.getLogger("org.apache").setLevel(Level.WARN);
+
+            engine.process(defaultDistributor);
+   }</pre>
 </div>
 </div>
 
@@ -63,14 +156,12 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Quick Start</a><ul>
-<li><a class="reference internal" href="#dependency-generation">Dependency Generation</a></li>
-</ul>
-</li>
-</ul>
-
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Introduction.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="BasicExample.html"
+                        title="next chapter">Example: Eight Lonely Rooks</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/QuickStart.txt"
@@ -99,11 +190,17 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="index.html">DataGenerator 1.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="BasicExample.html" title="Example: Eight Lonely Rooks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Introduction.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">Data Generator 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, DataGenerator Contributors.
+        &copy; Copyright 2014, DataGenerator Contributors.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
