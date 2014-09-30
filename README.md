@@ -9,7 +9,7 @@ Maven dependency
 <dependency>
     <groupId>org.finra.datagenerator</groupId>
     <artifactId>DataGenerator</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
 </dependency>
 ```
 
