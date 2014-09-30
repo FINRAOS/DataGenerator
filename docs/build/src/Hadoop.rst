@@ -1,4 +1,4 @@
-Using DataGenerator with Hadoop
+Hadoop Usage
 ===============================
 
 Overview

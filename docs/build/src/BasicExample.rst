@@ -1,10 +1,10 @@
-Eight Lonely Rooks - A Basic Example
+Example: Eight Lonely Rooks
 ====================================
 
 The Problem
 -----------
 
-The eight lonely rooks problem is a simple chess based problem: place eight rooks on the chess board such that none of the rooks can attack each other. We can use DataGenerator to solve this problem, outputting every possible arrangement of rooks as test data for use elsewhere.
+The eight lonely rooks problem is a simple chess-based problem: place eight rooks on the chess board such that none of the rooks can attack each other. We can use DataGenerator to solve this problem, outputting every possible arrangement of rooks as test data for use elsewhere.
 
 Modeling the Problem with SCXML
 -------------------------------
