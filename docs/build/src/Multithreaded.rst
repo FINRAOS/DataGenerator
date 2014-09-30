@@ -1,7 +1,7 @@
 Multithreaded Usage
 ===================
 
-There are three steps to use DataGenerator in multithreaded mode.
+There are three steps to use DataGenerator in multithreaded mode with an SCXML Model.
 
 1. Instantiate and configure an SCXMLEngine.
 
