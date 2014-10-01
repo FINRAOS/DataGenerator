@@ -8,7 +8,7 @@ Maven dependency
 ```sh
 <dependency>
     <groupId>org.finra.datagenerator</groupId>
-    <artifactId>DataGenerator</artifactId>
+    <artifactId>dg-core</artifactId>
     <version>2.0</version>
 </dependency>
 ```
