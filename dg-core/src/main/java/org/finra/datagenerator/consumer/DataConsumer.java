@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Processes search results produced by a SearchDistributor.
- *
+ * <p/>
  * Created by RobbinBr on 5/18/2014.
  */
 public class DataConsumer {
@@ -151,7 +151,11 @@ public class DataConsumer {
 
         // Call writers
         for (DataWriter oneOw : dataWriters) {
-            oneOw.writeOutput(dataPipe);
+            try {
+                oneOw.writeOutput(dataPipe);
+            } catch (Exception e) { //NOPMD
+                log.error("Exception in DataWriter", e);
+            }
         }
 
         return 1;
@@ -162,7 +166,7 @@ public class DataConsumer {
      * the response.
      *
      * @param path the path at the reporting host where the request should be
-     * sent
+     *             sent
      * @return a {@link java.util.concurrent.Future} that wraps this activity
      */
     public Future<String> sendRequest(final String path) {
@@ -173,9 +177,9 @@ public class DataConsumer {
      * Creates a future that will send a request to the reporting host and call
      * the handler with the response
      *
-     * @param path the path at the reporting host which the request will be made
+     * @param path             the path at the reporting host which the request will be made
      * @param reportingHandler the handler to receive the response once executed
-     * and recieved
+     *                         and recieved
      * @return a {@link java.util.concurrent.Future} for handing the request
      */
     public Future<String> sendRequest(final String path, final ReportingHandler reportingHandler) {
