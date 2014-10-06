@@ -229,7 +229,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
         List<Frontier> frontiers = new LinkedList<>();
         for (PossibleState p : bootStrap) {
-            SCXMLFrontier dge = new SCXMLFrontier(p, model);
+            SCXMLFrontier dge = new SCXMLFrontier(p, model, transformations);
             frontiers.add(dge);
         }
 

@@ -28,6 +28,8 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
 
 import java.util.HashMap;
@@ -47,6 +49,27 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
     private final PossibleState root;
     private static final Logger log = Logger.getLogger(SCXMLFrontier.class);
+    private Map<String, DataTransformer> transformations;
+
+    /**
+     * Constructor
+     *
+     * @param possibleState the root node of the model and partial variable assignment to start a dfs from
+     * @param model the model text
+     * @param transformations DataTransformers used in the model
+     */
+    public SCXMLFrontier(final PossibleState possibleState, final SCXML model,
+                         final Map<String, DataTransformer> transformations) {
+        root = possibleState;
+        this.transformations = transformations;
+        this.setStateMachine(model);
+
+        ELEvaluator elEvaluator = new ELEvaluator();
+        ELContext context = new ELContext();
+
+        this.setEvaluator(elEvaluator);
+        this.setRootContext(context);
+    }
 
     /**
      * Constructor
@@ -55,15 +78,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
      * @param model the model text
      */
     public SCXMLFrontier(final PossibleState possibleState, final SCXML model) {
-        root = possibleState;
-
-        this.setStateMachine(model);
-
-        ELEvaluator elEvaluator = new ELEvaluator();
-        ELContext context = new ELContext();
-
-        this.setEvaluator(elEvaluator);
-        this.setRootContext(context);
+        this(possibleState, model, new HashMap<String, DataTransformer>());
     }
 
     /**
@@ -131,6 +146,21 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
                     }
                 }
                 product = productTemp;
+            }
+        }
+
+        //apply every transform tag to the results of the cartesian product
+        for (Action action : actions) {
+            if (action instanceof Transform) {
+                String name = ((Transform) action).getName();
+                DataTransformer tr = transformations.get(name);
+                DataPipe pipe = new DataPipe(0, null);
+
+                for (Map<String, String> p : product) {
+                    pipe.getDataMap().putAll(p);
+                    tr.transform(pipe);
+                    p.putAll(pipe.getDataMap());
+                }
             }
         }
 
