@@ -17,9 +17,11 @@
 package org.finra.datagenerator.engine.scxml;
 
 import org.apache.commons.scxml.io.SCXMLParser;
+import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.TransitionTarget;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -28,6 +30,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,10 +47,17 @@ public class SCXMLGapper {
     private void setModel(String model) {
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
-            this.model = SCXMLParser.parse(new InputSource(is), null);
+            this.model = SCXMLParser.parse(new InputSource(is), null, customActions());
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<CustomAction> customActions() {
+        List<CustomAction> actions = new LinkedList<>();
+        CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
+        actions.add(pos);
+        return actions;
     }
 
     /**
@@ -85,12 +96,24 @@ public class SCXMLGapper {
     }
 
     /**
-     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
+     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition. Uses
+     * an empty map of in model DataTransformers
      *
      * @param decomposition the decomposition, assembled back into a map
      * @return a rebuilt SCXMLFrontier
      */
     public Frontier reproduce(Map<String, String> decomposition) {
+        return reproduce(decomposition, new HashMap<String, DataTransformer>());
+    }
+
+    /**
+     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
+     *
+     * @param decomposition the decomposition, assembled back into a map
+     * @param transformers in model DataTransformers
+     * @return a rebuilt SCXMLFrontier
+     */
+    public Frontier reproduce(Map<String, String> decomposition, Map<String, DataTransformer> transformers) {
         setModel(decomposition.get("model"));
         TransitionTarget target = (TransitionTarget) model.getTargets().get(decomposition.get("target"));
 
@@ -105,6 +128,6 @@ public class SCXMLGapper {
             }
         }
 
-        return new SCXMLFrontier(new PossibleState(target, variables), model);
+        return new SCXMLFrontier(new PossibleState(target, variables), model, transformers);
     }
 }
