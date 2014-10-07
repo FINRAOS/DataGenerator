@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.finra.datagenerator.engine.scxml;
+package org.finra.datagenerator.engine.negscxml;
 
 import org.apache.commons.scxml.io.SCXMLParser;
 import org.apache.commons.scxml.model.Assign;
@@ -22,7 +22,6 @@ import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.TransitionTarget;
-import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -30,20 +29,30 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Provides serialization tools for SCXMLFrontier.
- *
  * Marshall Peters
- * Date: 8/28/14
+ * Date: 9/10/14
  */
-public class SCXMLGapper {
+public class NegSCXMLGapper {
 
     private SCXML model;
+
+    private List<CustomAction> customActions() {
+        List<CustomAction> actions = new LinkedList<>();
+        CustomAction neg = new CustomAction("org.finra.datagenerator", "negative", NegativeAssign.class);
+        actions.add(neg);
+        CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
+        actions.add(pos);
+        return actions;
+    }
 
     private void setModel(String model) {
         try {
@@ -54,17 +63,8 @@ public class SCXMLGapper {
         }
     }
 
-    private List<CustomAction> customActions() {
-        List<CustomAction> actions = new LinkedList<>();
-        CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
-        actions.add(pos);
-        pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
-        actions.add(pos);
-        return actions;
-    }
-
     /**
-     * Takes a model and an SCXMLFrontier and decomposes the Frontier into a Map of Strings to Strings
+     * Takes a model and a NegSCXMLFrontier and decomposes the Frontier into a Map of Strings to Strings
      * These strings can be sent over a network to get a Frontier past a 'gap'
      *
      * @param frontier  the Frontier
@@ -72,16 +72,19 @@ public class SCXMLGapper {
      * @return the map of strings representing a decomposition
      */
     public Map<String, String> decompose(Frontier frontier, String modelText) {
-        if (!(frontier instanceof SCXMLFrontier)) {
+        if (!(frontier instanceof NegSCXMLFrontier)) {
             return null;
         }
 
         setModel(modelText);
 
-        TransitionTarget target = ((SCXMLFrontier) frontier).getRoot().nextState;
-        Map<String, String> variables = ((SCXMLFrontier) frontier).getRoot().variables;
+        TransitionTarget target = ((NegSCXMLFrontier) frontier).getRoot().nextState;
+        Map<String, String> variables = ((NegSCXMLFrontier) frontier).getRoot().variables;
+        Set<String> negVariables = ((NegSCXMLFrontier) frontier).getRoot().negVariable;
+        int negative = ((NegSCXMLFrontier) frontier).getNegative();
 
         Map<String, String> decomposition = new HashMap<String, String>();
+        decomposition.put("negative", String.valueOf(negative));
         decomposition.put("target", target.getId());
 
         StringBuilder packedVariables = new StringBuilder();
@@ -91,39 +94,35 @@ public class SCXMLGapper {
             packedVariables.append(variable.getValue());
             packedVariables.append(";");
         }
-
         decomposition.put("variables", packedVariables.toString());
+
+        packedVariables = new StringBuilder();
+        for (String variable : negVariables) {
+            packedVariables.append(variable);
+            packedVariables.append(";");
+        }
+        decomposition.put("negVariables", packedVariables.toString());
+
         decomposition.put("model", modelText);
 
         return decomposition;
     }
 
     /**
-     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition. Uses
-     * an empty map of in model DataTransformers
+     * Produces a NegSCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
      *
      * @param decomposition the decomposition, assembled back into a map
-     * @return a rebuilt SCXMLFrontier
+     * @return a rebuilt NegSCXMLFrontier
      */
     public Frontier reproduce(Map<String, String> decomposition) {
-        return reproduce(decomposition, new HashMap<String, DataTransformer>());
-    }
-
-    /**
-     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
-     *
-     * @param decomposition the decomposition, assembled back into a map
-     * @param transformers in model DataTransformers
-     * @return a rebuilt SCXMLFrontier
-     */
-    public Frontier reproduce(Map<String, String> decomposition, Map<String, DataTransformer> transformers) {
         setModel(decomposition.get("model"));
+        int negative = Integer.valueOf(decomposition.get("negative"));
         TransitionTarget target = (TransitionTarget) model.getTargets().get(decomposition.get("target"));
 
         Map<String, String> variables = new HashMap<>();
         String[] assignments = decomposition.get("variables").split(";");
-        for (int i = 0; i < assignments.length; i++) {
-            String[] a = assignments[i].split("::");
+        for (String assignment : assignments) {
+            String[] a = assignment.split("::");
             if (a.length == 2) {
                 variables.put(a[0], a[1]);
             } else {
@@ -131,6 +130,10 @@ public class SCXMLGapper {
             }
         }
 
-        return new SCXMLFrontier(new PossibleState(target, variables), model, transformers);
+        Set<String> negVariables = new HashSet<>();
+        String[] negList = decomposition.get("negVariables").split(";");
+        Collections.addAll(negVariables, negList);
+
+        return new NegSCXMLFrontier(new NegPossibleState(target, variables, negVariables), model, negative);
     }
 }

@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.finra.datagenerator.engine.scxml;
+package org.finra.datagenerator.engine.negscxml;
 
-import org.apache.commons.scxml.Context;
-import org.apache.commons.scxml.SCXMLExecutor;
-import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.env.jsp.ELContext;
 import org.apache.commons.scxml.env.jsp.ELEvaluator;
 import org.apache.commons.scxml.io.SCXMLParser;
@@ -28,10 +25,7 @@ import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.SCXML;
-import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
-import org.finra.datagenerator.consumer.DataPipe;
-import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.engine.Engine;
 import org.finra.datagenerator.engine.Frontier;
@@ -49,21 +43,21 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Engine implementation for generating data with SCXML state machine models.
- *
  * Marshall Peters
  * Date: 8/25/14
  */
-public class SCXMLEngine extends SCXMLExecutor implements Engine {
+public class NegSCXMLEngine extends NegSCXMLCommons implements Engine {
 
     private SCXML model;
     private int bootStrapMin;
-    private Map<String, DataTransformer> transformations;
+    private int negative;
 
     /**
      * Constructor
+     *
+     * @param negative the required number of negative variable assignments
      */
-    public SCXMLEngine() {
+    public NegSCXMLEngine(final int negative) {
         super();
 
         ELEvaluator elEvaluator = new ELEvaluator();
@@ -71,6 +65,8 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
         this.setEvaluator(elEvaluator);
         this.setRootContext(context);
+
+        this.negative = negative;
     }
 
     /**
@@ -108,106 +104,26 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
      * @return a list of found PossibleState
      * @throws ModelException if the desired bootstrap can not be reached
      */
-    public List<PossibleState> bfs(int min) throws ModelException {
-        List<PossibleState> bootStrap = new LinkedList<>();
+    public List<NegPossibleState> bfs(int min) throws ModelException {
+        List<NegPossibleState> bootStrap = new LinkedList<>();
 
         TransitionTarget initial = model.getInitialTarget();
-        PossibleState initialState = new PossibleState(initial, fillInitialVariables());
+        NegPossibleState initialState = new NegPossibleState(initial, fillInitialVariables(), new HashSet<String>());
         bootStrap.add(initialState);
 
         while (bootStrap.size() < min) {
-            PossibleState state = bootStrap.remove(0);
-            TransitionTarget nextState = state.nextState;
+            NegPossibleState state = bootStrap.remove(0);
 
-            if (nextState.getId().equalsIgnoreCase("end")) {
+            if (state.nextState.getId().equalsIgnoreCase("end")) {
                 throw new ModelException("Could not achieve required bootstrap without reaching end state");
             }
 
-            //set every variable with cartesian product of 'assign' actions
-            List<Map<String, String>> product = new LinkedList<>();
-            product.add(new HashMap<>(state.variables));
+            //produce purely positive scenarios
+            expandPositive(state, bootStrap);
 
-            OnEntry entry = nextState.getOnEntry();
-            List<Action> actions = entry.getActions();
-
-            for (Action action : actions) {
-                if (action instanceof Assign) {
-                    String expr = ((Assign) action).getExpr();
-                    String variable = ((Assign) action).getName();
-
-                    String[] set;
-
-                    if (expr.contains("set:{")) {
-                        expr = expr.substring(5, expr.length() - 1);
-                        set = expr.split(",");
-                    } else {
-                        set = new String[]{expr};
-                    }
-
-                    //take the product
-                    List<Map<String, String>> productTemp = new LinkedList<>();
-                    for (Map<String, String> p : product) {
-                        for (String s : set) {
-                            HashMap<String, String> n = new HashMap<>(p);
-                            n.put(variable, s);
-                            productTemp.add(n);
-                        }
-                    }
-                    product = productTemp;
-                }
-            }
-
-            //apply every transform tag to the results of the cartesian product
-            for (Action action : actions) {
-                if (action instanceof Transform) {
-                    String name = ((Transform) action).getName();
-                    DataTransformer tr = transformations.get(name);
-                    DataPipe pipe = new DataPipe(0, null);
-
-                    for (Map<String, String> p : product) {
-                        pipe.getDataMap().putAll(p);
-                        tr.transform(pipe);
-                        p.putAll(pipe.getDataMap());
-                    }
-                }
-            }
-
-            //go through every transition and see which of the products are valid, adding them to the list
-            List<Transition> transitions = nextState.getTransitionsList();
-
-            for (Transition transition : transitions) {
-                String condition = transition.getCond();
-                TransitionTarget target = ((List<TransitionTarget>) transition.getTargets()).get(0);
-
-                for (Map<String, String> p : product) {
-                    Boolean pass;
-
-                    if (condition == null) {
-                        pass = true;
-                    } else {
-                        //scrub the context clean so we may use it to evaluate transition conditional
-                        Context context = this.getRootContext();
-                        context.reset();
-
-                        //set up new context
-                        for (Map.Entry<String, String> e : p.entrySet()) {
-                            context.set(e.getKey(), e.getValue());
-                        }
-
-                        //evaluate condition
-                        try {
-                            pass = (Boolean) this.getEvaluator().eval(context, condition);
-                        } catch (SCXMLExpressionException ex) {
-                            pass = false;
-                        }
-                    }
-
-                    //transition condition satisfied, add to bootstrap list
-                    if (pass) {
-                        PossibleState result = new PossibleState(target, p);
-                        bootStrap.add(result);
-                    }
-                }
+            //possible state does not have enough negative values yet, produce scenarios with some
+            if (state.negVariable.size() < negative) {
+                expandNegative(state, bootStrap, negative - state.negVariable.size());
             }
         }
 
@@ -220,7 +136,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
      * @param distributor the distributor
      */
     public void process(SearchDistributor distributor) {
-        List<PossibleState> bootStrap;
+        List<NegPossibleState> bootStrap;
         try {
             bootStrap = bfs(bootStrapMin);
         } catch (ModelException e) {
@@ -228,8 +144,8 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         }
 
         List<Frontier> frontiers = new LinkedList<>();
-        for (PossibleState p : bootStrap) {
-            SCXMLFrontier dge = new SCXMLFrontier(p, model, transformations);
+        for (NegPossibleState p : bootStrap) {
+            NegSCXMLFrontier dge = new NegSCXMLFrontier(p, model, negative);
             frontiers.add(dge);
         }
 
@@ -238,9 +154,9 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
     private List<CustomAction> customActions() {
         List<CustomAction> actions = new LinkedList<>();
-        CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
-        actions.add(pos);
-        pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
+        CustomAction neg = new CustomAction("org.finra.datagenerator", "negative", NegativeAssign.class);
+        actions.add(neg);
+        CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
         actions.add(pos);
         return actions;
     }
@@ -284,8 +200,5 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         bootStrapMin = min;
         return this;
     }
-
-    public void setTransformations(Map<String, DataTransformer> transformations) {
-        this.transformations = transformations;
-    }
 }
+
