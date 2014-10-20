@@ -24,6 +24,9 @@ import org.apache.commons.scxml.model.Assign;
 import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataTransformer;
+import org.finra.datagenerator.engine.scxml.Transform;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +40,8 @@ import java.util.Set;
  * Date: 9/10/14
  */
 public class NegSCXMLCommons extends SCXMLExecutor {
+
+    private Map<String, DataTransformer> transformations;
 
     /**
      * Expands a list of current variable assignments, adding on an additional variable which is assigned values
@@ -180,6 +185,22 @@ public class NegSCXMLCommons extends SCXMLExecutor {
             }
         }
 
+        //apply every transform tag to the results of the cartesian product
+        for (Action action : actions) {
+            if (action instanceof Transform) {
+                String name = ((Transform) action).getName();
+                DataTransformer tr = transformations.get(name);
+                DataPipe pipe = new DataPipe(0, null);
+
+                for (Map<String, String> p : product) {
+                    pipe.getDataMap().putAll(p);
+                    tr.transform(pipe);
+                    p.putAll(pipe.getDataMap());
+                }
+            }
+        }
+
+        //check each set of possible assignments set against transition conditions
         checkTransactions(nextState, product, state.negVariable, bootStrap);
     }
 
@@ -230,76 +251,74 @@ public class NegSCXMLCommons extends SCXMLExecutor {
 
         //produce the negative assignments from the positive core, from 1 assignment to negDegreesFreedom assignments
         for (int n = 1; n <= negDegreesFreedom; n++) {
-            arbitraryExpandedNegative(nextState, n, productCore, negativeAssignments, positiveAssignments,
-                    state.negVariable, bootStrap);
+            //find all combinations of choosing n negative variables in negativeAssignments
+            List<Set<String>> completeChoices = new LinkedList<Set<String>>();
+            List<Set<String>> incompleteChoices = new LinkedList<Set<String>>();
+            Set<String> emptyChoice = new HashSet<String>();
+            incompleteChoices.add(emptyChoice);
+
+            for (String variable : hasNegativeVariables) {
+                List<Set<String>> newChoices = new LinkedList<Set<String>>();
+
+                for (Set<String> choice : incompleteChoices) {
+                    Set<String> newChoice = new HashSet<>(choice);
+                    newChoice.add(variable);
+
+                    if (newChoice.size() == n) {
+                        completeChoices.add(newChoice);
+                    } else {
+                        newChoices.add(newChoice);
+                    }
+                }
+
+                for (Set<String> choice : newChoices) {
+                    incompleteChoices.add(choice);
+                }
+            }
+
+            //for each choice of n negative variables, make the needed variable assignments
+            for (Set<String> choice : completeChoices) {
+                List<Map<String, String>> product = new LinkedList<>(productCore);
+                Set<String> newlyNegativeVariables = new HashSet<>(hasNegativeVariables);
+
+                //make the negative assignments
+                for (String variable : choice) {
+                    NegativeAssign neg = negativeAssignments.get(variable);
+                    String expr = neg.getExpr();
+                    product = takeProduct(product, variable, splitSet(expr));
+                    newlyNegativeVariables.add(variable);
+                }
+
+                //make all other potentially negative assignments positive
+                for (String variable2 : negativeAssignments.keySet()) {
+                    if (!choice.contains(variable2)) {
+                        Assign assign = positiveAssignments.get(variable2);
+                        String expr = assign.getExpr();
+                        product = takeProduct(product, variable2, splitSet(expr));
+                    }
+                }
+
+                //apply every transform tag to the results of the cartesian product
+                for (Action action : actions) {
+                    if (action instanceof Transform) {
+                        String name = ((Transform) action).getName();
+                        DataTransformer tr = transformations.get(name);
+                        DataPipe pipe = new DataPipe(0, null);
+
+                        for (Map<String, String> p : product) {
+                            pipe.getDataMap().putAll(p);
+                            tr.transform(pipe);
+                            p.putAll(pipe.getDataMap());
+                        }
+                    }
+                }
+
+                checkTransactions(nextState, product, newlyNegativeVariables, bootStrap);
+            }
         }
     }
 
-    /**
-     * Finds all the ways to choose n variables from a list of variables with negative assignments
-     * For each way to choose it finds all possible assignments, checks against transitions, and adds to bootstrap
-     *
-     * @param nextState the state being expanded
-     * @param n the number of negative assignments to make
-     * @param productCore the cartesian product of assignments on purely positive variables
-     * @param negativeAssignments negative assignments of variables that have negative assignments
-     * @param positiveAssignments positive assignments of variables
-     * @param negativeVariables set of variables already set to negative by prior searching
-     * @param bootStrap the list of bootstrap NegPossibleStates
-     */
-    public void arbitraryExpandedNegative(TransitionTarget nextState, int n, List<Map<String, String>> productCore,
-                                           Map<String, NegativeAssign> negativeAssignments,
-                                           Map<String, Assign> positiveAssignments, Set<String> negativeVariables,
-                                           List<NegPossibleState> bootStrap) {
-
-        //find all combinations of choosing n negative variables in negativeAssignments
-        List<Set<String>> completeChoices = new LinkedList<Set<String>>();
-        List<Set<String>> incompleteChoices = new LinkedList<Set<String>>();
-        Set<String> emptyChoice = new HashSet<String>();
-        incompleteChoices.add(emptyChoice);
-
-        for (String variable : negativeAssignments.keySet()) {
-            List<Set<String>> newChoices = new LinkedList<Set<String>>();
-
-            for (Set<String> choice : incompleteChoices) {
-                Set<String> newChoice = new HashSet<>(choice);
-                newChoice.add(variable);
-
-                if (newChoice.size() == n) {
-                    completeChoices.add(newChoice);
-                } else {
-                    newChoices.add(newChoice);
-                }
-            }
-
-            for (Set<String> choice : newChoices) {
-                incompleteChoices.add(choice);
-            }
-        }
-
-        //for each choice of n negative variables, make the needed variable assignments
-        for (Set<String> choice : completeChoices) {
-            List<Map<String, String>> product = new LinkedList<>(productCore);
-            Set<String> newlyNegativeVariables = new HashSet<>(negativeVariables);
-
-            //make the negative assignments
-            for (String variable : choice) {
-                NegativeAssign neg = negativeAssignments.get(variable);
-                String expr = neg.getExpr();
-                product = takeProduct(product, variable, splitSet(expr));
-                newlyNegativeVariables.add(variable);
-            }
-
-            //make all other potentially negative assignments positive
-            for (String variable2 : negativeAssignments.keySet()) {
-                if (!choice.contains(variable2)) {
-                    Assign assign = positiveAssignments.get(variable2);
-                    String expr = assign.getExpr();
-                    product = takeProduct(product, variable2, splitSet(expr));
-                }
-            }
-
-            checkTransactions(nextState, product, newlyNegativeVariables, bootStrap);
-        }
+    public void setTransformations(Map<String, DataTransformer> transformations) {
+        this.transformations = transformations;
     }
 }

@@ -20,8 +20,10 @@ import org.apache.commons.scxml.env.jsp.ELContext;
 import org.apache.commons.scxml.env.jsp.ELEvaluator;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +46,15 @@ public class NegSCXMLFrontier extends NegSCXMLCommons implements Frontier {
      * @param possibleState the root node of the model and partial variable assignment to start a dfs from
      * @param negative the required number of negative variable assignments
      * @param model         the model text
+     * @param transformations DataTransformers used in the model
      */
-    public NegSCXMLFrontier(final NegPossibleState possibleState, final SCXML model, final int negative) {
+    public NegSCXMLFrontier(final NegPossibleState possibleState, final SCXML model, final int negative,
+                            final Map<String, DataTransformer> transformations) {
         root = possibleState;
 
         this.setStateMachine(model);
+
+        this.setTransformations(transformations);
 
         ELEvaluator elEvaluator = new ELEvaluator();
         ELContext context = new ELContext();
@@ -57,6 +63,17 @@ public class NegSCXMLFrontier extends NegSCXMLCommons implements Frontier {
         this.setRootContext(context);
 
         this.negative = negative;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param possibleState the root node of the model and partial variable assignment to start a dfs from
+     * @param negative the required number of negative variable assignments
+     * @param model         the model text
+     */
+    public NegSCXMLFrontier(final NegPossibleState possibleState, final SCXML model, final int negative) {
+        this(possibleState, model, negative, new HashMap<String, DataTransformer>());
     }
 
     /**

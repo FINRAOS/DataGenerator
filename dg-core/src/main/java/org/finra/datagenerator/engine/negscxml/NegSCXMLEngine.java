@@ -29,6 +29,7 @@ import org.apache.commons.scxml.model.TransitionTarget;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.engine.Engine;
 import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.Transform;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -154,6 +155,8 @@ public class NegSCXMLEngine extends NegSCXMLCommons implements Engine {
 
     private List<CustomAction> customActions() {
         List<CustomAction> actions = new LinkedList<>();
+        CustomAction tra = new CustomAction("org.finra.datagenerator", "positive", Transform.class);
+        actions.add(tra);
         CustomAction neg = new CustomAction("org.finra.datagenerator", "negative", NegativeAssign.class);
         actions.add(neg);
         CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
@@ -200,5 +203,6 @@ public class NegSCXMLEngine extends NegSCXMLCommons implements Engine {
         bootStrapMin = min;
         return this;
     }
+
 }
 

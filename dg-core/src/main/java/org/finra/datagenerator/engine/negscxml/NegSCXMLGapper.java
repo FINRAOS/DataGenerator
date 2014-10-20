@@ -22,7 +22,9 @@ import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.TransitionTarget;
+import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.Transform;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -47,6 +49,8 @@ public class NegSCXMLGapper {
 
     private List<CustomAction> customActions() {
         List<CustomAction> actions = new LinkedList<>();
+        CustomAction tra = new CustomAction("org.finra.datagenerator", "negative", Transform.class);
+        actions.add(tra);
         CustomAction neg = new CustomAction("org.finra.datagenerator", "negative", NegativeAssign.class);
         actions.add(neg);
         CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
@@ -112,9 +116,10 @@ public class NegSCXMLGapper {
      * Produces a NegSCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
      *
      * @param decomposition the decomposition, assembled back into a map
+     * @param transformers in model DataTransformers
      * @return a rebuilt NegSCXMLFrontier
      */
-    public Frontier reproduce(Map<String, String> decomposition) {
+    public Frontier reproduce(Map<String, String> decomposition, Map<String, DataTransformer> transformers) {
         setModel(decomposition.get("model"));
         int negative = Integer.valueOf(decomposition.get("negative"));
         TransitionTarget target = (TransitionTarget) model.getTargets().get(decomposition.get("target"));
@@ -134,6 +139,17 @@ public class NegSCXMLGapper {
         String[] negList = decomposition.get("negVariables").split(";");
         Collections.addAll(negVariables, negList);
 
-        return new NegSCXMLFrontier(new NegPossibleState(target, variables, negVariables), model, negative);
+        return new NegSCXMLFrontier(new NegPossibleState(target, variables, negVariables),
+                model, negative, transformers);
+    }
+
+    /**
+     * Produces a NegSCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
+     *
+     * @param decomposition the decomposition, assembled back into a map
+     * @return a rebuilt NegSCXMLFrontier
+     */
+    public Frontier reproduce(Map<String, String> decomposition) {
+        return this.reproduce(decomposition, new HashMap<String, DataTransformer>());
     }
 }
