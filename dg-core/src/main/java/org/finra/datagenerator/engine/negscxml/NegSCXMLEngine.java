@@ -155,12 +155,10 @@ public class NegSCXMLEngine extends NegSCXMLCommons implements Engine {
 
     private List<CustomAction> customActions() {
         List<CustomAction> actions = new LinkedList<>();
-        CustomAction tra = new CustomAction("org.finra.datagenerator", "positive", Transform.class);
+        CustomAction tra = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
         actions.add(tra);
         CustomAction neg = new CustomAction("org.finra.datagenerator", "negative", NegativeAssign.class);
         actions.add(neg);
-        CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
-        actions.add(pos);
         return actions;
     }
 

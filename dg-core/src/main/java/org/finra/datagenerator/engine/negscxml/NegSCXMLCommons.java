@@ -98,8 +98,8 @@ public class NegSCXMLCommons extends SCXMLExecutor {
      * @param negativeVariables the variables with a negative value, or an empty set
      * @param bootStrap         the bootstrap list
      */
-    public void checkTransactions(TransitionTarget nextState, List<Map<String, String>> product,
-                                   Set<String> negativeVariables, List<NegPossibleState> bootStrap) {
+    public void checkTransitions(TransitionTarget nextState, List<Map<String, String>> product,
+                                 Set<String> negativeVariables, List<NegPossibleState> bootStrap) {
         //go through every transition and see which of the products are valid, adding them to the list
         List<Transition> transitions = nextState.getTransitionsList();
 
@@ -109,7 +109,7 @@ public class NegSCXMLCommons extends SCXMLExecutor {
 
             for (Map<String, String> p : product) {
                 //transition condition satisfied, add to bootstrap list
-                if (checkTransaction(p, condition, negativeVariables)) {
+                if (checkTransition(p, condition, negativeVariables)) {
                     NegPossibleState result = new NegPossibleState(target, p, negativeVariables);
                     bootStrap.add(result);
                 }
@@ -126,7 +126,7 @@ public class NegSCXMLCommons extends SCXMLExecutor {
      * @param negativeVariables the negative variables
      * @return Boolean true if condition passes, false otherwise
      */
-    public Boolean checkTransaction(Map<String, String> variables, String condition, Set<String> negativeVariables) {
+    public Boolean checkTransition(Map<String, String> variables, String condition, Set<String> negativeVariables) {
         Boolean pass;
 
         //condition must exist
@@ -201,7 +201,7 @@ public class NegSCXMLCommons extends SCXMLExecutor {
         }
 
         //check each set of possible assignments set against transition conditions
-        checkTransactions(nextState, product, state.negVariable, bootStrap);
+        checkTransitions(nextState, product, state.negVariable, bootStrap);
     }
 
     /**
@@ -313,7 +313,7 @@ public class NegSCXMLCommons extends SCXMLExecutor {
                     }
                 }
 
-                checkTransactions(nextState, product, newlyNegativeVariables, bootStrap);
+                checkTransitions(nextState, product, newlyNegativeVariables, bootStrap);
             }
         }
     }

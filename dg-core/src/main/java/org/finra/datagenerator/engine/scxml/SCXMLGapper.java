@@ -17,7 +17,6 @@
 package org.finra.datagenerator.engine.scxml;
 
 import org.apache.commons.scxml.io.SCXMLParser;
-import org.apache.commons.scxml.model.Assign;
 import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
@@ -57,8 +56,6 @@ public class SCXMLGapper {
     private List<CustomAction> customActions() {
         List<CustomAction> actions = new LinkedList<>();
         CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
-        actions.add(pos);
-        pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
         actions.add(pos);
         return actions;
     }

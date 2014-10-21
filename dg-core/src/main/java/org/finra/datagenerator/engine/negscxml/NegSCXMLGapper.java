@@ -17,7 +17,6 @@
 package org.finra.datagenerator.engine.negscxml;
 
 import org.apache.commons.scxml.io.SCXMLParser;
-import org.apache.commons.scxml.model.Assign;
 import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
@@ -49,12 +48,10 @@ public class NegSCXMLGapper {
 
     private List<CustomAction> customActions() {
         List<CustomAction> actions = new LinkedList<>();
-        CustomAction tra = new CustomAction("org.finra.datagenerator", "negative", Transform.class);
+        CustomAction tra = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
         actions.add(tra);
         CustomAction neg = new CustomAction("org.finra.datagenerator", "negative", NegativeAssign.class);
         actions.add(neg);
-        CustomAction pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
-        actions.add(pos);
         return actions;
     }
 

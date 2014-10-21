@@ -240,8 +240,6 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         List<CustomAction> actions = new LinkedList<>();
         CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
         actions.add(pos);
-        pos = new CustomAction("org.finra.datagenerator", "positive", Assign.class);
-        actions.add(pos);
         return actions;
     }
 
