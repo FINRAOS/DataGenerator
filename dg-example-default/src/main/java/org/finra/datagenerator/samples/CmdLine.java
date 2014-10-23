@@ -41,8 +41,7 @@ public final class CmdLine {
      * Entry point for the example.
      *
      * @param args Command-line arguments for the example. To use samplemachine.xml from resources, send
-     *             no arguments. To use samplemachineN.xml, send a single argument for N (e.g., "2" for
-     *             samplemachine2.xml).
+     *             no arguments. To use other file, send a filename without xml extension).
      */
 
     public static void main(String[] args) {
