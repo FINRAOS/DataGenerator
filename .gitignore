@@ -3,6 +3,7 @@ logs
 target
 *.class
 *.iml
+.idea
 
 nb-configuration.xml
 
