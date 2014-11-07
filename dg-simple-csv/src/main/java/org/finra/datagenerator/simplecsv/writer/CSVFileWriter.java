@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.finra.datagenerator.simplecsv;
+package org.finra.datagenerator.simplecsv.writer;
 
 import org.finra.datagenerator.consumer.DataPipe;
 import org.finra.datagenerator.writer.DataWriter;

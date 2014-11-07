@@ -18,6 +18,7 @@ package org.finra.datagenerator.simplecsv;
 import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.engine.scxml.SCXMLEngine;
+import org.finra.datagenerator.simplecsv.writer.CSVFileWriter;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,7 +28,11 @@ import java.io.IOException;
  * Marshall Peters
  * Date: 10/2/14
  */
-public class Main {
+public final class CmdLine {
+
+    private CmdLine() {
+        // Do nothing
+    }
 
     /**
      * Main method, handles all the setup tasks for DataGenerator a user would normally do themselves
