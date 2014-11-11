@@ -10,6 +10,7 @@
         <module>dg-core</module>
         <module>dg-example-default</module>
         <module>dg-example-hadoop</module>
+        <module>dg-simple-csv</module>
     </modules>
     <packaging>pom</packaging>
 
