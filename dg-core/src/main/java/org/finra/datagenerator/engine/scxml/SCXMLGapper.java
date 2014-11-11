@@ -21,14 +21,17 @@ import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.TransitionTarget;
-import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
+import org.finra.datagenerator.engine.scxml.tags.SetAssignExtension;
+import org.finra.datagenerator.engine.scxml.tags.SingleValueAssignExtension;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,20 +47,23 @@ public class SCXMLGapper {
 
     private SCXML model;
 
-    private void setModel(String model) {
+    private void setModel(String model, List<CustomTagExtension> tagExtensionList) {
+        List<CustomAction> customActions = new ArrayList<>();
+
+        for (CustomTagExtension tagExtension : tagExtensionList) {
+            if (!tagExtension.getTagName().equals("assign")) {
+                CustomAction action = new CustomAction(tagExtension.getTagNameSpace(), tagExtension.getTagName(),
+                        tagExtension.getTagActionClass());
+                customActions.add(action);
+            }
+        }
+
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
-            this.model = SCXMLParser.parse(new InputSource(is), null, customActions());
+            this.model = SCXMLParser.parse(new InputSource(is), null, customActions);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
         }
-    }
-
-    private List<CustomAction> customActions() {
-        List<CustomAction> actions = new LinkedList<>();
-        CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
-        actions.add(pos);
-        return actions;
     }
 
     /**
@@ -72,8 +78,6 @@ public class SCXMLGapper {
         if (!(frontier instanceof SCXMLFrontier)) {
             return null;
         }
-
-        setModel(modelText);
 
         TransitionTarget target = ((SCXMLFrontier) frontier).getRoot().nextState;
         Map<String, String> variables = ((SCXMLFrontier) frontier).getRoot().variables;
@@ -96,25 +100,28 @@ public class SCXMLGapper {
     }
 
     /**
-     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition. Uses
-     * an empty map of in model DataTransformers
+     * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
      *
      * @param decomposition the decomposition, assembled back into a map
      * @return a rebuilt SCXMLFrontier
      */
     public Frontier reproduce(Map<String, String> decomposition) {
-        return reproduce(decomposition, new HashMap<String, DataTransformer>());
+        return reproduce(decomposition, new LinkedList<CustomTagExtension>());
     }
 
     /**
      * Produces an SCXMLFrontier by reversing a decomposition; the model text is bundled into the decomposition.
      *
      * @param decomposition the decomposition, assembled back into a map
-     * @param transformers in model DataTransformers
+     * @param tagExtensionList custom tags to use in the model
      * @return a rebuilt SCXMLFrontier
      */
-    public Frontier reproduce(Map<String, String> decomposition, Map<String, DataTransformer> transformers) {
-        setModel(decomposition.get("model"));
+    public Frontier reproduce(Map<String, String> decomposition, List<CustomTagExtension> tagExtensionList) {
+        tagExtensionList = new LinkedList<>(tagExtensionList);
+        tagExtensionList.add(new SetAssignExtension());
+        tagExtensionList.add(new SingleValueAssignExtension());
+
+        setModel(decomposition.get("model"), tagExtensionList);
         TransitionTarget target = (TransitionTarget) model.getTargets().get(decomposition.get("target"));
 
         Map<String, String> variables = new HashMap<>();
@@ -128,6 +135,6 @@ public class SCXMLGapper {
             }
         }
 
-        return new SCXMLFrontier(new PossibleState(target, variables), model, transformers);
+        return new SCXMLFrontier(new PossibleState(target, variables), model, tagExtensionList);
     }
 }
