@@ -15,6 +15,7 @@
  */
 package org.finra.datagenerator.simplecsv.writer;
 
+import com.opencsv.CSVWriter;
 import org.finra.datagenerator.consumer.DataPipe;
 import org.finra.datagenerator.writer.DataWriter;
 
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public class CSVFileWriter implements DataWriter {
 
-    private final FileWriter csvFile;
+    private final CSVWriter csvFile;
 
     /**
      * Constructor
@@ -37,7 +38,7 @@ public class CSVFileWriter implements DataWriter {
      * @throws IOException if the output file can not be opened for writing
      */
     public CSVFileWriter(final String csvFile) throws IOException {
-        this.csvFile = new FileWriter(csvFile);
+        this.csvFile = new CSVWriter(new FileWriter(csvFile), ',');
     }
 
     /**
@@ -46,15 +47,15 @@ public class CSVFileWriter implements DataWriter {
      * @param cr data pipe with search results
      */
     public void writeOutput(DataPipe cr) {
-        try {
-            for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
-                csvFile.write(entry.getValue());
-                csvFile.write(",");
-            }
-            csvFile.write("\n");
-        } catch (IOException e) {
-            System.out.println("ERROR! Failed to write to csv file");
+        String[] nextLine = new String[cr.getDataMap().entrySet().size()];
+
+        int count = 0;
+        for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
+            nextLine[count] = entry.getValue();
+            count++;
         }
+
+        csvFile.writeNext(nextLine);
     }
 
     /**
