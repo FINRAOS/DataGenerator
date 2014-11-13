@@ -30,17 +30,19 @@ import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
-import org.finra.datagenerator.consumer.DataPipe;
-import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.engine.Engine;
 import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
+import org.finra.datagenerator.engine.scxml.tags.SetAssignExtension;
+import org.finra.datagenerator.engine.scxml.tags.SingleValueAssignExtension;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -50,7 +52,7 @@ import java.util.Set;
 
 /**
  * Engine implementation for generating data with SCXML state machine models.
- *
+ * <p/>
  * Marshall Peters
  * Date: 8/25/14
  */
@@ -58,13 +60,17 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
     private SCXML model;
     private int bootStrapMin;
-    private Map<String, DataTransformer> transformations;
+    private List<CustomTagExtension> tagExtensionList;
 
     /**
      * Constructor
      */
     public SCXMLEngine() {
         super();
+
+        tagExtensionList = new LinkedList<>();
+        tagExtensionList.add(new SetAssignExtension());
+        tagExtensionList.add(new SingleValueAssignExtension());
 
         ELEvaluator elEvaluator = new ELEvaluator();
         ELContext context = new ELContext();
@@ -88,6 +94,9 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
             for (Action action : actions) {
                 if (action instanceof Assign) {
                     String variable = ((Assign) action).getName();
+                    variables.add(variable);
+                } else if (action instanceof SetAssignExtension.SetAssignTag) {
+                    String variable = ((SetAssignExtension.SetAssignTag) action).getName();
                     variables.add(variable);
                 }
             }
@@ -123,7 +132,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
                 throw new ModelException("Could not achieve required bootstrap without reaching end state");
             }
 
-            //set every variable with cartesian product of 'assign' actions
+            //run every action in series
             List<Map<String, String>> product = new LinkedList<>();
             product.add(new HashMap<>(state.variables));
 
@@ -131,43 +140,9 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
             List<Action> actions = entry.getActions();
 
             for (Action action : actions) {
-                if (action instanceof Assign) {
-                    String expr = ((Assign) action).getExpr();
-                    String variable = ((Assign) action).getName();
-
-                    String[] set;
-
-                    if (expr.contains("set:{")) {
-                        expr = expr.substring(5, expr.length() - 1);
-                        set = expr.split(",");
-                    } else {
-                        set = new String[]{expr};
-                    }
-
-                    //take the product
-                    List<Map<String, String>> productTemp = new LinkedList<>();
-                    for (Map<String, String> p : product) {
-                        for (String s : set) {
-                            HashMap<String, String> n = new HashMap<>(p);
-                            n.put(variable, s);
-                            productTemp.add(n);
-                        }
-                    }
-                    product = productTemp;
-                }
-            }
-
-            //apply every transform tag to the results of the cartesian product
-            for (Action action : actions) {
-                if (action instanceof Transform) {
-                    String name = ((Transform) action).getName();
-                    DataTransformer tr = transformations.get(name);
-                    DataPipe pipe = new DataPipe(0, null);
-
-                    for (Map<String, String> p : product) {
-                        pipe.getDataMap().putAll(p);
-                        tr.transform(pipe);
-                        p.putAll(pipe.getDataMap());
+                for (CustomTagExtension tagExtension : tagExtensionList) {
+                    if (tagExtension.getTagActionClass().isInstance(action)) {
+                        product = tagExtension.pipelinePossibleStates(action, product);
                     }
                 }
             }
@@ -229,18 +204,25 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
         List<Frontier> frontiers = new LinkedList<>();
         for (PossibleState p : bootStrap) {
-            SCXMLFrontier dge = new SCXMLFrontier(p, model, transformations);
+            SCXMLFrontier dge = new SCXMLFrontier(p, model, tagExtensionList);
             frontiers.add(dge);
         }
 
         distributor.distribute(frontiers);
     }
 
-    private List<CustomAction> customActions() {
-        List<CustomAction> actions = new LinkedList<>();
-        CustomAction pos = new CustomAction("org.finra.datagenerator", "transform", Transform.class);
-        actions.add(pos);
-        return actions;
+    private List<CustomAction> customActionsFromTagExtensions() {
+        List<CustomAction> customActions = new ArrayList<>();
+
+        for (CustomTagExtension tagExtension : tagExtensionList) {
+            if (!tagExtension.getTagName().equals("assign")) {
+                CustomAction action = new CustomAction(tagExtension.getTagNameSpace(), tagExtension.getTagName(),
+                        tagExtension.getTagActionClass());
+                customActions.add(action);
+            }
+        }
+
+        return customActions;
     }
 
     /**
@@ -250,7 +232,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
      */
     public void setModelByInputFileStream(InputStream inputFileStream) {
         try {
-            this.model = SCXMLParser.parse(new InputSource(inputFileStream), null, customActions());
+            this.model = SCXMLParser.parse(new InputSource(inputFileStream), null, customActionsFromTagExtensions());
             this.setStateMachine(this.model);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
@@ -265,7 +247,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     public void setModelByText(String model) {
         try {
             InputStream is = new ByteArrayInputStream(model.getBytes());
-            this.model = SCXMLParser.parse(new InputSource(is), null, customActions());
+            this.model = SCXMLParser.parse(new InputSource(is), null, customActionsFromTagExtensions());
             this.setStateMachine(this.model);
         } catch (IOException | SAXException | ModelException e) {
             e.printStackTrace();
@@ -283,7 +265,13 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         return this;
     }
 
-    public void setTransformations(Map<String, DataTransformer> transformations) {
-        this.transformations = transformations;
+    /**
+     * Adds a custom tag extension to this engine for use in model parsing and processing. Custom tags should be added
+     * before the model is set.
+     *
+     * @param tagExtension the extension to add
+     */
+    public void addTagExtension(CustomTagExtension tagExtension) {
+        this.tagExtensionList.add(tagExtension);
     }
 }
