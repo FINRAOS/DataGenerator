@@ -30,7 +30,7 @@ import java.util.Map;
 public interface CustomTagExtension<A extends Action> {
 
     /**
-     * Returns a class object representing the Action class handled by this class' filerPossibleStates logic
+     * Returns a class object representing the Action class handled by this class' pipelinePossibleStates logic
      *
      * @return a class object
      */
