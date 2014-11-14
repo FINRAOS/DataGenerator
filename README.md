@@ -1,3 +1,7 @@
+Quick Start Videos
+------------------
+https://www.youtube.com/playlist?list=PLB0Zha5q-7wJp3TLH782J7ZDQ2RwPS_hQ
+
 Contributing
 ------------
 We encourage contribution from the open source community to make DataGenerator better. Please refer to the [development](http://finraos.github.io/DataGenerator/index.html#get_involved) page for more information on how to contribute to this project.
