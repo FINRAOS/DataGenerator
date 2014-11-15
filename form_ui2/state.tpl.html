@@ -1,0 +1,13 @@
+<div>{{state.name}}</div>
+<span ng-repeat="entry in state[stateKey]">
+    <div class="btn-group">
+        <label class="btn btn-default" ng-model="checkModel.left" btn-checkbox>{{entry.name}}</label>
+        <label class="btn btn-default" ng-model="checkModel.middle" btn-checkbox ng-click="removeEntry(entry)">x</label>
+    </div>
+</span>
+<div dg-entry></div>
+<div>
+    <label>Transition:</label>
+    <select class="form-control" ng-model="state.transition" ng-options="opt for opt in allStates({key:state.name})"></select>
+
+</div>
