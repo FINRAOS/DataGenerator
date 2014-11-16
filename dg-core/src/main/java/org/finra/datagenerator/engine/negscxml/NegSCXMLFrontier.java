@@ -93,21 +93,19 @@ public class NegSCXMLFrontier extends NegSCXMLCommons implements Frontier {
         }
 
         //reached end of chart, valid assignment found only if a negative value is set
-        if (state.nextState.getId().equalsIgnoreCase("end")) {
-            if (state.negVariable.size() == negative) {
-                queue.add(state.variables);
+        if (state.nextState.getId().equalsIgnoreCase("end") && state.negVariable.size() == negative) {
+            queue.add(state.variables);
 
-                if (queue.size() > 10000) {
-                    log.info("Queue size " + queue.size() + ", waiting");
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        log.info("Interrupted ", ex);
-                    }
+            if (queue.size() > 10000) {
+                log.info("Queue size " + queue.size() + ", waiting");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    log.info("Interrupted ", ex);
                 }
-
-                return;
             }
+
+            return;
         }
 
         List<NegPossibleState> expand = new LinkedList<>();
