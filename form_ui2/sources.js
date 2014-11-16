@@ -130,6 +130,8 @@
                 xml.appendChild(appendState(state));
             });
 
+            xml.appendChild(appendState({name:'end'}));
+            
             node.appendChild(xml);
             return (node.innerHTML);
         }
