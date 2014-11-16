@@ -137,7 +137,7 @@
         }
 
         this.sendSCXML = function(xml) {
-            return $http.post('url', xml);
+            return $http.post('http://localhost:8080/dg-rest/ExecuteDataGen', xml);
         };
     })
 
