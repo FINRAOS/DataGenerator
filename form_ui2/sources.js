@@ -77,7 +77,13 @@
                 }
 
                 $scope.transform = function() {
-                    dgServices.transform($scope.startTransition, $scope.states);
+                    $scope.xmlTransform = dgServices.transform($scope.startTransition, $scope.states);
+                    dgServices.sendSCXML($scope.xmlTransform).then(function(resp) {
+                        $scope.status = 'SUCCESS!!';
+                    },
+                    function(resp) {
+                        $scope.status = "failed: " + resp.data.status;
+                    });
                 }
             }
         };
@@ -98,7 +104,7 @@
             angular.forEach(state.values, function(value) {
                 var assign = document.createElement('assign');
                 assign.setAttribute('name', value.name);
-                assign.setAttribute('expression', value.expression);
+                assign.setAttribute('expr', value.expression);
                 onEntry.appendChild(assign);
             });
             if(state.values && state.values.length > 0) {
@@ -125,8 +131,12 @@
             });
 
             node.appendChild(xml);
-            console.log(node.innerHTML);
+            return (node.innerHTML);
         }
+
+        this.sendSCXML = function(xml) {
+            return $http.post('url', xml);
+        };
     })
 
 }(angular.module('dg.form', [])));
