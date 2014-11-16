@@ -1,6 +1,6 @@
 CREATE TABLE u_data (
-	intC INT
-	floatC FLOAT
+	intC INT,
+	floatC FLOAT,
 	timestampC TIMESTAMP,
 	dateC DATE,
 	stringC STRING,

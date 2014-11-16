@@ -15,6 +15,10 @@
  */
 package org.finra.datagenerator.samples;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
@@ -24,11 +28,6 @@ import org.finra.datagenerator.engine.scxml.SCXMLEngine;
 import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
 import org.finra.datagenerator.utilities.HiveDDLUtils;
 import org.finra.datagenerator.writer.CustomHiveWriter;
-import org.finra.datagenerator.writer.DefaultWriter;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Driver for a simple Data Generator example using the Default Distributor and a single transformer.

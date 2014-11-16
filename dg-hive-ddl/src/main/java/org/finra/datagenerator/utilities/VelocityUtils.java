@@ -1,8 +1,9 @@
 package org.finra.datagenerator.utilities;
 
-import java.io.StringWriter;	
-import java.util.Map;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;

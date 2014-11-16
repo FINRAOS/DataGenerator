@@ -16,12 +16,12 @@
 
 package org.finra.datagenerator.samples.transformer;
 
+import java.util.Map;
+import java.util.Random;
+
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataPipe;
 import org.finra.datagenerator.consumer.DataTransformer;
-
-import java.util.Map;
-import java.util.Random;
 
 /**
  * A simple transformer replacing the reserved string "customplaceholder" with a random integer.

@@ -15,15 +15,14 @@
  */
 package org.finra.datagenerator.writer;
 
-import org.apache.commons.lang.math.NumberUtils;	
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataPipe;
 
 /**
  * Orders result variables based on a template and writes them seperated by pipe characters to a given OutputStream.

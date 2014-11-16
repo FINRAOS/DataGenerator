@@ -1,32 +1,17 @@
 package org.finra.datagenerator.utilities;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;	
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 public class HiveDDLUtils {
 //	private static Map<String, String> sampleData;
@@ -65,6 +50,28 @@ public class HiveDDLUtils {
 		/* Generate XMl using velocity template */
     	String output = VelocityUtils.getGeneratedString(sampleDataList, "velocityTemplates/samplemachine.txt");
     	System.out.println(output);
+    	
+    	return output;
+	}
+	public static String generateOutputXML(InputStream is) throws Exception {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			String text = null;
+			while ((text = br.readLine()) != null) {
+		        processDDLline(text);
+		    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		/* Generate XMl using velocity template */
+    	String output = VelocityUtils.getGeneratedString(sampleDataList, "velocityTemplates/samplemachine.txt");
     	
     	return output;
 	}

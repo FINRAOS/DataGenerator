@@ -156,7 +156,7 @@
             return $http.post('http://localhost:8080/dg-rest/ExecuteDataGen', xml);
         };
         this.sendDDL = function(DDL) {
-            return $http.post('/ExecuteDataGen', DDL);
+            return $http.post('http://localhost:8080/dg-rest/GenerateDataFromHiveDDL', DDL);
         }
     })
 
