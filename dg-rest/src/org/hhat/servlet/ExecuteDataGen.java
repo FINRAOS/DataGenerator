@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -131,7 +132,9 @@ public class ExecuteDataGen extends HttpServlet {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
 		params.add(new BasicNameValuePair("tag", "report_status"));
-		params.add(new BasicNameValuePair("status", "100"));
+		Date d = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		params.add(new BasicNameValuePair("status", sdf.format(d) + ": 100"));
 
 		return params;
 
