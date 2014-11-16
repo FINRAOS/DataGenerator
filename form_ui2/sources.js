@@ -1,4 +1,20 @@
 (function(app) {
+    app.directive('hiveDdl', function(dgServices) {
+        return {
+            templateUrl: 'hive.tpl.html',
+            controller: function($scope) {
+                $scope.sendDDL = function() {
+                    dgServices.sendDDL($scope.hiveDDL).then(function(resp) {
+                            $scope.status = 'SUCCESS!!';
+                        },
+                        function(resp) {
+                            $scope.status = "failed: " + resp;
+                        });
+                }
+            }
+        }
+    });
+
     app.directive('dgState', function() {
         return {
             scope: {
@@ -139,6 +155,9 @@
         this.sendSCXML = function(xml) {
             return $http.post('http://localhost:8080/dg-rest/ExecuteDataGen', xml);
         };
+        this.sendDDL = function(DDL) {
+            return $http.post('/ExecuteDataGen', DDL);
+        }
     })
 
 }(angular.module('dg.form', [])));
