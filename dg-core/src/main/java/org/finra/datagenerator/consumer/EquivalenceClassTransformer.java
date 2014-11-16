@@ -20,6 +20,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Scanner;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
 
 /**
  * Marshall Peters
@@ -53,6 +56,38 @@ public class EquivalenceClassTransformer implements DataTransformer {
             "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD",
             "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XSU", "XTS",
             "XUA", "XXX", "YER", "ZAR", "ZMK", "ZWL"
+    };
+    private final String[] states = {
+        "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District Of Columbia",
+                "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine",
+                "Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada",
+                "New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma",
+                "Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah",
+                "Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"
+    };
+    private final String[] countries = {
+            "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua & Deps","Argentina","Armenia","Australia",
+            "Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
+            "Bhutan","Bolivia","Bosnia Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina","Burundi",
+            "Cambodia","Cameroon","Canada","Cape Verde","Central African Rep","Chad","Chile","China","Colombia",
+            "Comoros","Congo","Congo {Democratic Rep}","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark",
+            "Djibouti","Dominica","Dominican Republic","East Timor","Ecuador","Egypt","El Salvador","Equatorial Guinea",
+            "Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana",
+            "Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland",
+            "India","Indonesia","Iran","Iraq","Ireland {Republic}","Israel","Italy","Ivory Coast","Jamaica","Japan",
+            "Jordan","Kazakhstan","Kenya","Kiribati","Korea North","Korea South","Kosovo","Kuwait","Kyrgyzstan","Laos",
+            "Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macedonia",
+            "Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius",
+            "Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar, {Burma}",
+            "Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan",
+            "Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania",
+            "Russian Federation","Rwanda","St Kitts & Nevis","St Lucia","Saint Vincent & the Grenadines","Samoa","San Marino",
+            "Sao Tome & Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia",
+            "Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname",
+            "Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Togo","Tonga",
+            "Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates",
+            "United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam",
+            "Yemen","Zambia","Zimbabwe",
     };
 
     /**
@@ -114,6 +149,23 @@ public class EquivalenceClassTransformer implements DataTransformer {
         for (int i = 0; i != 4; i++) {
             b.append(random.nextInt(10));
         }
+    }
+    private void marketSymbols(StringBuilder b){
+        int rand = random.nextInt(5239);
+        int count = 0;
+        String symbol = "";
+        EquivalenceClassTransformer.class.getResource("marketSymbols.txt");
+        try {
+            Scanner line = new Scanner(new FileReader("symbols.txt"));
+            while (count != rand) {
+                symbol=line.nextLine();
+                count++;
+            }
+            b.append(symbol);
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
+
     }
 
     private void generateFromRegex(StringBuilder r, String regex) {
@@ -224,6 +276,16 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     case "currency":
                         b.append(currencyCodes[random.nextInt(currencyCodes.length)]);
                         break;
+                    case "marketSymbol":
+                        marketSymbols(b);
+                        break;
+                    case "country":
+                        b.append(countries[random.nextInt(countries.length)]);
+                        break;
+                    case "state":
+                        b.append(states[random.nextInt(states.length)]);
+                        break;
+
                     default:
                         b.append(value);
                         break;
