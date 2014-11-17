@@ -1,0 +1,22 @@
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:cs="http://commons.apache.org/scxml"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="SETV1" target="SETV1"/>
+    </state>
+
+    <state id="SETV1">
+        <onentry>
+            #foreach( $value in $sampleDataList )
+            	<assign $value />
+			#end
+        </onentry>
+        <transition event="end" target="end"/>
+    </state>
+
+    <state id="end">
+        <!-- We're done -->
+    </state>
+</scxml>

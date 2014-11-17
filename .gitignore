@@ -11,3 +11,7 @@ nb-configuration.xml
 *.war
 *.ear
 /pom.xml
+*.prefs
+dg-rest/.settings/org.eclipse.wst.common.project.facet.core.xml
+dg-rest/.settings/org.eclipse.wst.common.project.facet.core.prefs.xml
+dg-rest/.settings/org.eclipse.wst.common.project.facet.core.xml

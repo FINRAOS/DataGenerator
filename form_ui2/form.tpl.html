@@ -1,0 +1,10 @@
+<div class="well">
+    <div>Start</div>
+    <select class="form-control" ng-model="startTransition" ng-options="opt for opt in getAllStateNames('start')"></select>
+</div>
+
+<div ng-repeat="s in states" class="well">
+    <span dg-state="s" name-check="checkNameTaken(name)" remove-state="removeState(key)" all-states="getAllStateNames(key)"></span>
+</div>
+<button type="button" class="btn btn-default"ng-click="addState()">Add State</button>
+<button type="button" class="btn btn-default"ng-click="transform()">Transform/Send</button>
