@@ -26,14 +26,14 @@
 
     <state id="SETV1">
         <onentry>
-            <dg:set name="var_out_V1" range="A,B,C"/>
+            <dg:assign name="var_out_V1" set="A,B,C"/>
         </onentry>
         <transition event="SETV2" target="SETV2"/>
     </state>
 
     <state id="SETV2">
         <onentry>
-            <dg:set name="var_out_V2" range="1,2,3"/>
+            <dg:assign name="var_out_V2" set="1,2,3"/>
             <assign name="var_out_V3" expr="#{customplaceholder}"/>
         </onentry>
         <transition event="SETV3" target="SETV3"/>

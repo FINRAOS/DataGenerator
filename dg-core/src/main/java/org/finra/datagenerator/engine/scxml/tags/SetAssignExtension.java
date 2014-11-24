@@ -41,7 +41,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     }
 
     public String getTagName() {
-        return "set";
+        return "assign";
     }
 
     public String getTagNameSpace() {
@@ -59,7 +59,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     public List<Map<String, String>> pipelinePossibleStates(SetAssignTag action,
                                                             List<Map<String, String>> possibleStateList) {
         String variable = action.getName();
-        String set = action.getRange();
+        String set = action.getSet();
 
         String[] domain = set.split(",");
 
@@ -77,11 +77,11 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     }
 
     /**
-     * A custom Action for the 'set' tag inside models
+     * A custom Action for the 'dg:assign' tag inside models
      */
     public static class SetAssignTag extends Action {
         private String name;
-        private String range;
+        private String set;
 
         public String getName() {
             return name;
@@ -90,13 +90,13 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
         public void setName(String name) {
             this.name = name;
         }
-
-        public String getRange() {
-            return range;
+        
+        public String getSet() {
+            return set;
         }
 
-        public void setRange(String range) {
-            this.range = range;
+        public void setSet(String set) {
+            this.set = set;
         }
 
         /**

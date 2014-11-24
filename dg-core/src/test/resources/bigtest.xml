@@ -15,7 +15,7 @@
 <!-- -->
 
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
-       xmlns:ns="org.finra.datagenerator"
+       xmlns:dg="org.finra.datagenerator"
        version="1.0"
        initial="start">
 
@@ -25,9 +25,9 @@
 
     <state id="BULK_ASSIGN">
         <onentry>
-            <ns:set name="var_out_RECORD_TYPE" range="a,b,c,d,e,f,g"/>
-            <ns:set name="var_out_RECORD_TYPE_2" range="a,b,c,d,e,f,g"/>
-            <ns:set name="var_out_RECORD_TYPE_3" range="a,b,c,d,e,f,g"/>
+            <dg:assign name="var_out_RECORD_TYPE" set="a,b,c,d,e,f,g"/>
+            <dg:assign name="var_out_RECORD_TYPE_2" set="a,b,c,d,e,f,g"/>
+            <dg:assign name="var_out_RECORD_TYPE_3" set="a,b,c,d,e,f,g"/>
             <assign name="var_out_RECORD_TYPE_4" expr="Lorem"/>
             <assign name="var_out_RECORD_TYPE_5" expr="Ipsum"/>
             <assign name="var_out_RECORD_TYPE_6" expr="Doler"/>
@@ -37,8 +37,8 @@
 
     <state id="ASSIGN_WITH_CONDITIONS">
         <onentry>
-            <ns:set name="var_out_RECORD_TYPE_7" range="1,2,3"/>
-            <ns:set name="var_out_RECORD_TYPE_8" range="1,2,3"/>
+            <dg:assign name="var_out_RECORD_TYPE_7" set="1,2,3"/>
+            <dg:assign name="var_out_RECORD_TYPE_8" set="1,2,3"/>
         </onentry>
         <transition event="end" target="end" cond="${var_out_RECORD_TYPE_7 != var_out_RECORD_TYPE_8}"/>
     </state>
