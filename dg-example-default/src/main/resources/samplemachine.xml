@@ -16,6 +16,7 @@
 
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
        xmlns:cs="http://commons.apache.org/scxml"
+       xmlns:dg="org.finra.datagenerator"
        version="1.0"
        initial="start">
 
@@ -25,8 +26,8 @@
 
     <state id="SETV1">
         <onentry>
-            <assign name="var_out_V1_1" expr="set:{A1,B1,C1}"/>
-            <assign name="var_out_V1_2" expr="set:{A2,B2,C2}"/>
+            <dg:set name="var_out_V1_1" range="A1,B1,C1"/>
+            <dg:set name="var_out_V1_2" range="A2,B2,C2"/>
             <assign name="var_out_V1_3" expr="77"/>
         </onentry>
         <transition event="SETV2" target="SETV2"/>
@@ -34,7 +35,7 @@
 
     <state id="SETV2">
         <onentry>
-            <assign name="var_out_V2" expr="set:{1,2,3}"/>
+            <dg:set name="var_out_V2" range="1,2,3"/>
             <assign name="var_out_V3" expr="#{customplaceholder}"/>
         </onentry>
         <transition event="end" target="end"/>
