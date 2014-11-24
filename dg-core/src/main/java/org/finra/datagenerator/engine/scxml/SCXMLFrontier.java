@@ -22,15 +22,13 @@ import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.env.jsp.ELContext;
 import org.apache.commons.scxml.env.jsp.ELEvaluator;
 import org.apache.commons.scxml.model.Action;
-import org.apache.commons.scxml.model.Assign;
 import org.apache.commons.scxml.model.OnEntry;
 import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
-import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.engine.Frontier;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,19 +47,19 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
     private final PossibleState root;
     private static final Logger log = Logger.getLogger(SCXMLFrontier.class);
-    private Map<String, DataTransformer> transformations;
+    private List<CustomTagExtension> tagExtensionList;
 
     /**
      * Constructor
      *
      * @param possibleState the root node of the model and partial variable assignment to start a dfs from
      * @param model the model text
-     * @param transformations DataTransformers used in the model
+     * @param tagExtensionList custom tags used in this model
      */
     public SCXMLFrontier(final PossibleState possibleState, final SCXML model,
-                         final Map<String, DataTransformer> transformations) {
+                         final List<CustomTagExtension> tagExtensionList) {
         root = possibleState;
-        this.transformations = transformations;
+        this.tagExtensionList = tagExtensionList;
         this.setStateMachine(model);
 
         ELEvaluator elEvaluator = new ELEvaluator();
@@ -78,7 +76,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
      * @param model the model text
      */
     public SCXMLFrontier(final PossibleState possibleState, final SCXML model) {
-        this(possibleState, model, new HashMap<String, DataTransformer>());
+        this(possibleState, model, new LinkedList<CustomTagExtension>());
     }
 
     /**
@@ -115,7 +113,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
             return;
         }
 
-        //set every variable with cartesian product of 'assign' actions
+        //run every action in series
         List<Map<String, String>> product = new LinkedList<>();
         product.add(new HashMap<>(state.variables));
 
@@ -123,43 +121,9 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
         List<Action> actions = entry.getActions();
 
         for (Action action : actions) {
-            if (action instanceof Assign) {
-                String expr = ((Assign) action).getExpr();
-                String variable = ((Assign) action).getName();
-
-                String[] set;
-
-                if (expr.contains("set:{")) {
-                    expr = expr.substring(5, expr.length() - 1);
-                    set = expr.split(",");
-                } else {
-                    set = new String[]{expr};
-                }
-
-                //take the product
-                List<Map<String, String>> productTemp = new LinkedList<>();
-                for (Map<String, String> p : product) {
-                    for (String s : set) {
-                        HashMap<String, String> n = new HashMap<>(p);
-                        n.put(variable, s);
-                        productTemp.add(n);
-                    }
-                }
-                product = productTemp;
-            }
-        }
-
-        //apply every transform tag to the results of the cartesian product
-        for (Action action : actions) {
-            if (action instanceof Transform) {
-                String name = ((Transform) action).getName();
-                DataTransformer tr = transformations.get(name);
-                DataPipe pipe = new DataPipe(0, null);
-
-                for (Map<String, String> p : product) {
-                    pipe.getDataMap().putAll(p);
-                    tr.transform(pipe);
-                    p.putAll(pipe.getDataMap());
+            for (CustomTagExtension tagExtension : tagExtensionList) {
+                if (tagExtension.getTagActionClass().isInstance(action)) {
+                    product = tagExtension.pipelinePossibleStates(action, product);
                 }
             }
         }

@@ -17,8 +17,12 @@
 package org.finra.datagenerator.engine.scxml;
 
 import org.apache.commons.scxml.io.SCXMLParser;
+import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
+import org.finra.datagenerator.engine.scxml.tags.SetAssignExtension;
+import org.finra.datagenerator.engine.scxml.tags.SingleValueAssignExtension;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -26,6 +30,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +43,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SCXMLFrontierTest {
 
+    private List<CustomTagExtension> customTagExtensionList() {
+        List<CustomTagExtension> tagExtensionList = new LinkedList<>();
+        tagExtensionList.add(new SetAssignExtension());
+        tagExtensionList.add(new SingleValueAssignExtension());
+
+        return tagExtensionList;
+    }
+
+    private List<CustomAction> customActionsFromTagExtensions(List<CustomTagExtension> tagExtensionList) {
+        List<CustomAction> customActions = new ArrayList<>();
+
+        for (CustomTagExtension tagExtension : tagExtensionList) {
+            if (!tagExtension.getTagName().equals("assign")) {
+                CustomAction action = new CustomAction(tagExtension.getTagNameSpace(), tagExtension.getTagName(),
+                        tagExtension.getTagActionClass());
+                customActions.add(action);
+            }
+        }
+
+        return customActions;
+    }
+
     /**
      * Multiple variable assignments using set:{}
      */
@@ -47,15 +74,18 @@ public class SCXMLFrontierTest {
         InputStream is = SCXMLEngineTest.class.getResourceAsStream("/bigtest.xml");
         e.setModelByInputFileStream(is);
 
+        List<CustomTagExtension> tagExtensionList = customTagExtensionList();
+
         try {
             List<PossibleState> bfs = e.bfs(343);
             PossibleState p = bfs.get(0);
 
             try {
                 is = SCXMLEngineTest.class.getResourceAsStream("/bigtest.xml");
-                SCXML model = SCXMLParser.parse(new InputSource(is), null);
+                SCXML model = SCXMLParser.parse(new InputSource(is), null,
+                        customActionsFromTagExtensions(tagExtensionList));
 
-                SCXMLFrontier frontier = new SCXMLFrontier(p, model);
+                SCXMLFrontier frontier = new SCXMLFrontier(p, model, tagExtensionList);
                 Queue<Map<String, String>> queue = new LinkedList<>();
                 AtomicBoolean flag = new AtomicBoolean(false);
                 frontier.searchForScenarios(queue, flag);
@@ -78,15 +108,18 @@ public class SCXMLFrontierTest {
         InputStream is = SCXMLEngineTest.class.getResourceAsStream("/bigtest.xml");
         e.setModelByInputFileStream(is);
 
+        List<CustomTagExtension> tagExtensionList = customTagExtensionList();
+
         try {
             List<PossibleState> bfs = e.bfs(1);
             PossibleState p = bfs.get(0);
 
             try {
                 is = SCXMLEngineTest.class.getResourceAsStream("/bigtest.xml");
-                SCXML model = SCXMLParser.parse(new InputSource(is), null);
+                SCXML model = SCXMLParser.parse(new InputSource(is), null,
+                        customActionsFromTagExtensions(tagExtensionList));
 
-                SCXMLFrontier frontier = new SCXMLFrontier(p, model);
+                SCXMLFrontier frontier = new SCXMLFrontier(p, model, tagExtensionList);
                 Queue<Map<String, String>> queue = new LinkedList<>();
                 AtomicBoolean flag = new AtomicBoolean(true);
                 frontier.searchForScenarios(queue, flag);
