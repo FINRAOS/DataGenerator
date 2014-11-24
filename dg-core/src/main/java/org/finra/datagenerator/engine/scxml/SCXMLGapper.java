@@ -44,7 +44,6 @@ import java.util.Map;
  * Date: 8/28/14
  */
 public class SCXMLGapper {
-
     private SCXML model;
 
     private void setModel(String model, List<CustomTagExtension> tagExtensionList) {

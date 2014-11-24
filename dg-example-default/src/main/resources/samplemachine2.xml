@@ -38,7 +38,7 @@
         </onentry>
         <transition event="SETV3" target="SETV3"/>
     </state>
-    
+
     <state id="SETV3">
         <onentry>
             <assign name="var_out_V4" expr="#{divideBy2}"/>

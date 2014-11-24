@@ -35,7 +35,6 @@ import java.util.Map;
  * Date: 11/7/14
  */
 public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
-
     public Class<SetAssignTag> getTagActionClass() {
         return SetAssignTag.class;
     }

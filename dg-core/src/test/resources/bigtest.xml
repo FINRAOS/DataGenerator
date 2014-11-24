@@ -42,7 +42,7 @@
         </onentry>
         <transition event="end" target="end" cond="${var_out_RECORD_TYPE_7 != var_out_RECORD_TYPE_8}"/>
     </state>
-    
+
 <state id="end">
     </state>
 </scxml>

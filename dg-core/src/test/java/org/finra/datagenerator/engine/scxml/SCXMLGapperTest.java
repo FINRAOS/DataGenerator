@@ -33,7 +33,6 @@ import java.util.List;
  * Date: 9/3/14
  */
 public class SCXMLGapperTest {
-
     static String bigTest = "<scxml xmlns=\"http://www.w3.org/2005/07/scxml\"\n"
             + "       xmlns:dg=\"org.finra.datagenerator\""
             + "       version=\"1.0\"\n"

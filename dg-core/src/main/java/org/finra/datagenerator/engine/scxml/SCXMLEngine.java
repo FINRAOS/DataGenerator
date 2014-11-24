@@ -57,7 +57,6 @@ import java.util.Set;
  * Date: 8/25/14
  */
 public class SCXMLEngine extends SCXMLExecutor implements Engine {
-
     private SCXML model;
     private int bootStrapMin;
     private List<CustomTagExtension> tagExtensionList;
