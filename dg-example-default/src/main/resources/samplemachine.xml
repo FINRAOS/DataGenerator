@@ -27,7 +27,8 @@
     <state id="SETV1">
         <onentry>
             <dg:set name="var_out_V1_1" range="A1,B1,C1"/>
-            <dg:set name="var_out_V1_2" range="A2,B2,C2"/>
+            <!-- Adding equivalence class generation custom transformer, LOOK AT class EquivalenceClassTransformer -->
+            <assign name="var_out_V1_2" expr="%regex(^(?!(000|666|9))\d{3}-(?!00)\d{2}-(?!0000)\d{4}$)"/>
             <assign name="var_out_V1_3" expr="77"/>
         </onentry>
         <transition event="SETV2" target="SETV2"/>
@@ -35,7 +36,8 @@
 
     <state id="SETV2">
         <onentry>
-            <dg:set name="var_out_V2" range="1,2,3"/>
+            <!-- Adding equivalence class generation custom transformer, LOOK AT class EquivalenceClassTransformer -->
+            <dg:set name="var_out_V2" range="%ssn,%regex(^(?!(000|666|9))\d{3}-(?!00)\d{2}-(?!0000)\d{4}$),UNKNOWN"/>
             <assign name="var_out_V3" expr="#{customplaceholder}"/>
         </onentry>
         <transition event="end" target="end"/>
