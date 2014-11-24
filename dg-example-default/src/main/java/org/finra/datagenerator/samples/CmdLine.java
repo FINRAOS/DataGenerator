@@ -18,6 +18,7 @@ package org.finra.datagenerator.samples;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.engine.Engine;
 import org.finra.datagenerator.engine.scxml.SCXMLEngine;
@@ -59,6 +60,7 @@ public final class CmdLine {
         //Prepare the consumer with the proper writer and transformer
         DataConsumer consumer = new DataConsumer();
         consumer.addDataTransformer(new SampleMachineTransformer());
+        consumer.addDataTransformer(new EquivalenceClassTransformer());
         consumer.addDataWriter(new DefaultWriter(System.out,
                 new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3"}));
 
