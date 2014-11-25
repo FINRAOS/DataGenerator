@@ -79,6 +79,15 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     }
 
     /**
+     * Alternative Constructor to support InLineTransformers within the model
+     */
+    public SCXMLEngine(CustomTagExtension tagExtension) {
+        this();
+        addTagExtension(tagExtension);
+    }
+
+
+    /**
      * Searches the model for all variable assignments and makes a default map of those variables, setting them to ""
      *
      * @return the default variable assignment map
@@ -270,7 +279,7 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
      *
      * @param tagExtension the extension to add
      */
-    public void addTagExtension(CustomTagExtension tagExtension) {
+    private void addTagExtension(CustomTagExtension tagExtension) {
         this.tagExtensionList.add(tagExtension);
     }
 }
