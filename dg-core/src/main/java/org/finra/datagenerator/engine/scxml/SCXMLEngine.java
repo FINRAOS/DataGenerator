@@ -80,8 +80,10 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
 
     /**
      * Alternative Constructor to support InLineTransformers within the model
+     *
+     * @param tagExtension the extension to add
      */
-    public SCXMLEngine(CustomTagExtension tagExtension) {
+    public SCXMLEngine(final CustomTagExtension tagExtension) {
         this();
         addTagExtension(tagExtension);
     }

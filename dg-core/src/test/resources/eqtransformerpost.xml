@@ -1,0 +1,46 @@
+<!-- -->
+<!-- Copyright 2014 DataGenerator Contributors -->
+<!-- -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -->
+<!--      http://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+<!-- -->
+
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:cs="http://commons.apache.org/scxml"
+       xmlns:dg="org.finra.datagenerator"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="SETV1" target="SETV1"/>
+    </state>
+
+
+    <state id="SETV1">
+        <onentry>
+            <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
+            <dg:assign name="V1" set="%number(1),%number(2),%number(3)"/>
+            <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
+            <assign name="V2" expr="%regex([0-9]{3}[A-Z0-9]{5})"/>
+            <assign name="V3" expr="%ssn"/>
+            <assign name="V4" expr="%currency"/>
+        </onentry>
+        <transition event="end" target="end"/>
+    </state>
+
+
+
+    <state id="end">
+        <!-- We're done -->
+    </state>
+</scxml>
+
