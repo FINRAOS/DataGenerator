@@ -43,9 +43,9 @@
             <assign name="var_out_V2" expr="#{customplaceholder}"/>
 
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
-            <dg:assign name="var_out_V3" set="%ssn,%currency,%regex([0-9]{3}[A-Z0-9]{5})"/>
+            <dg:assign name="var_out_V3" set="%ssn,%currency,%regex([0-9]{3}[A-Z0-9]{5}),%digits(5)"/>
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
-            <assign name="var_out_V4" expr="%number(2)"/>
+            <assign name="var_out_V4" expr="%number(5,2)"/>
 
         </onentry>
         <transition event="end" target="end"/>

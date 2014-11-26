@@ -53,7 +53,7 @@ public final class CmdLine {
 
         //Adding custom equivalence class generation transformer - NOTE this will get applied during graph traversal-->
         //MODEL USAGE EXAMPLE: <assign name="var_out_V1_2" expr="%ssn"/> <dg:transform name="EQ"/>
-        Map<String,DataTransformer> transformers = new HashMap<String,DataTransformer>();
+        Map<String, DataTransformer> transformers = new HashMap<String, DataTransformer>();
         transformers.put("EQ", new EquivalenceClassTransformer());
         Engine engine = new SCXMLEngine(new InLineTransformerExtension(transformers));
 
