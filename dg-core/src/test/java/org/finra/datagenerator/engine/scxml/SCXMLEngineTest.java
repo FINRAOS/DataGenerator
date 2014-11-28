@@ -22,6 +22,7 @@ import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.engine.Engine;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.InLineTransformerExtension;
 import org.finra.datagenerator.writer.DefaultWriter;
 import org.junit.Assert;
@@ -29,10 +30,12 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
+
 
 /**
  * Marshall Peters
@@ -74,7 +77,9 @@ public class SCXMLEngineTest {
             //Adding custom equivalence class generation transformer - NOTE this will get applied during graph traversal
             Map<String, DataTransformer> transformers = new HashMap<String, DataTransformer>();
             transformers.put("EQ", new EquivalenceClassTransformer());
-            Engine engine = new SCXMLEngine(new InLineTransformerExtension(transformers));
+            Vector<CustomTagExtension> customtags = new Vector<CustomTagExtension>();
+            customtags.add(new InLineTransformerExtension(transformers));
+            Engine engine = new SCXMLEngine(customtags);
 
             // Model File
             InputStream is = SCXMLEngineTest.class.getResourceAsStream("/eqtransformerinline.xml");

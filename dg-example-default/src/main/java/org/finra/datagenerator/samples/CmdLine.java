@@ -19,6 +19,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.consumer.DataConsumer;
 import org.finra.datagenerator.consumer.DataTransformer;
 import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
@@ -55,7 +57,9 @@ public final class CmdLine {
         //MODEL USAGE EXAMPLE: <assign name="var_out_V1_2" expr="%ssn"/> <dg:transform name="EQ"/>
         Map<String, DataTransformer> transformers = new HashMap<String, DataTransformer>();
         transformers.put("EQ", new EquivalenceClassTransformer());
-        Engine engine = new SCXMLEngine(new InLineTransformerExtension(transformers));
+        Vector<CustomTagExtension> cte = new Vector<CustomTagExtension>();
+        cte.add(new InLineTransformerExtension(transformers));
+        Engine engine = new SCXMLEngine(cte);
 
 
         //will default to samplemachine, but you could specify a different file if you choose to

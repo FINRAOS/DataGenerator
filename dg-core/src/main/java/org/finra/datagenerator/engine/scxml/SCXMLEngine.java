@@ -81,11 +81,15 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
     /**
      * Alternative Constructor to support InLineTransformers within the model
      *
-     * @param tagExtension the extension to add
+     * @param tagExtensionList the list of extensions to add
      */
-    public SCXMLEngine(final CustomTagExtension tagExtension) {
+    public SCXMLEngine(final List<CustomTagExtension> tagExtensionList) {
         this();
-        addTagExtension(tagExtension);
+        // Adding all CustomTagExtensions - They will be added FIFO order
+        // (Whatever CustomTagExtension that was added to the list first will be added to the engine first)
+        for (CustomTagExtension cte:tagExtensionList) {
+            addTagExtension(cte);
+        }
     }
 
 
