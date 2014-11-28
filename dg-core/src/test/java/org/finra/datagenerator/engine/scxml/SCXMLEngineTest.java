@@ -116,6 +116,7 @@ public class SCXMLEngineTest {
 
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             Assert.fail();
         }
     }
@@ -161,7 +162,7 @@ public class SCXMLEngineTest {
 
             StringTokenizer token = new StringTokenizer(output.toString(), "\n");
 
-            String str = new String();
+            String str;
             while (token.hasMoreTokens()) {
                 str = token.nextToken();
                 StringTokenizer token2 = new StringTokenizer(str, "|");

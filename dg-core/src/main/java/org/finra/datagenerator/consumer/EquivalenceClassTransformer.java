@@ -106,7 +106,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
         // Bug fix for Github issue #165
         if (type.equals("number") && requestedwholeDigits > 1 && (b.charAt(0)) == '0') {
             // Gets a random int from 0-8 and adds 1 to it. Which means we get numbers from 1-9.
-            b.replace(0, 1, new Integer((random.nextInt(9) + 1)).toString());
+            b.replace(0, 1, Integer.toString((random.nextInt(9) + 1)));
         }
     }
 
