@@ -87,7 +87,8 @@ public class EquivalenceClassTransformer implements DataTransformer {
         }
     }
 
-    private void number(StringBuilder b, int wholeDigits, int fractions) {
+    private void number(String type, StringBuilder b, int wholeDigits, int fractions) {
+        int requestedwholeDigits = wholeDigits;
         while (wholeDigits > 0) {
             b.append(random.nextInt(10));
             wholeDigits--;
@@ -99,6 +100,13 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 b.append(random.nextInt(10));
                 fractions--;
             }
+        }
+        // If type is a number we got to make sure the first digit of the 'wholeDigits' component cannot be ZERO
+        // unless the size of the 'wholeDigits' is 1
+        // Bug fix for Github issue #165
+        if (type.equals("number") && requestedwholeDigits > 1 && (b.charAt(0)) == '0') {
+            // Gets a random int from 0-8 and adds 1 to it. Which means we get numbers from 1-9.
+            b.replace(0, 1, new Integer((random.nextInt(9) + 1)).toString());
         }
     }
 
@@ -206,7 +214,13 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     case "alphaWithSpaces":
                         alphaWithSpaces(b, Integer.valueOf(expr));
                         break;
+
+                    // If type is a number we got to make sure the first digit of the 'wholeDigits' component cannot
+                    // be ZERO unless the size of the 'wholeDigits' is 1
+                    // Bug fix for Github issue #165
                     case "number":
+                    // digits can have a number with starting with ZERO while number cannot
+                    case "digits":
                         String[] lengths = expr.split(",");
 
                         int whole = Integer.valueOf(lengths[0]);
@@ -215,9 +229,10 @@ public class EquivalenceClassTransformer implements DataTransformer {
                             decimal = Integer.valueOf(lengths[1]);
                         }
 
-                        number(b, whole, decimal);
+                        number(macro, b, whole, decimal);
 
                         break;
+
                     case "ssn":
                         ssn(b);
                         break;

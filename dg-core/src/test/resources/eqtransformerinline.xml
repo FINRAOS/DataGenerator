@@ -26,27 +26,12 @@
 
     <state id="SETV1">
         <onentry>
-            <dg:assign name="var_out_V1_1" set="A1,B1,C1"/>
-
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
-            <assign name="var_out_V1_2" expr="%ssn"/>
+            <assign name="V1" expr="%number(1)"/>
+            <assign name="V2" expr="%number(5)"/>
+            <assign name="V3" expr="%number(100)"/>
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
             <dg:transform name="EQ"/>
-
-            <assign name="var_out_V1_3" expr="77"/>
-        </onentry>
-        <transition event="SETV2" target="SETV2"/>
-    </state>
-
-    <state id="SETV2">
-        <onentry>
-            <assign name="var_out_V2" expr="#{customplaceholder}"/>
-
-            <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
-            <dg:assign name="var_out_V3" set="%ssn,%currency,%regex([0-9]{3}[A-Z0-9]{5}),%digits(5)"/>
-            <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
-            <assign name="var_out_V4" expr="%number(5,2)"/>
-
         </onentry>
         <transition event="end" target="end"/>
     </state>
