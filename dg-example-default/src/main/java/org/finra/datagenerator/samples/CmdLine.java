@@ -17,13 +17,19 @@ package org.finra.datagenerator.samples;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.consumer.DataConsumer;
+import org.finra.datagenerator.consumer.DataTransformer;
+import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.distributor.multithreaded.DefaultDistributor;
 import org.finra.datagenerator.engine.Engine;
+import org.finra.datagenerator.engine.scxml.tags.InLineTransformerExtension;
 import org.finra.datagenerator.engine.scxml.SCXMLEngine;
 import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
 import org.finra.datagenerator.writer.DefaultWriter;
-
 import java.io.InputStream;
 
 /**
@@ -46,7 +52,15 @@ public final class CmdLine {
 
     public static void main(String[] args) {
 
-        Engine engine = new SCXMLEngine();
+
+        //Adding custom equivalence class generation transformer - NOTE this will get applied during graph traversal-->
+        //MODEL USAGE EXAMPLE: <assign name="var_out_V1_2" expr="%ssn"/> <dg:transform name="EQ"/>
+        Map<String, DataTransformer> transformers = new HashMap<String, DataTransformer>();
+        transformers.put("EQ", new EquivalenceClassTransformer());
+        Vector<CustomTagExtension> cte = new Vector<CustomTagExtension>();
+        cte.add(new InLineTransformerExtension(transformers));
+        Engine engine = new SCXMLEngine(cte);
+
 
         //will default to samplemachine, but you could specify a different file if you choose to
         InputStream is = CmdLine.class.getResourceAsStream("/" + (args.length == 0 ? "samplemachine" : args[0]) + ".xml");
@@ -59,8 +73,14 @@ public final class CmdLine {
         //Prepare the consumer with the proper writer and transformer
         DataConsumer consumer = new DataConsumer();
         consumer.addDataTransformer(new SampleMachineTransformer());
+
+        //Adding custom equivalence class generation transformer - NOTE this will get applied post data generation.
+        //MODEL USAGE EXAMPLE: <dg:assign name="var_out_V2" set="%regex([0-9]{3}[A-Z0-9]{5})"/>
+        consumer.addDataTransformer(new EquivalenceClassTransformer());
+
         consumer.addDataWriter(new DefaultWriter(System.out,
-                new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3"}));
+                new String[]{"var_1_1", "var_1_2", "var_1_3", "var_1_4",
+                             "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6"}));
 
         //Prepare the distributor
         DefaultDistributor defaultDistributor = new DefaultDistributor();

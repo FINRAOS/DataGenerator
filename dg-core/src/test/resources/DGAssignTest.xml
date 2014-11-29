@@ -1,0 +1,62 @@
+<!-- -->
+<!-- Copyright 2014 DataGenerator Contributors -->
+<!-- -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -->
+<!--      http://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+<!-- -->
+
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:dg="org.finra.datagenerator"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="1_setOnly" target="1_setOnly"/>
+    </state>
+
+    <state id="1_setOnly">
+        <onentry>
+            <dg:assign name="var_1" set="a1,b1,c1"/>
+        </onentry>
+        <transition event="2_rangeOnly" target="2_rangeOnly" />
+    </state>
+
+    <state id="2_rangeOnly">
+        <onentry>
+            <dg:assign name="var_2" range="0:2"/>
+        </onentry>
+        <transition event="3_setAndRange" target="3_setAndRange" />
+    </state>
+
+    <state id="3_setAndRange">
+        <onentry>
+            <dg:assign name="var_3" set="a3,b3,c3" range="0:1:0.5"/>
+        </onentry>
+        <transition event="4_fileOnly" target="4_fileOnly"/>
+    </state>
+
+    <state id="4_fileOnly">
+        <onentry>
+            <dg:assign name="var_4" fileName="DGAssignTest_step4.csv" fileSeparator=","/>
+        </onentry>
+        <transition event="5_fileAndSetAndRange" target="5_fileAndSetAndRange"/>
+    </state>
+
+    <state id="5_fileAndSetAndRange">
+        <onentry>
+            <dg:assign name="var_5" set="a5,b5,c5" range="0:0.03:0.01" fileName="DGAssignTest_step5.txt" />
+        </onentry>
+        <transition event="end" target="end"/>
+    </state>
+
+    <state id="end"/>
+</scxml>
