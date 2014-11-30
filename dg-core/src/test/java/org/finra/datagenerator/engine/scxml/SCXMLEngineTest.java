@@ -141,5 +141,4 @@ public class SCXMLEngineTest {
                     + "'" + errorMessageExpected + "' here!", ex.getMessage(), errorMessageExpected);
         }
     }
-
 }
