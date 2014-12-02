@@ -101,27 +101,17 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 fractions--;
             }
         }
-        // If type is a number we got to make sure the first digit of the 'wholeDigits' component cannot be ZERO
+        // If type is a 'number' we got to make sure the first digit of the 'wholeDigits' component !=0
         // unless the size of the 'wholeDigits' is 1
-        // Bug fix for Github issue #165
         if (type.equals("number") && requestedwholeDigits > 1 && (b.charAt(0)) == '0') {
-            // Gets a random int from 0-8 and adds 1 to it. Which means we get numbers from 1-9.
-            b.replace(0, 1, new Integer((random.nextInt(9) + 1)).toString());
+            b.replace(0, 1, Integer.toString((random.nextInt(9) + 1)));
         }
     }
 
     private void ssn(StringBuilder b) {
-        for (int i = 0; i != 3; i++) {
-            b.append(random.nextInt(10));
-        }
-        b.append("-");
-        for (int i = 0; i != 2; i++) {
-            b.append(random.nextInt(10));
-        }
-        b.append("-");
-        for (int i = 0; i != 4; i++) {
-            b.append(random.nextInt(10));
-        }
+        //See more details here - http://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs
+        generateFromRegex(b, "^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
+                        + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
     }
 
     private void generateFromRegex(StringBuilder r, String regex) {
@@ -208,34 +198,33 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     case "regex":
                         generateFromRegex(b, expr);
                         break;
+
                     case "alpha":
                         alpha(b, Integer.valueOf(expr));
                         break;
+
                     case "alphaWithSpaces":
                         alphaWithSpaces(b, Integer.valueOf(expr));
                         break;
 
-                    // If type is a number we got to make sure the first digit of the 'wholeDigits' component cannot
-                    // be ZERO unless the size of the 'wholeDigits' is 1
-                    // Bug fix for Github issue #165
                     case "number":
-                    // digits can have a number with starting with ZERO while number cannot
-                    case "digits":
-                        String[] lengths = expr.split(",");
+                        // can't starts with '0'
 
+                    case "digits":
+                        // can starts with '0'
+                        String[] lengths = expr.split(",");
                         int whole = Integer.valueOf(lengths[0]);
                         int decimal = 0;
                         if (lengths.length == 2) {
                             decimal = Integer.valueOf(lengths[1]);
                         }
-
                         number(macro, b, whole, decimal);
-
                         break;
 
                     case "ssn":
                         ssn(b);
                         break;
+
                     case "currency":
                         b.append(currencyCodes[random.nextInt(currencyCodes.length)]);
                         break;
@@ -243,7 +232,6 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         b.append(value);
                         break;
                 }
-
                 entry.setValue(b.toString());
             }
         }

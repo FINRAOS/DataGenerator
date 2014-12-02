@@ -34,6 +34,8 @@ import org.finra.datagenerator.distributor.SearchDistributor;
 import org.finra.datagenerator.engine.Engine;
 import org.finra.datagenerator.engine.Frontier;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
+import org.finra.datagenerator.engine.scxml.tags.FileExtension;
+import org.finra.datagenerator.engine.scxml.tags.RangeExtension;
 import org.finra.datagenerator.engine.scxml.tags.SetAssignExtension;
 import org.finra.datagenerator.engine.scxml.tags.SingleValueAssignExtension;
 import org.xml.sax.InputSource;
@@ -70,6 +72,8 @@ public class SCXMLEngine extends SCXMLExecutor implements Engine {
         tagExtensionList = new LinkedList<>();
         tagExtensionList.add(new SetAssignExtension());
         tagExtensionList.add(new SingleValueAssignExtension());
+        tagExtensionList.add(new FileExtension());
+        tagExtensionList.add(new RangeExtension());
 
         ELEvaluator elEvaluator = new ELEvaluator();
         ELContext context = new ELContext();

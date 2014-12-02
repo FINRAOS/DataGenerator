@@ -31,19 +31,20 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
+import org.apache.log4j.Logger;
 
 /**
- * Marshall Peters
- * Date: 11/7/14
+ * Yankop Yuriy
  */
-public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
+public class RangeExtension implements CustomTagExtension<RangeExtension.SetAssignTag> {
+    private static final Logger log = Logger.getLogger(RangeExtension.class);
 
     public Class<SetAssignTag> getTagActionClass() {
         return SetAssignTag.class;
     }
 
     public String getTagName() {
-        return "assign";
+        return "range";
     }
 
     public String getTagNameSpace() {
@@ -61,13 +62,17 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     public List<Map<String, String>> pipelinePossibleStates(SetAssignTag action,
                                                             List<Map<String, String>> possibleStateList) {
         String variable = action.getName();
-        String set = action.getSet();
+        String from = action.getFrom();
+        String to = action.getTo();
+        String step = action.getStep();
 
         Set<String> domain = new HashSet<String>();
-        if (set != null) {
-            for (String value : set.split(",")) {
-                domain.add(value);
-            }
+        if (from != null && from.length() > 0 && to != null && to.length() > 0) {
+            generateRangeValues(domain, from, to, step);
+        } else {
+            log.error("Oops! 'range' parameter isn't setup properly (from = '" + from + "'). ; to = '"  + to + "'; step = '" + step + "'"
+                    + "It has be in '<first value>:<last value>[:<optional 'step' value. Default value is '1.0'>]' format. "
+                    + "For example, '0.1:2:0.4' or '2:18'");
         }
 
         //take the product
@@ -83,13 +88,43 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
         return productTemp;
     }
 
+    private void generateRangeValues(Set<String> domain, String from, String to, String step) {
+        float currentValue = Float.valueOf(from);
+        float lastValue = Float.valueOf(to);
+        float stepValue;
+        if (step != null && step.length() > 0) {
+            stepValue = Float.valueOf(step);
+        } else {
+            stepValue = 1;
+        }
+        
+        if ((lastValue > currentValue && stepValue > 0) || (lastValue < currentValue && stepValue < 0)) {
+            while (currentValue <= lastValue) {
+                if (currentValue == (int) currentValue) {
+                    domain.add(String.valueOf((int) currentValue));
+                } else if (currentValue == (long) currentValue) {
+                    domain.add(String.valueOf((long) currentValue));
+                } else {
+                    domain.add(String.valueOf(currentValue));
+                }
+                currentValue += stepValue;
+            }
+        } else {
+            log.error("Oops! Not valid 'range' parameters. "
+                    + "It's not possible to come from '" + currentValue + "' to '" + lastValue + "' with '"  + stepValue + "' step!");
+        }
+    
+    }
+
 
     /**
      * A custom Action for the 'dg:assign' tag inside models
      */
     public static class SetAssignTag extends Action {
         private String name;
-        private String set;
+        private String from;
+        private String to;
+        private String step;
 
         public String getName() {
             return name;
@@ -99,12 +134,28 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
             this.name = name;
         }
 
-        public String getSet() {
-            return set;
+        public String getFrom() {
+            return from;
         }
 
-        public void setSet(String set) {
-            this.set = set;
+        public void setFrom(String from) {
+            this.from = from;
+        }
+
+        public String getTo() {
+            return to;
+        }
+
+        public void setTo(String to) {
+            this.to = to;
+        }
+
+        public String getStep() {
+            return step;
+        }
+
+        public void setStep(String step) {
+            this.step = step;
         }
 
         /**

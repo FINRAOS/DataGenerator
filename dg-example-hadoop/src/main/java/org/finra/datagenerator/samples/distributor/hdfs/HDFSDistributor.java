@@ -195,7 +195,8 @@ public class HDFSDistributor implements SearchDistributor {
 //        configuration.set("mapreduce.output.fileoutputformat.compress", "true");
 //        configuration.set("mapreduce.output.fileoutputformat.compress.codec", "org.apache.hadoop.io.compress.GzipCodec");
 //        configuration.set("mapreduce.output.fileoutputformat.compress.type", "BLOCK");
-        Job ret = new Job(configuration);
+//        Job ret = new Job(configuration);
+        Job ret = org.apache.hadoop.mapreduce.Job.getInstance(configuration);
         ret.setJarByClass(HDFSDistributor.class);
         ret.setJobName("PATH Test Data Generation");
 
