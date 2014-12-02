@@ -20,40 +20,19 @@
        initial="start">
 
     <state id="start">
-        <transition event="1_setOnly" target="1_setOnly"/>
+        <transition event="1_rangeWithoutStep" target="1_rangeWithoutStep"/>
     </state>
 
-    <state id="1_setOnly">
+    <state id="1_rangeWithoutStep">
         <onentry>
-            <dg:assign name="var_1" set="a1,b1,c1"/>
+            <dg:range name="var_1" from="0" to="2"/>
         </onentry>
-        <transition event="2_rangeOnly" target="2_rangeOnly" />
+        <transition event="2_rangeWithStep" target="2_rangeWithStep" />
     </state>
 
-    <state id="2_rangeOnly">
+    <state id="2_rangeWithStep">
         <onentry>
-            <dg:assign name="var_2" range="0:2"/>
-        </onentry>
-        <transition event="3_setAndRange" target="3_setAndRange" />
-    </state>
-
-    <state id="3_setAndRange">
-        <onentry>
-            <dg:assign name="var_3" set="a3,b3,c3" range="0:1:0.5"/>
-        </onentry>
-        <transition event="4_fileOnly" target="4_fileOnly"/>
-    </state>
-
-    <state id="4_fileOnly">
-        <onentry>
-            <dg:assign name="var_4" fileName="DGAssignTest_step4.csv" fileSeparator=","/>
-        </onentry>
-        <transition event="5_fileAndSetAndRange" target="5_fileAndSetAndRange"/>
-    </state>
-
-    <state id="5_fileAndSetAndRange">
-        <onentry>
-            <dg:assign name="var_5" set="a5,b5,c5" range="0:0.03:0.01" fileName="DGAssignTest_step5.txt" />
+            <dg:range name="var_2" from="0" to="1" step="0.5" />
         </onentry>
         <transition event="end" target="end"/>
     </state>

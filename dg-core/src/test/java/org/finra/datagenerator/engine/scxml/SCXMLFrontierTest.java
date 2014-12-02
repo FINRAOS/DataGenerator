@@ -21,6 +21,8 @@ import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
+import org.finra.datagenerator.engine.scxml.tags.FileExtension;
+import org.finra.datagenerator.engine.scxml.tags.RangeExtension;
 import org.finra.datagenerator.engine.scxml.tags.SetAssignExtension;
 import org.finra.datagenerator.engine.scxml.tags.SingleValueAssignExtension;
 import org.junit.Assert;
@@ -47,6 +49,8 @@ public class SCXMLFrontierTest {
         List<CustomTagExtension> tagExtensionList = new LinkedList<>();
         tagExtensionList.add(new SetAssignExtension());
         tagExtensionList.add(new SingleValueAssignExtension());
+        tagExtensionList.add(new FileExtension());
+        tagExtensionList.add(new RangeExtension());
 
         return tagExtensionList;
     }
