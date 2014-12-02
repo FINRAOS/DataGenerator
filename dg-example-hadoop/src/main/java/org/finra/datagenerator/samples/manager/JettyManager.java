@@ -211,8 +211,8 @@ public class JettyManager implements WorkManager {
             NetworkConnector nc = (NetworkConnector) connectors[0];
             listeningPort = nc.getLocalPort();
             hostName = InetAddress.getLocalHost().getHostName();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {  //NOPMD
+            System.out.println(e.getStackTrace());
         }
     }
 

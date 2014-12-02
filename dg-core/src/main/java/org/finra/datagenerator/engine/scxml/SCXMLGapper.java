@@ -23,8 +23,6 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.finra.datagenerator.engine.Frontier;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
-import org.finra.datagenerator.engine.scxml.tags.FileExtension;
-import org.finra.datagenerator.engine.scxml.tags.RangeExtension;
 import org.finra.datagenerator.engine.scxml.tags.SetAssignExtension;
 import org.finra.datagenerator.engine.scxml.tags.SingleValueAssignExtension;
 import org.xml.sax.InputSource;
@@ -121,8 +119,6 @@ public class SCXMLGapper {
         tagExtensionList = new LinkedList<>(tagExtensionList);
         tagExtensionList.add(new SetAssignExtension());
         tagExtensionList.add(new SingleValueAssignExtension());
-        tagExtensionList.add(new FileExtension());
-        tagExtensionList.add(new RangeExtension());
 
         setModel(decomposition.get("model"), tagExtensionList);
         TransitionTarget target = (TransitionTarget) model.getTargets().get(decomposition.get("target"));
