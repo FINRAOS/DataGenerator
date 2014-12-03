@@ -16,14 +16,14 @@
 
 package org.finra.datagenerator.engine.scxml;
 
-import org.apache.commons.scxml.model.ModelException;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.scxml.model.ModelException;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Marshall Peters Date: 9/3/14
@@ -93,7 +93,7 @@ public class SCXMLEngineTest {
     }
 
     /**
-     * All variables have a default assignment of ""
+     * All variables have a default assignment of "" (empty string)
      */
     @Test
     public void testInitiallyEmptyAssignment() {
@@ -137,7 +137,7 @@ public class SCXMLEngineTest {
             Assert.fail("Oops! We wait for '" + errorMessageExpected + "' error message here "
                     + "(bootstrap size is too big for this model), but don't have it!");
         } catch (ModelException ex) {
-            Assert.assertEquals("Oops! We have '' modelException error message, but we wait for "
+            Assert.assertEquals("Oops! We have '"  + ex.getMessage() + "' modelException error message, but we wait for "
                     + "'" + errorMessageExpected + "' here!", ex.getMessage(), errorMessageExpected);
         }
     }

@@ -29,16 +29,22 @@
             <!-- Example of using 'set' from 'dg:assign'  -->
             <dg:assign name="var_1_1" set="A1,B1,C1"/>
 
-            <!-- Example of using 'range' from 'dg:assign'  -->
-            <dg:assign name="var_1_2" range="0:4:1"/>
+            <!-- Example of using 'range'  -->
+            <dg:range name="var_1_2" from="0" to="4" step="1"/>
+            
+            <!-- Example of using 'file' with one line from csv file  -->
+            <dg:file name="var_1_3" fileName="DGFileTest_step1.csv" separator=","/>
+            
+            <!-- Example of using 'file' with 1 value per row file  -->
+            <dg:file name="var_1_4" fileName="DGFileTest_step2.txt" />
 
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
-            <assign name="var_1_3" expr="%ssn"/>
+            <assign name="var_1_5" expr="%ssn"/>
 
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
             <dg:transform name="EQ"/>
 
-            <assign name="var_1_4" expr="77"/>
+            <assign name="var_1_6" expr="77"/>
         </onentry>
         <transition event="step2" target="step2"/>
     </state>
