@@ -87,31 +87,16 @@ public class EquivalenceClassTransformer implements DataTransformer {
         }
     }
 
-    private void number(String type, StringBuilder b, int wholeDigits, int fractions) {
-        int requestedwholeDigits = wholeDigits;
-        while (wholeDigits > 0) {
+    private void digitSequence(StringBuilder b, int numberOfDigits) {
+        for (int i = 0; i < numberOfDigits; i++) {
             b.append(random.nextInt(10));
-            wholeDigits--;
-        }
-
-        if (fractions > 0) {
-            b.append('.');
-            while (fractions > 0) {
-                b.append(random.nextInt(10));
-                fractions--;
-            }
-        }
-        // If type is a 'number' we got to make sure the first digit of the 'wholeDigits' component !=0
-        // unless the size of the 'wholeDigits' is 1
-        if (type.equals("number") && requestedwholeDigits > 1 && (b.charAt(0)) == '0') {
-            b.replace(0, 1, Integer.toString((random.nextInt(9) + 1)));
         }
     }
 
     private void ssn(StringBuilder b) {
         //See more details here - http://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs
         generateFromRegex(b, "^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
-                        + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
+                + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
     }
 
     private void generateFromRegex(StringBuilder r, String regex) {
@@ -208,17 +193,29 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         break;
 
                     case "number":
-                        // can't starts with '0'
-
-                    case "digits":
-                        // can starts with '0'
                         String[] lengths = expr.split(",");
                         int whole = Integer.valueOf(lengths[0]);
                         int decimal = 0;
                         if (lengths.length == 2) {
                             decimal = Integer.valueOf(lengths[1]);
                         }
-                        number(macro, b, whole, decimal);
+
+                        if (whole == 0 && decimal > 0) {
+                            b.append("0.");
+                            digitSequence(b, decimal);
+                        } else if (whole > 0) {
+                            b.append(random.nextInt(9) + 1);
+                            digitSequence(b, whole - 1);
+                            if (decimal > 0) {
+                                b.append(".");
+                                digitSequence(b, decimal);
+                            }
+                        }
+                        break;
+
+                    case "digits":
+                        int length = Integer.valueOf(expr);
+                        digitSequence(b, length);
                         break;
 
                     case "ssn":

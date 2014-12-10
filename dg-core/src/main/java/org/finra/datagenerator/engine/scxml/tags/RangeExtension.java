@@ -16,14 +16,6 @@
 
 package org.finra.datagenerator.engine.scxml.tags;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -31,16 +23,22 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
-import org.apache.log4j.Logger;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Yankop Yuriy
  */
-public class RangeExtension implements CustomTagExtension<RangeExtension.SetAssignTag> {
-    private static final Logger log = Logger.getLogger(RangeExtension.class);
+public class RangeExtension implements CustomTagExtension<RangeExtension.RangeTag> {
 
-    public Class<SetAssignTag> getTagActionClass() {
-        return SetAssignTag.class;
+    public Class<RangeTag> getTagActionClass() {
+        return RangeTag.class;
     }
 
     public String getTagName() {
@@ -54,33 +52,42 @@ public class RangeExtension implements CustomTagExtension<RangeExtension.SetAssi
     /**
      * Performs variable assignments from a set of values
      *
-     * @param action a SetAssignTag Action
+     * @param action            a RangeTag Action
      * @param possibleStateList a current list of possible states produced so far from expanding a model state
-     *
      * @return the cartesian product of every current possible state and the set of values specified by action
      */
-    public List<Map<String, String>> pipelinePossibleStates(SetAssignTag action,
+    public List<Map<String, String>> pipelinePossibleStates(RangeTag action,
                                                             List<Map<String, String>> possibleStateList) {
         String variable = action.getName();
-        String from = action.getFrom();
-        String to = action.getTo();
-        String step = action.getStep();
-
-        Set<String> domain = new HashSet<String>();
-        if (from != null && from.length() > 0 && to != null && to.length() > 0) {
-            generateRangeValues(domain, from, to, step);
+        BigDecimal from = new BigDecimal(action.getFrom());
+        BigDecimal to = new BigDecimal(action.getTo());
+        BigDecimal step;
+        if (action.getStep() != null) {
+            step = new BigDecimal(action.getStep());
         } else {
-            log.error("Oops! 'range' parameter isn't setup properly (from = '" + from + "'). ; to = '"  + to + "'; step = '" + step + "'"
-                    + "It has be in '<first value>:<last value>[:<optional 'step' value. Default value is '1.0'>]' format. "
-                    + "For example, '0.1:2:0.4' or '2:18'");
+            step = new BigDecimal(1);
+        }
+
+        List<BigDecimal> rangeValues = new ArrayList<>();
+        if (step.signum() == 1) {
+            for (BigDecimal current = from; current.compareTo(to) <= 0; current = current.add(step)) {
+                rangeValues.add(current);
+            }
+        } else if (step.signum() == -1) {
+            for (BigDecimal current = from; current.compareTo(to) >= 0; current = current.add(step)) {
+                rangeValues.add(current);
+            }
+        } else {
+            rangeValues.add(from);
         }
 
         //take the product
         List<Map<String, String>> productTemp = new LinkedList<>();
         for (Map<String, String> p : possibleStateList) {
-            for (String value : domain) {
+            for (BigDecimal value : rangeValues) {
                 HashMap<String, String> n = new HashMap<>(p);
-                n.put(variable, value);
+                value = value.stripTrailingZeros();
+                n.put(variable, value.toString());
                 productTemp.add(n);
             }
         }
@@ -88,39 +95,10 @@ public class RangeExtension implements CustomTagExtension<RangeExtension.SetAssi
         return productTemp;
     }
 
-    private void generateRangeValues(Set<String> domain, String from, String to, String step) {
-        float currentValue = Float.valueOf(from);
-        float lastValue = Float.valueOf(to);
-        float stepValue;
-        if (step != null && step.length() > 0) {
-            stepValue = Float.valueOf(step);
-        } else {
-            stepValue = 1;
-        }
-        
-        if ((lastValue > currentValue && stepValue > 0) || (lastValue < currentValue && stepValue < 0)) {
-            while (currentValue <= lastValue) {
-                if (currentValue == (int) currentValue) {
-                    domain.add(String.valueOf((int) currentValue));
-                } else if (currentValue == (long) currentValue) {
-                    domain.add(String.valueOf((long) currentValue));
-                } else {
-                    domain.add(String.valueOf(currentValue));
-                }
-                currentValue += stepValue;
-            }
-        } else {
-            log.error("Oops! Not valid 'range' parameters. "
-                    + "It's not possible to come from '" + currentValue + "' to '" + lastValue + "' with '"  + stepValue + "' step!");
-        }
-    
-    }
-
-
     /**
-     * A custom Action for the 'dg:assign' tag inside models
+     * A custom Action for the 'dg:range' tag inside models
      */
-    public static class SetAssignTag extends Action {
+    public static class RangeTag extends Action {
         private String name;
         private String from;
         private String to;

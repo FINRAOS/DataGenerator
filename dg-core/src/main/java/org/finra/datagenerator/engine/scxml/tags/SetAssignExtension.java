@@ -16,14 +16,6 @@
 
 package org.finra.datagenerator.engine.scxml.tags;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -31,6 +23,12 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Marshall Peters
@@ -63,12 +61,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
         String variable = action.getName();
         String set = action.getSet();
 
-        Set<String> domain = new HashSet<String>();
-        if (set != null) {
-            for (String value : set.split(",")) {
-                domain.add(value);
-            }
-        }
+        String[] domain = set.split(",");
 
         //take the product
         List<Map<String, String>> productTemp = new LinkedList<>();
@@ -83,9 +76,8 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
         return productTemp;
     }
 
-
     /**
-     * A custom Action for the 'dg:assign' tag inside models
+     * A custom Action for the 'set' tag inside models
      */
     public static class SetAssignTag extends Action {
         private String name;
@@ -103,8 +95,8 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
             return set;
         }
 
-        public void setSet(String set) {
-            this.set = set;
+        public void setSet(String range) {
+            this.set = range;
         }
 
         /**
