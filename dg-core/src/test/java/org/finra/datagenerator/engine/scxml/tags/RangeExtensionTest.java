@@ -96,6 +96,11 @@ public class RangeExtensionTest {
         } catch (SCXMLExpressionException | ModelException e) {
             Assert.fail("Exceptions should never be thrown");
         }
+
+        Assert.assertEquals("Foo", rangeTag.getName());
+        Assert.assertEquals("1.1", rangeTag.getFrom());
+        Assert.assertEquals("11.3", rangeTag.getTo());
+        Assert.assertEquals("1.2", rangeTag.getStep());
     }
 
     /**

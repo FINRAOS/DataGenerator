@@ -75,7 +75,7 @@ public class SetAssignExtensionTest {
             Assert.fail("Exceptions should never be thrown");
         }
 
-        setAssignTag.setName("var_out_test");
+        Assert.assertEquals("var_out_test", setAssignTag.getName());
         Assert.assertEquals("A,B,C,D,E", setAssignTag.getSet());
     }
 

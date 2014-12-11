@@ -77,7 +77,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     }
 
     /**
-     * A custom Action for the 'set' tag inside models
+     * A custom Action for the 'dg:assign' tag inside models
      */
     public static class SetAssignTag extends Action {
         private String name;
@@ -95,8 +95,8 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
             return set;
         }
 
-        public void setSet(String range) {
-            this.set = range;
+        public void setSet(String set) {
+            this.set = set;
         }
 
         /**
