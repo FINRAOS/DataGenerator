@@ -1,4 +1,0 @@
-repo: 79fafafe8370e94df8714bc924a6bcfa4ad5774b
-node: db20c81e10dc89d70fb3e6a841fd1760c350e725
-branch: stable
-tag: 1.1.3
