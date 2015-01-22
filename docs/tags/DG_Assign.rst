@@ -8,11 +8,13 @@ Features:
 
 List of parameters:
 
-Parameter name | Description | Is required? | Example
----------------|-------------|--------------|--------
-name | Name of property where data will be saved | yes | var_1 
-set | Comma (',') separated values | yes | a1,b1 
-
++----------------+-------------------------------------------+--------------+--------+
+| Parameter name | Description                               | Is required? | Example|
++----------------+-------------------------------------------+--------------+--------+
+| name           | Name of property where data will be saved | yes          | var_1  |
++----------------+-------------------------------------------+--------------+--------+
+| set            | Comma (',') separated values              | yes          |   a1,b1|
++----------------+-------------------------------------------+--------------+--------+
 
 Full scxml example:
 
