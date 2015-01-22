@@ -1,7 +1,7 @@
 DG:File
 ===========
 
-There is "dg:file" build in DG feature.
+There is DG feature - "dg:file" tag.
 
 Features:
  * Lines started with comment ('#') will be ignored

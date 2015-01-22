@@ -19,8 +19,9 @@ Modeling with SCXML
 * Built-in Tags
 
   - `Assign Tag <tags/Assign.rst>`_
-  - `Set Assign Tag <tags/SetAssign.rst>`_
-  -
+  - `DG Assign Tag <tags/DG_Assign.rst>`_
+  - `DG File Tag <tags/DG_File.rst>`_
+  - `DG_Range Tag <tags/DG_Range.rst>`_
 
 Transforming and Writing with the DataConsumer
 ==============================================

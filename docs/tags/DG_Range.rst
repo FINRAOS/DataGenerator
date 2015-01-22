@@ -1,7 +1,7 @@
 DG:Range
 ===========
 
-There is "dg:range" build in DG feature.
+There is DG feature - "dg:range" tag.
 
 Features:
  * Can generate range of positive / negative BigDecimals

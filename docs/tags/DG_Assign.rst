@@ -1,7 +1,7 @@
 DG:Assign
 ===========
 
-There is "dg:assign" build in DG feature.
+There is DG feature - "dg:assign" tag.
 
 Features:
  * Can assign multiple values in just one scxml state!
