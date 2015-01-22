@@ -11,11 +11,15 @@ Features:
 
 List of parameters:
 
-Parameter name | Description | Is required? | Example
----------------|-------------|--------------|--------
-name | Name of property where data will be saved | yes | var_1 
-fileName | File name. File has be available from classpath. It's recommended to use 'src/test/resources' folder to save all your test resources | yes | DGFileTest_step1.csv 
-separator | Data separator. This parameter will be used if we have one line with data in file | no | , 
++----------------+--------------------------------------------------------------------------------------------------------------------------------------+--------------+-----------------------+
+| Parameter name | Description                                                                                                                          | Is required? | Example               |
++----------------+--------------------------------------------------------------------------------------------------------------------------------------+--------------+-----------------------+
+| name           | Name of property where data will be saved                                                                                            | yes          | var_1                 |
++----------------+--------------------------------------------------------------------------------------------------------------------------------------+--------------+-----------------------+
+| fileName       | File name. File has be available from classpath. It's recommended to use 'src/test/resources' folder to save all your test resources | yes          |   DGFileTest_step1.csv|
++----------------+--------------------------------------------------------------------------------------------------------------------------------------+--------------+-----------------------+
+| separator      | Data separator. This parameter will be used if we have one line with data in file                                                    | no           | ','                   |
++----------------+--------------------------------------------------------------------------------------------------------------------------------------+--------------+-----------------------+
 
 
 Data files example:

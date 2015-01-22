@@ -9,12 +9,17 @@ Features:
 
 List of parameters:
 
-Parameter name | Description | Is required? | Example
----------------|-------------|--------------|--------
-name | Name of property where data will be saved | yes | var_1 
-from | Start value. | yes | 0
-to | Start value. | yes | 15
-step | Step value. Can be positive and negative. Default value = 1 | no | 0.5 
++----------------+--------------------------------------------------------------------------+--------------+--------+
+| Parameter name | Description                                                              | Is required? | Example|
++----------------+--------------------------------------------------------------------------+--------------+--------+
+| name           | Name of property where data will be saved                                | yes          | var_1  |
++----------------+--------------------------------------------------------------------------+--------------+--------+
+| from           | Start value                                                              | yes          | 0      |
++----------------+--------------------------------------------------------------------------+--------------+--------+
+| to             | Stop value                                                               | yes          | 15     |
++----------------+--------------------------------------------------------------------------+--------------+--------+
+| step           | Step value. Can be positive and negative. Default value = 1              | no           | 0.5    |
++----------------+--------------------------------------------------------------------------+--------------+--------+
 
 
 Full scxml example:
