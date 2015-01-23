@@ -16,6 +16,12 @@
 
 package org.finra.datagenerator.engine.scxml.tags;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -23,19 +29,16 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Marshall Peters
  * Date: 11/7/14
+ * 
+ * Updated 1/6/2014 by Michael Thomas
  */
 public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
-
+    
     public Class<SetAssignTag> getTagActionClass() {
         return SetAssignTag.class;
     }
@@ -47,7 +50,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     public String getTagNameSpace() {
         return "org.finra.datagenerator";
     }
-
+    
     /**
      * Performs variable assignments from a set of values
      *
@@ -60,9 +63,15 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
                                                             List<Map<String, String>> possibleStateList) {
         String variable = action.getName();
         String set = action.getSet();
-
-        String[] domain = set.split(",");
-
+        
+        String[] split = StringUtils.splitByWholeSeparator(set, action.getSeparator()), domain;
+        if (split.length > 0) {
+            domain = split;
+        } else {
+            domain = new String[1];
+            domain[0] = "";
+        }
+        
         //take the product
         List<Map<String, String>> productTemp = new LinkedList<>();
         for (Map<String, String> p : possibleStateList) {
@@ -80,8 +89,10 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
      * A custom Action for the 'dg:assign' tag inside models
      */
     public static class SetAssignTag extends Action {
+
         private String name;
         private String set;
+        private String separator = ",";
 
         public String getName() {
             return name;
@@ -97,6 +108,14 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
 
         public void setSet(String set) {
             this.set = set;
+        }
+
+        public String getSeparator() {
+            return this.separator;
+        }
+        
+        public void setSeparator(String sep) {
+            this.separator = sep;
         }
 
         /**
