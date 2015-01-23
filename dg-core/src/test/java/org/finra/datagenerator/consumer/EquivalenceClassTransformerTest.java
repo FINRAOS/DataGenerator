@@ -257,6 +257,9 @@ public class EquivalenceClassTransformerTest {
                 "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD",
                 "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XSU", "XTS",
                 "XUA", "XXX", "YER", "ZAR", "ZMK", "ZWL"};
+
+        Assert.assertTrue("Too small number of currency codes!", eqTransformer.CURRENCY_CODES.length >= 180);
+
         HashSet<String> currencyCodeLookUp = new HashSet<>(Arrays.asList(currencyCodes));
 
         for (int i = 0; i < 500; i++) {
@@ -282,5 +285,134 @@ public class EquivalenceClassTransformerTest {
         Assert.assertEquals("Lorem ipsum doler  sit amet.", pipeToTransform.getDataMap().get("TEST"));
         Assert.assertEquals("%Lorem", pipeToTransform.getDataMap().get("TEST2"));
         Assert.assertEquals("%ipsum(1,2)", pipeToTransform.getDataMap().get("TEST3"));
+    }
+
+    /**
+     * %state or $stateLong generates from a predefined list
+     */
+    @Test
+    public void statesLongTest() {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+
+        String[] statesLong = {
+                "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas",
+                "California", "Colorado", "Connecticut", "Delaware", "Dist. of Columbia",
+                "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana",
+                "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Marshall Islands",
+                "Massachusetts", "Michigan", "Micronesia", "Minnesota", "Mississippi",
+                "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+                "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Marianas",
+                "Ohio", "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+                "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas",
+                "Utah", "Vermont", "Virginia", "Virgin Islands", "Washington", "West Virginia",
+                "Wisconsin", "Wyoming"};
+
+        Assert.assertTrue("Missed state long name(s)!", EquivalenceClassTransformer.STATE_LONG.length == 59);
+
+        HashSet<String> statesLongLookUp = new HashSet<>(Arrays.asList(statesLong));
+
+        // check 'state' 
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_states", "%state");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong state name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_states") + "',"
+                    + " but wait for one of '" + statesLongLookUp + "'...",
+                    statesLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_states")));
+        }
+
+        // check 'stateLong'
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_statesLong", "%stateLong");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong state long name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_statesLong") + "',"
+                    + " but wait for one of '" + statesLongLookUp + "'...",
+                    statesLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_statesLong")));
+        }
+    }
+
+    /**
+     * %stateShort generates from a predefined list
+     */
+    @Test
+    public void statesShortTest() {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+
+        String[] statesShort = {
+                "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", 
+                "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO", 
+                "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", 
+                "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "VI", "WA", "WV", "WI", "WY"};
+
+        Assert.assertTrue("Missed state short name(s)!", EquivalenceClassTransformer.STATES_SHORT.length == 59);
+        
+        HashSet<String> statesShortLookUp = new HashSet<>(Arrays.asList(statesShort));
+
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_statesShort", "%stateShort");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong state short name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_statesShort") + "',"
+                    + " but wait for one of '" + statesShortLookUp + "'...",
+                    statesShortLookUp.contains(pipeToTransform.getDataMap().get("TEST_statesShort")));
+        }
+    }
+
+    /**
+     * %country generates from a predefined list
+     */
+    @Test
+    public void countryLongTest() {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+
+        String[] countryLong = {
+                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua & Barbuda", "Argentina",
+                "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+                "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana",
+                "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
+                "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo",
+                "Congo Democratic Republic", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+                "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "East Timor", "Egypt", "El Salvador",
+                "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia",
+                "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+                "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+                "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea North", "Korea South",
+                "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+                "Lithuania", "Luxembourg", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
+                "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+                "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia", "Nauru", "Nepal", "The Netherlands",
+                "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Palestinian State",
+                "Panama", "Papua New Guinea", "Paraguay", "Peru", "The Philippines", "Poland", "Portugal", "Qatar", "Romania",
+                "Russia", "Rwanda", "St. Kitts & Nevis", "St. Lucia", "St. Vincent & The Grenadines", "Samoa", "San Marino",
+                "Sao Tome & Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+                "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka",
+                "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+                "Thailand", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
+                "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan",
+                "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+                };
+
+        Assert.assertTrue("Missed country long name(s)!", EquivalenceClassTransformer.COUNTRIES.length == 197);
+        
+        HashSet<String> countryLongLookUp = new HashSet<>(Arrays.asList(countryLong));
+
+        // check 'country'
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_country", "%country");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong country name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_country") + "',"
+                    + " but wait for one of '" + countryLongLookUp + "'...",
+                    countryLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_country")));
+        }
+
+        // check 'countryLong'
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_countryLong", "%countryLong");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong country long name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_countryLong") + "',"
+                    + " but wait for one of '" + countryLongLookUp + "'...",
+                    countryLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_countryLong")));
+        }
     }
 }

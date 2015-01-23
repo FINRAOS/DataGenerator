@@ -28,8 +28,16 @@ import java.util.regex.Pattern;
 public class EquivalenceClassTransformer implements DataTransformer {
 
     private Random random;
-    private final String[] words = new String[]{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789"};
-    private final String[] currencyCodes = {
+
+    /**
+     * List of alpha numeric chars
+     */
+    private static final String[] WORDS = new String[]{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789"};
+
+    /**
+     * List of currency codes
+     */
+    public static final String[] CURRENCY_CODES = {
             "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD",
             "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF",
             "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP",
@@ -56,6 +64,63 @@ public class EquivalenceClassTransformer implements DataTransformer {
     };
 
     /**
+     * List of US states. Long version
+     */
+    public static final String[] STATE_LONG = {
+            "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas",
+            "California", "Colorado", "Connecticut", "Delaware", "Dist. of Columbia",
+            "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana",
+            "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Marshall Islands",
+            "Massachusetts", "Michigan", "Micronesia", "Minnesota", "Mississippi",
+            "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+            "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Marianas",
+            "Ohio", "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+            "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas",
+            "Utah", "Vermont", "Virginia", "Virgin Islands", "Washington", "West Virginia",
+            "Wisconsin", "Wyoming"
+    };
+
+    /**
+     * List of US states. Short 2 chars version
+     */
+    public static final String[] STATES_SHORT = {
+        "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", 
+        "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO", 
+        "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", 
+        "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "VI", "WA", "WV", "WI", "WY"
+    };
+
+    /**
+     * List of countries. Long version
+     */
+    public static final String[] COUNTRIES = {
+        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua & Barbuda", "Argentina",
+        "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+        "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana",
+        "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
+        "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo",
+        "Congo Democratic Republic", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+        "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "East Timor", "Egypt", "El Salvador",
+        "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia",
+        "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+        "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+        "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea North", "Korea South",
+        "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+        "Lithuania", "Luxembourg", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
+        "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+        "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia", "Nauru", "Nepal", "The Netherlands",
+        "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Palestinian State",
+        "Panama", "Papua New Guinea", "Paraguay", "Peru", "The Philippines", "Poland", "Portugal", "Qatar", "Romania",
+        "Russia", "Rwanda", "St. Kitts & Nevis", "St. Lucia", "St. Vincent & The Grenadines", "Samoa", "San Marino",
+        "Sao Tome & Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+        "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka",
+        "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+        "Thailand", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
+        "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan",
+        "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    };
+
+    /**
      * Constructor
      */
     public EquivalenceClassTransformer() {
@@ -64,9 +129,9 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
     private void alpha(StringBuilder b, int len) {
         while (len > 0) {
-            int word = random.nextInt(words.length);
-            int letter = random.nextInt(words[word].length());
-            b.append(words[word].charAt(letter));
+            int word = random.nextInt(WORDS.length);
+            int letter = random.nextInt(WORDS[word].length());
+            b.append(WORDS[word].charAt(letter));
             len--;
         }
     }
@@ -76,9 +141,9 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
         while (len > 0) {
             if (len != nextSpacePos) {
-                int word = random.nextInt(words.length);
-                int letter = random.nextInt(words[word].length());
-                b.append(words[word].charAt(letter));
+                int word = random.nextInt(WORDS.length);
+                int letter = random.nextInt(WORDS[word].length());
+                b.append(WORDS[word].charAt(letter));
             } else {
                 b.append(" ");
                 nextSpacePos = len - random.nextInt(9);
@@ -223,8 +288,23 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         break;
 
                     case "currency":
-                        b.append(currencyCodes[random.nextInt(currencyCodes.length)]);
+                        b.append(CURRENCY_CODES[random.nextInt(CURRENCY_CODES.length)]);
                         break;
+
+                    case "state":
+                    case "stateLong":
+                        b.append(STATE_LONG[random.nextInt(STATE_LONG.length)]);
+                        break;
+
+                    case "stateShort":
+                        b.append(STATES_SHORT[random.nextInt(STATES_SHORT.length)]);
+                        break;
+
+                    case "country":
+                    case "countryLong":
+                        b.append(COUNTRIES[random.nextInt(COUNTRIES.length)]);
+                        break;
+
                     default:
                         b.append(value);
                         break;
