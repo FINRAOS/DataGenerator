@@ -16,6 +16,12 @@
 
 package org.finra.datagenerator.engine.scxml.tags;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -23,16 +29,13 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Marshall Peters
  * Date: 11/7/14
+ *
+ * Updated 1/6/2014 by Michael Thomas
  */
 public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
 
@@ -61,7 +64,13 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
         String variable = action.getName();
         String set = action.getSet();
 
-        String[] domain = set.split(",");
+        String[] domain;
+
+        if (StringUtils.splitByWholeSeparator(set, action.getSeparator()).length == 0) {
+            domain = new String[]{""};
+        } else {
+            domain = StringUtils.splitByWholeSeparator(set, action.getSeparator());
+        }
 
         //take the product
         List<Map<String, String>> productTemp = new LinkedList<>();
@@ -80,8 +89,10 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
      * A custom Action for the 'dg:assign' tag inside models
      */
     public static class SetAssignTag extends Action {
+
         private String name;
         private String set;
+        private String separator = ",";
 
         public String getName() {
             return name;
@@ -99,6 +110,14 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
             this.set = set;
         }
 
+        public String getSeparator() {
+            return this.separator;
+        }
+
+        public void setSeparator(String sep) {
+            this.separator = sep;
+        }
+
         /**
          * Required implementation of an abstract method in Action
          *
@@ -107,7 +126,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
          * @param scInstance      unused
          * @param log             unused
          * @param collection      unused
-         * @throws ModelException           never
+         * @throws ModelException never
          * @throws SCXMLExpressionException never
          */
         public void execute(EventDispatcher eventDispatcher, ErrorReporter errorReporter, SCInstance scInstance,
