@@ -426,20 +426,22 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void securityNASDAQTest() {
-        securityTestDo("nasdaqlisted.txt", EquivalenceClassTransformer.NASDAQSecuritiesCount, "NASDAQ", "symbolNASDAQ",
-                "securityNameNASDAQ", EquivalenceClassTransformer.symbolsNASDAQ, EquivalenceClassTransformer.securityNamesNASDAQ);
-        
-        securityTestDo("otherlisted.txt", EquivalenceClassTransformer.NotNASDAQSecuritiesCount, "not NASDAQ", "symbolNotNASDAQ",
-                "securityNameNotNASDAQ", EquivalenceClassTransformer.symbolsNotNASDAQ, EquivalenceClassTransformer.securityNamesNotNASDAQ);
+        securityTestDo("nasdaqlisted.txt", EquivalenceClassTransformer.COUNT_NASDAQ_SECURITIES, "NASDAQ", "symbolNASDAQ",
+                "securityNameNASDAQ", EquivalenceClassTransformer.SYMBOLS_NASDAQ, EquivalenceClassTransformer.SECURITY_NAMES_NASDAQ);
+
+        securityTestDo("otherlisted.txt", EquivalenceClassTransformer.COUNT_NOT_NASDAQ_SECURITIES, "not NASDAQ", "symbolNotNASDAQ",
+                "securityNameNotNASDAQ", EquivalenceClassTransformer.SYMBOLS_NOT_NASDAQ, EquivalenceClassTransformer.SECURITY_NAMES_NOT_NASDAQ);
     }
 
-    private void securityTestDo(String fileName, int numberOfRecords, String securityType, String equivClass1, String equivClass2, String[] symbolSet, String[] nameSet) {
+    private void securityTestDo(String fileName, int numberOfRecords, String securityType, String equivClass1,
+            String equivClass2, String[] symbolSet, String[] nameSet) {
+
         DataPipe pipeToTransform = new DataPipe();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String[] symbols = new String[numberOfRecords];
         String[] securityNames = new String[numberOfRecords];
-        
+
         InputStream fileData = getClass().getClassLoader().getResourceAsStream(fileName);
         BufferedReader reader = new BufferedReader(new InputStreamReader(fileData));
         String line;
@@ -467,7 +469,7 @@ public class EquivalenceClassTransformerTest {
             Assert.assertTrue("Wrong " + securityType + " security symbol ('"  + pipeToTransform.getDataMap().get("TEST_symbol") + "')!",
                     symbolsLookUp.contains(pipeToTransform.getDataMap().get("TEST_symbol")));
         }
-        
+
         HashSet<String> securityNamesLookUp = new HashSet<>(Arrays.asList(securityNames));
         for (int i = 0; i < numberOfRecords * 10; i++) {
             pipeToTransform.getDataMap().put("TEST_securityName", "%" + equivClass2);

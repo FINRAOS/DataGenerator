@@ -127,32 +127,32 @@ public class EquivalenceClassTransformer implements DataTransformer {
     /**
      * Number of NASDAQ securities ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
      */
-    public static int NASDAQSecuritiesCount = 2975;
+    public static final int COUNT_NASDAQ_SECURITIES = 2975;
 
     /**
      * NASDAQ symbols list ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
      */
-    public static String[] symbolsNASDAQ = new String[NASDAQSecuritiesCount];
+    public static final String[] SYMBOLS_NASDAQ = new String[COUNT_NASDAQ_SECURITIES];
 
     /**
      * NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
      */
-    public static String[] securityNamesNASDAQ = new String[NASDAQSecuritiesCount];
+    public static final String[] SECURITY_NAMES_NASDAQ = new String[COUNT_NASDAQ_SECURITIES];
 
     /**
      * Number of not NASDAQ securities ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
      */
-    public static int NotNASDAQSecuritiesCount = 5207;
+    public static final int COUNT_NOT_NASDAQ_SECURITIES = 5207;
 
     /**
      * Not NASDAQ symbols list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
      */
-    public static String[] symbolsNotNASDAQ = new String[NotNASDAQSecuritiesCount];
+    public static final String[] SYMBOLS_NOT_NASDAQ = new String[COUNT_NOT_NASDAQ_SECURITIES];
 
     /**
      * Not NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
      */
-    public static String[] securityNamesNotNASDAQ = new String[NotNASDAQSecuritiesCount];
+    public static final String[] SECURITY_NAMES_NOT_NASDAQ = new String[COUNT_NOT_NASDAQ_SECURITIES];
 
     
     /**
@@ -164,8 +164,8 @@ public class EquivalenceClassTransformer implements DataTransformer {
     }
 
     private void readSecuritiesList() {
-        readSecuritiesListDo("nasdaqlisted.txt", symbolsNASDAQ, securityNamesNASDAQ);
-        readSecuritiesListDo("otherlisted.txt", symbolsNotNASDAQ, securityNamesNotNASDAQ);
+        readSecuritiesListDo("nasdaqlisted.txt", SYMBOLS_NASDAQ, SECURITY_NAMES_NASDAQ);
+        readSecuritiesListDo("otherlisted.txt", SYMBOLS_NOT_NASDAQ, SECURITY_NAMES_NOT_NASDAQ);
     }
 
     private void readSecuritiesListDo(String fileName, String[] var1, String[] var2) {
@@ -183,6 +183,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 }
             }
         } catch (IOException e) {
+            System.out.println(e);
         }
     }
 
@@ -365,19 +366,19 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         break;
                         
                     case "symbolNASDAQ":
-                        b.append(symbolsNASDAQ[random.nextInt(symbolsNASDAQ.length)]);
+                        b.append(SYMBOLS_NASDAQ[random.nextInt(SYMBOLS_NASDAQ.length)]);
                         break;
 
                     case "symbolNotNASDAQ":
-                        b.append(symbolsNotNASDAQ[random.nextInt(symbolsNotNASDAQ.length)]);
+                        b.append(SYMBOLS_NOT_NASDAQ[random.nextInt(SYMBOLS_NOT_NASDAQ.length)]);
                         break;
 
                     case "securityNameNASDAQ":
-                        b.append(securityNamesNASDAQ[random.nextInt(securityNamesNASDAQ.length)]);
+                        b.append(SECURITY_NAMES_NASDAQ[random.nextInt(SECURITY_NAMES_NASDAQ.length)]);
                         break;
 
                     case "securityNameNotNASDAQ":
-                        b.append(securityNamesNotNASDAQ[random.nextInt(securityNamesNotNASDAQ.length)]);
+                        b.append(SECURITY_NAMES_NOT_NASDAQ[random.nextInt(SECURITY_NAMES_NOT_NASDAQ.length)]);
                         break;
 
                     default:
