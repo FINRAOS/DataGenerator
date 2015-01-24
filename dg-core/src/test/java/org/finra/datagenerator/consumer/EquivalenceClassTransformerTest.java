@@ -196,6 +196,7 @@ public class EquivalenceClassTransformerTest {
         DataPipe pipeToTransform = new DataPipe();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
+        
         pipeToTransform.getDataMap().put("TEST", "%digits(5)");
         eqTransformer.transform(pipeToTransform);
         Pattern alphaWithSpacesPattern = Pattern.compile("^[\\d]{5}$");
@@ -221,12 +222,68 @@ public class EquivalenceClassTransformerTest {
         DataPipe pipeToTransform = new DataPipe();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
-        pipeToTransform.getDataMap().put("TEST", "%ssn");
-        eqTransformer.transform(pipeToTransform);
-        Pattern alphaWithSpacesPattern = Pattern.compile("^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
-                + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
-        Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST"));
-        Assert.assertTrue(didItMatch.matches());
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST", "%ssn");
+            eqTransformer.transform(pipeToTransform);
+            Pattern alphaWithSpacesPattern = Pattern.compile("^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
+                    + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
+            Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST"));
+            Assert.assertTrue(didItMatch.matches());
+        }
+    }
+
+    /**
+     * %zip produces a USA zip with a partial validness check
+     */
+    @Test
+    public void zipTest() {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_zip", "%zip");
+            eqTransformer.transform(pipeToTransform);
+            Pattern alphaWithSpacesPattern = Pattern.compile("^((\\d{5})([- ]\\d{4})?)$");
+            Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST_zip"));
+            Assert.assertTrue(didItMatch.matches());
+        }
+    }
+
+    /**
+     * %phoneDomesticUSA produces a USA domestic phone number without extension with a partial validness check
+     */
+    @Test
+    public void phoneDomesticUSATest() {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+        
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_phoneDomesticUSA", "%phoneDomesticUSA");
+            eqTransformer.transform(pipeToTransform);
+            Pattern alphaWithSpacesPattern = Pattern.compile("^([2-9]\\d{2})(\\D*)([2-9]\\d{2})(\\D*)(\\d{4})$");
+            Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST_phoneDomesticUSA"));
+            Assert.assertTrue("Wrong USA domestic phone number without extension generation! Created '" 
+            + pipeToTransform.getDataMap().get("TEST_phoneDomesticUSA") + "'...", didItMatch.matches());
+        }
+    }
+
+    /**
+     * %phoneDomesticUSAWithExt produces a USA domestic phone number with extension with a partial validness check
+     */
+    @Test
+    public void phoneDomesticUSAWithExtTest() {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+        
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_phoneDomesticUSAWithExt", "%phoneDomesticUSAWithExt");
+            eqTransformer.transform(pipeToTransform);
+            Pattern alphaWithSpacesPattern = Pattern.compile("^([2-9]\\d{2})(\\D*)([2-9]\\d{2})(\\D*)"
+                    + "(\\d{4})((\\D{1})(ext|e|extension)?(\\D*)(\\d*))?$");
+            Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST_phoneDomesticUSAWithExt"));
+            Assert.assertTrue("Wrong USA domestic phone number with extension generation! Created '" 
+            + pipeToTransform.getDataMap().get("TEST_phoneDomesticUSAWithExt") + "'...", didItMatch.matches());
+        }
     }
 
     /**

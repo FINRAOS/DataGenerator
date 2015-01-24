@@ -224,6 +224,20 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
     }
 
+    private void phoneDomesticUSA(StringBuilder b) {
+        //See more details here - http://en.wikipedia.org/wiki/North_American_Numbering_Plan
+        generateFromRegex(b, "^([2-9]\\d{2})( )([2-9]\\d{2})( )(\\d{4})$");
+    }
+
+    private void zip(StringBuilder b) {
+        generateFromRegex(b, "^((\\d{5})([- ]\\d{4})?)$");
+    }
+
+    private void phoneDomesticUSAWithExt(StringBuilder b) {
+        //See more details here - http://en.wikipedia.org/wiki/North_American_Numbering_Plan
+        generateFromRegex(b, "^([2-9]\\d{2})( )([2-9]\\d{2})( )(\\d{4})( ext )(\\d{3})$");
+    }
+
     private void generateFromRegex(StringBuilder r, String regex) {
         StringBuilder b = new StringBuilder();
 
@@ -345,6 +359,18 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
                     case "ssn":
                         ssn(b);
+                        break;
+
+                    case "zip":
+                        zip(b);
+                        break;
+
+                    case "phoneDomesticUSA":
+                        phoneDomesticUSA(b);
+                        break;
+
+                    case "phoneDomesticUSAWithExt":
+                        phoneDomesticUSAWithExt(b);
                         break;
 
                     case "currency":
