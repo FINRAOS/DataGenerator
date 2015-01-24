@@ -16,6 +16,10 @@
 
 package org.finra.datagenerator.consumer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -121,10 +125,65 @@ public class EquivalenceClassTransformer implements DataTransformer {
     };
 
     /**
+     * Number of NASDAQ securities ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static int NASDAQSecuritiesCount = 2975;
+
+    /**
+     * NASDAQ symbols list ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static String[] symbolsNASDAQ = new String[NASDAQSecuritiesCount];
+
+    /**
+     * NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static String[] securityNamesNASDAQ = new String[NASDAQSecuritiesCount];
+
+    /**
+     * Number of not NASDAQ securities ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static int NotNASDAQSecuritiesCount = 5207;
+
+    /**
+     * Not NASDAQ symbols list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
+     */
+    public static String[] symbolsNotNASDAQ = new String[NotNASDAQSecuritiesCount];
+
+    /**
+     * Not NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
+     */
+    public static String[] securityNamesNotNASDAQ = new String[NotNASDAQSecuritiesCount];
+
+    
+    /**
      * Constructor
      */
     public EquivalenceClassTransformer() {
         random = new Random(System.currentTimeMillis());
+        readSecuritiesList();
+    }
+
+    private void readSecuritiesList() {
+        readSecuritiesListDo("nasdaqlisted.txt", symbolsNASDAQ, securityNamesNASDAQ);
+        readSecuritiesListDo("otherlisted.txt", symbolsNotNASDAQ, securityNamesNotNASDAQ);
+    }
+
+    private void readSecuritiesListDo(String fileName, String[] var1, String[] var2) {
+        InputStream fileData = getClass().getClassLoader().getResourceAsStream(fileName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileData));
+        String line;
+        try {
+            int i = 0;
+            while ((line = reader.readLine()) != null) {
+                String[] lineSplitted = line.split("\\|");
+                if (lineSplitted.length >= 2) {
+                    var1[i] = lineSplitted[0];
+                    var2[i] = lineSplitted[1];
+                    i++;
+                }
+            }
+        } catch (IOException e) {
+        }
     }
 
     private void alpha(StringBuilder b, int len) {
@@ -303,6 +362,22 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     case "country":
                     case "countryLong":
                         b.append(COUNTRIES[random.nextInt(COUNTRIES.length)]);
+                        break;
+                        
+                    case "symbolNASDAQ":
+                        b.append(symbolsNASDAQ[random.nextInt(symbolsNASDAQ.length)]);
+                        break;
+
+                    case "symbolNotNASDAQ":
+                        b.append(symbolsNotNASDAQ[random.nextInt(symbolsNotNASDAQ.length)]);
+                        break;
+
+                    case "securityNameNASDAQ":
+                        b.append(securityNamesNASDAQ[random.nextInt(securityNamesNASDAQ.length)]);
+                        break;
+
+                    case "securityNameNotNASDAQ":
+                        b.append(securityNamesNotNASDAQ[random.nextInt(securityNamesNotNASDAQ.length)]);
                         break;
 
                     default:

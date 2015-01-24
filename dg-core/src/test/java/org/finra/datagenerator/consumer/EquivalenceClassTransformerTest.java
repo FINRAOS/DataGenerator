@@ -18,6 +18,10 @@ package org.finra.datagenerator.consumer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -413,6 +417,63 @@ public class EquivalenceClassTransformerTest {
             Assert.assertTrue("Wrong country long name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_countryLong") + "',"
                     + " but wait for one of '" + countryLongLookUp + "'...",
                     countryLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_countryLong")));
+        }
+    }
+
+    
+    /**
+     * %symbolNASDAQ and %securityNameNASDAQ generates from a predefined list
+     */
+    @Test
+    public void securityNASDAQTest() {
+        securityTestDo("nasdaqlisted.txt", EquivalenceClassTransformer.NASDAQSecuritiesCount, "NASDAQ", "symbolNASDAQ",
+                "securityNameNASDAQ", EquivalenceClassTransformer.symbolsNASDAQ, EquivalenceClassTransformer.securityNamesNASDAQ);
+        
+        securityTestDo("otherlisted.txt", EquivalenceClassTransformer.NotNASDAQSecuritiesCount, "not NASDAQ", "symbolNotNASDAQ",
+                "securityNameNotNASDAQ", EquivalenceClassTransformer.symbolsNotNASDAQ, EquivalenceClassTransformer.securityNamesNotNASDAQ);
+    }
+
+    private void securityTestDo(String fileName, int numberOfRecords, String securityType, String equivClass1, String equivClass2, String[] symbolSet, String[] nameSet) {
+        DataPipe pipeToTransform = new DataPipe();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+
+        String[] symbols = new String[numberOfRecords];
+        String[] securityNames = new String[numberOfRecords];
+        
+        InputStream fileData = getClass().getClassLoader().getResourceAsStream(fileName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileData));
+        String line;
+        try {
+            int i = 0;
+            while ((line = reader.readLine()) != null) {
+                String[] lineSplitted = line.split("\\|");
+                if (lineSplitted.length >= 2) {
+                    symbols[i] = lineSplitted[0];
+                    securityNames[i] = lineSplitted[1];
+                    i++;
+                }
+            }
+        } catch (IOException e) {
+            Assert.assertFalse("Exception during reading '" + fileName + "' file! " + e, true);
+        }
+
+        Assert.assertTrue("Wrong number of " + securityType + " securities!", symbolSet.length == numberOfRecords);
+        Assert.assertTrue("Wrong number of " + securityType + " securities!", nameSet.length == numberOfRecords);
+        
+        HashSet<String> symbolsLookUp = new HashSet<>(Arrays.asList(symbols));
+        for (int i = 0; i < numberOfRecords * 10; i++) {
+            pipeToTransform.getDataMap().put("TEST_symbol", "%" + equivClass1);
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong " + securityType + " security symbol ('"  + pipeToTransform.getDataMap().get("TEST_symbol") + "')!",
+                    symbolsLookUp.contains(pipeToTransform.getDataMap().get("TEST_symbol")));
+        }
+        
+        HashSet<String> securityNamesLookUp = new HashSet<>(Arrays.asList(securityNames));
+        for (int i = 0; i < numberOfRecords * 10; i++) {
+            pipeToTransform.getDataMap().put("TEST_securityName", "%" + equivClass2);
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue("Wrong " + securityType + " security name ('" + pipeToTransform.getDataMap().get("TEST_securityName") + "')!",
+                    securityNamesLookUp.contains(pipeToTransform.getDataMap().get("TEST_securityName")));
         }
     }
 }
