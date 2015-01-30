@@ -21,7 +21,6 @@ Modeling with SCXML
 
   - `Assign Tag <tags/Assign.rst>`_
   - `Set Assign Tag <tags/SetAssign.rst>`_
-  -
 
 Transforming and Writing with the DataConsumer
 ==============================================
