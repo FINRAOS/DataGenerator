@@ -255,4 +255,26 @@ public class SetAssignExtensionTest {
         Assert.assertEquals(1, resultMap.keySet().size());
         Assert.assertEquals("C", resultMap.get("var_out_test"));
     }
+    
+    /**
+        Tests user-defined variable separator in dg:assign tag
+                                                                **/
+    @Test
+    public void separatorTest() {
+        List<Map<String, String>> list = new LinkedList<>();
+        list.add(new HashMap<String, String>());
+        SetAssignExtension setAssign = new SetAssignExtension();
+
+        SetAssignExtension.SetAssignTag setAssignTag = new SetAssignExtension.SetAssignTag();
+        setAssignTag.setName("var_out_test");
+        setAssignTag.setSet("(A,B)|C");
+        setAssignTag.setSeparator("|");
+
+        List<Map<String, String>> processedList = setAssign.pipelinePossibleStates(setAssignTag, list);
+        Assert.assertEquals(2, processedList.size());
+
+        Map<String, String> resultMap = processedList.get(0);
+        Assert.assertEquals(1, resultMap.keySet().size());
+        Assert.assertEquals("(A,B)", resultMap.get("var_out_test"));
+    }
 }
