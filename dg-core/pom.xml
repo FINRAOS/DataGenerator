@@ -44,6 +44,11 @@
             <artifactId>commons-scxml</artifactId>
             <version>0.9</version>
         </dependency>
+		<dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
+        </dependency>
 
         <!-- For Expression Language (EL) support in models -->
         <dependency>
