@@ -6,6 +6,7 @@ Introduction
 ============
 * `Introduction to Data Generator <Introduction.rst>`_
 * `Quick Start <QuickStart.rst>`_
+* `Opening the project in IDEs <UsingIDEs.rst>`_
 * `Extended Example: Eight Lonely Rooks <BasicExample.rst>`_
 
 Distributors
@@ -20,7 +21,6 @@ Modeling with SCXML
 
   - `Assign Tag <tags/Assign.rst>`_
   - `Set Assign Tag <tags/SetAssign.rst>`_
-  -
 
 Transforming and Writing with the DataConsumer
 ==============================================
@@ -29,4 +29,3 @@ Transforming and Writing with the DataConsumer
 * Built-in Transformers
 
   - `Equivalence Class Transformer <transformers/EquivalenceClass.rst>`_
-  - 
