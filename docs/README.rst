@@ -35,3 +35,4 @@ Usage Examples
 * `Producing Consistent Values Across Dependent Models <ConsistentValuesAcrossDependentModels.rst>`_
 * `Running Multiple Models at Once <MultipleModels.rst>`_
 * `Probability Distributions <ProbabilityDistributions.rst>`_
+* `SCXML Model Optimization <SCXMLModelOptimization.rst>`_
