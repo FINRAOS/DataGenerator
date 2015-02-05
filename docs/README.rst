@@ -17,10 +17,15 @@ Distributors
 Modeling with SCXML
 ===================
 * `SCXML Data Models <SCXMLDataModels.rst>`_
-* Built-in Tags
+* Tags Built-into SCXML
 
   - `Assign Tag <tags/Assign.rst>`_
-  - `Set Assign Tag <tags/SetAssign.rst>`_
+
+* DataGenerator specific tags
+
+  - `Assign (from set) Tag <tags/DG_Assign.rst>`_
+  - `File Tag <tags/DG_File.rst>`_
+  - `Range Tag <tags/DG_Range.rst>`_
 
 Transforming and Writing with the DataConsumer
 ==============================================

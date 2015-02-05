@@ -16,6 +16,10 @@
 
 package org.finra.datagenerator.consumer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -28,8 +32,16 @@ import java.util.regex.Pattern;
 public class EquivalenceClassTransformer implements DataTransformer {
 
     private Random random;
-    private final String[] words = new String[]{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789"};
-    private final String[] currencyCodes = {
+
+    /**
+     * List of alpha numeric chars
+     */
+    private static final String[] WORDS = new String[]{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789"};
+
+    /**
+     * List of currency codes
+     */
+    public static final String[] CURRENCY_CODES = {
             "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD",
             "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF",
             "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP",
@@ -56,17 +68,130 @@ public class EquivalenceClassTransformer implements DataTransformer {
     };
 
     /**
+     * List of US states. Long version
+     */
+    public static final String[] STATE_LONG = {
+            "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas",
+            "California", "Colorado", "Connecticut", "Delaware", "Dist. of Columbia",
+            "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana",
+            "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Marshall Islands",
+            "Massachusetts", "Michigan", "Micronesia", "Minnesota", "Mississippi",
+            "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+            "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Marianas",
+            "Ohio", "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+            "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas",
+            "Utah", "Vermont", "Virginia", "Virgin Islands", "Washington", "West Virginia",
+            "Wisconsin", "Wyoming"
+    };
+
+    /**
+     * List of US states. Short 2 chars version
+     */
+    public static final String[] STATES_SHORT = {
+        "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", 
+        "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO", 
+        "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", 
+        "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "VI", "WA", "WV", "WI", "WY"
+    };
+
+    /**
+     * List of countries. Long version
+     */
+    public static final String[] COUNTRIES = {
+        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua & Barbuda", "Argentina",
+        "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados",
+        "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana",
+        "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada",
+        "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo",
+        "Congo Democratic Republic", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+        "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "East Timor", "Egypt", "El Salvador",
+        "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia",
+        "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+        "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+        "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea North", "Korea South",
+        "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+        "Lithuania", "Luxembourg", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
+        "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+        "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia", "Nauru", "Nepal", "The Netherlands",
+        "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Palestinian State",
+        "Panama", "Papua New Guinea", "Paraguay", "Peru", "The Philippines", "Poland", "Portugal", "Qatar", "Romania",
+        "Russia", "Rwanda", "St. Kitts & Nevis", "St. Lucia", "St. Vincent & The Grenadines", "Samoa", "San Marino",
+        "Sao Tome & Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+        "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka",
+        "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania",
+        "Thailand", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
+        "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan",
+        "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+    };
+
+    /**
+     * Number of NASDAQ securities ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static final int COUNT_NASDAQ_SECURITIES = 2975;
+
+    /**
+     * NASDAQ symbols list ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static final String[] SYMBOLS_NASDAQ = new String[COUNT_NASDAQ_SECURITIES];
+
+    /**
+     * NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static final String[] SECURITY_NAMES_NASDAQ = new String[COUNT_NASDAQ_SECURITIES];
+
+    /**
+     * Number of not NASDAQ securities ( ftp://ftp.nasdaqtrader.com/symboldirectory/nasdaqlisted.txt)
+     */
+    public static final int COUNT_NOT_NASDAQ_SECURITIES = 5207;
+
+    /**
+     * Not NASDAQ symbols list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
+     */
+    public static final String[] SYMBOLS_NOT_NASDAQ = new String[COUNT_NOT_NASDAQ_SECURITIES];
+
+    /**
+     * Not NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
+     */
+    public static final String[] SECURITY_NAMES_NOT_NASDAQ = new String[COUNT_NOT_NASDAQ_SECURITIES];
+
+    
+    /**
      * Constructor
      */
     public EquivalenceClassTransformer() {
         random = new Random(System.currentTimeMillis());
+        readSecuritiesList();
+    }
+
+    private void readSecuritiesList() {
+        readSecuritiesListDo("nasdaqlisted.txt", SYMBOLS_NASDAQ, SECURITY_NAMES_NASDAQ);
+        readSecuritiesListDo("otherlisted.txt", SYMBOLS_NOT_NASDAQ, SECURITY_NAMES_NOT_NASDAQ);
+    }
+
+    private void readSecuritiesListDo(String fileName, String[] var1, String[] var2) {
+        InputStream fileData = getClass().getClassLoader().getResourceAsStream(fileName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileData));
+        String line;
+        try {
+            int i = 0;
+            while ((line = reader.readLine()) != null) {
+                String[] lineSplitted = line.split("\\|");
+                if (lineSplitted.length >= 2) {
+                    var1[i] = lineSplitted[0];
+                    var2[i] = lineSplitted[1];
+                    i++;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     private void alpha(StringBuilder b, int len) {
         while (len > 0) {
-            int word = random.nextInt(words.length);
-            int letter = random.nextInt(words[word].length());
-            b.append(words[word].charAt(letter));
+            int word = random.nextInt(WORDS.length);
+            int letter = random.nextInt(WORDS[word].length());
+            b.append(WORDS[word].charAt(letter));
             len--;
         }
     }
@@ -76,9 +201,9 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
         while (len > 0) {
             if (len != nextSpacePos) {
-                int word = random.nextInt(words.length);
-                int letter = random.nextInt(words[word].length());
-                b.append(words[word].charAt(letter));
+                int word = random.nextInt(WORDS.length);
+                int letter = random.nextInt(WORDS[word].length());
+                b.append(WORDS[word].charAt(letter));
             } else {
                 b.append(" ");
                 nextSpacePos = len - random.nextInt(9);
@@ -97,6 +222,20 @@ public class EquivalenceClassTransformer implements DataTransformer {
         //See more details here - http://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs
         generateFromRegex(b, "^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
                 + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
+    }
+
+    private void phoneDomesticUSA(StringBuilder b) {
+        //See more details here - http://en.wikipedia.org/wiki/North_American_Numbering_Plan
+        generateFromRegex(b, "^([2-9]\\d{2})( )([2-9]\\d{2})( )(\\d{4})$");
+    }
+
+    private void zip(StringBuilder b) {
+        generateFromRegex(b, "^((\\d{5})([- ]\\d{4})?)$");
+    }
+
+    private void phoneDomesticUSAWithExt(StringBuilder b) {
+        //See more details here - http://en.wikipedia.org/wiki/North_American_Numbering_Plan
+        generateFromRegex(b, "^([2-9]\\d{2})( )([2-9]\\d{2})( )(\\d{4})( ext )(\\d{3})$");
     }
 
     private void generateFromRegex(StringBuilder r, String regex) {
@@ -222,9 +361,52 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         ssn(b);
                         break;
 
-                    case "currency":
-                        b.append(currencyCodes[random.nextInt(currencyCodes.length)]);
+                    case "zip":
+                        zip(b);
                         break;
+
+                    case "phoneDomesticUSA":
+                        phoneDomesticUSA(b);
+                        break;
+
+                    case "phoneDomesticUSAWithExt":
+                        phoneDomesticUSAWithExt(b);
+                        break;
+
+                    case "currency":
+                        b.append(CURRENCY_CODES[random.nextInt(CURRENCY_CODES.length)]);
+                        break;
+
+                    case "state":
+                    case "stateLong":
+                        b.append(STATE_LONG[random.nextInt(STATE_LONG.length)]);
+                        break;
+
+                    case "stateShort":
+                        b.append(STATES_SHORT[random.nextInt(STATES_SHORT.length)]);
+                        break;
+
+                    case "country":
+                    case "countryLong":
+                        b.append(COUNTRIES[random.nextInt(COUNTRIES.length)]);
+                        break;
+                        
+                    case "symbolNASDAQ":
+                        b.append(SYMBOLS_NASDAQ[random.nextInt(SYMBOLS_NASDAQ.length)]);
+                        break;
+
+                    case "symbolNotNASDAQ":
+                        b.append(SYMBOLS_NOT_NASDAQ[random.nextInt(SYMBOLS_NOT_NASDAQ.length)]);
+                        break;
+
+                    case "securityNameNASDAQ":
+                        b.append(SECURITY_NAMES_NASDAQ[random.nextInt(SECURITY_NAMES_NASDAQ.length)]);
+                        break;
+
+                    case "securityNameNotNASDAQ":
+                        b.append(SECURITY_NAMES_NOT_NASDAQ[random.nextInt(SECURITY_NAMES_NOT_NASDAQ.length)]);
+                        break;
+
                     default:
                         b.append(value);
                         break;
