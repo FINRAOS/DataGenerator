@@ -1,5 +1,5 @@
-DataGenerator Usage Docs
-=========================
+DataGenerator User Docs
+=======================
 This document describes how to use DataGenerator.
 
 Introduction
