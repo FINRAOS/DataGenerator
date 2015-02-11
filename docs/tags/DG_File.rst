@@ -24,12 +24,15 @@ List of parameters:
 
 Data files example:
 
-File type | Example of data | scxml command 
-----------|-----------------|---------
-csv | #param1,param2 | ```<dg:file name="var_1" fileName="DGFileTest_step1.csv" separator=","/>``` 
- | a1,b1 | 
-multi lines | a1 | ```<dg:file name="var_2" fileName="DGFileTest_step2.txt" />``` 
- | b1 | 
++------------+-----------------+-----------------------------------------------------------------------------+
+| File type  | Example of data | scxml command                                                               |
++------------+-----------------+-----------------------------------------------------------------------------+
+|csv         | param1,param2   | <dg:file name="var_1" fileName="DGFileTest_step1.csv" separator=","/>       |
++------------+-----------------+-----------------------------------------------------------------------------+
+|multi lines | a1              | <dg:file name="var_2" fileName="DGFileTest_step2.txt" />                    |
+|            | a2              |                                                                             |
+|            | a3              |                                                                             |
++------------+-----------------+-----------------------------------------------------------------------------+
 
 These two example will produce same results. You can select more suitable for your data format.
 
