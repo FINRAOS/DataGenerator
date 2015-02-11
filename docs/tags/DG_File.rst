@@ -27,9 +27,9 @@ Data files example:
 +------------+-----------------+-----------------------------------------------------------------------------+
 | File type  | Example of data | scxml command                                                               |
 +------------+-----------------+-----------------------------------------------------------------------------+
-|csv         | param1,param2   | ```<dg:file name="var_1" fileName="DGFileTest_step1.csv" separator=","/>``` |
+|csv         | param1,param2   | <dg:file name="var_1" fileName="DGFileTest_step1.csv" separator=","/>       |
 +------------+-----------------+-----------------------------------------------------------------------------+
-|multi lines | a1              | ```<dg:file name="var_2" fileName="DGFileTest_step2.txt" />```              |
+|multi lines | a1              | <dg:file name="var_2" fileName="DGFileTest_step2.txt" />                    |
 |            | a2              |                                                                             |
 |            | a3              |                                                                             |
 +------------+-----------------+-----------------------------------------------------------------------------+
