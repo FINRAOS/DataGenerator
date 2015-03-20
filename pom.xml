@@ -7,6 +7,7 @@
     <version>2.1-SNAPSHOT</version>
     <modules>
         <module>dg-build-tools</module>
+        <module>dg-commons</module>
         <module>dg-core</module>
         <module>dg-example-default</module>
         <module>dg-example-hadoop</module>
