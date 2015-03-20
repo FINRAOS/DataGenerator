@@ -1,11 +1,12 @@
-DataGenerator Usage Docs
-=========================
+DataGenerator User Docs
+=======================
 This document describes how to use DataGenerator.
 
 Introduction
 ============
 * `Introduction to Data Generator <Introduction.rst>`_
 * `Quick Start <QuickStart.rst>`_
+* `Opening the project in IDEs <UsingIDEs.rst>`_
 * `Extended Example: Eight Lonely Rooks <BasicExample.rst>`_
 
 Distributors
@@ -16,11 +17,15 @@ Distributors
 Modeling with SCXML
 ===================
 * `SCXML Data Models <SCXMLDataModels.rst>`_
-* Built-in Tags
+* Tags Built-into SCXML
 
   - `Assign Tag <tags/Assign.rst>`_
-  - `Set Assign Tag <tags/SetAssign.rst>`_
-  -
+
+* DataGenerator specific tags
+
+  - `Assign (from set) Tag <tags/DG_Assign.rst>`_
+  - `File Tag <tags/DG_File.rst>`_
+  - `Range Tag <tags/DG_Range.rst>`_
 
 Transforming and Writing with the DataConsumer
 ==============================================
@@ -29,4 +34,10 @@ Transforming and Writing with the DataConsumer
 * Built-in Transformers
 
   - `Equivalence Class Transformer <transformers/EquivalenceClass.rst>`_
-  - 
+
+Usage Examples
+==============
+* `Producing Consistent Values Across Dependent Models <ConsistentValuesAcrossDependentModels.rst>`_
+* `Running Multiple Models at Once <MultipleModels.rst>`_
+* `Probability Distributions <ProbabilityDistributions.rst>`_
+* `SCXML Model Optimization <SCXMLModelOptimization.rst>`_

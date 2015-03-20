@@ -25,9 +25,9 @@
 
     <state id="BULK_ASSIGN">
         <onentry>
-            <dg:assign name="var_out_RECORD_TYPE" set="a,b,c,d,e,f,g"/>
-            <dg:assign name="var_out_RECORD_TYPE_2" set="a,b,c,d,e,f,g"/>
-            <dg:assign name="var_out_RECORD_TYPE_3" set="a,b,c,d,e,f,g"/>
+            <dg:assign name="var_out_RECORD_TYPE" set="a1,b1,c1,d1,e1,f1,g1"/>
+            <dg:assign name="var_out_RECORD_TYPE_2" set="a2,b2,c2,d2,e2,f2,g2"/>
+            <dg:assign name="var_out_RECORD_TYPE_3" set="a3,b3,c3,d3,e3,f3,g3"/>
             <assign name="var_out_RECORD_TYPE_4" expr="Lorem"/>
             <assign name="var_out_RECORD_TYPE_5" expr="Ipsum"/>
             <assign name="var_out_RECORD_TYPE_6" expr="Doler"/>

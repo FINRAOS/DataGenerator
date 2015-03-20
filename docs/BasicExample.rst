@@ -21,7 +21,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_ONE">
             <onentry>
                 <assign name="rook_rank_one" expr="1" />
-                <assign name="rook_file_one" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_one" set"a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_TWO" event="ROOK_TWO" />
         </state>
@@ -29,7 +29,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_TWO">
             <onentry>
                 <assign name="rook_rank_two" expr="2" />
-                <assign name="rook_file_two" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_two" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_THREE" event="ROOK_THREE" cond="${!(rook_file_two == rook_file_one)}" />
         </state>
@@ -37,7 +37,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_THREE">
             <onentry>
                 <assign name="rook_rank_three" expr="3" />
-                <assign name="rook_file_three" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_three" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_FOUR" event="ROOK_FOUR" cond="${!(rook_file_three == rook_file_two || rook_file_three == rook_file_one)}" />
         </state>
@@ -45,7 +45,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_FOUR">
             <onentry>
                 <assign name="rook_rank_four" expr="4" />
-                <assign name="rook_file_four" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_four" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_FIVE" event="ROOK_FIVE" cond="${!(rook_file_four == rook_file_three || rook_file_four == rook_file_two || rook_file_four == rook_file_one)}" />
         </state>
@@ -53,7 +53,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_FIVE">
             <onentry>
                 <assign name="rook_rank_five" expr="5" />
-                <assign name="rook_file_five" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_five" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_SIX" event="ROOK_SIX" cond="${!(rook_file_five == rook_file_four || rook_file_five == rook_file_three || rook_file_five == rook_file_two || rook_file_five == rook_file_one)}" />
         </state>
@@ -61,7 +61,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_SIX">
             <onentry>
                 <assign name="rook_rank_six" expr="6" />
-                <assign name="rook_file_six" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_six" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_SEVEN" event="ROOK_SEVEN" cond="${!(rook_file_six == rook_file_five || rook_file_six == rook_file_four || rook_file_six == rook_file_three || rook_file_six == rook_file_two || rook_file_six == rook_file_one)}" />		
         </state>
@@ -69,7 +69,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_SEVEN">
             <onentry>
                 <assign name="rook_rank_seven" expr="7" />
-                <assign name="rook_file_seven" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_seven" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_EIGHT" event="ROOK_EIGHT" cond="${!(rook_file_seven == rook_file_six || rook_file_seven == rook_file_five || rook_file_seven == rook_file_four || rook_file_seven == rook_file_three || rook_file_seven == rook_file_two || rook_file_seven == rook_file_one)}" />	
         </state>
@@ -77,7 +77,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_EIGHT">
             <onentry>
                 <assign name="rook_rank_eight" expr="8" />
-                <assign name="rook_file_eight" expr="set:{a,b,c,d,e,f,g,h}" />
+                <dg:assign name="rook_file_eight" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="end" event="end" cond="${!(rook_file_eight == rook_file_seven || rook_file_eight == rook_file_six || rook_file_eight == rook_file_five || rook_file_eight == rook_file_four || rook_file_eight == rook_file_three || rook_file_eight == rook_file_two || rook_file_eight == rook_file_one)}" />	
         </state>
