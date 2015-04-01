@@ -115,6 +115,10 @@ public class DefaultDistributor implements SearchDistributor {
 
             // Now, wait for the output thread to get done
             outputThread.join();
+
+            // Now that it is finished, reset flags.
+            searchExitFlag.set(false);   
+            hardExitFlag.set(false);
             log.info("DONE");
         } catch (InterruptedException ex) {
             log.info("Interrupted !!... exiting", ex);
