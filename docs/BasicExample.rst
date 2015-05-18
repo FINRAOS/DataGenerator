@@ -21,7 +21,7 @@ To put eight rooks on a chess board such that none attack each other, all eight 
         <state id="ROOK_ONE">
             <onentry>
                 <assign name="rook_rank_one" expr="1" />
-                <dg:assign name="rook_file_one" set"a,b,c,d,e,f,g,h" />
+                <dg:assign name="rook_file_one" set="a,b,c,d,e,f,g,h" />
             </onentry>
             <transition target="ROOK_TWO" event="ROOK_TWO" />
         </state>
