@@ -83,7 +83,7 @@ To have one hundred accounts, one can vary the value of uniqueAccountSeed from 0
                 return 0;
 
             accounts.setUniqueAccountSeed(currentAccount);
-            currentAccount++
+            currentAccount++;
             return super.consume(row);
         }
     }
