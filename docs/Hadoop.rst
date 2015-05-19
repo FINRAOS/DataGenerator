@@ -6,7 +6,7 @@ Overview
 
 Using DataGenerator with Hadoop is similar to using the DataGenerator multithreaded. All that changes is distributing the Frontiers produced by SCXMLEngine.
 
-Prepare an SCXMLEngine as one woould for using DataGenerator multithreaded, setting the model by String or InputStream and setting the desired amount of bootstrap. Then, instead of having SCXMLEngine process with a DefaultDistributor, process with a custom HadoopDistributor. This HadoopDistributor will distribute the Frontiers by making a Hadoop mapper for each Frontier and having the mappers perform the subsequent searchs on the Frontiers. The easiest way is to have each mapper make its own DefaultDistributor to handle the search. In essence one is splitting the distributing of Frontiers across many DefaultDistributors on many machines.    
+Prepare an SCXMLEngine as one would for using DataGenerator multithreaded, setting the model by String or InputStream and setting the desired amount of bootstrap. Then, instead of having SCXMLEngine process with a DefaultDistributor, process with a custom HadoopDistributor. This HadoopDistributor will distribute the Frontiers by making a Hadoop mapper for each Frontier and having the mappers perform the subsequent searchs on the Frontiers. The easiest way is to have each mapper make its own DefaultDistributor to handle the search. In essence one is splitting the distributing of Frontiers across many DefaultDistributors on many machines.    
 
 The dg-example-hadoop module provides a complete demonstration, following the outline above, of using DataGenerator in conjunction with Hadoop.
 
