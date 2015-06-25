@@ -16,12 +16,7 @@
 
 package org.finra.datagenerator.engine.scxml.tags;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.scxml.ErrorReporter;
 import org.apache.commons.scxml.EventDispatcher;
@@ -29,12 +24,19 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
-import org.apache.commons.lang3.StringUtils;
+import org.finra.datagenerator.exceptions.NullActionException;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Marshall Peters
  * Date: 11/7/14
- *
+ * <p/>
  * Updated 1/6/2014 by Michael Thomas
  */
 public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
@@ -54,13 +56,17 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
     /**
      * Performs variable assignments from a set of values
      *
-     * @param action a SetAssignTag Action
+     * @param action            a SetAssignTag Action
      * @param possibleStateList a current list of possible states produced so far from expanding a model state
-     *
      * @return the cartesian product of every current possible state and the set of values specified by action
      */
     public List<Map<String, String>> pipelinePossibleStates(SetAssignTag action,
                                                             List<Map<String, String>> possibleStateList) {
+        if (action == null) {
+            throw new NullActionException("Called with a null action, and possibleStateList = "
+                    + possibleStateList.toString());
+        }
+
         String variable = action.getName();
         String set = action.getSet();
 
@@ -126,7 +132,7 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
          * @param scInstance      unused
          * @param log             unused
          * @param collection      unused
-         * @throws ModelException never
+         * @throws ModelException           never
          * @throws SCXMLExpressionException never
          */
         public void execute(EventDispatcher eventDispatcher, ErrorReporter errorReporter, SCInstance scInstance,
