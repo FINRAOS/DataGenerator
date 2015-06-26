@@ -11,4 +11,5 @@ nb-configuration.xml
 *.jar
 *.war
 *.ear
+*.asc
 /pom.xml
