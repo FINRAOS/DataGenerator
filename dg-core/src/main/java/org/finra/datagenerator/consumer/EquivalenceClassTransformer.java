@@ -297,6 +297,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
      *
      * @param cr a reference to DataPipe from which to read the current map
      */
+    @Override
     public void transform(DataPipe cr) {
         Map<String, String> map = cr.getDataMap();
 
