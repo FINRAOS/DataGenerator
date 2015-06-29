@@ -49,8 +49,9 @@ public class AllFieldsWriter implements DataWriter {
      * Constructor
      *
      * @param os the output stream to use in writing
+     * @param showHeadings whether or not to show the headings on the first line
      */
-    public AllFieldsWriter(boolean showHeadings, final OutputStream os) {
+    public AllFieldsWriter(final boolean showHeadings, final OutputStream os) {
         this.os = os;
         this.showHeadings = showHeadings;
     }
