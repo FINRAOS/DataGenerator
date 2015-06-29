@@ -29,6 +29,14 @@ public class NullActionException extends RuntimeException {
     }
 
     /**
+     * Constructor with a Throwable
+     * @param e The throwable
+     */
+    public NullActionException(final Throwable e) {
+        super(e);
+    }
+
+    /**
      * Constructor with a message and a throwable
      * @param msg The message
      * @param e a throwable
