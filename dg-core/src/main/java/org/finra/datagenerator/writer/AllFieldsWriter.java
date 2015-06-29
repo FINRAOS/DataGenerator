@@ -33,14 +33,26 @@ public class AllFieldsWriter implements DataWriter {
     protected static final Logger log = Logger.getLogger(AllFieldsWriter.class);
     private final OutputStream os;
     private String[] outTemplate;
+    private final boolean showHeadings;
 
     /**
      * Constructor
      *
-     * @param os          the output stream to use in writing
+     * @param os the output stream to use in writing
      */
     public AllFieldsWriter(final OutputStream os) {
         this.os = os;
+        showHeadings = true;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param os the output stream to use in writing
+     */
+    public AllFieldsWriter(boolean showHeadings, final OutputStream os) {
+        this.os = os;
+        this.showHeadings = showHeadings;
     }
 
     @Override
@@ -49,8 +61,10 @@ public class AllFieldsWriter implements DataWriter {
             if (outTemplate == null) {
                 outTemplate = cr.getDataMap().keySet().toArray(new String[cr.getDataMap().size()]);
                 Arrays.sort(outTemplate);
-                os.write(StringUtils.join(outTemplate, "|").getBytes());
-                os.write("\n".getBytes());
+                if (showHeadings) {
+                    os.write(StringUtils.join(outTemplate, "|").getBytes());
+                    os.write("\n".getBytes());
+                }
             }
 
             os.write(cr.getPipeDelimited(outTemplate).getBytes());
