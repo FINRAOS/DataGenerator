@@ -15,6 +15,7 @@
  */
 package org.finra.datagenerator.writer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataPipe;
 
@@ -48,6 +49,8 @@ public class AllFieldsWriter implements DataWriter {
             if (outTemplate == null) {
                 outTemplate = cr.getDataMap().keySet().toArray(new String[cr.getDataMap().size()]);
                 Arrays.sort(outTemplate);
+                os.write(StringUtils.join(outTemplate, "|").getBytes());
+                os.write("\n".getBytes());
             }
 
             os.write(cr.getPipeDelimited(outTemplate).getBytes());
