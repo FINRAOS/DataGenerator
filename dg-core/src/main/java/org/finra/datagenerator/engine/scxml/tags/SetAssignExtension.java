@@ -25,12 +25,9 @@ import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
 import org.finra.datagenerator.exceptions.NullActionException;
+import org.finra.datagenerator.exceptions.NullSetException;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -71,6 +68,11 @@ public class SetAssignExtension implements CustomTagExtension<SetAssignExtension
         String set = action.getSet();
 
         String[] domain;
+
+        if (set == null) {
+            throw new NullSetException("Called with a null set, action name=" + action.getName()
+                    + " and possibleStateList = " + possibleStateList.toString());
+        }
 
         if (StringUtils.splitByWholeSeparator(set, action.getSeparator()).length == 0) {
             domain = new String[]{""};
