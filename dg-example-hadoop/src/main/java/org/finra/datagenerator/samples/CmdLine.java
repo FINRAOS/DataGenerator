@@ -200,13 +200,13 @@ public final class CmdLine extends Configured implements Tool {
 
         Engine chartExec = parseCommandLine(args);
 
-        hdfsDist.setConfiguration(this.configuration);
+        hdfsDist.setConfiguration(super.getConf());
         hdfsDist.setOutputFileDir("dg-result");
         chartExec.process(hdfsDist);
 
         return 0;
     }
-
+/*
     @Override
     public void setConf(final Configuration c) {
         this.configuration = c;
@@ -216,5 +216,5 @@ public final class CmdLine extends Configured implements Tool {
     public Configuration getConf() {
         return configuration;
     }
-
+*/
 }

@@ -65,7 +65,7 @@ public class RangeExtension implements CustomTagExtension<RangeExtension.RangeTa
         if (action.getStep() != null) {
             step = new BigDecimal(action.getStep());
         } else {
-            step = new BigDecimal(1);
+            step = BigDecimal.ONE;
         }
 
         List<BigDecimal> rangeValues = new ArrayList<>();
