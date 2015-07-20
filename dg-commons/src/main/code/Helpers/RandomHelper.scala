@@ -220,7 +220,7 @@ object RandomHelper {
    * @param randomSeedOption
    * @return
    */
-  def getNextIntFromGammaDistribution(gammaDistShape: Double, gammaDistScale: Double, randomSeedOption: Option[Long] = None) = {
+  def getNextIntFromGammaDistribution(gammaDistShape: Double, gammaDistScale: Double, randomSeedOption: Option[Int] = None) = {
     if (!gammaGenerators.contains((gammaDistShape, gammaDistScale))) {
       val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong
       gammaGenerators.put((gammaDistShape, gammaDistScale), new GammaDistribution(new JDKRandomGenerator() { setSeed(localRandomSeed)}, gammaDistShape, gammaDistScale))
