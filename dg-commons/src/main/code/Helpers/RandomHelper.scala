@@ -1,0 +1,236 @@
+package Helpers
+
+import scala.util.Random
+
+import org.lanyard.dist.cont.Gamma
+import org.lanyard.random.{Ranq1, RNG}
+
+/**
+ * Configurable randomizers managed per thread, including separate randomizers based on two different levels --
+ * things that should change less often (the information in the data) and things that should change more often
+ * (the unique IDs that key the data).
+ */
+object RandomHelper {
+  val threadToRandomSeedsMap = new collection.parallel.mutable.ParHashMap[Thread, (scala.util.Random, scala.util.Random)]()
+  /**
+   * Generates random seeds for creating randomizers for data that doesn't need to be globally unique.
+   */
+  var randomSeedRandomizer = new util.Random()
+
+  /**
+   * Initial part of random seed to use for randomizers for data that needs to be globally unique.
+   */
+  var randomSeedBaseForGloballyUniqueIds: Short = (util.Random.nextInt(65535) - 32767).toShort
+
+  /**
+   * Given a unique value, combines it with configurable random seeds and creates randomizers for this thread.
+   * @param uniqueValue A long limited to 48 unsigned bits (method will fail if greater)
+   * @param randomSeedOption
+   * @param globalRandomSeedBaseOption
+   * @return
+   */
+  def setUpRandomSeedsForCurrentThreadBasedOnUniqueValue(uniqueValue: Long, randomSeedOption: Option[Long] = None, globalRandomSeedBaseOption: Option[Short] = None): (Random, Random) = {
+    val currentThread = Thread.currentThread()
+    val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong
+    val localGlobalRandomSeedBase = if (globalRandomSeedBaseOption.nonEmpty) globalRandomSeedBaseOption.get else randomSeedBaseForGloballyUniqueIds
+    val seedAndGlobalSeed = (new scala.util.Random(localRandomSeed),
+      new scala.util.Random(NumericHelper.concatenateTwoNumbers48BitAnd16Bit(uniqueValue, localGlobalRandomSeedBase)))
+    threadToRandomSeedsMap +=
+      ((currentThread,
+      seedAndGlobalSeed))
+    println(s"Setting up random seeds for thread ${currentThread.getId}: Seed is ${localRandomSeed}. Initial random val is ${seedAndGlobalSeed._1.nextInt}.")
+    seedAndGlobalSeed
+  }
+
+  /**
+   * Remove the randomizers for the current thread.
+   */
+  def removeEntryForCurrentThread(): Unit = {
+    val currentThread = Thread.currentThread()
+    println(s"Removing thread ${currentThread.getId}. Final random val is ${threadToRandomSeedsMap(currentThread)._1.nextInt}.")
+    threadToRandomSeedsMap.remove(currentThread)
+  }
+
+  /**
+   * Get the configured-seed randomizer for the current thread.
+   * @return
+   */
+  def randWithConfiguredSeed = {
+    val currentThread = Thread.currentThread()
+    if (!threadToRandomSeedsMap.contains(currentThread)) {
+      // In current use case this only happens on the main thread, but for other uses cases it will be default behavior.
+      setUpRandomSeedsForCurrentThreadBasedOnUniqueValue(0)._1
+    } else {
+      threadToRandomSeedsMap(currentThread)._1
+    }
+  }
+
+  /**
+   * Get the configured-seed globally unique randomizer for the current thread.
+   * @return
+   */
+  def randForGloballyUniqueIds = {
+    val currentThread = Thread.currentThread()
+    if (!threadToRandomSeedsMap.contains(currentThread)) {
+      // In current use case this only happens on the main thread, but for other uses cases it will be default behavior.
+      setUpRandomSeedsForCurrentThreadBasedOnUniqueValue(0)._2
+    } else {
+      threadToRandomSeedsMap(currentThread)._2
+    }
+  }
+
+  /**
+   * A-Z a-z 0-9 - _
+   */
+  val alphaNumericChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') ++ ('_' to '_')
+
+  /**
+   * Get random alphanumeric string of maximum length.
+   * @param length
+   * @param isGloballyRandom
+   * @return
+   */
+  def randomAlphanumericString(length: Int, isGloballyRandom: Boolean = false, minLength: Option[Int] = None): String = {
+    randomStringFromAllowableChars(length, alphaNumericChars, isGloballyRandom, minLength)
+  }
+
+  /**
+   * a-f 0-9
+   */
+  val hexChars = ('a' to 'f') ++ ('0' to '9')
+
+  /**
+   * Get random hexadecimal string of maximum length.
+   * @param length
+   * @param isGloballyRandom
+   * @return
+   */
+  def randomHexString(length: Int, isGloballyRandom: Boolean = false, minLength: Option[Int] = None): String = {
+    randomStringFromAllowableChars(length, hexChars, isGloballyRandom, minLength)
+  }
+
+  /**
+   * 8, 9, a, b
+   */
+  val hexCharsBetween8AndB = ('8' to '9') ++ ('a' to 'b')
+
+  /**
+   * Get random string of maximum length including allowable characters 8, 9, a, and b
+   * @param isGloballyRandom
+   * @return
+   */
+  def randomHexCharFrom8ToB(isGloballyRandom: Boolean = false): Char = {
+    val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
+    val randomIndex = random.nextInt(hexCharsBetween8AndB.length)
+    hexCharsBetween8AndB(randomIndex)
+  }
+
+  /**
+   * Get a random int between two numbers, inclusive
+   * @param min Minimum, inclusive
+   * @param max Maximum, inclusive
+   * @param isGloballyRandom
+   * @return
+   */
+  def randomIntInRange(min: Int, max: Int, isGloballyRandom: Boolean = false): Int = {
+    val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
+    min + random.nextInt(max - min + 1)
+  }
+
+  /**
+   * Generate a random string from allowable characters
+   * @param length
+   * @param chars
+   * @param isGloballyRandom
+   * @return
+   */
+  def randomStringFromAllowableChars(length: Int, chars: Seq[Char], isGloballyRandom: Boolean = false, minLength: Option[Int] = None): String = {
+    val adjustedLength =
+      if (minLength.isEmpty) length
+      else randomIntInRange(minLength.get, length, isGloballyRandom)
+
+    if (adjustedLength == 0) {
+      ""
+    } else {
+      val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
+      val sb = new StringBuilder
+      for (i <- 1 to adjustedLength) {
+        val randomIndex = random.nextInt(chars.length)
+        sb.append(chars(randomIndex))
+      }
+      sb.toString()
+    }
+  }
+
+  /**
+   * Returns true (percentage * 100)% of the time, else false
+   * @param percentage A number between 0 and 1.0 (or else, if below 0 it will always evaluate false, and >= 1 will always evaluate true)
+   * @return Boolean
+   */
+  def evaluateProbability(percentage: Double): Boolean = {
+    randWithConfiguredSeed.nextDouble <= percentage
+  }
+
+  /**
+   * Get the next Long from the configured-seed randomizer for the current thread, with specified maximum size (exclusive).
+   * @param maxSizeExclusive
+   * @return
+   */
+  def nextLong(maxSizeExclusive: Long): Long = {
+    (randWithConfiguredSeed.nextDouble() * maxSizeExclusive).toLong
+  }
+
+  /**
+   * Get the next Long from the configured-seed randomizer for the current thread, with specified minimum size (inclusive)
+   * and specified maximum size (exclusive).
+   * @param minSizeInclusive
+   * @param maxSizeExclusive
+   * @return
+   */
+  def nextLong(minSizeInclusive: Long, maxSizeExclusive: Long) : Long = {
+    assert(minSizeInclusive >= 0)
+    assert(maxSizeExclusive > minSizeInclusive)
+
+    val scale = maxSizeExclusive - minSizeInclusive
+    val returnVal = nextLong(scale) + minSizeInclusive
+    assert(returnVal >= 0)
+    returnVal
+  }
+
+  /**
+   * Same behavior as java.util.UUID.randomUUID() except uses a random generator with configurable seed.
+   * @param isGloballyRandom
+   * @return
+   */
+  def randomUuid(isGloballyRandom: Boolean = false): String = {
+    // xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal digit and y is one of 8, 9, A, or B (e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479)
+    s"${randomHexString(8, isGloballyRandom)}-${randomHexString(4, isGloballyRandom)}-4${randomHexString(3, isGloballyRandom)}-${randomHexCharFrom8ToB(isGloballyRandom)}${randomHexString(3, isGloballyRandom)}-${randomHexString(12, isGloballyRandom)}"
+  }
+
+  /**
+   * Gamma generators for main thread, keyed by random and globally random seeds.
+   */
+  val gammaGenerators = new collection.mutable.HashMap[(Double, Double), (Gamma, RNG)]()
+
+  /**
+   * Get the next integer from a gamma distribution of the specified shape and scale, with optional random seed.
+   * Not yet thread-aware because so far we have only needed to use this from the main thread.
+   * @param gammaDistShape
+   * @param gammaDistScale
+   * @param randomSeedOption
+   * @return
+   */
+  def getNextIntFromGammaDistribution(gammaDistShape: Double, gammaDistScale: Double, randomSeedOption: Option[Long] = None) = {
+    if (!gammaGenerators.contains((gammaDistShape, gammaDistScale))) {
+      val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong
+      gammaGenerators.put((gammaDistShape, gammaDistScale), (Gamma(gammaDistShape, gammaDistScale), Ranq1(localRandomSeed)))
+    }
+
+    val (gammaGenerator: Gamma, randomGenerator: RNG) = gammaGenerators.get((gammaDistShape, gammaDistScale)).get
+    val tuple = gammaGenerator.random(randomGenerator)
+
+    gammaGenerators((gammaDistShape, gammaDistScale)) = (gammaGenerator, tuple._2)
+
+    math.round(tuple._1).toInt
+  }
+}
