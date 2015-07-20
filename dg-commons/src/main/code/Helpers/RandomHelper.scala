@@ -1,9 +1,9 @@
 package Helpers
 
-import scala.util.Random
+import org.apache.commons.math3.distribution.GammaDistribution
+import org.apache.commons.math3.random.JDKRandomGenerator
 
-import org.lanyard.dist.cont.Gamma
-import org.lanyard.random.{Ranq1, RNG}
+import scala.util.Random
 
 /**
  * Configurable randomizers managed per thread, including separate randomizers based on two different levels --
@@ -210,7 +210,7 @@ object RandomHelper {
   /**
    * Gamma generators for main thread, keyed by random and globally random seeds.
    */
-  val gammaGenerators = new collection.mutable.HashMap[(Double, Double), (Gamma, RNG)]()
+  val gammaGenerators = new collection.mutable.HashMap[(Double, Double), GammaDistribution]()
 
   /**
    * Get the next integer from a gamma distribution of the specified shape and scale, with optional random seed.
@@ -223,14 +223,14 @@ object RandomHelper {
   def getNextIntFromGammaDistribution(gammaDistShape: Double, gammaDistScale: Double, randomSeedOption: Option[Long] = None) = {
     if (!gammaGenerators.contains((gammaDistShape, gammaDistScale))) {
       val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong
-      gammaGenerators.put((gammaDistShape, gammaDistScale), (Gamma(gammaDistShape, gammaDistScale), Ranq1(localRandomSeed)))
+      gammaGenerators.put((gammaDistShape, gammaDistScale), new GammaDistribution(new JDKRandomGenerator() { setSeed(localRandomSeed)}, gammaDistShape, gammaDistScale))
     }
 
-    val (gammaGenerator: Gamma, randomGenerator: RNG) = gammaGenerators.get((gammaDistShape, gammaDistScale)).get
-    val tuple = gammaGenerator.random(randomGenerator)
+    val gammaGenerator = gammaGenerators.get((gammaDistShape, gammaDistScale)).get
+    val nextValInGamma = gammaGenerator.sample
 
-    gammaGenerators((gammaDistShape, gammaDistScale)) = (gammaGenerator, tuple._2)
+    gammaGenerators((gammaDistShape, gammaDistScale)) = gammaGenerator // Not sure if this is necessary, just paranoid.
 
-    math.round(tuple._1).toInt
+    math.round(nextValInGamma)
   }
 }

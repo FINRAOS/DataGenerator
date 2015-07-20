@@ -14,14 +14,6 @@
     <version>2.2-SNAPSHOT</version>
     <name>Data Generator Common Utils</name>
 
-
-    <distributionManagement>
-        <repository>
-            <id>user_snapshots</id>
-            <url>http://artifactory.finra.org/artifactory/user_snapshots</url>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
         <!-- Used for base-64 encoding for HTTP basic authentication (which we need to access Jenkins). -->
         <dependency>
@@ -44,15 +36,10 @@
                 <artifactId>cloning</artifactId>
             <version>1.9.1</version>
         </dependency>
-        <!--<dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.10.3</version>
-        </dependency>-->
         <dependency>
-            <groupId>org.lanyard</groupId>
-            <artifactId>lanyard</artifactId>
-            <version>0.0.1</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.5</version>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>

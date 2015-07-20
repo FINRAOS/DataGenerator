@@ -1,16 +1,13 @@
-import org.lanyard.dist.cont.Gamma
-import org.lanyard.random.{RNG, Ranq1}
+import org.apache.commons.math3.distribution.GammaDistribution
+import org.apache.commons.math3.random.JDKRandomGenerator
 
 /**
  * Quick and dirty demo of Gamma Generator
  */
 object GammaGeneratorDemo extends App {
-  var gammaGenerator = Gamma(3, 2.5)
-  var randomGenerator: RNG = Ranq1(67576)
+  var gammaGenerator = new GammaDistribution(new JDKRandomGenerator() { setSeed(65536)}, 3, 2.5)
   for (i <- 1 to 10000) {
-    val tuple = gammaGenerator.random(randomGenerator)
-    val nextNumberInGammaDistribution = tuple._1
-    randomGenerator = tuple._2
+    val nextNumberInGammaDistribution = gammaGenerator.sample
     println(nextNumberInGammaDistribution)
   }
 }
