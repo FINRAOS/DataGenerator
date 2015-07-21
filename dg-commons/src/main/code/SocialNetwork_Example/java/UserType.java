@@ -11,6 +11,8 @@ import scala.collection.Seq;
 import scala.collection.mutable.ListBuffer;
 import scala.runtime.AbstractFunction1;
 
+import java.util.LinkedList;
+
 public class UserType {
     public static final UserTypeVal Admin = new UserTypeVal() {
         public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> dataType() {
@@ -24,7 +26,7 @@ public class UserType {
 
         @Override
         public Seq<UserTypeVal> getAllowableChildTypes(Node<UserStub> nodeOfThisType) {
-            java.util.LinkedList<UserTypeVal> list = new java.util.LinkedList<UserTypeVal>();
+            LinkedList<UserTypeVal> list = new LinkedList<>();
             list.add(UserType.Admin);
             list.add(UserType.SocialNetworkEmployee);
             list.add(UserType.PublicUser);
@@ -33,7 +35,7 @@ public class UserType {
 
         @Override
         public Seq<UserTypeVal> getAllowableParentTypes(Node<UserStub> nodeOfThisType) {
-            java.util.LinkedList<UserTypeVal> list = new java.util.LinkedList<UserTypeVal>();
+            LinkedList<UserTypeVal> list = new LinkedList<>();
             list.add(UserType.Admin);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
@@ -44,7 +46,7 @@ public class UserType {
          childStateTransitionPredicates(Node<T_DisplayableData> node, int maxToGenerate,
                                         final int probabilityMultiplier) {
             ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>> list =
-                    new ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>>();
+                    new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
                     UserType.Admin,
@@ -76,7 +78,7 @@ public class UserType {
          parentStateTransitionPredicates(Node<T_DisplayableData> node, int maxToGenerate,
                                          final int probabilityMultiplier) {
             ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>> list =
-                    new ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>>();
+                    new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
                     UserType.Admin,
@@ -102,7 +104,7 @@ public class UserType {
 
         @Override
         public Seq<UserTypeVal> getAllowableChildTypes(Node<UserStub> nodeOfThisType) {
-            java.util.LinkedList<UserTypeVal> list = new java.util.LinkedList<UserTypeVal>();
+            LinkedList<UserTypeVal> list = new LinkedList<>();
             list.add(UserType.SocialNetworkEmployee);
             list.add(UserType.PublicUser);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
@@ -110,7 +112,7 @@ public class UserType {
 
         @Override
         public Seq<UserTypeVal> getAllowableParentTypes(Node<UserStub> nodeOfThisType) {
-            java.util.LinkedList<UserTypeVal> list = new java.util.LinkedList<UserTypeVal>();
+            LinkedList<UserTypeVal> list = new LinkedList<>();
             list.add(UserType.Admin);
             list.add(UserType.SocialNetworkEmployee);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
@@ -122,7 +124,7 @@ public class UserType {
          childStateTransitionPredicates(Node<T_DisplayableData> node, int maxToGenerate,
                                        final int probabilityMultiplier) {
             ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>> list =
-                    new ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>>();
+                    new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
                     UserType.SocialNetworkEmployee,
@@ -147,7 +149,7 @@ public class UserType {
          parentStateTransitionPredicates(Node<T_DisplayableData> node, int maxToGenerate,
                                         final int probabilityMultiplier) {
             ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>> list =
-                    new ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>>();
+                    new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
                     UserType.Admin,
@@ -180,14 +182,14 @@ public class UserType {
 
         @Override
         public Seq<UserTypeVal> getAllowableChildTypes(Node<UserStub> nodeOfThisType) {
-            java.util.LinkedList<UserTypeVal> list = new java.util.LinkedList<UserTypeVal>();
+            LinkedList<UserTypeVal> list = new LinkedList<>();
             list.add(UserType.PublicUser);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
         @Override
         public Seq<UserTypeVal> getAllowableParentTypes(Node<UserStub> nodeOfThisType) {
-            java.util.LinkedList<UserTypeVal> list = new java.util.LinkedList<UserTypeVal>();
+            LinkedList<UserTypeVal> list = new LinkedList<>();
             list.add(UserType.Admin);
             list.add(UserType.SocialNetworkEmployee);
             list.add(UserType.PublicUser);
@@ -200,7 +202,7 @@ public class UserType {
          childStateTransitionPredicates(Node<T_DisplayableData> node, int maxToGenerate,
                                        final int probabilityMultiplier) {
             ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>> list =
-                    new ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>>();
+                    new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
                     UserType.PublicUser,
@@ -218,7 +220,7 @@ public class UserType {
         parentStateTransitionPredicates(Node<T_DisplayableData> node, int maxToGenerate,
                                         final int probabilityMultiplier) {
             ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>> list =
-                    new ListBuffer<Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>>();
+                    new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
                     UserType.Admin,

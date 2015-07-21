@@ -26,8 +26,6 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
   var data: T_NodeData @uV = _data
 
   if (containingGraph.appendSharedDisplayIdsWithNumericalSuffix) {
-    // TODO: This code block might not work in every single circumstance... May need to fix it up, especially the else block.
-
     // Fill in IDs
     if (data.overrideDisplayableDataId.isEmpty) {
       if (!containingGraph.nodeIdCounters.contains(data.defaultDisplayableDataId)) {
@@ -201,7 +199,7 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
    */
   def writeDotFormatGraphVisualizationOfNodeToOpenStream(out: OutputStream, isSimplified: Boolean = false): Unit = {
     val elementsToDisplay = if (isSimplified) data.simplifiedDisplayableElements else data.displayableElements
-    out.write( s""""${data.displayableDataId}" [label="${(/*data.displayableDataId +: */elementsToDisplay).map(_.replace("|", "\\|")).mkString("|")}" shape="record"];\r\n""".getBytes("UTF-8"))
+    out.write( s""""${data.displayableDataId}" [label="${elementsToDisplay.map(_.replace("|", "\\|")).mkString("|")}" shape="record"];\r\n""".getBytes("UTF-8"))
     children.foreach(child => out.write( s""""${data.displayableDataId}"->"${child.data.displayableDataId}"\r\n""".getBytes("UTF-8")))
   }
 }
