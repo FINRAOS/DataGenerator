@@ -89,9 +89,11 @@
             </plugin>
 
         </plugins>
+    
     </build>
 
     <dependencies>
+        
         <dependency>
             <groupId>sample</groupId>
             <artifactId>com.sample</artifactId>
