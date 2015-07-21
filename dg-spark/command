@@ -1,3 +1,0 @@
-./bin/spark-submit --executor-memory 1g --executor-cores 2 --class "org.finra.datagenerator.MainJava" --master spark://sandbox.hortonworks.com:7077 /home/brijesh/Downloads/Complete-DG-Random-Number-Spark-master/target/scalatest-2.1.jar --jars /home/brijesh/Downloads/Complete-DG-Random-Number-Spark-master/target/scalatest-2.1.jar-Number-Spark-master/target/scalatest-2.1.jar --jars /home/brijesh/Downloads/Complete-DG-Random-Number-Spark-mast
-
-spark.rdd.compress true spark.storage.memoryFraction 1 spark.core.connection.ack.wait.timeout 600 spark.akka.frameSize 50
