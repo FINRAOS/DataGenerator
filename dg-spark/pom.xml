@@ -87,13 +87,10 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
-    
     </build>
 
     <dependencies>
-        
         <dependency>
             <groupId>sample</groupId>
             <artifactId>com.sample</artifactId>
@@ -113,7 +110,5 @@
             <artifactId>dg-core</artifactId>
             <version>2.2-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
-
 </project>
