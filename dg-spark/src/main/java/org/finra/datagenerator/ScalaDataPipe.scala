@@ -47,12 +47,12 @@ class ScalaDataPipe extends DataPipe with  java.io.Serializable {
 
     val stringBuilder = new StringBuilder(1024)
 
-    for(s <- outTemplate) {
+    for(str <- outTemplate) {
 
       if(stringBuilder.nonEmpty) {
         stringBuilder.append('|')
       }
-      stringBuilder.append(getDataMap().get(s))
+      stringBuilder.append(getDataMap().get(str))
     }
     stringBuilder.toString()
   }
