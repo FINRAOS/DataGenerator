@@ -92,11 +92,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>sample</groupId>
-            <artifactId>com.sample</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>/home/brijesh/Downloads/spark-1.4.0-bin-hadoop2.6/lib/spark-assembly-1.4.0-hadoop2.6.0.jar</systemPath>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.10</artifactId>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
