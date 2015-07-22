@@ -98,7 +98,6 @@ object FileHelper {
         assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
         val files = fileOrDirectory.listFiles
         files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
-        files
       } else new collection.mutable.ArrayBuffer[File]()
     }
 
@@ -111,8 +110,7 @@ object FileHelper {
       if (fileOrDirectory.exists) {
         assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
         val files = fileOrDirectory.listFilesContaining(substring)
-        files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursivelyContaining(substring))
-        files
+        files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyContaining(substring))
       } else new collection.mutable.ArrayBuffer[File]()
     }
 
@@ -125,8 +123,7 @@ object FileHelper {
       if (fileOrDirectory.exists) {
         assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
         val files = fileOrDirectory.listFilesEndingWith(fileSuffix)
-        files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursivelyEndingWith(fileSuffix))
-        files
+        files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyEndingWith(fileSuffix))
       } else new collection.mutable.ArrayBuffer[File]()
     }
 

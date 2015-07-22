@@ -3,23 +3,25 @@ package SocialNetwork_Example.java;
 import NodeData.NodeData;
 import scala.Tuple2;
 
+import java.sql.Date;
+
 /**
  * Social network user
  */
 public class User extends NodeData {
-    UserTypeVal dataType;
-    String firstName;
-    String lastName;
-    java.sql.Date dateOfBirth;
-    Tuple2<Double, Double> geographicalLocation;
-    Boolean isSecret;
-    Long socialNetworkId;
+    final UserTypeVal dataType;
+    final String firstName;
+    final String lastName;
+    final Date dateOfBirth;
+    final Tuple2<Double, Double> geographicalLocation;
+    final Boolean isSecret;
+    final Long socialNetworkId;
 
     public User(
             UserTypeVal dataType,
             String firstName,
             String lastName,
-            java.sql.Date dateOfBirth, // Assert > 13 years old when creating
+            Date dateOfBirth, // Assert > 13 years old when creating
             Tuple2<Double, Double> geographicalLocation,
             Boolean isSecret,
             Long socialNetworkId) {

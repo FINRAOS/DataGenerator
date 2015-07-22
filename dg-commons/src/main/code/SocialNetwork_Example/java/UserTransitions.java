@@ -5,10 +5,10 @@ import GraphEngine.DataTransitions;
 import scala.NotImplementedError;
 
 /**
- * Created by Samer Adra on 7/14/2015.
+ * Methods to link users together
  */
 public class UserTransitions extends DataTransitions<User, UserTypeVal, UserStub, UserTypes> {
-    private static UserTransitions ourInstance = new UserTransitions();
+    private static final UserTransitions ourInstance = new UserTransitions();
 
     public static UserTransitions getInstance() {
         return ourInstance;

@@ -23,10 +23,9 @@ matters considerably, and this is just a simple example.
 
 A few methods are either left unimplemented (as in UserTransitions)
 or, though implemented, are not being used (as in UserTypes).
-If we wanted to translate our "User Stub Graphs into User Graphs -- that is, to fill in the names, birth dates,
+If we wanted to translate our "User Stub Graphs" into "User Graphs" -- that is, to fill in the names, birth dates,
 geographical information, etc. -- then we would need to finish implementing these methods, which are used for expanding
 a graph and populating it with random data.
 
-These methods are all used by GOATS, which is a proprietary implementation of this used by the OATS project at FINRA.
-Over time, the hope is that these additional generation engines/methods, including random graph expansion,
-translation from stubs to data, and generation using DOT input files, can be ported to this common library.
+Over time, the hope is that additional generation engines/methods, including random graph expansion,
+translation from stubs to data, and generation using DOT input files, will be added to this common library.

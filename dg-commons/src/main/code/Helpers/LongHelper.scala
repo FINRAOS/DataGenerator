@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
  */
 object LongHelper {
   implicit class LongImplicits(val long: Long) {
-    val longDateFormatter = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+    val longDateFormatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
 
     /**
      * Converts a Long formatted as yyyyMMddhhmmssSSS to a java.util.Date.

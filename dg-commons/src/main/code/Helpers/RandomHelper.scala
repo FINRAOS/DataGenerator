@@ -31,14 +31,14 @@ object RandomHelper {
    */
   def setUpRandomSeedsForCurrentThreadBasedOnUniqueValue(uniqueValue: Long, randomSeedOption: Option[Long] = None, globalRandomSeedBaseOption: Option[Short] = None): (Random, Random) = {
     val currentThread = Thread.currentThread()
-    val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong
+    val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong()
     val localGlobalRandomSeedBase = if (globalRandomSeedBaseOption.nonEmpty) globalRandomSeedBaseOption.get else randomSeedBaseForGloballyUniqueIds
     val seedAndGlobalSeed = (new scala.util.Random(localRandomSeed),
       new scala.util.Random(NumericHelper.concatenateTwoNumbers48BitAnd16Bit(uniqueValue, localGlobalRandomSeedBase)))
     threadToRandomSeedsMap +=
       ((currentThread,
       seedAndGlobalSeed))
-    println(s"Setting up random seeds for thread ${currentThread.getId}: Seed is ${localRandomSeed}. Initial random val is ${seedAndGlobalSeed._1.nextInt}.")
+    println(s"Setting up random seeds for thread ${currentThread.getId}: Seed is ${localRandomSeed}. Initial random val is ${seedAndGlobalSeed._1.nextInt()}.")
     seedAndGlobalSeed
   }
 
@@ -47,7 +47,7 @@ object RandomHelper {
    */
   def removeEntryForCurrentThread(): Unit = {
     val currentThread = Thread.currentThread()
-    println(s"Removing thread ${currentThread.getId}. Final random val is ${threadToRandomSeedsMap(currentThread)._1.nextInt}.")
+    println(s"Removing thread ${currentThread.getId}. Final random val is ${threadToRandomSeedsMap(currentThread)._1.nextInt()}.")
     threadToRandomSeedsMap.remove(currentThread)
   }
 
@@ -222,7 +222,7 @@ object RandomHelper {
    */
   def getNextIntFromGammaDistribution(gammaDistShape: Double, gammaDistScale: Double, randomSeedOption: Option[Long] = None): Int = {
     if (!gammaGenerators.contains((gammaDistShape, gammaDistScale))) {
-      val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong
+      val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong()
       gammaGenerators.put((gammaDistShape, gammaDistScale), new GammaDistribution(new JDKRandomGenerator() { setSeed(localRandomSeed)}, gammaDistShape, gammaDistScale))
     }
 

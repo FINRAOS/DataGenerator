@@ -39,10 +39,10 @@ trait DataNodeGenerator[+T_NodeData <: DisplayableData,
 
     // For each possible next state (iterated in random order),
     // Generate transition based on probability. Keep generating more until the predicate returns false,
-    // Or until we're out of shares, or until we're at max # of states in lifecycle.
+    // Or until we're at max # of states in graph.
     // If predicate returns false, continue same procedure for next states in iteration.
-    // If we've exhausted all possible next states and still have some shares left or # of states
-    // left in lifecycle, that's ok -- just return.
+    // If we've exhausted all possible next states and still want to generate (some # of states
+    // left in graph), that's ok -- just return.
 
     var exitGeneration = false
 

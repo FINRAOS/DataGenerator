@@ -70,7 +70,7 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
 
     nodeDataTypes.allInitialDataTypes.foreach(initialType => {
       // TODO: Can this be done without the cast? For some reason the compiler is unable to coerce the type even though we know it's correct.
-      graphs :+= new Graph(Some(initialType.asStub.asInstanceOf[T_NodeDataStub]), isEdgeLinkTrackingOn = false, appendSharedDisplayIdsWithNumericalSuffix = true)
+      graphs :+= new Graph(Some(initialType.asStub), isEdgeLinkTrackingOn = false, appendSharedDisplayIdsWithNumericalSuffix = true)
     })
     graphs
   }
@@ -144,7 +144,7 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
   def getAllGraphsHavingOneAdditionalChildFromNode(node: Node[T_NodeDataStub @uV]): Seq[Graph[T_NodeDataStub @uV]] = {
     var newGraphs = collection.immutable.Vector[Graph[T_NodeDataStub]]()
     node.data.dataType.getAllowableChildTypes(node).foreach(allowableChild => {
-      newGraphs ++= getCopiedGraphsFromAddingChildToAnalogNodeAndLinkingAllPossibleExistingParents(node, allowableChild.asStub.asInstanceOf[T_NodeDataStub])
+      newGraphs ++= getCopiedGraphsFromAddingChildToAnalogNodeAndLinkingAllPossibleExistingParents(node, allowableChild.asStub)
     })
     newGraphs
   }
@@ -158,7 +158,7 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
   def getAllGraphsHavingOneAdditionalParentFromNode(node: Node[T_NodeDataStub @uV]): Seq[Graph[T_NodeDataStub @uV]] = {
     var newGraphs = collection.immutable.Vector[Graph[T_NodeDataStub]]()
     node.data.dataType.getAllowableParentTypes(node).foreach(allowableChild => {
-      newGraphs ++= getCopiedGraphsFromAddingParentToAnalogNodeAndLinkingAllPossibleExistingParents(node, allowableChild.asStub.asInstanceOf[T_NodeDataStub])
+      newGraphs ++= getCopiedGraphsFromAddingParentToAnalogNodeAndLinkingAllPossibleExistingParents(node, allowableChild.asStub)
     })
     newGraphs
   }

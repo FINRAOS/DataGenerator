@@ -4,6 +4,8 @@ import Helpers.RandomHelper;
 import scala.NotImplementedError;
 import scala.Tuple2;
 
+import java.sql.Date;
+
 /**
  * Utility methods relating to data that are part of social event users.
  * Not fully implemented, and not used, because this is for data generation and not stub generation, and
@@ -16,7 +18,7 @@ public class SocialNetworkUtilities {
     }
 
     public static Tuple2<Double,Double> getRandomGeographicalLocation() {
-        return new Tuple2<Double,Double>(
+        return new Tuple2<>(
             (double)(RandomHelper.randWithConfiguredSeed().nextInt(999) + 1) / 100,
             (double)(RandomHelper.randWithConfiguredSeed().nextInt(999) + 1) / 100);
     }
@@ -25,7 +27,7 @@ public class SocialNetworkUtilities {
         // sqrt( (x2-x1)^2 + (y2-y2)^2 )
         Double xDiff = point1._1() - point2._1();
         Double yDiff = point1._2() - point2._2();
-        return Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
+        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     }
 
     public static Double getDistanceWithinThresholdOfCoordinates(
@@ -33,7 +35,7 @@ public class SocialNetworkUtilities {
         throw new NotImplementedError();
     }
 
-    public static java.sql.Date getRandomBirthDate() {
+    public static Date getRandomBirthDate() {
         throw new NotImplementedError();
     }
 

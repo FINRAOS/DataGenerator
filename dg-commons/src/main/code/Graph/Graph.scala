@@ -40,7 +40,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Set the graph ID.
-   * @param value
+   * @param value String to set as graph ID
    */
   def graphId_=(value: String) = {
     _graphId = value.replace('-','_').replace(' ','_').replace("\"","")
@@ -75,7 +75,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Add the first node in this graph.
-   * @param newNodeValue
+   * @param newNodeValue Data to add as initial node in graph
    * @return
    */
   def addInitialNode(newNodeValue: T): Node[T] = {
@@ -88,8 +88,8 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Add a new node as a root in this graph.
-   * @param newNodeValue
-   * @param track
+   * @param newNodeValue Value to add as new root node in graph
+   * @param track Whether or not to track this change (leave true by default -- overridden internally).
    * @return
    */
   def addNewRootNode(newNodeValue: T, track: Boolean = true): Node[T] = {
@@ -105,8 +105,8 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   /**
    * Add a new node to the graph, but don't link it to anything.
    * TODO: This would be better accomplished by having a separate graph with this single childNode.
-   * @param newNodeValue
-   * @return
+   * @param newNodeValue Data to add as new orphaned node
+   * @return Orphaned node
    */
   def addNewOrphanedNode(newNodeValue: T): Node[T] = {
     // TODO: This would be better accomplished by having a separate graph with this single childNode.
@@ -125,9 +125,9 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Writes this graph to a GraphViz "DOT" file -- there are various clients to read this kind of file, save to image, etc.
-   * @param filepathToCreate
-   * @param isSimplified
-   * @param alsoWriteAsPng
+   * @param filepathToCreate String representing full local path of new file to create
+   * @param isSimplified Whether or not to use simplifiedDisplayableElements instead of displayableElements when outputting
+   * @param alsoWriteAsPng Whether or not to call dot.exe to convert the .gv file to .png when done writing
    */
   def writeDotFile(filepathToCreate: String, isSimplified: Boolean = false, alsoWriteAsPng: Boolean = true) = {
     val writer = new FileOutputStream(filepathToCreate)
@@ -145,8 +145,8 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Writes this graph to a GraphViz "DOT" file stream -- there are various clients to read this kind of file, save to image, etc.
-   * @param out
-   * @param isSimplified
+   * @param out Open output stream to write to
+   * @param isSimplified Whether or not to use simplifiedDisplayableElements instead of displayableElements when outputting
    */
   def writeDotFileToOpenStream(out: OutputStream, isSimplified: Boolean = false): Unit = {
     // Write any graph-specific attributes
@@ -165,7 +165,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    */
   def deepCopy: Graph[T] = {
     //this.deepClone // Has performance issues (uses reflection)... so let's implement it ourselves instead.
-    val copiedGraph = new Graph[T](initialNodeValue = Some(allNodes(0).data), isEdgeLinkTrackingOn = false, _graphId = _graphId, appendSharedDisplayIdsWithNumericalSuffix = false)
+    val copiedGraph = new Graph[T](initialNodeValue = Some(allNodes.head.data), isEdgeLinkTrackingOn = false, _graphId = _graphId, appendSharedDisplayIdsWithNumericalSuffix = false)
     copiedGraph.edgeLinkTrackingDescriptions = edgeLinkTrackingDescriptions
     copiedGraph.customSeed = customSeed
     copiedGraph.customGlobalSeed = customGlobalSeed

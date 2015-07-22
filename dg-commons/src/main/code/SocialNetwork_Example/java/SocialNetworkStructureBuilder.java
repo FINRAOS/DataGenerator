@@ -3,6 +3,7 @@ package SocialNetwork_Example.java;
 import Graph.Graph;
 import GraphEngine.StructureBuilder;
 import Helpers.FileHelper;
+import scala.collection.Iterator;
 import scala.collection.immutable.Vector;
 import scala.NotImplementedError;
 
@@ -15,13 +16,13 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
         return UserTypes.getInstance();
     }
 
-    private String systemTempDir = System.getProperty("java.io.tmpdir").replace('\\', '/');
-    private String outDir = systemTempDir + (systemTempDir.endsWith("/") ? "" : "/") + "SocialNetworkGraphs/";
+    private final String systemTempDir = System.getProperty("java.io.tmpdir").replace('\\', '/');
+    private final String outDir = systemTempDir + (systemTempDir.endsWith("/") ? "" : "/") + "SocialNetworkGraphs/";
 
     private static final Boolean WRITE_STRUCTURES_IN_PARALLEL = false; // Same structure = same ID helps debugging.
     private static final Boolean ALSO_WRITE_AS_PNG = true;
 
-    private static SocialNetworkStructureBuilder ourInstance = new SocialNetworkStructureBuilder();
+    private static final SocialNetworkStructureBuilder ourInstance = new SocialNetworkStructureBuilder();
 
     public static SocialNetworkStructureBuilder getInstance() {
         return ourInstance;
@@ -39,7 +40,7 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
             throw new NotImplementedError();
         } else {
             int i = 0;
-            for (scala.collection.Iterator<Graph<UserStub>> iter = graphs.toIterator(); iter.hasNext(); ) {
+            for (Iterator<Graph<UserStub>> iter = graphs.toIterator(); iter.hasNext(); ) {
                 Graph<UserStub> graph = iter.next();
                 // TODO: Might want to annotate scala vars/vals with BeanProperty to generate Java getters/setters.
                 graph.graphId_$eq("S_" + ++i + "_" + graph.allNodes().size());

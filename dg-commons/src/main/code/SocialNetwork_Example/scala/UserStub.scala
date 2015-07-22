@@ -38,7 +38,7 @@ class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserS
     elements
   }
 
-  override def simplifiedDisplayableElements = {
+  override def simplifiedDisplayableElements: Iterable[String] = {
     Iterable[String](displayableDataId)
   }
 

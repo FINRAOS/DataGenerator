@@ -5,10 +5,10 @@ import NodeData.NodeDataTypes;
 import scala.collection.immutable.HashSet;
 
 /**
- * Created by Samer Adra on 7/9/2015.
+ * User type classifications
  */
 public class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, UserTypes> {
-    private static UserTypes ourInstance = new UserTypes();
+    private static final UserTypes ourInstance = new UserTypes();
 
     public static UserTypes getInstance() {
         return ourInstance;
@@ -22,7 +22,7 @@ public class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, Use
         if (allDataTypes == null) {
             // Would be cleaner if we could call scala's apply method here, but it isn't part of a HashSet companion
             // object -- instead it lives in GenericCompanion, and it's unclear now to get to it from Java.
-            allDataTypes = new HashSet<UserTypeVal>();
+            allDataTypes = new HashSet<>();
             allDataTypes = allDataTypes.$plus(UserType.Admin);
             allDataTypes = allDataTypes.$plus(UserType.PublicUser);
             allDataTypes = allDataTypes.$plus(UserType.SocialNetworkEmployee);
@@ -35,7 +35,7 @@ public class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, Use
         if (allInitialDataTypes == null) {
             // Would be cleaner if we could call scala's apply method here, but it isn't part of a HashSet companion
             // object -- instead it lives in GenericCompanion, and it's unclear now to get to it from Java.
-            allInitialDataTypes = new HashSet<UserTypeVal>();
+            allInitialDataTypes = new HashSet<>();
             allInitialDataTypes = allInitialDataTypes.$plus(UserType.Admin);
         }
         return allInitialDataTypes;
