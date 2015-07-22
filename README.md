@@ -152,6 +152,6 @@ The last step will be writing a main function that ties both pieces together. Co
         engine.process(defaultDistributor);
     }
 ```
-The first few lines will open an input stream on the SCXML file and pass the stream to the engine. Calling setBootStrapMin will attempt to split the graph generated from the state chart to at least the given number of splits. Here we passed 1 but in case you will execute the same code over hadoop or use a multithreaded version, you will need to increase that number to be at least the number of threads or mappers you wish to run. The rest of the code will set our transformer to the engine and create a writer based on the DefaultWriter. The function of the writer is to write the output to the user's desired destination.
+The first few lines will open an input stream on the [SCXML](http://commons.apache.org/proper/commons-scxml/) file and pass the stream to the engine. Calling setBootStrapMin will attempt to split the graph generated from the state chart to at least the given number of splits. Here we passed 1 but in case you will execute the same code over hadoop or use a multithreaded version, you will need to increase that number to be at least the number of threads or mappers you wish to run. The rest of the code will set our transformer to the engine and create a writer based on the DefaultWriter. The function of the writer is to write the output to the user's desired destination.
 
 The final piece sets the number of threads and called engine.process.
