@@ -48,7 +48,7 @@ Overview
 
 Data Generator generates pattern using two pieces of user provided information:
 
-1. An SCXML state chart representing interactions between different states, and setting values to output variables
+1. An [SCXML](http://commons.apache.org/proper/commons-scxml/) state chart representing interactions between different states, and setting values to output variables
 2. A user [Transformer](http://finraos.github.io/DataGenerator/apis/v2.0/org/finra/datagenerator/consumer/DataTransformer.html) that formats the variables and stores them.
 
 The user can optionally provide their own [distributor](http://finraos.github.io/DataGenerator/apis/v2.0/org/finra/datagenerator/distributor/SearchDistributor.html) that distributes the search of bigger problems on systems like hadoop. By default, DataGenerator will use a multithreaded distributor.
@@ -59,7 +59,7 @@ Quick start
 
 For the full compilable code please see the [default example](https://github.com/FINRAOS/DataGenerator/blob/master/dg-example-default/)
 
-First step, define an SCXML model:
+First step, define an [SCXML](http://commons.apache.org/proper/commons-scxml/) model:
 ```xml
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
        xmlns:cs="http://commons.apache.org/scxml"
