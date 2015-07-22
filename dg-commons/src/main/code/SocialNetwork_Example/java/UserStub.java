@@ -109,6 +109,6 @@ public class UserStub extends NodeDataStub<UserTypeVal, User, UserTypes, UserStu
     }
 
     public boolean canEqual(Object that) {
-        return (that != null) && (that.getClass() == getClass());
+        return that != null && that.getClass() == getClass();
     }
 }
