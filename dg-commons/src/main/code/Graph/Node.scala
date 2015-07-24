@@ -16,13 +16,17 @@ import java.io.OutputStream
 
 import NodeData.DisplayableData
 import scala.annotation.unchecked.{uncheckedVariance => uV}
+import scala.beans.BeanProperty
 import scala.collection.mutable
 
 /**
  * Generic childNode in a directed acyclic graph
  */
 class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: Graph[T_NodeData], var nodeIndexInContainingGraph: Int) {
+  @BeanProperty
   val containingGraph: Graph[T_NodeData @uV] = _containingGraph
+
+  @BeanProperty
   var data: T_NodeData @uV = _data
 
   if (containingGraph.appendSharedDisplayIdsWithNumericalSuffix) {
@@ -46,10 +50,13 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
     // else if overrideDisplayableDataId is nonEmpty, we assume it's unique and we don't care to check (yet), but we could add this in later. If it's not, the DOT graph output will be wrong.
   }
 
+  @BeanProperty
   val parents: mutable.ArrayBuffer[Node[T_NodeData @uV]] = new mutable.ArrayBuffer[Node[T_NodeData]]()
+
+  @BeanProperty
   val children: mutable.ArrayBuffer[Node[T_NodeData @uV]] = new mutable.ArrayBuffer[Node[T_NodeData]]()
 
-  lazy val descendantsInternal: mutable.HashSet[Node[T_NodeData @uV]] = new mutable.HashSet[Node[T_NodeData]]()
+  private lazy val descendantsInternal: mutable.HashSet[Node[T_NodeData @uV]] = new mutable.HashSet[Node[T_NodeData]]()
 
   /**
    * Remove this node from its containing graph

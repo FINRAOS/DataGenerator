@@ -5,6 +5,7 @@ import java.io.{FileOutputStream, OutputStream}
 import Helpers.{DotHelper, RandomHelper}
 import NodeData.DisplayableData
 
+import scala.beans.BeanProperty
 import scala.collection.mutable
 
 /** *
@@ -24,9 +25,16 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
     this(initialNodeValue=Some(initialNodeValue), _graphId=graphId)
   }
 
+  @BeanProperty
   var customSeed: Option[Long] = None
+
+  @BeanProperty
   var customGlobalSeed: Option[Short] = None
+
+  @BeanProperty
   val customBooleanAttributes = mutable.HashMap[String, Boolean]()
+
+  @BeanProperty
   var userConfiguredGraphId = false
 
   /**
@@ -42,9 +50,25 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * Set the graph ID.
    * @param value String to set as graph ID
    */
-  def graphId_=(value: String) = {
+  def graphId_=(value: String): Unit = {
     _graphId = value.replace('-','_').replace(' ','_').replace("\"","")
     userConfiguredGraphId = true
+  }
+
+  /**
+   * Java-style setter for graphId
+   * @param value
+   */
+  def setGraphId(value: String): Unit = {
+    graphId = value
+  }
+
+  /**
+   * Java-style getter for graphId
+   * @return
+   */
+  def getGraphId: String = {
+    graphId
   }
 
   if (_graphId != "") graphId = _graphId
@@ -52,21 +76,25 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   /**
    * All the root nodes in this graph (nodes with no parents, but excluding orphans)
    */
+  @BeanProperty
   val rootNodes = new mutable.ArrayBuffer[Node[T]]()
 
   /**
    * All the nodes in this graph, in the sequence they were added.
    */
+  @BeanProperty
   var allNodes = new mutable.ArrayBuffer[Node[T]]()
 
   /**
    * Used when appendSharedDisplayIdsWithNumericalSuffix is true, to ensure each node data has a unique displayable ID.
    */
+  @BeanProperty
   var nodeIdCounters = collection.immutable.HashMap[String, Int]()
 
   /**
    * Optional structure that can be used for retracing the steps used to create the graph.
    */
+  @BeanProperty
   var edgeLinkTrackingDescriptions = collection.immutable.List[EdgeCreationDescription[T]]()
 
   if (initialNodeValue != None) {
