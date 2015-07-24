@@ -11,10 +11,10 @@ object DateHelper {
    * Implicit methods on a java.util.Date
    * @param date
    */
-   implicit class DateImplicits(val date: java.util.Date) {
+   implicit class DateImplicits(private val date: java.util.Date) {
 
-    val yyyymmdd_formatter = new SimpleDateFormat("yyyyMMdd")
-    val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
+    private val yyyymmdd_formatter = new SimpleDateFormat("yyyyMMdd")
+    private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
 
     /**
      * Convert the date value to a string using the YYYYmmDD format.

@@ -1,9 +1,12 @@
 package Helpers
 
+import scala.beans.BooleanBeanProperty
+
 /**
  * Helper methods for GraphViz DOT file operations
  */
 object DotHelper {
+  @BooleanBeanProperty
   var anyFailures = false
 
   /**

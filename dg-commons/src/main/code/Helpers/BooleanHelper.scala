@@ -4,7 +4,7 @@ package Helpers
  * Boolean implicit methods
  */
 object BooleanHelper {
-  implicit class BooleanSerialization(val boolean: Boolean) {
+  implicit class BooleanSerialization(private val boolean: Boolean) {
     /**
      * Returns "Y" if boolean is true, else ""
      * @return

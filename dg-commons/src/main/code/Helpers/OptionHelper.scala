@@ -12,7 +12,9 @@ object OptionHelper {
    * @param option
    * @tparam T
    */
-   implicit class OptionSerialization[T](val option: Option[T]) {
+   implicit class OptionSerialization[T](private val option: Option[T]) {
+    private val formatter = new SimpleDateFormat("yyyyMMdd")
+
     /**
      * Convert the option value to a string, or if undefined, to ""
      * @return
@@ -20,7 +22,6 @@ object OptionHelper {
     def toStringOrEmpty: String = {
       if (option.isEmpty) ""
       else if (option.get.isInstanceOf[java.sql.Date]) {
-        val formatter = new SimpleDateFormat("yyyyMMdd")
         formatter.format(option.get)
       }
       else option.get.toString

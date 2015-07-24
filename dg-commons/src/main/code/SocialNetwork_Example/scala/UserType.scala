@@ -4,6 +4,7 @@ import Graph.Node
 import Helpers.RandomHelper
 import NodeData._
 
+import scala.beans.BeanProperty
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -26,7 +27,7 @@ class UserTypes extends NodeDataTypes[User, UserStub, UserType.UserType, UserTyp
 import NodeDataType.NodeDataType
 object UserType {
   abstract class UserType extends NodeDataType[User, UserStub, UserTypes, UserType] {
-    def nodeDataTypes = new UserTypes()
+    @BeanProperty def nodeDataTypes = new UserTypes()
     def asStub = new UserStub(this)
 
     // We don't have any engines that use these two methods yet, but it might be useful at some point.

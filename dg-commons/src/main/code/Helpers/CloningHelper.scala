@@ -7,9 +7,9 @@ import com.rits.cloning.Cloner
  */
 object CloningHelper {
   // Uses third-party tool
-  val cloner = new Cloner()
+  private val cloner = new Cloner()
 
-  implicit class ObjectCloning[T](val cloneableObject: T) {
+  implicit class ObjectCloning[T](private val cloneableObject: T) {
 
     /**
      * Performs a deep clone of the specified object, using a third-party library utilizing Java reflection.

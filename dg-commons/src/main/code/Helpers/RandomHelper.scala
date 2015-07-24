@@ -3,6 +3,7 @@ package Helpers
 import org.apache.commons.math3.distribution.GammaDistribution
 import org.apache.commons.math3.random.JDKRandomGenerator
 
+import scala.beans.BeanProperty
 import scala.util.Random
 
 /**
@@ -11,16 +12,16 @@ import scala.util.Random
  * (the unique IDs that key the data).
  */
 object RandomHelper {
-  val threadToRandomSeedsMap = new collection.parallel.mutable.ParHashMap[Thread, (scala.util.Random, scala.util.Random)]()
+  private val threadToRandomSeedsMap = new collection.parallel.mutable.ParHashMap[Thread, (scala.util.Random, scala.util.Random)]()
   /**
    * Generates random seeds for creating randomizers for data that doesn't need to be globally unique.
    */
-  var randomSeedRandomizer = new util.Random()
+  @BeanProperty var randomSeedRandomizer = new util.Random()
 
   /**
    * Initial part of random seed to use for randomizers for data that needs to be globally unique.
    */
-  var randomSeedBaseForGloballyUniqueIds: Short = (util.Random.nextInt(65535) - 32767).toShort
+  @BeanProperty var randomSeedBaseForGloballyUniqueIds: Short = (util.Random.nextInt(65535) - 32767).toShort
 
   /**
    * Given a unique value, combines it with configurable random seeds and creates randomizers for this thread.
@@ -82,7 +83,7 @@ object RandomHelper {
   /**
    * A-Z a-z 0-9 - _
    */
-  val alphaNumericChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') ++ ('_' to '_')
+  private val alphaNumericChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') ++ ('_' to '_')
 
   /**
    * Get random alphanumeric string of maximum length.
@@ -97,7 +98,7 @@ object RandomHelper {
   /**
    * a-f 0-9
    */
-  val hexChars = ('a' to 'f') ++ ('0' to '9')
+  private val hexChars = ('a' to 'f') ++ ('0' to '9')
 
   /**
    * Get random hexadecimal string of maximum length.
@@ -112,7 +113,7 @@ object RandomHelper {
   /**
    * 8, 9, a, b
    */
-  val hexCharsBetween8AndB = ('8' to '9') ++ ('a' to 'b')
+  private val hexCharsBetween8AndB = ('8' to '9') ++ ('a' to 'b')
 
   /**
    * Get random string of maximum length including allowable characters 8, 9, a, and b
@@ -210,7 +211,7 @@ object RandomHelper {
   /**
    * Gamma generators for main thread, keyed by random and globally random seeds.
    */
-  val gammaGenerators = new collection.mutable.HashMap[(Double, Double), GammaDistribution]()
+  private val gammaGenerators = new collection.mutable.HashMap[(Double, Double), GammaDistribution]()
 
   /**
    * Get the next integer from a gamma distribution of the specified shape and scale, with optional random seed.

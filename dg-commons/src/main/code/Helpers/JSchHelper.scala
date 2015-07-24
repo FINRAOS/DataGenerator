@@ -6,6 +6,8 @@ import java.util.Date
 import Helpers.StringHelper._
 import com.jcraft.jsch._
 
+import scala.beans.BooleanBeanProperty
+
 /**
  * Helper methods for SFTP and SSH exec using the Java JSch library
  */
@@ -13,9 +15,10 @@ object JSchHelper {
   /**
    * Whether or not to log remote commands.
    */
+  @BooleanBeanProperty
   var logRemoteCommands = true
 
-  implicit class ChannelImplicits(val channel: Channel) {
+  implicit class ChannelImplicits(private val channel: Channel) {
     /**
      * Get allowable JSCH channel types
      * @return
@@ -51,7 +54,7 @@ object JSchHelper {
    * Implicit methods on an Exec channel.
    * @param channelExec
    */
-  implicit class ExecImplicits(val channelExec: ChannelExec) {
+  implicit class ExecImplicits(private val channelExec: ChannelExec) {
     /**
      * Define the command (including any parameters) to execute remotely over SSH.
      * @param command
@@ -98,7 +101,7 @@ object JSchHelper {
    * Implicit methods on an SFTP channel
    * @param sftpChannel
    */
-  implicit class SftpImplicits(val sftpChannel: ChannelSftp) {
+  implicit class SftpImplicits(private val sftpChannel: ChannelSftp) {
     /**
      * Download a file over SFTP to local, with some retries in case of failure.
      * @param src

@@ -11,7 +11,7 @@ object StringHelper {
    * Implicit methods on String
    * @param str
    */
-  implicit class StringImplicits(val str: String) {
+  implicit class StringImplicits(private val str: String) {
     /**
      * Whether or not the string is comprised entirely of digits
      * @return

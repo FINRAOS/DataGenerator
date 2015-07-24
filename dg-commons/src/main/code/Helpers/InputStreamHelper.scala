@@ -11,7 +11,7 @@ object InputStreamHelper {
    * Input stream implicit methods
    * @param inputStream
    */
-  implicit class InputStreamExtensions(val inputStream: InputStream) {
+  implicit class InputStreamExtensions(private val inputStream: InputStream) {
     /**
      * Save the input stream to a file.
      * @param path

@@ -41,7 +41,7 @@ object FileHelper {
    * Implicit methods on a java.io.File
    * @param fileOrDirectory
    */
-  implicit class FileExtensions(val fileOrDirectory: File) {
+  implicit class FileExtensions(private val fileOrDirectory: File) {
     /**
      * Delete everything from a directory, and then delete the directory itself.
      */

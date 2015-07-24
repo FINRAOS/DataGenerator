@@ -4,6 +4,7 @@ import Helpers.StringHelper._
 import NodeData.NodeDataStub
 import SocialNetwork_Example.scala.UserType.UserType
 
+import scala.beans.BeanProperty
 import scala.collection.mutable
 
 /**
@@ -13,8 +14,8 @@ import scala.collection.mutable
  */
 class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserStub]() {
   var dataType: UserType = UserType.PublicUser
-  var geographicalLocation: Option[(Double, Double)] = None
-  var isSecret: Option[Boolean] = None
+  @BeanProperty var geographicalLocation: Option[(Double, Double)] = None
+  @BeanProperty var isSecret: Option[Boolean] = None
 
   def this(userType: UserType.UserType, geographicalLocation: (Double, Double), isSecret: Boolean) = {
     this()
