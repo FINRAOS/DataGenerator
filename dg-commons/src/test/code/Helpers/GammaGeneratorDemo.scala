@@ -1,3 +1,5 @@
+package Helpers
+
 import org.apache.commons.math3.distribution.GammaDistribution
 import org.apache.commons.math3.random.JDKRandomGenerator
 

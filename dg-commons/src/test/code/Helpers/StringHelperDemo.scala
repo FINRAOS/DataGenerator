@@ -1,3 +1,5 @@
+package Helpers
+
 import Helpers.StringHelper._
 
 // Too lazy for now to make this a real unit test... isn't that awful. :O
