@@ -142,16 +142,15 @@ object StringHelper {
 
     /**
      * Truncate a string to a maximum length.
-     * @param maxLength
-     * @param useEllipsis
-     * @return
+     * @param maxLength Maximum length to truncate the string to. This does NOT factor in the length of the suffix.
+     * @param suffixIfTruncated Suffix to append to string if it was truncated. Defaults to "..." (3 periods, not the single-char ellipsis, which if you want to pass in, is \u2026).
+     * @return "hello world".truncateTo(5, "...") returns "hello..."
      */
-    def truncateTo(maxLength: Int, useEllipsis: Boolean = true): String = {
+    def truncateTo(maxLength: Int, suffixIfTruncated: String = "..."): String = {
       if (str.length <= maxLength) {
         str
       } else {
-        s"${str.substring(0, maxLength)}${if (useEllipsis) "..." else ""}"
-        //s"${str.substring(0, maxLength)}\u2026" // \u2026 is single-character ellipsis.
+        s"${str.substring(0, maxLength)}${suffixIfTruncated}"
       }
     }
 

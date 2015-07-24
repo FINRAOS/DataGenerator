@@ -7,9 +7,10 @@ import scala.util.control.Exception._
  */
 object RetryHelper {
   /**
-   * Retry any block of code up to a max number of times, optionally specifying the type of exception to retry.
+   * Retry any block of code up to a max number of times, optionally specifying the types of exceptions to retry
+   * and code to run when handling one of the retryable exception types.
    * @param maxTries Number of times to try before throwing the exception.
-   * @param exceptionTypesToRetry Types of exception to retry. Defaults to single-element sequence containing classOf[RuntimeException]
+   * @param exceptionTypesToRetry Types of exceptions to retry. Defaults to single-element sequence containing classOf[RuntimeException]
    * @param codeToRetry Block of code to try
    * @tparam T Return type of block of code to try
    * @return Return value of block of code to try (else exception will be thrown if it failed all tries)
