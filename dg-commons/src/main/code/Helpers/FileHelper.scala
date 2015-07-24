@@ -54,6 +54,20 @@ object FileHelper {
     }
 
     /**
+     * Delete the files, but not the folders, from all subdirectories.
+     */
+    def deleteFilesRecursively(): Unit = {
+      assert(fileOrDirectory.isDirectory)
+      fileOrDirectory.listFiles.foreach(subFileOrDirectory => {
+        if (subFileOrDirectory.isDirectory) {
+          subFileOrDirectory.deleteFilesRecursively()
+        } else {
+          subFileOrDirectory.delete()
+        }
+      })
+    }
+
+    /**
      * Recursively deletes everything from a directory.
      */
     def purgeDirectory(): Unit = {

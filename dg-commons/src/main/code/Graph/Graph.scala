@@ -150,7 +150,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    */
   def writeDotFileToOpenStream(out: OutputStream, isSimplified: Boolean = false): Unit = {
     // Write any graph-specific attributes
-    out.write(s"digraph Graph_${graphId} {\r\n".getBytes("UTF-8"))
+    out.write(s"""digraph "Graph_${graphId}" {\r\n""".getBytes("UTF-8"))
 
     // Write all labels and edges
     allNodes.foreach(_.writeDotFormatGraphVisualizationOfNodeToOpenStream(out, isSimplified = isSimplified))

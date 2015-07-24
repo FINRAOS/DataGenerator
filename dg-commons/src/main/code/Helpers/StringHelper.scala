@@ -13,6 +13,14 @@ object StringHelper {
    */
   implicit class StringImplicits(val str: String) {
     /**
+     * Whether or not the string is comprised entirely of digits
+     * @return
+     */
+    def isNumeric: Boolean = {
+      str.forall(Character.isDigit)
+    }
+
+    /**
      * Convert to an integer.
      * @return If parsable to an Int, return as Some(intVal), else None.
      */
@@ -144,6 +152,25 @@ object StringHelper {
       } else {
         s"${str.substring(0, maxLength)}${if (useEllipsis) "..." else ""}"
         //s"${str.substring(0, maxLength)}\u2026" // \u2026 is single-character ellipsis.
+      }
+    }
+
+
+    /**
+     * Truncate a string to a maximum length, cutting from the middle and inserting a split token if necessary.
+     * @param maxLength
+     * @param splitToken
+     * @return
+     */
+    def truncateFromMiddle(maxLength: Int, splitToken: String = "..."): String = {
+      if (str.length <= maxLength) {
+        str
+      } else {
+        assert(splitToken.length < maxLength - 2)
+        val remainingLength = maxLength - splitToken.length
+        val halfway = remainingLength / 2
+        val left = remainingLength -  halfway
+        s"${str.substring(0, halfway)}${splitToken}${str.substring(str.length - left, str.length)}"
       }
     }
 
