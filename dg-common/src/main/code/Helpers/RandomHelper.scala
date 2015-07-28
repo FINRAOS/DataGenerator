@@ -97,25 +97,14 @@ object RandomHelper {
   }
 
   /**
-   * A-Z a-z 0-9 - _
-   */
-  private val alphaNumericChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') ++ ('_' to '_')
-
-  /**
    * Get random alphanumeric string of maximum length.
    * @param length
    * @param isGloballyRandom
    * @return
    */
   def randomAlphanumericString(length: Int, isGloballyRandom: Boolean = false, minLength: Option[Int] = None): String = {
-    randomStringFromAllowableChars(length, alphaNumericChars, isGloballyRandom, minLength)
+    randomStringFromAllowableChars(length, CharHelper.alphanumericChars, isGloballyRandom, minLength)
   }
-
-  /**
-   * a-f 0-9
-   */
-  private val hexChars = ('a' to 'f') ++ ('0' to '9')
-
   /**
    * Get random hexadecimal string of maximum length.
    * @param length
@@ -123,13 +112,8 @@ object RandomHelper {
    * @return
    */
   def randomHexString(length: Int, isGloballyRandom: Boolean = false, minLength: Option[Int] = None): String = {
-    randomStringFromAllowableChars(length, hexChars, isGloballyRandom, minLength)
+    randomStringFromAllowableChars(length, CharHelper.hexCharsLowercase, isGloballyRandom, minLength)
   }
-
-  /**
-   * 8, 9, a, b
-   */
-  private val hexCharsBetween8AndB = ('8' to '9') ++ ('a' to 'b')
 
   /**
    * Get random string of maximum length including allowable characters 8, 9, a, and b
@@ -138,8 +122,8 @@ object RandomHelper {
    */
   def randomHexCharFrom8ToB(isGloballyRandom: Boolean = false): Char = {
     val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
-    val randomIndex = random.nextInt(hexCharsBetween8AndB.length)
-    hexCharsBetween8AndB(randomIndex)
+    val randomIndex = random.nextInt(CharHelper.hexCharsBetween8AndB.length)
+    CharHelper.hexCharsBetween8AndB(randomIndex)
   }
 
   /**

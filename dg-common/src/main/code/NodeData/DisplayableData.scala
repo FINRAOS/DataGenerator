@@ -49,6 +49,6 @@ trait DisplayableData {
    * @return
    */
   def getStructuralMD5: String = {
-    new String(s"${dataType.name},${displayableElements.mkString(",")}".md5)
+    s"${dataType.name},${displayableElements.mkString(",")}".md5
   }
 }

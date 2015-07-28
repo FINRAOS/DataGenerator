@@ -136,10 +136,10 @@ object FileHelper {
      * @param substring
      * @return
      */
-    def getFilesRecursivelyContaining(substring: String): Iterable[File] = {
+    def getFilesRecursivelyContaining(substring: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
         assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
-        val files = fileOrDirectory.listFilesContaining(substring)
+        val files = fileOrDirectory.listFilesContaining(substring, ignoreCase = ignoreCase)
         files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyContaining(substring))
       } else new collection.mutable.ArrayBuffer[File]()
     }
@@ -149,10 +149,10 @@ object FileHelper {
      * @param fileSuffix
      * @return
      */
-    def getFilesRecursivelyEndingWith(fileSuffix: String): Iterable[File] = {
+    def getFilesRecursivelyEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
         assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
-        val files = fileOrDirectory.listFilesEndingWith(fileSuffix)
+        val files = fileOrDirectory.listFilesEndingWith(fileSuffix, ignoreCase = ignoreCase)
         files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyEndingWith(fileSuffix))
       } else new collection.mutable.ArrayBuffer[File]()
     }
@@ -162,13 +162,17 @@ object FileHelper {
      * @param fileSuffix
      * @return
      */
-    def listFilesEndingWith(fileSuffix: String): Seq[File] = {
+    def listFilesEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {
         Seq[File]()
       } else {
         fileOrDirectory.listFiles(new FilenameFilter {
           override def accept(dir: File, name: String): Boolean = {
-            name.endsWith(fileSuffix)
+            if (ignoreCase) {
+              name.toUpperCase.endsWith(fileSuffix.toUpperCase)
+            } else {
+              name.endsWith(fileSuffix)
+            }
           }
         })
       }
@@ -179,13 +183,17 @@ object FileHelper {
      * @param substring
      * @return
      */
-    def listFilesContaining(substring: String, extension: String = ""): Seq[File] = {
+    def listFilesContaining(substring: String, extension: String = "", ignoreCase: Boolean = true): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {
         Seq[File]()
       } else {
         fileOrDirectory.listFiles(new FilenameFilter {
           override def accept(dir: File, name: String): Boolean = {
-            name.contains(substring) && name.endsWith(extension)
+            if (ignoreCase) {
+              name.toUpperCase.contains(substring.toUpperCase) && name.toUpperCase.endsWith(extension.toUpperCase)
+            } else {
+              name.contains(substring) && name.endsWith(extension)
+            }
           }
         })
       }

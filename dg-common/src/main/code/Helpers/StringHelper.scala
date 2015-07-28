@@ -17,6 +17,7 @@
 package Helpers
 
 import java.security.MessageDigest
+import javax.xml.bind.DatatypeConverter
 
 /**
  * Extensions to String
@@ -158,15 +159,16 @@ object StringHelper {
 
     /**
      * Truncate a string to a maximum length.
-     * @param maxLength Maximum length to truncate the string to. This does NOT factor in the length of the suffix.
+     * @param maxLength Maximum length to truncate the string to. This factors in the length of the suffix.
      * @param suffixIfTruncated Suffix to append to string if it was truncated. Defaults to "..." (3 periods, not the single-char ellipsis, which if you want to pass in, is \u2026).
-     * @return "hello world".truncateTo(5, "...") returns "hello..."
+     * @return "hello world".truncateTo(5, "...") returns "he..."
      */
     def truncateTo(maxLength: Int, suffixIfTruncated: String = "..."): String = {
       if (str.length <= maxLength) {
         str
       } else {
-        s"${str.substring(0, maxLength)}${suffixIfTruncated}"
+        assert(maxLength > suffixIfTruncated.length, "Suffix must not be longer than max length!")
+        s"${str.substring(0, maxLength - suffixIfTruncated.length)}${suffixIfTruncated}"
       }
     }
 
@@ -181,7 +183,7 @@ object StringHelper {
       if (str.length <= maxLength) {
         str
       } else {
-        assert(splitToken.length < maxLength - 2)
+        assert(splitToken.length < maxLength - 2, "Split token is too long (max maxLength - 2)!")
         val remainingLength = maxLength - splitToken.length
         val halfway = remainingLength / 2
         val left = remainingLength -  halfway
@@ -193,8 +195,8 @@ object StringHelper {
      * Convert the string to an MD5.
      * @return
      */
-    def md5 = {
-      MessageDigest.getInstance("MD5").digest(str.getBytes)
+    def md5: String = {
+      DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(str.getBytes("UTF-8")))
     }
   }
 }
