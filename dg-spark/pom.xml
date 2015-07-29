@@ -100,7 +100,7 @@
                     <sourceDirectory>${basedir}/src/main/code</sourceDirectory>
                     <testSourceDirectory>${basedir}/src/test/code</testSourceDirectory>
                     <configLocation>target/scalastyle_config.xml</configLocation>
-                    <outputFile>${project.basedir}/scalastyle-output.xml</outputFile>
+                    <outputFile>target/scalastyle-output.xml</outputFile>
                     <outputEncoding>UTF-8</outputEncoding>
                 </configuration>
                 <executions>
