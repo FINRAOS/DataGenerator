@@ -27,7 +27,7 @@ import scala.collection.mutable.ListBuffer
 object NodeDataType {
   /**
    * Each object extending this trait can be thought of as a value in an enumeration of all node data types.
-   * @tparam T_NodeData Data that uses this type
+   * @tparam T_NodeData Data that uses this type..
    */
   abstract class NodeDataType[+T_NodeData <: NodeData,
                      +T_NodeDataStub <: NodeDataStub[T_ThisType, T_NodeData, T_NodeDataTypes, T_NodeDataStub],
@@ -78,9 +78,11 @@ object NodeDataType {
      * @param that Value to compare to
      * @return True if equals
      */
-    override def equals(that: Any): Boolean = that match {
-      case that: this.type => true
-      case _ => false
+    override def equals(that: Any): Boolean = {
+      that match {
+        case that: this.type => true
+        case _ => false
+      }
     }
     /**
      * Hash code is simply the name

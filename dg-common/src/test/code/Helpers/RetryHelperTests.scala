@@ -38,7 +38,7 @@ class RetryHelperTests extends WordSpec {
           })(flag = true)
         } catch {
           case ex: IllegalArgumentException =>
-            assert(flag == true, "Handling code did not execute properly!")
+            assert(flag, "Handling code did not execute properly!")
             exceptionThrown = true
         }
         assert(i == 200, "Retry count was not correct!")
@@ -65,7 +65,7 @@ class RetryHelperTests extends WordSpec {
           }
         })(flag = true)
         assert(i <= 200, "Retry count was not correct!")
-        assert(flag == true, "Handling code did not execute properly!")
+        assert(flag, "Handling code did not execute properly!")
       }
     }
     "the method sometimes throws an exception that we do NOT support retrying" should {
@@ -91,7 +91,7 @@ class RetryHelperTests extends WordSpec {
           })(flag = true)
         } catch {
           case ex: NullPointerException =>
-            assert(flag == false, "Handling code should not have executed!")
+            assert(!flag, "Handling code should not have executed!")
             exceptionThrown = true
         }
         assert(i == 1, "Retry count was not correct!")

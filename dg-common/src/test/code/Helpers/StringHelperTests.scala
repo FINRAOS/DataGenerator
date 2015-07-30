@@ -49,7 +49,7 @@ class StringHelperTests extends WordSpec {
         val str = "Hi!"
         val delimiter = ','
         val result = str.splitOnChar(delimiter)
-        assert(result.size == 1 && result(0) == str)
+        assert(result.size == 1 && result.head == str)
       }
     }
     "the string contains the delimiter at the end, and not removing empty entries" should {
@@ -57,7 +57,7 @@ class StringHelperTests extends WordSpec {
         val str = "Hello world "
         val delimiter = ' '
         val result = str.splitOnChar(delimiter, removeEmptyEntries = false)
-        assert(result.size == 3 && result(0) == "Hello" && result(1) == "world" && result(2).isEmpty)
+        assert(result.size == 3 && result.head == "Hello" && result(1) == "world" && result(2).isEmpty)
       }
     }
     "the string contain the delimiter" should {
@@ -65,7 +65,7 @@ class StringHelperTests extends WordSpec {
         val str = "Hello world "
         val delimiter = ' '
         val result = str.splitOnChar(delimiter, removeEmptyEntries = true)
-        assert(result.size == 2 && result(0) == "Hello" && result(1) == "world")
+        assert(result.size == 2 && result.head == "Hello" && result(1) == "world")
       }
     }
   }
@@ -75,7 +75,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string***"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = false)
-        assert(result.size == 8 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty)
+        assert(result.size == 8 && result(1) == "Hello" && result(6) == "string" && result.head.isEmpty && result(7).isEmpty)
       }
     }
     "the string contains the substring before, multiple times after, and in middle, and not removing empty entries" should {
@@ -83,7 +83,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string*********"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = false)
-        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty
+        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result.head.isEmpty && result(7).isEmpty
           && result(8).isEmpty && result(9).isEmpty)
       }
     }
@@ -92,7 +92,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string*********!!!"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = false)
-        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty
+        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result.head.isEmpty && result(7).isEmpty
           && result(8).isEmpty && result(9) == "!!!")
       }
     }
@@ -101,7 +101,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string***"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = true)
-        assert(result.size == 6 && result(0) == "Hello" && result(5) == "string")
+        assert(result.size == 6 && result.head == "Hello" && result(5) == "string")
       }
     }
     "the string contains the substring before, after, and in middle, with extra delimiters at end" should {
@@ -109,7 +109,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string*********"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = true)
-        assert(result.size == 6 && result(0) == "Hello" && result(5) == "string")
+        assert(result.size == 6 && result.head == "Hello" && result(5) == "string")
       }
     }
     "the string contains the substring before, after, and in middle, with extra delimiters in middle" should {
@@ -117,7 +117,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string*********!!!"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = true)
-        assert(result.size == 7 && result(0) == "Hello" && result(5) == "string" && result(6) == "!!!")
+        assert(result.size == 7 && result.head == "Hello" && result(5) == "string" && result(6) == "!!!")
       }
     }
     "the string contains the substring before, after, and in middle, with extra delimiters in middle plus part of a delimiter" +
@@ -126,7 +126,7 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string***********!!!"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = true)
-        assert(result.size == 7 && result(0) == "Hello" && result(5) == "string" && result(6) == "**!!!")
+        assert(result.size == 7 && result.head == "Hello" && result(5) == "string" && result(6) == "**!!!")
       }
     }
   }
@@ -135,7 +135,7 @@ class StringHelperTests extends WordSpec {
       "split as if any mixed whitespace acts as one delimiter, and should contain no empty entries in result" in {
         val str = "Hello           world!\\r           \r"
         val result = str.splitOnWhitespace
-        assert(result.size == 2 && result(0) == "Hello" && result(1) == "world!\\r")
+        assert(result.size == 2 && result.head == "Hello" && result(1) == "world!\\r")
         assert(result == str.splitOnWhitespaceIncludingFormFeedAndVerticalTab)
       }
     }
@@ -143,7 +143,7 @@ class StringHelperTests extends WordSpec {
       "split as if any mixed whitespace acts as one delimiter, and should contain no empty entries in result" in {
         val str = "       Hello     \t\n      world!"
         val result = str.splitOnWhitespace
-        assert(result.size == 2 && result(0) == "Hello" && result(1) == "world!")
+        assert(result.size == 2 && result.head == "Hello" && result(1) == "world!")
         assert(result == str.splitOnWhitespaceIncludingFormFeedAndVerticalTab)
       }
     }
@@ -152,7 +152,7 @@ class StringHelperTests extends WordSpec {
     "include form feed and vertical tab characters as allowable whitespace delimiters" in {
       val str = "    \f   Hello     \t\u000b\n      world!"
       val result = str.splitOnWhitespaceIncludingFormFeedAndVerticalTab
-      assert(result.size == 2 && result(0) == "Hello" && result(1) == "world!")
+      assert(result.size == 2 && result.head == "Hello" && result(1) == "world!")
       assert(result != str.splitOnWhitespace)
     }
   }
