@@ -20,23 +20,27 @@ import java.io.InputStream
 import java.net.URL
 
 import org.apache.commons.codec.binary.Base64
-import Helpers.InputStreamHelper._
+import Helpers.InputStreamHelper.InputStreamExtensions
 import scala.io.Source
 
 /**
  * HTTP Helper methods
  */
 object HttpHelper {
+  private final val DEFAULT_PROPERTIES = "User-Agent"->"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)"
+
   /**
    *Download from a URL to a local path, optionally using basic authentication.
-   * @param url
-   * @param savePath
-   * @param user
-   * @param passwordOrToken
-   * @param requestProperties
+   * @param url URL to download from
+   * @param savePath Local path to save to
+   * @param userMaybe Some(User String) or None
+   * @param passwordOrTokenMaybe Some(Password or Token String) or None
+   * @param requestProperties Request properties map, or if not set, uses default
    */
-  def download(url: String, savePath: String, user: String = null, passwordOrToken: String = null, requestProperties: Map[String, String]= Map("User-Agent"->"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)")) : Unit = {
-    val inputStream = getInputStreamFromUrl(url, user, passwordOrToken, requestProperties)
+  def download(url: String, savePath: String, userMaybe: Option[String] = None, passwordOrTokenMaybe: Option[String] = None
+    , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : Unit = {
+
+    val inputStream = getInputStreamFromUrl(url, userMaybe, passwordOrTokenMaybe, requestProperties)
     try {
       inputStream.downloadToFile(savePath)
     } finally {
@@ -46,14 +50,16 @@ object HttpHelper {
 
   /**
    * Get content from a URL, optionally using basic authentication, as a string.
-   * @param url
-   * @param user
-   * @param passwordOrToken
-   * @param requestProperties
-   * @return
+   * @param url URL to download from
+   * @param userMaybe Some(User String) or None
+   * @param passwordOrTokenMaybe Some(Password or Token String) or None
+   * @param requestProperties Request properties map, or if not set, uses default   * @return
+   * @return Page content as string
    */
-  def getPageContentFromUrl(url: String, user: String = null, passwordOrToken: String = null, requestProperties: Map[String, String]= Map("User-Agent"->"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)")) : String = {
-    val inputStream = getInputStreamFromUrl(url, user, passwordOrToken, requestProperties)
+  def getPageContentFromUrl(url: String, userMaybe: Option[String] = None, passwordOrTokenMaybe: Option[String] = None
+    , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : String = {
+
+    val inputStream = getInputStreamFromUrl(url, userMaybe, passwordOrTokenMaybe, requestProperties)
     try {
       Source.fromInputStream(inputStream).getLines().mkString("\n")
     } finally {
@@ -63,20 +69,23 @@ object HttpHelper {
 
   /**
    * Get content from a URL, optionally using basic authentication, as an input stream.
-   * @param url
-   * @param user
-   * @param passwordOrToken
-   * @param requestProperties
-   * @return
+   * @param url URL to get content from
+   * @param userMaybe Some(User String) or None
+   * @param passwordOrTokenMaybe Some(Password or Token String) or None
+   * @param requestProperties Request properties as a map, with defaults used if not specified
+   * @return InputStream with URL content
    */
-  def getInputStreamFromUrl(url: String, user: String = null, passwordOrToken: String = null, requestProperties: Map[String, String]= Map("User-Agent"->"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)")) : InputStream = {
+  def getInputStreamFromUrl(url: String, userMaybe: Option[String] = None, passwordOrTokenMaybe: Option[String] = None
+    , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : InputStream = {
+    assert(userMaybe != Some(null) && passwordOrTokenMaybe != Some(null))
+
     val connection = new URL(url).openConnection
     requestProperties.foreach({
       case (name, value) => connection.setRequestProperty(name, value)
     })
 
-    if (user != null && passwordOrToken != null) {
-      connection.setRequestProperty("Authorization", getHeaderForBasicAuthentication(user, passwordOrToken))
+    if (userMaybe.nonEmpty && passwordOrTokenMaybe.nonEmpty) {
+      connection.setRequestProperty("Authorization", getHeaderForBasicAuthentication(userMaybe.get, passwordOrTokenMaybe.get))
     }
 
     connection.getInputStream
@@ -84,9 +93,9 @@ object HttpHelper {
 
   /**
    * Base-64 encode the username and password.
-   * @param username
-   * @param password
-   * @return
+   * @param username Username to encode
+   * @param password Password to encode
+   * @return Base-64-encoded username and password string
    */
   def encodeCredentials(username: String, password: String): String = {
     new String(Base64.encodeBase64String((username + ":" + password).getBytes))
@@ -94,9 +103,9 @@ object HttpHelper {
 
   /**
    * Get header for basic authentication.
-   * @param username
-   * @param password
-   * @return
+   * @param username Username
+   * @param password Password
+   * @return Basic authentication header
    */
   def getHeaderForBasicAuthentication(username: String, password: String): String = {
     "Basic " + encodeCredentials(username, password)

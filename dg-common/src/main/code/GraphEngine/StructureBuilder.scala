@@ -92,7 +92,10 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
   }
 
   def getCandidateExistingParentNodes(node: Node[T_NodeDataStub @uV]): collection.immutable.Vector[Node[T_NodeDataStub @uV]] = {
-    (for (nodeInGraph <- node.containingGraph.allNodes if /*nodeDataTypes.*/dataTransitions.isStubLinkToExistingParentAllowed(node, nodeInGraph)) yield nodeInGraph).toVector
+    (for (nodeInGraph <- node.containingGraph.allNodes
+          if dataTransitions.isStubLinkToExistingParentAllowed(node, nodeInGraph))
+      yield nodeInGraph
+      ).toVector
   }
 
   // TODO: Would be nice to reduce the duplicate code of the following two methods.
@@ -105,7 +108,8 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
    * @param nodeDataStub
    * @return
    */
-  def getCopiedGraphsFromAddingChildToAnalogNodeAndLinkingAllPossibleExistingParents(node: Node[T_NodeDataStub @uV], nodeDataStub: (T_NodeDataStub @uV)): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
+  def getCopiedGraphsFromAddingChildToAnalogNodeAndLinkingAllPossibleExistingParents(
+        node: Node[T_NodeDataStub @uV], nodeDataStub: (T_NodeDataStub @uV)): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
     val initialGraph = node.addChildToAnalogNodeInCopiedGraph(nodeDataStub).containingGraph
     var graphs = immutable.Vector[Graph[T_NodeDataStub @uV]](initialGraph)
 
@@ -132,7 +136,8 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
    * @param nodeDataStub
    * @return
    */
-  def getCopiedGraphsFromAddingParentToAnalogNodeAndLinkingAllPossibleExistingParents(node: Node[T_NodeDataStub @uV], nodeDataStub: (T_NodeDataStub @uV)): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
+  def getCopiedGraphsFromAddingParentToAnalogNodeAndLinkingAllPossibleExistingParents(
+        node: Node[T_NodeDataStub @uV], nodeDataStub: (T_NodeDataStub @uV)): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
     val initialGraph = node.addChildToAnalogNodeInCopiedGraph(nodeDataStub).containingGraph
     var graphs = immutable.Vector[Graph[T_NodeDataStub @uV]](initialGraph)
 

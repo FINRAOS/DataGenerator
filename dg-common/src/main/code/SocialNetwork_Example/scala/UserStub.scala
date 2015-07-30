@@ -22,6 +22,7 @@ import SocialNetwork_Example.scala.UserType.UserType
 
 import scala.beans.BeanProperty
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * A user stub is input used to create a user, and comprises of user type plus optional metadata
@@ -45,7 +46,7 @@ class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserS
     this.dataType = userType
   }
 
-  override def displayableElements = {
+  override def displayableElements: ArrayBuffer[String] = {
     val elements = mutable.ArrayBuffer[String](displayableDataId)
     if (geographicalLocation.nonEmpty) {
       elements += s"Lat=${geographicalLocation.get._1}"

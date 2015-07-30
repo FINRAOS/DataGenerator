@@ -36,11 +36,14 @@ object OptionHelper {
      * @return
      */
     def toStringOrEmpty: String = {
-      if (option.isEmpty) ""
-      else if (option.get.isInstanceOf[java.sql.Date]) {
+      if (option.isEmpty) {
+        ""
+      } else if (option.get.isInstanceOf[java.sql.Date]) {
         formatter.format(option.get)
       }
-      else option.get.toString
+      else {
+        option.get.toString
+      }
     }
   }
 }

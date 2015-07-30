@@ -26,4 +26,5 @@ import scala.beans.BeanProperty
  * @param dataToAdd
  * @tparam T
  */
-class AddNewChildDescription[+T <: DisplayableData](@BeanProperty val parentNodeIndex: Int, @BeanProperty val dataToAdd: T) extends EdgeCreationDescription[T]
+class AddNewChildDescription[+T <: DisplayableData](@BeanProperty val parentNodeIndex: Int, @BeanProperty val dataToAdd: T)
+  extends EdgeCreationDescription[T]

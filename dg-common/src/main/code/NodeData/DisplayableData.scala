@@ -29,18 +29,22 @@ trait DisplayableData {
   def overrideDisplayableDataId_=(value: String): Unit = {
     _overrideDisplayableDataId = value
   }
-  def getOverrideDisplayableDataId = overrideDisplayableDataId
+  def getOverrideDisplayableDataId: String = overrideDisplayableDataId
   def defaultDisplayableDataId: String
-  def getDefaultDisplayableDataId = defaultDisplayableDataId
-  def displayableDataId = { // Anything that uniquely identifies a childNode; e.g., 1, 2, 3, or NW_1, NW_2, RT_1
-    if (overrideDisplayableDataId.nonEmpty) overrideDisplayableDataId
-    else defaultDisplayableDataId
+  def getDefaultDisplayableDataId: String = defaultDisplayableDataId
+  def displayableDataId: String = { // Anything that uniquely identifies a childNode; e.g., 1, 2, 3, or NW_1, NW_2, RT_1
+    if (overrideDisplayableDataId.nonEmpty) {
+      overrideDisplayableDataId
+    }
+    else {
+      defaultDisplayableDataId
+    }
   }
-  def getDisplayableDataId = displayableDataId
+  def getDisplayableDataId: String = displayableDataId
   def displayableElements: Iterable[String] = Iterable[String](displayableDataId)
-  def getDisplayableElements = displayableElements
+  def getDisplayableElements: Iterable[String] = displayableElements
   def simplifiedDisplayableElements: Iterable[String] = Iterable[String](displayableDataId)
-  def getSimplifiedDisplayableElements = simplifiedDisplayableElements
+  def getSimplifiedDisplayableElements: Iterable[String] = simplifiedDisplayableElements
   def dataType: NodeDataType[_, _, _, _]
   def getDataType: NodeDataType[_, _, _, _] = dataType
 

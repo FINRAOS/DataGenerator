@@ -83,7 +83,8 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string*********"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = false)
-        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty && result(8).isEmpty && result(9).isEmpty)
+        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty
+          && result(8).isEmpty && result(9).isEmpty)
       }
     }
     "the string contains the substring before and after, and multiple times in middle, and not removing empty entries" should {
@@ -91,7 +92,8 @@ class StringHelperTests extends WordSpec {
         val str = "***Hello***world***this***is***my***string*********!!!"
         val delimiter = "***"
         val result = str.splitOnString(delimiter, removeEmptyEntries = false)
-        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty && result(8).isEmpty && result(9) == "!!!")
+        assert(result.size == 10 && result(1) == "Hello" && result(6) == "string" && result(0).isEmpty && result(7).isEmpty
+          && result(8).isEmpty && result(9) == "!!!")
       }
     }
     "the string contains the substring before, after, and in middle" should {
@@ -118,7 +120,8 @@ class StringHelperTests extends WordSpec {
         assert(result.size == 7 && result(0) == "Hello" && result(5) == "string" && result(6) == "!!!")
       }
     }
-    "the string contains the substring before, after, and in middle, with extra delimiters in middle plus part of a delimiter (delimiter is same char repeated)" should {
+    "the string contains the substring before, after, and in middle, with extra delimiters in middle plus part of a delimiter" +
+      " (delimiter is same char repeated)" should {
       "split on the delimiter and contain no empty entries, and the delimiter should be matched before the parital delimiter" in {
         val str = "***Hello***world***this***is***my***string***********!!!"
         val delimiter = "***"

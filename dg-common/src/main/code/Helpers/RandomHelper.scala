@@ -46,7 +46,8 @@ object RandomHelper {
    * @param globalRandomSeedBaseOption
    * @return
    */
-  def setUpRandomSeedsForCurrentThreadBasedOnUniqueValue(uniqueValue: Long, randomSeedOption: Option[Long] = None, globalRandomSeedBaseOption: Option[Short] = None): (Random, Random) = {
+  def setUpRandomSeedsForCurrentThreadBasedOnUniqueValue(uniqueValue: Long, randomSeedOption: Option[Long] = None
+        , globalRandomSeedBaseOption: Option[Short] = None): (Random, Random) = {
     val currentThread = Thread.currentThread()
     val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong()
     val localGlobalRandomSeedBase = if (globalRandomSeedBaseOption.nonEmpty) globalRandomSeedBaseOption.get else randomSeedBaseForGloballyUniqueIds
@@ -55,7 +56,8 @@ object RandomHelper {
     threadToRandomSeedsMap +=
       ((currentThread,
       seedAndGlobalSeed))
-    println(s"Setting up random seeds for thread ${currentThread.getId}: Seed is ${localRandomSeed}. Initial random val is ${seedAndGlobalSeed._1.nextInt()}.")
+    println(s"Setting up random seeds for thread ${currentThread.getId // scalastyle:ignore
+      }: Seed is ${localRandomSeed}. Initial random val is ${seedAndGlobalSeed._1.nextInt()}.")
     seedAndGlobalSeed
   }
 
@@ -64,7 +66,7 @@ object RandomHelper {
    */
   def removeEntryForCurrentThread(): Unit = {
     val currentThread = Thread.currentThread()
-    println(s"Removing thread ${currentThread.getId}. Final random val is ${threadToRandomSeedsMap(currentThread)._1.nextInt()}.")
+    println(s"Removing thread ${currentThread.getId}. Final random val is ${threadToRandomSeedsMap(currentThread)._1.nextInt()}.") // scalastyle:ignore
     threadToRandomSeedsMap.remove(currentThread)
   }
 
@@ -72,7 +74,7 @@ object RandomHelper {
    * Get the configured-seed randomizer for the current thread.
    * @return
    */
-  def randWithConfiguredSeed = {
+  def randWithConfiguredSeed: Random = {
     val currentThread = Thread.currentThread()
     if (!threadToRandomSeedsMap.contains(currentThread)) {
       // In current use case this only happens on the main thread, but for other uses cases it will be default behavior.
@@ -86,7 +88,7 @@ object RandomHelper {
    * Get the configured-seed globally unique randomizer for the current thread.
    * @return
    */
-  def randForGloballyUniqueIds = {
+  def randForGloballyUniqueIds: Random = {
     val currentThread = Thread.currentThread()
     if (!threadToRandomSeedsMap.contains(currentThread)) {
       // In current use case this only happens on the main thread, but for other uses cases it will be default behavior.
@@ -147,13 +149,21 @@ object RandomHelper {
    */
   def randomStringFromAllowableChars(length: Int, chars: Seq[Char], isGloballyRandom: Boolean = false, minLength: Option[Int] = None): String = {
     val adjustedLength =
-      if (minLength.isEmpty) length
-      else randomIntInRange(minLength.get, length, isGloballyRandom)
+      if (minLength.isEmpty) {
+        length
+      }
+      else {
+        randomIntInRange(minLength.get, length, isGloballyRandom)
+      }
 
     if (adjustedLength == 0) {
       ""
     } else {
-      val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
+      val random = if (isGloballyRandom) {
+        randForGloballyUniqueIds
+      } else {
+        randWithConfiguredSeed
+      }
       val sb = new StringBuilder
       for (i <- 1 to adjustedLength) {
         val randomIndex = random.nextInt(chars.length)
@@ -205,7 +215,8 @@ object RandomHelper {
    */
   def randomUuid(isGloballyRandom: Boolean = false): String = {
     // xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal digit and y is one of 8, 9, A, or B (e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479)
-    s"${randomHexString(8, isGloballyRandom)}-${randomHexString(4, isGloballyRandom)}-4${randomHexString(3, isGloballyRandom)}-${randomHexCharFrom8ToB(isGloballyRandom)}${randomHexString(3, isGloballyRandom)}-${randomHexString(12, isGloballyRandom)}"
+    s"${randomHexString(8, isGloballyRandom)}-${randomHexString(4, isGloballyRandom)}-4${randomHexString(3, isGloballyRandom)
+      }-${randomHexCharFrom8ToB(isGloballyRandom)}${randomHexString(3, isGloballyRandom)}-${randomHexString(12, isGloballyRandom)}"
   }
 
   /**
@@ -224,13 +235,12 @@ object RandomHelper {
   def getNextIntFromGammaDistribution(gammaDistShape: Double, gammaDistScale: Double, randomSeedOption: Option[Long] = None): Int = {
     if (!gammaGenerators.contains((gammaDistShape, gammaDistScale))) {
       val localRandomSeed = if (randomSeedOption.nonEmpty) randomSeedOption.get else randomSeedRandomizer.nextLong()
-      gammaGenerators.put((gammaDistShape, gammaDistScale), new GammaDistribution(new JDKRandomGenerator() { setSeed(localRandomSeed)}, gammaDistShape, gammaDistScale))
+      gammaGenerators.put((gammaDistShape, gammaDistScale), new GammaDistribution(
+        new JDKRandomGenerator() { setSeed(localRandomSeed)}, gammaDistShape, gammaDistScale))
     }
 
     val gammaGenerator = gammaGenerators.get((gammaDistShape, gammaDistScale)).get
     val nextValInGamma = gammaGenerator.sample
-
-    gammaGenerators((gammaDistShape, gammaDistScale)) = gammaGenerator // Not sure if this is necessary, just paranoid.
 
     math.round(nextValInGamma).toInt
   }

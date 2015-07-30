@@ -26,8 +26,11 @@ object BooleanHelper {
      * @return
      */
     def toY_orEmpty: String = {
-      if (!boolean) return ""
-      "Y"
+      if (!boolean) {
+        ""
+      } else {
+        "Y"
+      }
     }
   }
 }

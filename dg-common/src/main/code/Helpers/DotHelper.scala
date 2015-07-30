@@ -38,7 +38,7 @@ object DotHelper {
       } catch {
         case e: java.io.IOException =>
           DotHelper.anyFailures = true
-          println(s"Error running dot.exe: ${e.getMessage}")
+          println(s"Error running dot.exe: ${e.getMessage}") // scalastyle:ignore
       }
     }
   }

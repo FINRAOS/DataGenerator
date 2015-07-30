@@ -29,7 +29,6 @@ abstract class NodeData(_stubCreatedFromMaybe: Option[_ <: NodeDataStub[_, _, _,
   @BeanProperty
   var customPropertyMap = collection.mutable.HashMap[String, String]()
 
-  // TODO: Might need to make NodeData generic around NodeDataStub so can infer the type of stubCreatedFromMaybe without casting.
-  def stubCreatedFromMaybe = _stubCreatedFromMaybe
-  def getStubCreatedFromMaybe = stubCreatedFromMaybe
+  def stubCreatedFromMaybe: Option[_ <: NodeDataStub[_, _, _, _]] = _stubCreatedFromMaybe
+  def getStubCreatedFromMaybe: Option[_ <: NodeDataStub[_, _, _, _]] = stubCreatedFromMaybe
 }

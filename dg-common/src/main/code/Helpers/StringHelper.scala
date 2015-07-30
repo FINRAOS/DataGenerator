@@ -160,7 +160,8 @@ object StringHelper {
     /**
      * Truncate a string to a maximum length.
      * @param maxLength Maximum length to truncate the string to. This factors in the length of the suffix.
-     * @param suffixIfTruncated Suffix to append to string if it was truncated. Defaults to "..." (3 periods, not the single-char ellipsis, which if you want to pass in, is \u2026).
+     * @param suffixIfTruncated Suffix to append to string if it was truncated.
+     *                          Defaults to "..." (3 periods, not the single-char ellipsis, which if you want to pass in, is \u2026).
      * @return "hello world".truncateTo(5, "...") returns "he..."
      */
     def truncateTo(maxLength: Int, suffixIfTruncated: String = "..."): String = {

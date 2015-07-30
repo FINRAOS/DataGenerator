@@ -29,6 +29,7 @@ import scala.annotation.unchecked.{uncheckedVariance => uV}
 abstract case class NodeDataStub[+T_NodeDataType <: NodeDataType[T_NodeData, T_NodeDataStub, T_NodeDataTypes, T_NodeDataType],
                                  +T_NodeData <: NodeData,
                                  +T_NodeDataTypes <: NodeDataTypes[T_NodeData, T_NodeDataStub, T_NodeDataType, T_NodeDataTypes],
-                                 +T_NodeDataStub <: NodeDataStub[T_NodeDataType, T_NodeData, T_NodeDataTypes, T_NodeDataStub]] protected() extends DisplayableData {
+                                 +T_NodeDataStub <: NodeDataStub[T_NodeDataType, T_NodeData, T_NodeDataTypes, T_NodeDataStub]
+    ] protected() extends DisplayableData {
   var dataType: (T_NodeDataType @uV)
 }

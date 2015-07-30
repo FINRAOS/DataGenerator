@@ -63,7 +63,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
         data.overrideDisplayableDataId += s"_${containingGraph.nodeIdCounters(data.overrideDisplayableDataId)}"
       }
     }
-    // else if overrideDisplayableDataId is nonEmpty, we assume it's unique and we don't care to check (yet), but we could add this in later. If it's not, the DOT graph output will be wrong.
+    // else if overrideDisplayableDataId is nonEmpty, we assume it's unique and we don't care to check (yet),
+    // but we could add this in later. If it's not, the DOT graph output will be wrong.
   }
 
   @BeanProperty
@@ -99,10 +100,11 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
    */
   def getDescendants(): mutable.HashSet[Node[T_NodeData @uV]] = {
     descendantsInternal.clear()
-    if (children.size == 0) return descendantsInternal
-    children.foreach(child => {
-      descendantsInternal ++= child.getDescendants()
-    })
+    if (children.size > 0) {
+      children.foreach(child => {
+        descendantsInternal ++= child.getDescendants()
+      })
+    }
     descendantsInternal
   }
 
@@ -150,7 +152,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
     parents += nodeToLink
     nodeToLink.children += this
 
-    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+= new AddParentToExistingNodeDescription(nodeIndexInContainingGraph, nodeToLink.nodeIndexInContainingGraph)
+    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+=
+      new AddParentToExistingNodeDescription(nodeIndexInContainingGraph, nodeToLink.nodeIndexInContainingGraph)
   }
 
   /**
@@ -166,7 +169,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
     children += nodeToLink
     nodeToLink.parents += this
 
-    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+= new AddChildToExistingNodeDescription(nodeIndexInContainingGraph, nodeToLink.nodeIndexInContainingGraph)
+    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+=
+      new AddChildToExistingNodeDescription(nodeIndexInContainingGraph, nodeToLink.nodeIndexInContainingGraph)
   }
 
   /**
@@ -181,7 +185,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
     containingGraph.allNodes += newChild
 
-    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+= new AddNewChildDescription(nodeIndexInContainingGraph, data)
+    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+=
+      new AddNewChildDescription(nodeIndexInContainingGraph, data)
 
     newChild
   }
@@ -222,7 +227,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
    */
   def writeDotFormatGraphVisualizationOfNodeToOpenStream(out: OutputStream, isSimplified: Boolean = false): Unit = {
     val elementsToDisplay = if (isSimplified) data.simplifiedDisplayableElements else data.displayableElements
-    out.write( s""""${data.displayableDataId}" [label="${elementsToDisplay.map(_.replace("|", "\\|")).mkString("|")}" shape="record"];\r\n""".getBytes("UTF-8"))
+    out.write(s""""${data.displayableDataId}" [label="${
+      elementsToDisplay.map(_.replace("|", "\\|")).mkString("|")}" shape="record"];\r\n""".getBytes("UTF-8"))
     children.foreach(child => out.write( s""""${data.displayableDataId}"->"${child.data.displayableDataId}"\r\n""".getBytes("UTF-8")))
   }
 }

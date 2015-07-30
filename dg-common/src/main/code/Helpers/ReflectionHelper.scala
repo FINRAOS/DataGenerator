@@ -25,8 +25,8 @@ import scala.language.{implicitConversions, reflectiveCalls}
 object ReflectionHelper {
   /**
    * Get the class type from a Scala companion object, else None.
-   * @tparam T
-   * @return
+   * @tparam T Type parameter
+   * @return Some(Class type), else None
    */
   def companionOf[T : Manifest] : Option[AnyRef] = try {
     val classOfT = implicitly[Manifest[T]].runtimeClass
@@ -60,11 +60,9 @@ object ReflectionHelper {
 
   /**
    * Implicit methods to do reflection on any reference object.
-   * @param ref
-   * @return
+   * @param ref Reference object
    */
-  //noinspection NoReturnTypeForImplicitDef
-  implicit def reflector(ref: AnyRef) = new {
+  implicit class Reflector(ref: AnyRef) {
     /**
      * Invoke the Scala getter under the current object, and return the value from the getter.
      * @param name
@@ -81,7 +79,8 @@ object ReflectionHelper {
       if (methodOption.nonEmpty) {
         methodOption.get.invoke(ref)
       } else if (!skipIfNotExists) {
-        throw new IllegalArgumentException(s"Getter method for var $name not found in class ${ref.getClass.getName} with case insensitivity = $caseInsensitive.")
+        throw new IllegalArgumentException(
+          s"Getter method for var $name not found in class ${ref.getClass.getName} with case insensitivity = $caseInsensitive.")
       } // TODO: Else log?
     }
 
@@ -102,7 +101,8 @@ object ReflectionHelper {
       if (methodOption.nonEmpty) {
         methodOption.get.invoke(ref, value.asInstanceOf[AnyRef])
       } else if (!skipIfNotExists) {
-        throw new IllegalArgumentException(s"Setter method for var $name not found in class ${ref.getClass.getName} with case insensitivity=$caseInsensitive and target value=$value.")
+        throw new IllegalArgumentException(
+          s"Setter method for var $name not found in class ${ref.getClass.getName} with case insensitivity=$caseInsensitive and target value=$value.")
       } // TODO: Else log?
     }
   }

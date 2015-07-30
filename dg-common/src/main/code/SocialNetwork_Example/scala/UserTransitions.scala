@@ -22,7 +22,7 @@ import GraphEngine.DataTransitions
 class UserTransitions
 
 object UserTransitions extends DataTransitions[User, UserType.UserType, UserStub, UserTypes] {
-  override def nodeDataTypes = new UserTypes()
+  override def nodeDataTypes: UserTypes = new UserTypes()
 
   override def isStubParentTypeTransitionAllowed(childNode: Node[UserStub], candidateParentNode: Node[UserStub]): Boolean = {
     childNode.data.dataType match {

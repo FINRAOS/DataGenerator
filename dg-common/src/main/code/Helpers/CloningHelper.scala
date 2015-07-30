@@ -37,5 +37,4 @@ object CloningHelper {
       cloner.deepClone(cloneableObject)
     }
   }
-
 }

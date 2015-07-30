@@ -19,7 +19,7 @@ package Helpers
 import java.io.{BufferedReader, FileWriter, InputStreamReader}
 import java.text.SimpleDateFormat
 import java.util.Date
-import Helpers.StringHelper._
+import Helpers.StringHelper.StringImplicits
 import com.jcraft.jsch._
 
 import scala.beans.BooleanBeanProperty
@@ -35,6 +35,8 @@ object JSchHelper {
   var logRemoteCommands = true
 
   implicit class ChannelImplicits(private val channel: Channel) {
+    private final val SLEEP_ON_RETRY_MS = 50
+
     /**
      * Get allowable JSCH channel types
      * @return
@@ -59,9 +61,17 @@ object JSchHelper {
      */
     def connectWithRetry(timeout: Int = -1, tries: Short = 10): Unit = {
       if (timeout < 0) {
-        RetryHelper.retry(tries, Seq(classOf[JSchException]))(channel.connect())(try { Thread.sleep(50); channel.getSession.openChannel(channelType); Thread.sleep(50) } catch{case _:JSchException => {}})
+        RetryHelper.retry(
+          tries, Seq(classOf[JSchException]))(
+            channel.connect())(
+            try { Thread.sleep(SLEEP_ON_RETRY_MS); channel.getSession.openChannel(channelType); Thread.sleep(SLEEP_ON_RETRY_MS)
+            } catch{case _:JSchException => {}})
       } else {
-        RetryHelper.retry(tries, Seq(classOf[JSchException]))(channel.connect(timeout))(try { Thread.sleep(50); channel.getSession.openChannel(channelType); Thread.sleep(50) } catch{case _:JSchException => {}})
+        RetryHelper.retry(
+          tries, Seq(classOf[JSchException]))(
+            channel.connect(timeout))(
+            try { Thread.sleep(SLEEP_ON_RETRY_MS); channel.getSession.openChannel(channelType); Thread.sleep(SLEEP_ON_RETRY_MS)
+            } catch{case _:JSchException => {}})
       }
     }
   }
@@ -77,7 +87,8 @@ object JSchHelper {
      */
     def setCommandToExec(command: String): Unit = {
       if (logRemoteCommands) {
-        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Executing remote command on ${channelExec.getSession.getHost}: $command")
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Executing remote command on ${channelExec.getSession.getHost}: $command")
       }
       channelExec.setCommand(command)
     }
@@ -90,22 +101,22 @@ object JSchHelper {
      */
     def runCommandAndSaveOutputLocally(command: String, localFilePath: String): Int = {
       val inputStream = new BufferedReader(new InputStreamReader(channelExec.getInputStream))
-      var writer: FileWriter = null
+      var writerMaybe: Option[FileWriter] = None
       channelExec.setCommandToExec(command)
       channelExec.connectWithRetry(3000)
       try {
         while (!channelExec.isClosed || inputStream.ready) {
           if (inputStream.ready) {
-            if (writer == null) {
-              writer = new FileWriter(localFilePath)
+            if (writerMaybe.isEmpty) {
+              writerMaybe = Some(new FileWriter(localFilePath))
             }
-            writer.write(s"${inputStream.readLine()}\r\n")
+            writerMaybe.get.write(s"${inputStream.readLine()}\r\n")
           }
         }
         channelExec.getExitStatus
       } finally {
-        if (writer != null) {
-          writer.close()
+        if (writerMaybe.nonEmpty) {
+          writerMaybe.get.close()
         }
         inputStream.close()
         channelExec.disconnect()
@@ -126,7 +137,8 @@ object JSchHelper {
      */
     def download(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
-        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Downloading from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Downloading from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.get(src, dest))()
     }
@@ -140,7 +152,8 @@ object JSchHelper {
      */
     def upload(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
-        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Uploading to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Uploading to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.put(src, dest, mode))()
     }
@@ -154,7 +167,7 @@ object JSchHelper {
       sftpChannel.mkdirRecursivelyIfNotExists(dirPath)
       sftpChannel.cd(dirPath)
       if (logRemoteCommands) {
-        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Deleting * from $dirPath")
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Deleting * from $dirPath") // scalastyle:ignore
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.rm("*"))()
     }

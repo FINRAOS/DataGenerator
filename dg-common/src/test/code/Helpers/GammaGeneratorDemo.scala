@@ -26,6 +26,6 @@ object GammaGeneratorDemo extends App {
   var gammaGenerator = new GammaDistribution(new JDKRandomGenerator() { setSeed(65536)}, 3, 2.5)
   for (i <- 1 to 10000) {
     val nextNumberInGammaDistribution = gammaGenerator.sample
-    println(nextNumberInGammaDistribution)
+    println(nextNumberInGammaDistribution) // scalastyle:ignore
   }
 }

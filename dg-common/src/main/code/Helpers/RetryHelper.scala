@@ -31,7 +31,9 @@ object RetryHelper {
    * @tparam T Return type of block of code to try
    * @return Return value of block of code to try (else exception will be thrown if it failed all tries)
    */
-  def retry[T](maxTries: Int, exceptionTypesToRetry: Seq[Class[_ <: Throwable]] = Seq(classOf[RuntimeException]))(codeToRetry: => T)(handlingCode: => Unit = () => ()): T = {
+  def retry[T](maxTries: Int, exceptionTypesToRetry: Seq[Class[_ <: Throwable]] = Seq(classOf[RuntimeException]))
+              (codeToRetry: => T)
+              (handlingCode: => Unit = () => ()): T = {
     var result: Option[T] = None
     var left = maxTries
     while(!result.isDefined) {

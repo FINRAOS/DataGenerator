@@ -130,6 +130,30 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.scalastyle</groupId>
+                <artifactId>scalastyle-maven-plugin</artifactId>
+                <version>0.6.0</version>
+                <configuration>
+                    <verbose>false</verbose>
+                    <failOnViolation>true</failOnViolation>
+                    <!-- Disabled for tests because they'll by nature have lots of magic numbers and hardcoded strings. -->
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <failOnWarning>false</failOnWarning>
+                    <sourceDirectory>${basedir}/src/main/code</sourceDirectory>
+                    <testSourceDirectory>${basedir}/src/test/code</testSourceDirectory>
+                    <configLocation>${project.basedir}/../config/scalastyle_config.xml</configLocation>
+                    <outputFile>${project.basedir}/../config/scalastyle-output_dg-common.xml</outputFile>
+                    <outputEncoding>UTF-8</outputEncoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

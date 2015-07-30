@@ -26,4 +26,3 @@ import scala.beans.BeanProperty
  * @tparam T
  */
 class AddInitialNodeDescription[+T <: DisplayableData](@BeanProperty val dataToAdd: T) extends EdgeCreationDescription[T]
-

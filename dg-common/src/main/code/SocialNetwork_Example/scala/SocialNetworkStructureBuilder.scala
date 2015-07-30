@@ -28,7 +28,7 @@ import scala.collection.immutable
  * Builds all combinations of graph structures for friendships with a maximum graph size
  */
 object SocialNetworkStructureBuilder extends StructureBuilder[User, UserType.UserType, UserStub, UserTypes] {
-  def nodeDataTypes = new UserTypes()
+  def nodeDataTypes: UserTypes = new UserTypes()
 
   val systemTempDir = System.getProperty("java.io.tmpdir").replaceAllLiterally("\\", "/")
   val outDir = s"$systemTempDir${if (systemTempDir.endsWith("/")) "" else "/"}SocialNetworkGraphs/"
@@ -45,7 +45,7 @@ object SocialNetworkStructureBuilder extends StructureBuilder[User, UserType.Use
         graph.graphId = s"S_${i.incrementAndGet()}_${graph.allNodes.size}"
         graph.writeDotFile(s"${outDir}${graph.graphId}.gv", alsoWriteAsPng = ALSO_WRITE_AS_PNG)
       })
-      println(s"Wrote ${i.get} graph files in DOT format to $outDir.")
+      println(s"Wrote ${i.get} graph files in DOT format to $outDir.") // scalastyle:ignore
     } else {
       var i = 0
       graphs.foreach(graph => {
@@ -53,7 +53,7 @@ object SocialNetworkStructureBuilder extends StructureBuilder[User, UserType.Use
         graph.graphId = s"S_${i}_${graph.allNodes.size}"
         graph.writeDotFile(s"${outDir}${graph.graphId}.gv", alsoWriteAsPng = ALSO_WRITE_AS_PNG)
       })
-      println(s"Wrote $i graph files in DOT format to $outDir.")
+      println(s"Wrote $i graph files in DOT format to $outDir.") // scalastyle:ignore
     }
 
     graphs

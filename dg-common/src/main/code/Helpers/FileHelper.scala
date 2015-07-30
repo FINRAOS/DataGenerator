@@ -24,8 +24,8 @@ import java.io.{File, FilenameFilter}
 object FileHelper {
   /**
    * Creates a directory if it doesn't exist, and if it does exist, deletes everything from it.
-   * @param path
-   * @return
+   * @param path Path of directory to create or empty
+   * @return Path
    */
   def ensureEmptyDirectoryExists(path: String): String = {
     createDirIfNotExists(path)
@@ -36,15 +36,15 @@ object FileHelper {
 
   /**
    * Creates a directory if it doesn't exist.
-   * @param path
-   * @return
+   * @param path Path of directory to create if not exists
+   * @return Path
    */
   def ensureDirectoryExists(path: String): String = createDirIfNotExists(path)
 
   /**
    * Creates a directory if it doesn't exist.
-   * @param path
-   * @return
+   * @param path Path of directory to create if not exists
+   * @return Path
    */
   def createDirIfNotExists(path: String): String = {
     val dir = new File(path)
@@ -58,6 +58,8 @@ object FileHelper {
    * @param fileOrDirectory
    */
   implicit class FileExtensions(private val fileOrDirectory: File) {
+    private final val IS_NOT_A_DIRECTORY = " is not a directory!"
+
     /**
      * Delete everything from a directory, and then delete the directory itself.
      */
@@ -96,7 +98,7 @@ object FileHelper {
 
     /**
      * Returns the first line from a file, else None if not a file.
-     * @return
+     * @return First line from the file, or None if not a filee
      */
     def getFirstLine: Option[String] = {
       if (fileOrDirectory.isFile) {
@@ -106,7 +108,9 @@ object FileHelper {
         } finally {
           source.close()
         }
-      } else None
+      } else {
+        None
+      }
     }
 
     /**
@@ -114,9 +118,11 @@ object FileHelper {
      * @return
      */
     def getSizeRecursively: Long = {
-      if (fileOrDirectory.isFile)
-        return fileOrDirectory.length()
-      fileOrDirectory.listFiles.foldLeft(0L)((size, fileOrDir) => size + fileOrDir.getSizeRecursively)
+      if (fileOrDirectory.isFile) {
+        fileOrDirectory.length()
+      } else {
+        fileOrDirectory.listFiles.foldLeft(0L)((size, fileOrDir) => size + fileOrDir.getSizeRecursively)
+      }
     }
 
     /**
@@ -125,10 +131,12 @@ object FileHelper {
      */
     def getFilesRecursively: Iterable[File] = {
       if (fileOrDirectory.exists) {
-        assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
+        assert(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFiles
         files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
-      } else new collection.mutable.ArrayBuffer[File]()
+      } else {
+        new collection.mutable.ArrayBuffer[File]()
+      }
     }
 
     /**
@@ -138,10 +146,12 @@ object FileHelper {
      */
     def getFilesRecursivelyContaining(substring: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
-        assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
+        assert(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFilesContaining(substring, ignoreCase = ignoreCase)
         files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyContaining(substring))
-      } else new collection.mutable.ArrayBuffer[File]()
+      } else {
+        new collection.mutable.ArrayBuffer[File]()
+      }
     }
 
     /**
@@ -151,10 +161,12 @@ object FileHelper {
      */
     def getFilesRecursivelyEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
-        assert(!fileOrDirectory.isFile, s"$fileOrDirectory. is not a directory!")
+        assert(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFilesEndingWith(fileSuffix, ignoreCase = ignoreCase)
         files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyEndingWith(fileSuffix))
-      } else new collection.mutable.ArrayBuffer[File]()
+      } else {
+        new collection.mutable.ArrayBuffer[File]()
+      }
     }
 
     /**

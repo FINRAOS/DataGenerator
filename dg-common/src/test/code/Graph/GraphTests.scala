@@ -19,6 +19,4 @@ package Graph
 /**
  * Created by Samer Adra on 7/24/2015.
  */
-class GraphTests {
-
-}
+class GraphTests
