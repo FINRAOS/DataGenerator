@@ -1,0 +1,13 @@
+License information for dependencies used by this module
+
+Scala language - Redistribution and use allowed, but copyright notice required (in file license_scala-language.txt)
+
+scalatest - Apache License, Version 2.0
+
+commonscodec - Apache License, Version 2.0
+
+JSch - Apache License, Version 2.0
+
+Cloning - Apache License, Version 2.0
+
+commons-math3 - Apache License, Version 2.0
