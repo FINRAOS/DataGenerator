@@ -24,6 +24,10 @@ import scala.collection.immutable
 
 /**
  * Builds graph structures
+ * @tparam T_NodeData Type of data to generate (e.g., could be either real data or could be stubbed data)
+ * @tparam T_NodeDataStub Stub type for the data
+ * @tparam T_NodeDataType Data type type for this data
+ * @tparam T_NodeDataTypes Data types type for this data
  */
 abstract class StructureBuilder[+T_NodeData <: NodeData,
                        +T_NodeDataType <: NodeDataType[T_NodeData, T_NodeDataStub, T_NodeDataTypes @uV, T_NodeDataType],

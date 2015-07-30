@@ -25,6 +25,11 @@ import scala.collection.mutable.ListBuffer
 
 /**
  * Responsible for creating new linked nodes from a specified node, using specified predicate and create functions.
+ * @tparam T_NodeData Type of data to generate (e.g., could be either real data or could be stubbed data)
+ * @tparam T_NodeDataTypeData Concrete type of data underlying T_NodeData (e.g., if T_NodeData is a stub, then this is the data that stub abstracts)
+ * @tparam T_NodeDataStub Stub type for the data
+ * @tparam T_NodeDataType Data type type for this data
+ * @tparam T_NodeDataTypes Data types type for this data
  */
 trait DataNodeGenerator[+T_NodeData <: DisplayableData,
                         +T_NodeDataTypeData <: NodeData with DisplayableData,

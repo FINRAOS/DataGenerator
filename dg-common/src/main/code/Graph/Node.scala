@@ -37,6 +37,10 @@ import scala.collection.mutable
 
 /**
  * Generic childNode in a directed acyclic graph
+ * @param _data Data to be stored in node
+ * @param _containingGraph Containing graph
+ * @param nodeIndexInContainingGraph 0-based index of node in containing graph's allNodes collection (same as order added)
+ * @tparam T_NodeData Type of data stored in node
  */
 class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: Graph[T_NodeData], var nodeIndexInContainingGraph: Int) {
   @BeanProperty

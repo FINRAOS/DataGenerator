@@ -26,6 +26,10 @@ import scala.annotation.unchecked.{uncheckedVariance => uV}
  * Defines what to do when adding a child or parent, with specified type, from a source node of specified type,
  * as well as how to link existing events.
  * Must be overridden with an implementation to define how to perform these transitions.
+ * @tparam T_NodeData Type of data to generate (e.g., could be either real data or could be stubbed data)
+ * @tparam T_NodeDataStub Stub type for the data
+ * @tparam T_NodeDataType Data type type for this data
+ * @tparam T_NodeDataTypes Data types type for this data
  */
 abstract class DataTransitions[+T_NodeData <: NodeData with DisplayableData,
                       +T_NodeDataType <: NodeDataType[T_NodeData, T_NodeDataStub, T_NodeDataTypes, T_NodeDataType],

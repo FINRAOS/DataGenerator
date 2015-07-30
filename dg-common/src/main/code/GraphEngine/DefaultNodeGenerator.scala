@@ -21,10 +21,15 @@ import NodeData.{NodeDataTypes, DisplayableData, NodeData, NodeDataStub}
 
 /**
  * Default node generator
+ * @tparam T_NodeData Type of data to generate (e.g., could be either real data or could be stubbed data)
+ * @tparam T_NodeDataTypeData Concrete type of data underlying T_NodeData (e.g., if T_NodeData is a stub, then this is the data that stub abstracts)
+ * @tparam T_NodeDataStub Stub type for the data
+ * @tparam T_NodeDataType Data type type for this data
+ * @tparam T_NodeDataTypes Data types type for this data
  */
-class DefaultNodeGenerator[+T_DisplayableData <: DisplayableData,
+class DefaultNodeGenerator[+T_NodeDataTypeData <: DisplayableData,
                            +T_NodeData <: NodeData with DisplayableData,
                            +T_NodeDataStub <: NodeDataStub[T_NodeDataType, T_NodeData, T_NodeDataTypes, T_NodeDataStub],
                            +T_NodeDataType <: NodeDataType[T_NodeData, T_NodeDataStub, T_NodeDataTypes, T_NodeDataType],
                            +T_NodeDataTypes <: NodeDataTypes[T_NodeData, T_NodeDataStub, T_NodeDataType, T_NodeDataTypes]]
-  extends DataNodeGenerator[T_DisplayableData, T_NodeData, T_NodeDataStub, T_NodeDataType, T_NodeDataTypes]
+  extends DataNodeGenerator[T_NodeDataTypeData, T_NodeData, T_NodeDataStub, T_NodeDataType, T_NodeDataTypes]
