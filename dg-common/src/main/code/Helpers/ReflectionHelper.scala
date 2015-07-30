@@ -50,8 +50,8 @@ object ReflectionHelper {
 
   /**
    * Get all methods in a class.
-   * @param value
-   * @return
+   * @param value Class
+   * @return All the methods in a class
    */
   def getClassMethods(value: Class[_ <: AnyRef]) : Array[java.lang.reflect.Method] = {
     ensureClassMethodsPopulated(value)
@@ -65,31 +65,33 @@ object ReflectionHelper {
   implicit class Reflector(ref: AnyRef) {
     /**
      * Invoke the Scala getter under the current object, and return the value from the getter.
-     * @param name
-     * @param skipIfNotExists
-     * @param caseInsensitive
-     * @return
+     * @param name Name of getter to invoke
+     * @param skipIfNotExists If this is false, throws IllegalArgumentException; if true, continues if getter not found
+     * @param caseInsensitive Whether nor to ignore case when searching for getter by name
+     * @return Value returned after invoking specified getter, else returns Unit
      */
     def invokeGetter(name: String, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true): Any = {
       val methodOption = getClassMethods(ref.getClass).find(method =>
         (caseInsensitive && method.getName.toLowerCase == name.toLowerCase
           || method.getName == name)
-        && method.getParameterTypes.length == 0)
+          && method.getParameterTypes.length == 0)
 
       if (methodOption.nonEmpty) {
         methodOption.get.invoke(ref)
       } else if (!skipIfNotExists) {
         throw new IllegalArgumentException(
           s"Getter method for var $name not found in class ${ref.getClass.getName} with case insensitivity = $caseInsensitive.")
-      } // TODO: Else log?
+      } else {
+        Unit
+      }
     }
 
     /**
      * Invoke the Scala setter under the current object.
-     * @param name
-     * @param value
-     * @param skipIfNotExists
-     * @param caseInsensitive
+     * @param name Name of setter to invoke
+     * @param value Value to pass to setter
+     * @param skipIfNotExists If this is false, throws IllegalArgumentException; if true, continues if getter not found
+     * @param caseInsensitive Whether nor to ignore case when searching for getter by name
      */
     def invokeSetter(name: String, value: Any, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true): Unit = {
       val methodOption = getClassMethods(ref.getClass).find(method =>

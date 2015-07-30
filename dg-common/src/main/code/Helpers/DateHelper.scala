@@ -25,7 +25,7 @@ object DateHelper {
 
   /**
    * Implicit methods on a java.util.Date
-   * @param date
+   * @param date Date
    */
    implicit class DateImplicits(private val date: java.util.Date) {
 
@@ -34,7 +34,7 @@ object DateHelper {
 
     /**
      * Convert the date value to a string using the YYYYmmDD format.
-     * @return
+     * @return String in YYYYmmDD format
      */
     def toYYYYmmDD: String = {
       yyyymmdd_formatter.format(date)
@@ -42,7 +42,7 @@ object DateHelper {
 
     /**
      * Convert to a 17-digit Long (yyyyMMddhhmmssSSS)
-     * @return
+     * @return Long in yyyyMMddhhmmssSSS timestamp format
      */
     def toLong: Long = {
       timestamp_formatter.format(date).toLong

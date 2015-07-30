@@ -30,13 +30,13 @@ trait NodeDataTypes[+T_NodeData <: NodeData,
                     +T_ThisType <: NodeDataTypes[T_NodeData, T_NodeDataStub, T_NodeDataType, T_ThisType]] {
   /**
    * All data types that are part of this domain
-   * @return
+   * @return All data types
    */
   def allDataTypes: collection.immutable.HashSet[T_NodeDataType @uV]
 
   /**
    * All data types that are part of this domain and which are allowed to be the initial (e.g., only) node in a graph.
-   * @return
+   * @return Initial data types
    */
   def allInitialDataTypes: collection.immutable.HashSet[T_NodeDataType @uV]
 

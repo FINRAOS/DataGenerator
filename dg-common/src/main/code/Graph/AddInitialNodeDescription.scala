@@ -22,7 +22,7 @@ import scala.beans.BeanProperty
 
 /**
  * Describes the creation of first-added node in a graph
- * @param dataToAdd
- * @tparam T
+ * @param dataToAdd Data to add
+ * @tparam T Node data type
  */
 class AddInitialNodeDescription[+T <: DisplayableData](@BeanProperty val dataToAdd: T) extends EdgeCreationDescription[T]

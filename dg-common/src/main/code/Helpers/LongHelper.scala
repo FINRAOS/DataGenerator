@@ -27,7 +27,7 @@ object LongHelper {
 
     /**
      * Converts a Long formatted as yyyyMMddhhmmssSSS to a java.util.Date.
-     * @return
+     * @return java.util.Date formed from the Long timestring in yyyyMMddhhmmssSSS format
      */
     def toDateTime: java.util.Date= {
       longDateFormatter.parse(long.toString)

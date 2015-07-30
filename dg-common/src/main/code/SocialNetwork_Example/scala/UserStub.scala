@@ -62,7 +62,7 @@ class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserS
 
   /**
    * Used for testing graph isomorphism.
-   * @return
+   * @return String uniquely representing this graph's structure
    */
   override def getStructuralMD5: String = {
     new String(s"${dataType.name},${displayableElements.mkString(",")}".md5)

@@ -26,12 +26,12 @@ object StringHelper {
 
   /**
    * Implicit methods on String
-   * @param str
+   * @param str Value used for implicit class
    */
   implicit class StringImplicits(private val str: String) {
     /**
      * Whether or not the string is comprised entirely of digits
-     * @return
+     * @return Whether or not string is numeric
      */
     def isNumeric: Boolean = {
       str.forall(Character.isDigit)
@@ -51,9 +51,9 @@ object StringHelper {
 
     /**
      * Split into a sequence based on a specified separator character.
-     * @param separator
-     * @param removeEmptyEntries
-     * @return
+     * @param separator Character to split on
+     * @param removeEmptyEntries Whether or not to remove empty strings from the result
+     * @return Sequence of parts after splitting string
      */
     def splitOnChar(separator: Char, removeEmptyEntries: Boolean = true): Seq[String] = {
       splitOnChars(collection.immutable.Set[Char](separator), removeEmptyEntries = removeEmptyEntries)
@@ -61,9 +61,9 @@ object StringHelper {
 
     /**
      * Split into a sequence based on specified separator characters.
-     * @param separators
-     * @param removeEmptyEntries
-     * @return
+     * @param separators Set of characters to split on
+     * @param removeEmptyEntries Whether or not to remove empty strings from the result
+     * @return Sequence of parts after splitting string
      */
     def splitOnChars(separators: Set[Char], removeEmptyEntries: Boolean = true): Seq[String] = {
       val splitResult = new collection.mutable.ArrayBuffer[String]()
@@ -92,9 +92,9 @@ object StringHelper {
 
     /**
      * Split into a sequence based on specififed seprator string
-     * @param separator
-     * @param removeEmptyEntries
-     * @return
+     * @param separator String to split on
+     * @param removeEmptyEntries Whether or not to remove empty strings from the result
+     * @return Sequence of parts after splitting string
      */
     def splitOnString(separator: String, removeEmptyEntries: Boolean = true): Seq[String] = {
       val splitResult = new collection.mutable.ArrayBuffer[String]()
@@ -125,7 +125,7 @@ object StringHelper {
 
     /**
      * Split on common whitespace characters.
-     * @return
+     * @return Sequence of parts after splitting string
      */
     def splitOnWhitespace: Seq[String] = {
       splitOnChars(collection.immutable.Set[Char](' ', '\t', '\r', '\n'), removeEmptyEntries = true)
@@ -133,7 +133,7 @@ object StringHelper {
 
     /**
      * Split on all whitespace characters.
-     * @return
+     * @return Sequence of parts after splitting string
      */
     def splitOnWhitespaceIncludingFormFeedAndVerticalTab: Seq[String] = {
       // Not including these two chars in the default implementation because it's a minor performance hit for
@@ -142,10 +142,10 @@ object StringHelper {
     }
 
     /**
-     * Get the index of the Nth occurence of a character in the string.
-     * @param char
-     * @param n
-     * @return
+     * Get the index of the Nth occurrence of a character in the string.
+     * @param char Char to search for
+     * @param n N
+     * @return Index of Nth occurrence of character
      */
     def indexOfNthOccurrence(char: Char, n: Int): Int = {
       var index = str.indexOf(char)
@@ -176,9 +176,9 @@ object StringHelper {
 
     /**
      * Truncate a string to a maximum length, cutting from the middle and inserting a split token if necessary.
-     * @param maxLength
-     * @param splitToken
-     * @return
+     * @param maxLength Maximum length string is allowed to be. If separator is nonempty, then string is truncated to maxLength - separator length.
+     * @param splitToken Token to insert in middle if string is cut
+     * @return String truncated from middle, with optional separator in middle where it was cut
      */
     def truncateFromMiddle(maxLength: Int, splitToken: String = "..."): String = {
       if (str.length <= maxLength) {
@@ -194,7 +194,7 @@ object StringHelper {
 
     /**
      * Convert the string to an MD5.
-     * @return
+     * @return MD5 string
      */
     def md5: String = {
       DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(str.getBytes("UTF-8")))

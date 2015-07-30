@@ -56,7 +56,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Get the graph ID.
-   * @return
+   * @return Graph ID
    */
   def graphId: String = {
     if (_graphId.isEmpty) _graphId = RandomHelper.randomUuid().replace('-','_')
@@ -74,7 +74,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Java-style setter for graphId
-   * @param value
+   * @param value Value to set Graph ID to
    */
   def setGraphId(value: String): Unit = {
     graphId = value
@@ -82,7 +82,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Java-style getter for graphId
-   * @return
+   * @return Graph ID
    */
   def getGraphId: String = {
     graphId
@@ -121,7 +121,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   /**
    * Add the first node in this graph.
    * @param newNodeValue Data to add as initial node in graph
-   * @return
+   * @return Added node
    */
   def addInitialNode(newNodeValue: T): Node[T] = {
     assert(allNodes.size == 0 && rootNodes.size == 0)
@@ -135,7 +135,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * Add a new node as a root in this graph.
    * @param newNodeValue Value to add as new root node in graph
    * @param track Whether or not to track this change (leave true by default -- overridden internally).
-   * @return
+   * @return Added node
    */
   def addNewRootNode(newNodeValue: T, track: Boolean = true): Node[T] = {
     val newNode = new Node[T](newNodeValue, this, allNodes.size)
@@ -164,6 +164,11 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
     newNode
   }
 
+  /**
+   * Given a displayableDataId string, returns the (first) node having that ID if found.
+   * @param displayableDataId String representing a node's displayableDataId
+   * @return Some(Node) if found, else None
+   */
   def getNodeByDisplayId(displayableDataId: String): Option[Node[T]] = {
     allNodes.find(node => node.data.displayableDataId.equals(displayableDataId))
   }
@@ -206,7 +211,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
 
   /**
    * Create a copy of this graph
-   * @return
+   * @return Copied graph
    */
   def deepCopy: Graph[T] = {
     //this.deepClone // Has performance issues (uses reflection)... so let's implement it ourselves instead.
@@ -236,7 +241,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   /*
   /**
    * Used for testing graph isomorphism.
-   * @return
+   * @return String uniquely representing this graph's structure
    */
   def getStructuralMD5: String = {
     // TODO: Implement. This is a graph isomorphism problem, which is not yet known if possible in polynomial time.

@@ -48,8 +48,8 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
         FileHelper.ensureDirectoryExists(outDir);
     }
 
-    public Vector<Graph<UserStub>> generateAllNodeDataTypeGraphCombinationsOfLength(int length) {
-        Vector<Graph<UserStub>> graphs = super.generateAllNodeDataTypeGraphCombinationsOfLength(length);
+    public Vector<Graph<UserStub>> generateAllNodeDataTypeGraphCombinationsOfMaxLength(int length) {
+        Vector<Graph<UserStub>> graphs = super.generateAllNodeDataTypeGraphCombinationsOfMaxLength(length);
 
         if (WRITE_STRUCTURES_IN_PARALLEL) {
             // Left as an exercise to the student.

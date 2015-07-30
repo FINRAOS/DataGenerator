@@ -25,12 +25,12 @@ object InputStreamHelper {
 
   /**
    * Input stream implicit methods
-   * @param inputStream
+   * @param inputStream Input stream
    */
   implicit class InputStreamExtensions(private val inputStream: InputStream) {
     /**
      * Save the input stream to a file.
-     * @param path
+     * @param path Path to save input stream to
      */
     def downloadToFile(path: String): Unit = {
       val buffer = new Array[Byte](8 * 1024)

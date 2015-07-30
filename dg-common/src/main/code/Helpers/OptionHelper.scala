@@ -25,15 +25,15 @@ object OptionHelper {
 
   /**
    * Implicit methods on an Option
-   * @param option
-   * @tparam T
+   * @param option Option value to use for implicit class
+   * @tparam T Type of option
    */
    implicit class OptionSerialization[T](private val option: Option[T]) {
     private val formatter = new SimpleDateFormat("yyyyMMdd")
 
     /**
      * Convert the option value to a string, or if undefined, to ""
-     * @return
+     * @return String representing the option's value if a Some, else "" if a None
      */
     def toStringOrEmpty: String = {
       if (option.isEmpty) {

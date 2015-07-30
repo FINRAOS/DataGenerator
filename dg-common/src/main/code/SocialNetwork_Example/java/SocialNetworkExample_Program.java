@@ -21,6 +21,6 @@ package SocialNetwork_Example.java;
  */
 public class SocialNetworkExample_Program {
     public static void main(String[] args) {
-        SocialNetworkStructureBuilder.getInstance().generateAllNodeDataTypeGraphCombinationsOfLength(4);
+        SocialNetworkStructureBuilder.getInstance().generateAllNodeDataTypeGraphCombinationsOfMaxLength(4);
     }
 }

@@ -22,9 +22,9 @@ package Helpers
 object NumericHelper {
   /**
    * Take a 48-bit number and a 16-bit number and concatenate them together as a Long.
-   * @param num1
-   * @param num2
-   * @return
+   * @param num1 48-bit number
+   * @param num2 16-bit number
+   * @return Long composed of the two passed-in numbers
    */
   def concatenateTwoNumbers48BitAnd16Bit(num1: Long, num2: Short): Long = {
     assert(num1 >= 0L  && num1 < 281474976710656L, s"num1 is $num1") // Max 2^48 - 1

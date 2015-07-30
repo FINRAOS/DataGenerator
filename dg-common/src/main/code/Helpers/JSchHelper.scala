@@ -39,7 +39,7 @@ object JSchHelper {
 
     /**
      * Get allowable JSCH channel types
-     * @return
+     * @return Name of the JSCH channel type for the channel
      */
     def channelType: String = {
       channel match {
@@ -78,12 +78,12 @@ object JSchHelper {
 
   /**
    * Implicit methods on an Exec channel.
-   * @param channelExec
+   * @param channelExec Exec channel
    */
   implicit class ExecImplicits(private val channelExec: ChannelExec) {
     /**
      * Define the command (including any parameters) to execute remotely over SSH.
-     * @param command
+     * @param command Command to run remotely
      */
     def setCommandToExec(command: String): Unit = {
       if (logRemoteCommands) {
@@ -126,14 +126,14 @@ object JSchHelper {
 
   /**
    * Implicit methods on an SFTP channel
-   * @param sftpChannel
+   * @param sftpChannel SFTP channel
    */
   implicit class SftpImplicits(private val sftpChannel: ChannelSftp) {
     /**
      * Download a file over SFTP to local, with some retries in case of failure.
-     * @param src
-     * @param dest
-     * @param triesBeforeFailure
+     * @param src Remote file to download from
+     * @param dest Local destination to download to
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
     def download(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
@@ -145,10 +145,10 @@ object JSchHelper {
 
     /**
      * Upload a file over SFTP from local, with some retries in case of failure.
-     * @param src
-     * @param dest
+     * @param src Local file to upload
+     * @param dest Remote destination to upload to
      * @param mode ChannelSftp mode, e.g., whether or not to overwrite
-     * @param triesBeforeFailure
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
     def upload(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
@@ -160,8 +160,8 @@ object JSchHelper {
 
     /**
      * Create a remote directory if it doesn't alraedy exist, and if it does, empty it.
-     * @param dirPath
-     * @param triesBeforeFailure
+     * @param dirPath Remote directory path
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
     def ensureEmptyDirectoryExists(dirPath: String, triesBeforeFailure: Short = 3): Unit = {
       sftpChannel.mkdirRecursivelyIfNotExists(dirPath)
@@ -174,7 +174,7 @@ object JSchHelper {
 
     /**
      * Create a remote directory if it doesn't already exist.
-     * @param recursiveDirToCreate
+     * @param recursiveDirToCreate Path of remote directory to create if not exists
      */
     def mkdirRecursivelyIfNotExists(recursiveDirToCreate: String): Unit = {
       assert(!sftpChannel.isClosed, "SFTP channel must be open!")

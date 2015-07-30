@@ -23,7 +23,7 @@ object BooleanHelper {
   implicit class BooleanSerialization(private val boolean: Boolean) {
     /**
      * Returns "Y" if boolean is true, else ""
-     * @return
+     * @return String representing boolean as either "Y" or ""
      */
     def toY_orEmpty: String = {
       if (!boolean) {

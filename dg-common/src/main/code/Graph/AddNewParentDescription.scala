@@ -22,9 +22,9 @@ import scala.beans.BeanProperty
 
 /**
  * Describes the creation of a new node, linked as a parent of an existing node.
- * @param childNodeIndex
- * @param dataToAdd
- * @tparam T
+ * @param childNodeIndex Index of child node
+ * @param dataToAdd Data to add
+ * @tparam T Type of node data
  */
 class AddNewParentDescription[+T <: DisplayableData](@BeanProperty val childNodeIndex: Int, @BeanProperty val dataToAdd: T)
   extends EdgeCreationDescription[T]

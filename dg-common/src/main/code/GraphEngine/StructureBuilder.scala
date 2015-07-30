@@ -31,7 +31,7 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
                        +T_NodeDataTypes <: NodeDataTypes[T_NodeData, T_NodeDataStub, T_NodeDataType, T_NodeDataTypes]]{
   /**
    * Provides info about all possible types and the subset of all initial types
-   * @return
+   * @return Node data types
    */
   protected def nodeDataTypes: T_NodeDataTypes
 
@@ -42,10 +42,10 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
 
   /**
    * Build all combinations of graph structures for generic event stubs of a maximum length
-   * @param length
-   * @return
+   * @param length Maximum number of nodes in each to generate
+   * @return All graph combinations of specified length or less
    */
-  def generateAllNodeDataTypeGraphCombinationsOfLength(length: Int): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
+  def generateAllNodeDataTypeGraphCombinationsOfMaxLength(length: Int): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
     if (length < 0) throw new IllegalArgumentException(s"Length (passed in as $length) must be positive.")
 
     var graphs =
@@ -79,7 +79,7 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
 
   /**
    * Get all allowable graphs containing only one node
-   * @return
+   * @return All allowable graphs with one node
    */
   def getAllSingleNodeGraphs: collection.immutable.Vector[Graph[T_NodeDataStub @uV]] = {
     var graphs = collection.immutable.Vector[Graph[T_NodeDataStub]]()
@@ -104,9 +104,9 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
    * Get all the graphs based on the graph the passed-in node belongs to, and adding one of each possible child to the
    * specified node, plus for each graph having a new possible child, generating all possible graphs with new links
    * between existing nodes.
-   * @param node
-   * @param nodeDataStub
-   * @return
+   * @param node Node to build from
+   * @param nodeDataStub Stub representing child to add
+   * @return Generated graphs
    */
   def getCopiedGraphsFromAddingChildToAnalogNodeAndLinkingAllPossibleExistingParents(
         node: Node[T_NodeDataStub @uV], nodeDataStub: (T_NodeDataStub @uV)): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
@@ -132,9 +132,9 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
    * Get all the graphs based on the graph the passed-in node belongs to, and adding one of each possible parent to the
    * specified node, plus for each graph having a new possible parent, generating all possible graphs with new links
    * between existing nodes.
-   * @param node
-   * @param nodeDataStub
-   * @return
+   * @param node Node to build from
+   * @param nodeDataStub Stub representing child to add
+   * @return Generated graphs
    */
   def getCopiedGraphsFromAddingParentToAnalogNodeAndLinkingAllPossibleExistingParents(
         node: Node[T_NodeDataStub @uV], nodeDataStub: (T_NodeDataStub @uV)): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
@@ -159,8 +159,8 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
   /**
    * Get all the graphs based on the graph the passed-in node belongs to, and adding one of each possible child to the
    * specified node.
-   * @param node
-   * @return
+   * @param node Node to add from
+   * @return All graphs with one additional child from the passed-in node
    */
   def getAllGraphsHavingOneAdditionalChildFromNode(node: Node[T_NodeDataStub @uV]): Seq[Graph[T_NodeDataStub @uV]] = {
     var newGraphs = collection.immutable.Vector[Graph[T_NodeDataStub]]()
@@ -173,8 +173,8 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
   /**
    * Get all the graphs based on the graph the passed-in node belongs to, and adding one of each possible parent to the
    * specified node.
-   * @param node
-   * @return
+   * @param node Node to add from
+   * @return All graphs with one additional parent from the passed-in node
    */
   def getAllGraphsHavingOneAdditionalParentFromNode(node: Node[T_NodeDataStub @uV]): Seq[Graph[T_NodeDataStub @uV]] = {
     var newGraphs = collection.immutable.Vector[Graph[T_NodeDataStub]]()
@@ -186,8 +186,8 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
 
   /**
    * Get all the graphs having one additional node.
-   * @param graph
-   * @return
+   * @param graph Grpah to build from
+   * @return All graphs with one additional link
    */
   def getAllGraphsHavingOneAdditionalLink(graph: Graph[T_NodeDataStub @uV]): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
     var newGraphs = immutable.Vector[Graph[T_NodeDataStub @uV]]()
@@ -209,8 +209,8 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
 
   /**
    * For each graph, get all the graphs having one additional node.
-   * @param graphs
-   * @return
+   * @param graphs Graphs to build from
+   * @return All graphs with one additional link
    */
   def getAllGraphsHavingOneAdditionalLink(graphs: immutable.Vector[Graph[T_NodeDataStub @uV]]): immutable.Vector[Graph[T_NodeDataStub @uV]] = {
     var newGraphs = immutable.Vector[Graph[T_NodeDataStub @uV]]()

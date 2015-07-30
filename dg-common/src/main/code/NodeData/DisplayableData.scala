@@ -50,7 +50,7 @@ trait DisplayableData {
 
   /**
    * Used for testing graph isomorphism.
-   * @return
+   * @return String uniquely representing this graph's structure
    */
   def getStructuralMD5: String = {
     s"${dataType.name},${displayableElements.mkString(",")}".md5

@@ -22,7 +22,7 @@ import scala.beans.BeanProperty
 
 /**
  * Describes the creation of an orphaned node, not linked to any other nodes in the graph
- * @param dataToAdd
- * @tparam T
+ * @param dataToAdd Data to add
+ * @tparam T Type of node data
  */
 class AddNewOrphanedNodeDescription[+T <: DisplayableData](@BeanProperty val dataToAdd: T) extends EdgeCreationDescription[T]

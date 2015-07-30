@@ -36,8 +36,8 @@ object SocialNetworkStructureBuilder extends StructureBuilder[User, UserType.Use
 
   val WRITE_STRUCTURES_IN_PARALLEL = false // Having same structure be same ID helps debugging...
   val ALSO_WRITE_AS_PNG = true
-  override def generateAllNodeDataTypeGraphCombinationsOfLength(length: Int): immutable.Vector[Graph[UserStub]] = {
-    val graphs = super.generateAllNodeDataTypeGraphCombinationsOfLength(length)
+  override def generateAllNodeDataTypeGraphCombinationsOfMaxLength(length: Int): immutable.Vector[Graph[UserStub]] = {
+    val graphs = super.generateAllNodeDataTypeGraphCombinationsOfMaxLength(length)
 
     if (WRITE_STRUCTURES_IN_PARALLEL) {
       val i = new AtomicInteger(0)

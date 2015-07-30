@@ -58,7 +58,7 @@ object NodeDataType {
 
     /**
      * Creates a stub wrapper around this type
-     * @return
+     * @return Stub wrapper around this type
      */
     def asStub: T_NodeDataStub
 
@@ -69,14 +69,14 @@ object NodeDataType {
 
     /**
      * Name that uniquely identifies this type, to be used for display
-     * @return
+     * @return Default displayable data ID (defaults to name)
      */
     override def defaultDisplayableDataId: String = name
 
     /**
      * Types are considered the same based on their unique names
-     * @param that
-     * @return
+     * @param that Value to compare to
+     * @return True if equals
      */
     override def equals(that: Any): Boolean = that match {
       case that: this.type => true
@@ -84,20 +84,20 @@ object NodeDataType {
     }
     /**
      * Hash code is simply the name
-     * @return
+     * @return Hashcode (name)
      */
     override def hashCode: Int = name.hashCode
 
     /**
      * Gets a sequence of all the node data types that may be created as a child from the current node
-     * @param nodeOfThisType
+     * @param nodeOfThisType Node from which to get allowable child types
      * @return Sequence of NodeDataType
      */
     def getAllowableChildTypes(nodeOfThisType: Node[T_NodeDataStub @uV]): Seq[T_ThisType]
 
     /**
      * Gets a sequence of all the node data types that may be created as a parent from the current node
-     * @param nodeOfThisType
+     * @param nodeOfThisType Node from which to get allowable parent types
      * @return Sequence of NodeDataType
      */
     def getAllowableParentTypes(nodeOfThisType: Node[T_NodeDataStub @uV]): Seq[T_ThisType]
@@ -149,7 +149,7 @@ object NodeDataType {
      * @param maxToGenerate Maximum number of nodes in graph
      * @param probabilityMultiplier Example usage: Predicate function might determine true/false based on a random function.
      *                              Multiplier will make that function more probable to return true.
-     * @return
+     * @return Vector of all added child nodes
      */
     def generateAndAddChildStubs(stubNode: Node[T_NodeDataStub @uV], maxToGenerate: Int, probabilityMultiplier: Int): Vector[Node[T_NodeDataStub @uV]] = {
       dataStubNodeGenerator.generateLinkedNodes(stubNode, maxToGenerate, childStateTransitionPredicates[T_NodeDataStub @uV](stubNode, maxToGenerate
@@ -164,7 +164,7 @@ object NodeDataType {
      * @param maxToGenerate Maximum number of nodes in graph
      * @param probabilityMultiplier Example usage: Predicate function might determine true/false based on a random function.
      *                              Multiplier will make that function more probable to return true.
-     * @return
+     * @return Vector of all added parent nodes
      */
     def generateAndAddParentStubs(stubNode: Node[T_NodeDataStub @uV], maxToGenerate: Int, probabilityMultiplier: Int): Vector[Node[T_NodeDataStub @uV]] = {
       dataStubNodeGenerator.generateLinkedNodes(stubNode, maxToGenerate, parentStateTransitionPredicates[T_NodeDataStub @uV](stubNode, maxToGenerate
@@ -179,7 +179,7 @@ object NodeDataType {
    * @param maxToGenerate Maximum number of nodes in graph
    * @param probabilityMultiplier Example usage: Predicate function might determine true/false based on a random function.
    *                              Multiplier will make that function more probable to return true.
-   * @return
+   * @return Vector of all added child nodes
    */
     def generateAndAddChildNodes(dataNode: Node[T_NodeData @uV], maxToGenerate: Int, probabilityMultiplier: Int): Vector[Node[T_NodeData @uV]] = {
       dataNodeGenerator.generateLinkedNodes(dataNode, maxToGenerate, childStateTransitionPredicates[T_NodeData @uV](dataNode, maxToGenerate
@@ -193,7 +193,7 @@ object NodeDataType {
      * @param maxToGenerate Maximum number of nodes in graph
      * @param probabilityMultiplier Example usage: Predicate function might determine true/false based on a random function.
      *                              Multiplier will make that function more probable to return true.
-     * @return
+     * @return Vector of all added parent nodes
      */
     def generateAndAddParentNodes(dataNode: Node[T_NodeData @uV], maxToGenerate: Int, probabilityMultiplier: Int): Vector[Node[T_NodeData @uV]] = {
       dataNodeGenerator.generateLinkedNodes(dataNode, maxToGenerate, parentStateTransitionPredicates[T_NodeData @uV](dataNode, maxToGenerate

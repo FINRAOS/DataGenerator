@@ -31,7 +31,7 @@ object CloningHelper {
      * Performs a deep clone of the specified object, using a third-party library utilizing Java reflection.
      * Avoid using if possible -- it's better-performing if you're able to implement your own method to copy an
      * object, or copy using Scala's built in copy if utilizing a case class.
-     * @return
+     * @return Deep clone of object
      */
     def deepClone: T = {
       cloner.deepClone(cloneableObject)

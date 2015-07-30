@@ -115,7 +115,7 @@ object FileHelper {
 
     /**
      * Get the size in bytes of a file or of a directory and all its contents, recursively.
-     * @return
+     * @return Size, calculated recursively
      */
     def getSizeRecursively: Long = {
       if (fileOrDirectory.isFile) {
@@ -127,7 +127,7 @@ object FileHelper {
 
     /**
      * Get all the files in a directory, regardless of nesting level.
-     * @return
+     * @return All files, recursively
      */
     def getFilesRecursively: Iterable[File] = {
       if (fileOrDirectory.exists) {
@@ -141,8 +141,9 @@ object FileHelper {
 
     /**
      * Get all the files in a directory, regardless of nesting level, where file name contains a specified string.
-     * @param substring
-     * @return
+     * @param substring Substring to search for
+     * @param ignoreCase Case insensitive by default
+     * @return Matched files
      */
     def getFilesRecursivelyContaining(substring: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
@@ -156,8 +157,9 @@ object FileHelper {
 
     /**
      * Get all the files in a directory, regardless of nesting level, where file name ends with a suffix.
-     * @param fileSuffix
-     * @return
+     * @param fileSuffix Suffix to search for
+     * @param ignoreCase Case insensitive by default
+     * @return Matched files
      */
     def getFilesRecursivelyEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
@@ -171,8 +173,9 @@ object FileHelper {
 
     /**
      * Get all the files in a directory, but NOT its subdirectories, where file name ends with a suffix.
-     * @param fileSuffix
-     * @return
+     * @param fileSuffix Suffix to search for
+     * @param ignoreCase Case insensitive by default
+     * @return Matched files
      */
     def listFilesEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {
@@ -192,8 +195,10 @@ object FileHelper {
 
     /**
      * Get all the files in a directory, but NOT its subdirectories, where file contains a specified string.
-     * @param substring
-     * @return
+     * @param substring Search string
+     * @param extension File extension (or any suffix) to search for
+     * @param ignoreCase Case insensitive by default
+     * @return All matched files
      */
     def listFilesContaining(substring: String, extension: String = "", ignoreCase: Boolean = true): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {

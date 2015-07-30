@@ -96,7 +96,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Get all the descendant nodes (children of this node, those children's children, to the bottom).
-   * @return
+   * TODO: If we change Graph to support cycles, then this method needs to change to only traverse a child if it hasn't already been traversed.
+   * @return Set of all descendents
    */
   def getDescendants(): mutable.HashSet[Node[T_NodeData @uV]] = {
     descendantsInternal.clear()
@@ -110,7 +111,7 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Whether or not this is a root node
-   * @return
+   * @return True = root, false = not root
    */
   def isRoot : Boolean = {
     parents.isEmpty
@@ -118,8 +119,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Create a new node and link it as the parent to this node.
-   * @param data
-   * @return
+   * @param data Node to add parent to
+   * @return Added parent node
    */
   def addParent(data: T_NodeData @uV): Node[T_NodeData @uV] = {
     if (isRoot) {
@@ -175,8 +176,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Create a new node and link it as the child to this node.
-   * @param data
-   * @return
+   * @param data Node to add child to
+   * @return Added child node
    */
   def addChild(data: T_NodeData @uV): Node[T_NodeData @uV] = {
     val newChild = new Node[T_NodeData @uV](data, containingGraph, containingGraph.allNodes.size)
@@ -194,8 +195,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Creates a copy of the graph and adds a new node as a child from the analog of this node in the copied graph.
-   * @param childData
-   * @return
+   * @param childData Data to add in child node
+   * @return Added child node
    */
   def addChildToAnalogNodeInCopiedGraph(childData: T_NodeData @uV): Node[T_NodeData @uV] = {
     getAnalogInCopiedGraph.addChild(childData)
@@ -203,8 +204,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Creates a copy of the graph and adds a new node as a parent from the analog of this node in the copied graph.
-   * @param parentData
-   * @return
+   * @param parentData Data to add in parent node
+   * @return Added parent node
    */
   def addParentToAnalogNodeInCopiedGraph(parentData: T_NodeData @uV): Node[T_NodeData @uV] = {
     getAnalogInCopiedGraph.addParent(parentData)
@@ -214,7 +215,7 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Create a copy of the containing graph and get the analogous node in the copied graph.
-   * @return
+   * @return Node in copied graph
    */
   def getAnalogInCopiedGraph: Node[T_NodeData @uV] = {
     containingGraph.deepCopy.allNodes(nodeIndexInContainingGraph)
@@ -222,8 +223,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Write this node, and all its edges to its children, in DOT format to an open stream.
-   * @param out
-   * @param isSimplified
+   * @param out Output stream to write to
+   * @param isSimplified Whether or not to write using simplifiedDisplayableElements instead of displayableElements
    */
   def writeDotFormatGraphVisualizationOfNodeToOpenStream(out: OutputStream, isSimplified: Boolean = false): Unit = {
     val elementsToDisplay = if (isSimplified) data.simplifiedDisplayableElements else data.displayableElements
