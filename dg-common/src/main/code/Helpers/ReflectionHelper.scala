@@ -26,14 +26,14 @@ object ReflectionHelper {
   /**
    * Get the class type from a Scala companion object, else None.
    * @tparam T Type parameter
-   * @return Some(Class type), else None
+   * @return Option(Class type), else None
    */
   def companionOf[T : Manifest] : Option[AnyRef] = try {
     val classOfT = implicitly[Manifest[T]].runtimeClass
     val companionClassName = classOfT.getName + "$"
     val companionClass = Class.forName(companionClassName)
     val moduleField = companionClass.getField("MODULE$")
-    Some(moduleField.get(null))
+    Option(moduleField.get(null))
   } catch {
     case e: Exception => None
   }

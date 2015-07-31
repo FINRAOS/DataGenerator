@@ -33,14 +33,14 @@ object HttpHelper {
    *Download from a URL to a local path, optionally using basic authentication.
    * @param url URL to download from
    * @param savePath Local path to save to
-   * @param userMaybe Some(User String) or None
-   * @param passwordOrTokenMaybe Some(Password or Token String) or None
+   * @param userMaybe Option(User String) or None
+   * @param passwordOrTokenMaybe Option(Password or Token String) or None
    * @param requestProperties Request properties map, or if not set, uses default
    */
-  def download(url: String, savePath: String, userMaybe: Option[String] = None, passwordOrTokenMaybe: Option[String] = None
+  def download(url: String, savePath: String, userAndPasswordOrTokenMaybe: Option[(String, String)] = None
     , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : Unit = {
 
-    val inputStream = getInputStreamFromUrl(url, userMaybe, passwordOrTokenMaybe, requestProperties)
+    val inputStream = getInputStreamFromUrl(url, userAndPasswordOrTokenMaybe, requestProperties)
     try {
       inputStream.downloadToFile(savePath)
     } finally {
@@ -51,15 +51,15 @@ object HttpHelper {
   /**
    * Get content from a URL, optionally using basic authentication, as a string.
    * @param url URL to download from
-   * @param userMaybe Some(User String) or None
-   * @param passwordOrTokenMaybe Some(Password or Token String) or None
+   * @param userMaybe Option(User String) or None
+   * @param passwordOrTokenMaybe Option(Password or Token String) or None
    * @param requestProperties Request properties map, or if not set, uses default   * @return
    * @return Page content as string
    */
-  def getPageContentFromUrl(url: String, userMaybe: Option[String] = None, passwordOrTokenMaybe: Option[String] = None
+  def getPageContentFromUrl(url: String, userAndPasswordOrTokenMaybe: Option[(String, String)] = None
     , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : String = {
 
-    val inputStream = getInputStreamFromUrl(url, userMaybe, passwordOrTokenMaybe, requestProperties)
+    val inputStream = getInputStreamFromUrl(url, userAndPasswordOrTokenMaybe, requestProperties)
     try {
       Source.fromInputStream(inputStream).getLines().mkString("\n")
     } finally {
@@ -70,23 +70,27 @@ object HttpHelper {
   /**
    * Get content from a URL, optionally using basic authentication, as an input stream.
    * @param url URL to get content from
-   * @param userMaybe Some(User String) or None
-   * @param passwordOrTokenMaybe Some(Password or Token String) or None
+   * @param userMaybe Option(User String) or None
+   * @param passwordOrTokenMaybe Option(Password or Token String) or None
    * @param requestProperties Request properties as a map, with defaults used if not specified
    * @return InputStream with URL content
    */
-  def getInputStreamFromUrl(url: String, userMaybe: Option[String] = None, passwordOrTokenMaybe: Option[String] = None
+  def getInputStreamFromUrl(url: String, userAndPasswordOrTokenMaybe: Option[(String, String)] = None
     , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : InputStream = {
-    assert(userMaybe != Some(null) && passwordOrTokenMaybe != Some(null))
+    userAndPasswordOrTokenMaybe match {
+      case Some((_, null)) => throw new IllegalArgumentException("Password/token must not be null!")
+      case Some((null, _)) => throw new IllegalArgumentException("User must not be null!")
+      case _ => // continue
+    }
 
     val connection = new URL(url).openConnection
     requestProperties.foreach({
       case (name, value) => connection.setRequestProperty(name, value)
     })
 
-    if (userMaybe.nonEmpty && passwordOrTokenMaybe.nonEmpty) {
-      connection.setRequestProperty("Authorization", getHeaderForBasicAuthentication(userMaybe.get, passwordOrTokenMaybe.get))
-    }
+    userAndPasswordOrTokenMaybe.foreach(nameAndPw => {
+      connection.setRequestProperty("Authorization", getHeaderForBasicAuthentication(nameAndPw._1, nameAndPw._2))
+    })
 
     connection.getInputStream
   }

@@ -37,8 +37,8 @@ class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserS
   def this(userType: UserType.UserType, geographicalLocation: (Double, Double), isSecret: Boolean) = {
     this()
     this.dataType = userType
-    this.geographicalLocation = Some(geographicalLocation)
-    this.isSecret = Some(isSecret)
+    this.geographicalLocation = Option(geographicalLocation)
+    this.isSecret = Option(isSecret)
   }
 
   def this(userType: UserType.UserType) = {

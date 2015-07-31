@@ -164,13 +164,13 @@ class StringHelperTests extends WordSpec {
       }
     }
     "The string is an int" should {
-      "return Some(intVal)" in {
-        assert("-70000".toIntMaybe == Some(-70000))
+      "return Option(intVal)" in {
+        assert("-70000".toIntMaybe == Option(-70000))
       }
     }
     "The string is the max size for an int" should {
-      "return Some(intVal)" in {
-        assert("2147483647".toIntMaybe == Some(2147483647))
+      "return Option(intVal)" in {
+        assert("2147483647".toIntMaybe == Option(2147483647))
       }
       "The string is a long, but too big for an int" should {
         "return None" in {

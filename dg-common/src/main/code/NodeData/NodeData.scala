@@ -20,12 +20,16 @@ import scala.beans.BeanProperty
 
 /**
  * Data that can be stored in a node of a graph
+ * @param _stubCreatedFromMaybe Optional stub that this data was created from
  */
 abstract class NodeData(_stubCreatedFromMaybe: Option[_ <: NodeDataStub[_, _, _, _]] = None) extends DisplayableData {
   def this() = {
     this(None)
   }
 
+  /**
+   * Custom properties -- typically defined from stub's metadata.
+   */
   @BeanProperty
   var customPropertyMap = collection.mutable.HashMap[String, String]()
 

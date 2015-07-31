@@ -39,7 +39,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
     this(_graphId=graphId, appendSharedDisplayIdsWithNumericalSuffix = true)
   }
   def this(initialNodeValue: T, graphId: String) {
-    this(initialNodeValue=Some(initialNodeValue), _graphId=graphId)
+    this(initialNodeValue=Option(initialNodeValue), _graphId=graphId)
   }
 
   @BeanProperty
@@ -167,7 +167,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   /**
    * Given a displayableDataId string, returns the (first) node having that ID if found.
    * @param displayableDataId String representing a node's displayableDataId
-   * @return Some(Node) if found, else None
+   * @return Option(Node) if found, else None
    */
   def getNodeByDisplayId(displayableDataId: String): Option[Node[T]] = {
     allNodes.find(node => node.data.displayableDataId.equals(displayableDataId))
@@ -215,7 +215,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    */
   def deepCopy: Graph[T] = {
     //this.deepClone // Has performance issues (uses reflection)... so let's implement it ourselves instead.
-    val copiedGraph = new Graph[T](initialNodeValue = Some(allNodes.head.data), isEdgeLinkTrackingOn = false,
+    val copiedGraph = new Graph[T](initialNodeValue = Option(allNodes.head.data), isEdgeLinkTrackingOn = false,
       _graphId = _graphId, appendSharedDisplayIdsWithNumericalSuffix = false)
     copiedGraph.edgeLinkTrackingDescriptions = edgeLinkTrackingDescriptions
     copiedGraph.customSeed = customSeed

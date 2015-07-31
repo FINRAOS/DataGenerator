@@ -27,7 +27,10 @@ import scala.collection.mutable.ListBuffer
 object NodeDataType {
   /**
    * Each object extending this trait can be thought of as a value in an enumeration of all node data types.
-   * @tparam T_NodeData Data that uses this type..
+   * @tparam T_NodeData Data that uses this type.
+   * @tparam T_NodeDataStub Stub type for the data
+   * @tparam T_NodeDataTypes Data types type for this data
+   * @tparam T_ThisType This type
    */
   abstract class NodeDataType[+T_NodeData <: NodeData,
                      +T_NodeDataStub <: NodeDataStub[T_ThisType, T_NodeData, T_NodeDataTypes, T_NodeDataStub],

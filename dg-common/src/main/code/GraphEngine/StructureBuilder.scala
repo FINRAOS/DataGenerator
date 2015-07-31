@@ -90,7 +90,7 @@ abstract class StructureBuilder[+T_NodeData <: NodeData,
 
     nodeDataTypes.allInitialDataTypes.foreach(initialType => {
       // TODO: Can this be done without the cast? For some reason the compiler is unable to coerce the type even though we know it's correct.
-      graphs :+= new Graph(Some(initialType.asStub), isEdgeLinkTrackingOn = false, appendSharedDisplayIdsWithNumericalSuffix = true)
+      graphs :+= new Graph(Option(initialType.asStub), isEdgeLinkTrackingOn = false, appendSharedDisplayIdsWithNumericalSuffix = true)
     })
     graphs
   }

@@ -108,7 +108,7 @@ object JSchHelper {
         while (!channelExec.isClosed || inputStream.ready) {
           if (inputStream.ready) {
             if (writerMaybe.isEmpty) {
-              writerMaybe = Some(new FileWriter(localFilePath))
+              writerMaybe = Option(new FileWriter(localFilePath))
             }
             writerMaybe.get.write(s"${inputStream.readLine()}\r\n")
           }

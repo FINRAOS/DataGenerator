@@ -22,7 +22,10 @@ import scala.annotation.unchecked.{uncheckedVariance => uV}
 
 /**
  * Describes all the possible node data types
- * @tparam T Type extending NodeData
+ * @tparam T_NodeData Type of data to generate (e.g., could be either real data or could be stubbed data)
+ * @tparam T_NodeDataStub Stub type for the data
+ * @tparam T_NodeDataType Data type type for this data
+ * @tparam T_ThisType This type
  */
 trait NodeDataTypes[+T_NodeData <: NodeData,
                     +T_NodeDataStub <: NodeDataStub[T_NodeDataType, T_NodeData, T_ThisType, T_NodeDataStub],

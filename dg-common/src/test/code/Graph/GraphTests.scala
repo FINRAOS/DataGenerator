@@ -30,10 +30,10 @@ import org.scalatest.junit.JUnitRunner
 class GraphTests extends WordSpec {
   "A new graph" when {
     "Adding some nodes" should {
-      "Contain all nodes and edges in the DOT output" in {
+      "Contain all nodes and edges in the DOT output of the copied graph" in {
         val initialNodeValue = UserType.Admin.asStub
         val graph = new Graph[UserStub](
-          Some(initialNodeValue), isEdgeLinkTrackingOn = true, _graphId = "TestGraph1", appendSharedDisplayIdsWithNumericalSuffix = true)
+          Option(initialNodeValue), isEdgeLinkTrackingOn = true, _graphId = "TestGraph1", appendSharedDisplayIdsWithNumericalSuffix = true)
         assert(graph.rootNodes.size == 1 && graph.allNodes.size == 1 && graph.rootNodes.head == graph.allNodes.head && graph.rootNodes.head.data == initialNodeValue)
         val child1 = graph.allNodes.head.addChild(UserType.Admin.asStub)
         val child2 = graph.allNodes.head.addChild(UserType.SocialNetworkEmployee.asStub)
@@ -44,7 +44,8 @@ class GraphTests extends WordSpec {
         child3.addParent(UserType.Admin.asStub)
         assert(graph.rootNodes.size == 2 && graph.allNodes.size == 6)
         val outputStream = new ByteArrayOutputStream()
-        graph.writeDotFileToOpenStream(outputStream, isSimplified = true)
+        val copiedGraph = graph.deepCopy
+        copiedGraph.writeDotFileToOpenStream(outputStream, isSimplified = true)
         val dotOutput = outputStream.toString
         val expectedDotOutput =
            """|digraph "Graph_TestGraph1" {

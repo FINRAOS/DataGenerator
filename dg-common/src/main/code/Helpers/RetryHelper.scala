@@ -43,7 +43,7 @@ object RetryHelper {
 
       handling(exceptionTypesToRetry:_*)
         .by(ex => if (left <= 0) throw ex else handlingCode).apply({
-          result = Some(codeToRetry)
+          result = Option(codeToRetry)
         })
     }
     result.get

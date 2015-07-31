@@ -25,11 +25,15 @@ import scala.annotation.unchecked.{uncheckedVariance => uV}
  * so we can use a stub to specify type and any relevant metadata (e.g., derived from a DOT
  * file, as in one implementation), and we can have an engine later expand a stub node
  * into a full-fledged data node.
+ * @tparam T_NodeDataType Data type type for this data
+ * @tparam T_NodeData Data that uses this type.
+ * @tparam T_NodeDataTypes Data types type for this data
+ * @tparam T_ThisType This type
  */
-abstract case class NodeDataStub[+T_NodeDataType <: NodeDataType[T_NodeData, T_NodeDataStub, T_NodeDataTypes, T_NodeDataType],
+abstract case class NodeDataStub[+T_NodeDataType <: NodeDataType[T_NodeData, T_ThisType, T_NodeDataTypes, T_NodeDataType],
                                  +T_NodeData <: NodeData,
-                                 +T_NodeDataTypes <: NodeDataTypes[T_NodeData, T_NodeDataStub, T_NodeDataType, T_NodeDataTypes],
-                                 +T_NodeDataStub <: NodeDataStub[T_NodeDataType, T_NodeData, T_NodeDataTypes, T_NodeDataStub]
+                                 +T_NodeDataTypes <: NodeDataTypes[T_NodeData, T_ThisType, T_NodeDataType, T_NodeDataTypes],
+                                 +T_ThisType <: NodeDataStub[T_NodeDataType, T_NodeData, T_NodeDataTypes, T_ThisType]
     ] protected() extends DisplayableData {
   var dataType: (T_NodeDataType @uV)
 }

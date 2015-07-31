@@ -39,11 +39,11 @@ object StringHelper {
 
     /**
      * Convert to an integer.
-     * @return If parsable to an Int, return as Some(intVal), else None.
+     * @return If parsable to an Int, return as Option(intVal), else None.
      */
     def toIntMaybe: Option[Int] = {
       try {
-        Some(str.toInt)
+        Option(str.toInt)
       } catch {
         case e: NumberFormatException => None
       }
@@ -144,7 +144,7 @@ object StringHelper {
     /**
      * Get the index of the Nth occurrence of a character in the string.
      * @param char Char to search for
-     * @param n N
+     * @param n Number of occurrence, 1-based
      * @return Index of Nth occurrence of character
      */
     def indexOfNthOccurrence(char: Char, n: Int): Int = {
