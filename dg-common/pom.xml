@@ -127,11 +127,11 @@
                 <artifactId>scalastyle-maven-plugin</artifactId>
                 <version>0.6.0</version>
                 <configuration>
-                    <verbose>false</verbose>
+                    <verbose>true</verbose>
                     <failOnViolation>true</failOnViolation>
                     <!-- Disabled for tests because they'll by nature have lots of magic numbers and hardcoded strings. -->
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <failOnWarning>false</failOnWarning>
+                    <failOnWarning>true</failOnWarning>
                     <sourceDirectory>${basedir}/src/main/code</sourceDirectory>
                     <testSourceDirectory>${basedir}/src/test/code</testSourceDirectory>
                     <configLocation>${project.basedir}/../config/scalastyle_config.xml</configLocation>
@@ -140,6 +140,60 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.2</version>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                    <failOnViolation>true</failOnViolation>
+                    <verbose>true</verbose>
+                    <rulesets>
+                        <ruleset>/rulesets/java/braces.xml</ruleset>
+                        <ruleset>/rulesets/java/strictexception.xml</ruleset>
+                        <ruleset>/rulesets/java/basic.xml</ruleset>
+                    </rulesets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.12.1</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <configLocation>../config/sun_checkstyle.xml</configLocation>
+                            <headerLocation>../config/java.header</headerLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeResources>true</includeResources>
+                            <includeTestResources>true</includeTestResources>
+                            <resourceIncludes>**/*.*</resourceIncludes>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failOnViolation>true</failOnViolation>
+                            <failsOnError>true</failsOnError>
+                        </configuration>
                         <goals>
                             <goal>check</goal>
                         </goals>

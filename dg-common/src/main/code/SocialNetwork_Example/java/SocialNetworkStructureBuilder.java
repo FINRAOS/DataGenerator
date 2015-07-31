@@ -28,6 +28,11 @@ import scala.NotImplementedError;
  */
 public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTypeVal,UserStub,UserTypes> {
     // Defined as protected in the Scala abstract class, but for some reason it requires public on the Java impl.
+
+    /**
+     * Node data types
+     * @return UserTypes
+     */
     public UserTypes nodeDataTypes() {
         return UserTypes.getInstance();
     }
@@ -40,6 +45,10 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
 
     private static final SocialNetworkStructureBuilder ourInstance = new SocialNetworkStructureBuilder();
 
+    /**
+     * Singleton instance
+     * @return SocialNetworkStructureBuilder singleton
+     */
     public static SocialNetworkStructureBuilder getInstance() {
         return ourInstance;
     }
@@ -48,6 +57,11 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
         FileHelper.ensureDirectoryExists(outDir);
     }
 
+    /**
+     * Build all combinations of graph structures for generic event stubs of a maximum length
+     * @param length Maximum number of nodes in each to generate
+     * @return All graph combinations of specified length or less
+     */
     public Vector<Graph<UserStub>> generateAllNodeDataTypeGraphCombinationsOfMaxLength(int length) {
         Vector<Graph<UserStub>> graphs = super.generateAllNodeDataTypeGraphCombinationsOfMaxLength(length);
 

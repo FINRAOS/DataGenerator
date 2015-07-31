@@ -20,6 +20,10 @@ package SocialNetwork_Example.java;
  * Main method that generates social-network friendship graphs
  */
 public class SocialNetworkExample_Program {
+    /**
+     * Main entry point
+     * @param args Arguments
+     */
     public static void main(String[] args) {
         SocialNetworkStructureBuilder.getInstance().generateAllNodeDataTypeGraphCombinationsOfMaxLength(4);
     }

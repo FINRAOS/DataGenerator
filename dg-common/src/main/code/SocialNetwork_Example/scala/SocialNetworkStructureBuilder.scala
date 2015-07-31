@@ -36,6 +36,12 @@ object SocialNetworkStructureBuilder extends StructureBuilder[User, UserType.Use
 
   val WRITE_STRUCTURES_IN_PARALLEL = false // Having same structure be same ID helps debugging...
   val ALSO_WRITE_AS_PNG = true
+
+  /**
+   * Build all combinations of graph structures for generic event stubs of a maximum length
+   * @param length Maximum number of nodes in each to generate
+   * @return All graph combinations of specified length or less
+   */
   override def generateAllNodeDataTypeGraphCombinationsOfMaxLength(length: Int): immutable.Vector[Graph[UserStub]] = {
     val graphs = super.generateAllNodeDataTypeGraphCombinationsOfMaxLength(length)
 
