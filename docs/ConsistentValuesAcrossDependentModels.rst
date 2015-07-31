@@ -28,7 +28,7 @@ To handle the missing account number value make a transformer that when given a 
         }
 
         public void transform(DataPipe dataPipe) {
-            dataPipe.getDataMap.put("accountNumber", generateAccountNumber(uniqueAccountSeed));
+            dataPipe.getDataMap().put("accountNumber", generateAccountNumber(uniqueAccountSeed));
         }
 
         public String generateAccountNumber(int seed) {
