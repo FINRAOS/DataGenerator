@@ -34,7 +34,8 @@ class GraphTests extends WordSpec {
         val initialNodeValue = UserType.Admin.asStub
         val graph = new Graph[UserStub](
           Option(initialNodeValue), isEdgeLinkTrackingOn = true, _graphId = "TestGraph1", appendSharedDisplayIdsWithNumericalSuffix = true)
-        assert(graph.rootNodes.size == 1 && graph.allNodes.size == 1 && graph.rootNodes.head == graph.allNodes.head && graph.rootNodes.head.data == initialNodeValue)
+        assert(graph.rootNodes.size == 1 && graph.allNodes.size == 1 && graph.rootNodes.head == graph.allNodes.head
+          && graph.rootNodes.head.data == initialNodeValue)
         val child1 = graph.allNodes.head.addChild(UserType.Admin.asStub)
         val child2 = graph.allNodes.head.addChild(UserType.SocialNetworkEmployee.asStub)
         val child3 = graph.allNodes.head.addChild(UserType.PublicUser.asStub)
