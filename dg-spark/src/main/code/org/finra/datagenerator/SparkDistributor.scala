@@ -66,7 +66,7 @@ class SparkDistributor(masterURL: String, scalaDataConsumer: ScalaDataConsumer) 
 
     println("Frontier list size = " + (frontierList.size() - 1))  // scalastyle:ignore
 
-    val conf: SparkConf = new SparkConf().setMaster("local[5]").setAppName("dg-spark-example")
+    val conf: SparkConf = new SparkConf().setMaster(masterURL).setAppName("dg-spark-example")
 
     val sparkContext: SparkContext = new SparkContext(conf)
 

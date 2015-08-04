@@ -17,8 +17,6 @@
 
 package org.finra.datagenerator;
 
-//import org.apache.spark.SparkContext;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
@@ -60,7 +58,7 @@ public final class MainJava implements Serializable {
             randomNumberEngine.setModelByInputFileStream(is);
 
             //Define your host name here with port 7077 i.e hostname:7077
-            String masterURL = "local[5]";
+            String masterURL = "spark://sandbox.hortonworks.com:7077";
 
             //Define Spark Context and Scala Data Consumer object
             //SparkContext sparkContext = new SparkContext();
