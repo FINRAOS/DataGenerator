@@ -20,6 +20,8 @@ import java.util
 
 import org.finra.datagenerator.consumer.DataPipe
 
+import scala.beans.BeanProperty
+
 /**
  * Wrapper for each result
  *
@@ -27,16 +29,7 @@ import org.finra.datagenerator.consumer.DataPipe
  */
 class ScalaDataPipe extends DataPipe with  java.io.Serializable {
 
-  var dataMap = new util.HashMap[String,String]()
-
-  /**
-   * Get the DataMap
-   *
-   * @return datamap
-   */
-  override def getDataMap: util.Map[String,String] = {
-    dataMap
-  }
+  val dataMap = new util.HashMap[String,String]()
 
   /**
    * Get data map and append it to String Builder
@@ -52,7 +45,7 @@ class ScalaDataPipe extends DataPipe with  java.io.Serializable {
       if(stringBuilder.nonEmpty) {
         stringBuilder.append('|')
       }
-      stringBuilder.append(getDataMap().get(str))
+      stringBuilder.append(getDataMap.get(str))
     }
     stringBuilder.toString()
   }

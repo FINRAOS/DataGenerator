@@ -17,14 +17,15 @@
 
 package org.finra.datagenerator;
 
+//import org.apache.spark.SparkContext;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.io.InputStream;
+import java.io.IOException;
 
 /**
- *
  * Simple "Random Number Data Generator" example using Apache Spark.
  * Created by Brijesh on 6/1/2015.
  */
@@ -32,16 +33,16 @@ import java.io.InputStream;
 public final class MainJava implements Serializable {
 
     private MainJava() {
-        throw new AssertionError("Instantiating utility class");
+        //Private Constructor
     }
 
     /**
      * Entry point for the example.
      *
      * @param argv Command-line arguments for the example
-     * @throws FileNotFoundException if file is not found
+     * @throws IOException IO Exception
      */
-    public static void main(String[] argv) throws FileNotFoundException {
+    public static void main(String[] argv) throws IOException {
 
         //You can define your own file "input.txt" in your directory with first line as "Total Count" and
         //second line as "Number of Split"
@@ -51,20 +52,28 @@ public final class MainJava implements Serializable {
 
         InputStream is = new FileInputStream(file);
 
-        //Create instance of EngineImplementation
-        RandomNumberEngine randomNumberEngine = new RandomNumberEngine();
+        try {
+            //Create instance of EngineImplementation
+            RandomNumberEngine randomNumberEngine = new RandomNumberEngine();
 
-        //Read the lines from text file
-        randomNumberEngine.setModelByInputFileStream(is);
+            //Read the lines from text file
+            randomNumberEngine.setModelByInputFileStream(is);
 
-        //Define your host name here with port 7077 i.e hostname:7077
-        String masterURL = "spark://sandbox.hortonworks.com:7077";
+            //Define your host name here with port 7077 i.e hostname:7077
+            String masterURL = "local[5]";
 
-        //Create instance of SparkDistributor and set masterURL to Spark Context
-        SparkDistributor sparkDistributor = new SparkDistributor(masterURL);
+            //Define Spark Context and Scala Data Consumer object
+            //SparkContext sparkContext = new SparkContext();
+            ScalaDataConsumer scalaDataConsumer = new ScalaDataConsumer();
 
-        //Generate data, distribute it and send it to data consumer
-        randomNumberEngine.process(sparkDistributor);
+            //Create instance of SparkDistributor and set masterURL to Spark Context
+            SparkDistributor sparkDistributor = new SparkDistributor(masterURL, scalaDataConsumer);
 
+            //Generate data, distribute it and send it to data consumer
+            randomNumberEngine.process(sparkDistributor);
+        } finally {
+            //Close the output Stream
+            is.close();
+        }
     }
 }

@@ -36,28 +36,20 @@ import org.finra.datagenerator.engine.Frontier
  *
  * Created by Brijesh on 6/2/2015.
  */
-class SparkDistributor(masterURL: String) extends SearchDistributor with java.io.Serializable {
+class SparkDistributor(masterURL: String, scalaDataConsumer: ScalaDataConsumer) extends
+  SearchDistributor with java.io.Serializable {
 
   val flag: Boolean = true
 
-  val javaQueue = new util.LinkedList[util.Map[String, String]]()
-
-  //Define Spark Context and Data Consumer
-  var sparkContext: SparkContext = null
-
-  var scalaDataConsumer: ScalaDataConsumer = null
-
-  //var dataConsumer: DataConsumer = null
-  //dataConsumer = scalaDataConsumer
+  val randomNumberQueue = new util.LinkedList[util.Map[String, String]]()
 
   /**
    * Set Data Consumer to consume output
    *
-   * @param dataConsumer
+   * @param dataConsumer data consumer
    * @return SearchDistributor
    */
   def setDataConsumer(dataConsumer: DataConsumer): SearchDistributor = {
-    //this.scalaDataConsumer = dataConsumer
     this
   }
 
@@ -72,9 +64,9 @@ class SparkDistributor(masterURL: String) extends SearchDistributor with java.io
    */
   def distribute(frontierList: util.List[Frontier]): Unit = {
 
-    println("Frontier list size = " + (frontierList.size() - 1))
+    println("Frontier list size = " + (frontierList.size() - 1))  // scalastyle:ignore
 
-    val conf: SparkConf = new SparkConf().setMaster(masterURL).setAppName("synchronized")
+    val conf: SparkConf = new SparkConf().setMaster("local[5]").setAppName("dg-spark-example")
 
     val sparkContext: SparkContext = new SparkContext(conf)
 
@@ -87,16 +79,15 @@ class SparkDistributor(masterURL: String) extends SearchDistributor with java.io
 
       for (frontier <- frontierList.asScala) {
 
-        sparkContext.parallelize(1 to RandomNumberEngine.numberInEachFrontier).map {
+        sparkContext.parallelize(1 to RandomNumberEngine.numberInEachFrontier).map{
           i =>
             //Generate Random Number Parallel
-            searchWorker(frontier, javaQueue, flag)
+            searchWorker(frontier, randomNumberQueue, flag)
 
             //Call Consume method for parallel processing
             produceOutput()
 
             0
-
         }.reduce(_ + _)
       }
   }
@@ -112,29 +103,30 @@ class SparkDistributor(masterURL: String) extends SearchDistributor with java.io
     val os: OutputStream = System.out
     val objectOS = new ObjectOutputStream(os)
 
-    while(!javaQueue.isEmpty) {
+    while(!randomNumberQueue.isEmpty) {
 
       this.synchronized {
 
-        val maps = javaQueue.poll()
+        val maps = randomNumberQueue.remove()
 
         lines += scalaDataConsumer.consume(maps)
 
-        println()
+        println()  // scalastyle:ignore
       }
     }
-    println()
+    println()  // scalastyle:ignore
   }
 
   /**
    * Call the searchForScenario Method which generates random number
    *
-   * @param frontier
+   * @param frontier frontier object
    * @param javaQueue Queue
    * @param flag boolean
    */
   def searchWorker(frontier: Frontier, javaQueue: util.Queue[util.Map[String, String]], flag: Boolean): Unit = {
 
-    frontier.searchForScenarios(javaQueue, null)
+    frontier.searchForScenarios(javaQueue, null)   // scalastyle:ignore
+
   }
 }

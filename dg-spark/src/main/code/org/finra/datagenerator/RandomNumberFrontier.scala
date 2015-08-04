@@ -33,10 +33,10 @@ class RandomNumberFrontier extends Frontier with java.io.Serializable {
    * Generate random number string and add them to Map
    * Add Map to Queue
    *
-   * @param javaQueue of Queue(java)
+   * @param randomNumberQueue Random Number Queue
    * @param flag Atomic boolean flag
    */
-  override def searchForScenarios(javaQueue:util.Queue[util.Map[String, String]], flag: AtomicBoolean) : Unit = {
+  override def searchForScenarios(randomNumberQueue:util.Queue[util.Map[String, String]], flag: AtomicBoolean) : Unit = {
 
     this.synchronized {
 
@@ -46,15 +46,14 @@ class RandomNumberFrontier extends Frontier with java.io.Serializable {
         val randomNumber = scala.util.Random
         val value = randomNumber.nextInt(100000).toString
 
-        //Key is a static string
         val key = "Key for Random Number"
 
-        val javaMap = new util.HashMap[String, String]()
+        val randomNumberMap = new util.HashMap[String, String]()
 
-        javaMap.put(key, value)
+        randomNumberMap.put(key, value)
 
-        //Add javaMap to javaQueue
-        javaQueue.add(javaMap)
+        //Add randomNumberMap to randomNumberQueue
+        randomNumberQueue.add(randomNumberMap)
 
       }
     }

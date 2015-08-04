@@ -41,7 +41,7 @@ class RandomNumberEngine extends Engine {
    *
    * Call distribute method which distribute data to Spark using Map and Reduce
    *
-   * @param distributor
+   * @param distributor SearchDistributor
    */
   def process(distributor: SearchDistributor): Unit  = {
 
@@ -62,8 +62,20 @@ class RandomNumberEngine extends Engine {
   def setModelByInputFileStream(inputFileStream : InputStream) : Unit = {
 
     val fileLines = io.Source.fromInputStream(inputFileStream).getLines()
-    totalCount = fileLines.next().toInt
-    RandomNumberEngine.numSplit = fileLines.next().toInt
+
+    try{
+      totalCount = fileLines.next().toInt
+      RandomNumberEngine.numSplit = fileLines.next().toInt
+    }catch {
+      case e: NumberFormatException => throw new RuntimeException("File should have two lines, one int in each.")
+    }
+    /*
+    try { (totalCount, RandomNumberEngine.numSplit) ;
+      (fileLines.next().toInt, fileLines.next().toInt)
+    } catch {
+      case e: NumberFormatException => throw new RuntimeException("File should have two lines, one int in each.")
+    }
+    */
 
     RandomNumberEngine.numberInEachFrontier = totalCount / RandomNumberEngine.numSplit
 
@@ -76,6 +88,7 @@ class RandomNumberEngine extends Engine {
    */
   def setModelByText(model: String) : Unit = {
     // TODO set model with a string
+    ???
   }
 
   /**
@@ -85,6 +98,7 @@ class RandomNumberEngine extends Engine {
    * @return this
    */
   def setBootstrapMin(min: Int) : Engine = {
+    ???
     this
   }
 }
