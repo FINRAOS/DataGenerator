@@ -117,7 +117,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>SocialNetwork_Example</mainClass>
+                            <mainClass>org.finra.datagenerator.common.SocialNetwork_Example</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
