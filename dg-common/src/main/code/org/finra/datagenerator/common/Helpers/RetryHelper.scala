@@ -18,6 +18,10 @@ package org.finra.datagenerator.common.Helpers
 
 import scala.util.control.Exception._
 
+// Motivation for this object is described in the following blog posts:
+//   http://googlyadventures.blogspot.com/2015/05/what-else-i-learned-yesterday.html
+//   http://googlyadventures.blogspot.com/2015/06/today-i-learned-doing-things-hard-way.html
+
 /**
  * Helper methods to retry code with configurable retry count and exceptions to handle
  */

@@ -194,7 +194,7 @@ object FileHelper {
     }
 
     /**
-     * Get all the files in a directory, but NOT its subdirectories, where file contains a specified string.
+     * Get all the files in a directory, but NOT its subdirectories, where file name contains a specified string.
      * @param substring Search string
      * @param extension File extension (or any suffix) to search for
      * @param ignoreCase Case insensitive by default
@@ -211,6 +211,45 @@ object FileHelper {
             } else {
               name.contains(substring) && name.endsWith(extension)
             }
+          }
+        })
+      }
+    }
+
+    /**
+     * Get all the files in a directory, but NOT its subdirectories, where file name matches a glob-style or regex filter
+     * @param pipeDelimitedFilterString Pipe-separated glob-style (containing *) or regex-style filter string
+     * @param ignoreCase Case insensitive by default
+     * @param isRegex Whether or not the filter string is a regex. Defaults to false, in which case it's a glob-style filter.
+     * @return All matched files
+     */
+    def listFilesMatchingPipeDelimitedGlobFilter(pipeDelimitedFilterString: String = "*", ignoreCase: Boolean = true, isRegex: Boolean = false): Seq[File] = {
+      val regexFilterString = if (isRegex) {
+        pipeDelimitedFilterString
+      } else {
+        pipeDelimitedFilterString.replace(".", "\\.").replace("*", ".*")
+      }
+      fileOrDirectory.listFilesMatchingRegexFilter(regexFilterString, ignoreCase = ignoreCase)
+    }
+
+    /**
+     * Get all the files in a directory, but NOT its subdirectories, where file name matches a regex filter
+     * @param regexFilterString Regex-style filter string
+     * @param ignoreCase Case insensitive by default
+     * @return All matched files
+     */
+    def listFilesMatchingRegexFilter(regexFilterString: String = ".*", ignoreCase: Boolean = true): Seq[File] = {
+      if (!fileOrDirectory.isDirectory) {
+        Seq[File]()
+      } else {
+        val modifiedRegexString = if (ignoreCase) {
+          s"(?i)$regexFilterString"
+        } else {
+          regexFilterString
+        }
+        fileOrDirectory.listFiles(new FilenameFilter {
+          override def accept(dir: File, name: String): Boolean = {
+            name.matches(modifiedRegexString)
           }
         })
       }
