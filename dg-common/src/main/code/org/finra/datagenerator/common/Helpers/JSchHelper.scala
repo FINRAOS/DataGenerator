@@ -19,9 +19,8 @@ package org.finra.datagenerator.common.Helpers
 import java.io.{BufferedReader, FileWriter, InputStreamReader}
 import java.text.SimpleDateFormat
 import java.util.Date
-import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
 import com.jcraft.jsch._
-
+import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
 import scala.beans.BooleanBeanProperty
 
 /**
@@ -78,9 +77,9 @@ object JSchHelper {
 
   /**
    * Implicit methods on an Exec channel.
-   * @param channelExec Exec channel
+   * @param execChannel Exec channel
    */
-  implicit class ExecImplicits(private val channelExec: ChannelExec) {
+  implicit class ExecImplicits(private var execChannel: ChannelExec) {
     /**
      * Define the command (including any parameters) to execute remotely over SSH.
      * @param command Command to run remotely
@@ -88,9 +87,9 @@ object JSchHelper {
     def setCommandToExec(command: String): Unit = {
       if (logRemoteCommands) {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
-          .format(new Date())}: Executing remote command on ${channelExec.getSession.getHost}: $command")
+          .format(new Date())}: Executing remote command on ${execChannel.getSession.getHost}: $command")
       }
-      channelExec.setCommand(command)
+      execChannel.setCommand(command)
     }
 
     /**
@@ -100,12 +99,12 @@ object JSchHelper {
      * @return Exit code
      */
     def runCommandAndSaveOutputLocally(command: String, localFilePath: String): Int = {
-      val inputStream = new BufferedReader(new InputStreamReader(channelExec.getInputStream))
+      val inputStream = new BufferedReader(new InputStreamReader(execChannel.getInputStream))
       var writerMaybe: Option[FileWriter] = None
-      channelExec.setCommandToExec(command)
-      channelExec.connectWithRetry(3000)
+      execChannel.setCommandToExec(command)
+      execChannel.connectWithRetry(3000)
       try {
-        while (!channelExec.isClosed || inputStream.ready) {
+        while (!execChannel.isClosed || inputStream.ready) {
           if (inputStream.ready) {
             if (writerMaybe.isEmpty) {
               writerMaybe = Option(new FileWriter(localFilePath))
@@ -113,13 +112,32 @@ object JSchHelper {
             writerMaybe.get.write(s"${inputStream.readLine()}\r\n")
           }
         }
-        channelExec.getExitStatus
+        execChannel.getExitStatus
       } finally {
         if (writerMaybe.nonEmpty) {
           writerMaybe.get.close()
         }
         inputStream.close()
-        channelExec.disconnect()
+        execChannel.disconnect()
+      }
+    }
+
+    /**
+     * Run a command over SSH exec channel
+     * @param command Command to run remotely
+     * @return Exit code
+     */
+    def runCommand(command: String): Int = {
+      //ensureChannelOpen()
+
+      execChannel.setCommandToExec(command)
+      execChannel.connectWithRetry(3000)
+      try {
+        while (!execChannel.isClosed) {
+        }
+        execChannel.getExitStatus
+      } finally {
+        execChannel.disconnect()
       }
     }
   }
@@ -128,7 +146,7 @@ object JSchHelper {
    * Implicit methods on an SFTP channel
    * @param sftpChannel SFTP channel
    */
-  implicit class SftpImplicits(private val sftpChannel: ChannelSftp) {
+  implicit class SftpImplicits(private var sftpChannel: ChannelSftp) {
     /**
      * Download a file over SFTP to local, with some retries in case of failure.
      * @param src Remote file to download from
