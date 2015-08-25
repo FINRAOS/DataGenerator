@@ -44,6 +44,11 @@
             <name>Mohamed Ibrahim</name>
             <email>mibrahim@mibrahim.net</email>
         </developer>
+		<developer>
+			<id>sameradra</id>
+			<name>Samer Adra</name>
+			<email>SamerAdra@gmail.com</email>
+		</developer>
     </developers>
 
     <properties>
