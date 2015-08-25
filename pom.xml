@@ -5,7 +5,7 @@
     <artifactId>dg-parent</artifactId>
     <version>2.2-SNAPSHOT</version>
     <modules>
-        <module>dg-commons</module>
+        <module>dg-common</module>
         <module>dg-core</module>
         <module>dg-example-default</module>
         <module>dg-example-hadoop</module>
@@ -44,6 +44,11 @@
             <name>Mohamed Ibrahim</name>
             <email>mibrahim@mibrahim.net</email>
         </developer>
+		<developer>
+			<id>sameradra</id>
+			<name>Samer Adra</name>
+			<email>SamerAdra@gmail.com</email>
+		</developer>
     </developers>
 
     <properties>

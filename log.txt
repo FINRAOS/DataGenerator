@@ -1,0 +1,251 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Data Generator Parent POM
+[INFO] Data Generator Common Utils
+[INFO] Data Generator Core Library
+[INFO] Data Generator Example - Default Distributor
+[INFO] Data Generator Example - HDFS Distributor
+[INFO] Data Generator Simple CSV
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Data Generator Parent POM 2.2-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.6.3.201306030806:prepare-agent (jacoco-initialize) @ dg-parent ---
+[INFO] Skipping JaCoCo for project with packaging type 'pom'
+[INFO] argLine set to 
+[INFO] 
+[INFO] >>> maven-pmd-plugin:3.2:check (test) > :pmd @ dg-parent >>>
+[INFO] 
+[INFO] --- maven-pmd-plugin:3.2:pmd (pmd) @ dg-parent ---
+[INFO] 
+[INFO] <<< maven-pmd-plugin:3.2:check (test) < :pmd @ dg-parent <<<
+[INFO] 
+[INFO] --- maven-pmd-plugin:3.2:check (test) @ dg-parent ---
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.12.1:check (test) @ dg-parent ---
+[INFO] Starting audit...
+Audit done.
+
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.6.3.201306030806:report (jacoco-site) @ dg-parent ---
+[INFO] Skipping JaCoCo for project with packaging type 'pom'
+[INFO] 
+[INFO] >>> maven-source-plugin:2.2.1:jar (attach-sources) > generate-sources @ dg-parent >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.6.3.201306030806:prepare-agent (jacoco-initialize) @ dg-parent ---
+[INFO] Skipping JaCoCo for project with packaging type 'pom'
+[INFO] argLine set to  
+[INFO] 
+[INFO] <<< maven-source-plugin:2.2.1:jar (attach-sources) < generate-sources @ dg-parent <<<
+[INFO] 
+[INFO] --- maven-source-plugin:2.2.1:jar (attach-sources) @ dg-parent ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:2.9.1:jar (attach-javadocs) @ dg-parent ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ dg-parent ---
+[INFO] Installing C:\Code\DataGenerator\pom.xml to C:\Users\K24821\.m2\repository\org\finra\datagenerator\dg-parent\2.2-SNAPSHOT\dg-parent-2.2-SNAPSHOT.pom
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Data Generator Common Utils 2.2-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.6.3.201306030806:prepare-agent (jacoco-initialize) @ dg-common ---
+[INFO] argLine set to -javaagent:C:\Users\K24821\.m2\repository\org\jacoco\org.jacoco.agent\0.6.3.201306030806\org.jacoco.agent-0.6.3.201306030806-runtime.jar=destfile=C:\Code\DataGenerator\dg-common\target\jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ dg-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.1:compile (default-compile) @ dg-common ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- scala-maven-plugin:3.2.0:compile (default) @ dg-common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ dg-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.1:testCompile (default-testCompile) @ dg-common ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- scala-maven-plugin:3.2.0:testCompile (default) @ dg-common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ dg-common ---
+[INFO] 
+[INFO] >>> maven-pmd-plugin:3.2:check (test) > :pmd @ dg-common >>>
+[INFO] 
+[INFO] --- maven-pmd-plugin:3.2:pmd (pmd) @ dg-common ---
+[INFO] 
+[INFO] <<< maven-pmd-plugin:3.2:check (test) < :pmd @ dg-common <<<
+[INFO] 
+[INFO] --- maven-pmd-plugin:3.2:check (test) @ dg-common ---
+[INFO] 
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.12.1:check (test) @ dg-common ---
+[INFO] Starting audit...
+Audit done.
+
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:copy-dependencies (copy-dependencies) @ dg-common ---
+[INFO] Copying objenesis-2.1.jar to C:\Code\DataGenerator\dg-common\target\lib\objenesis-2.1.jar
+[INFO] Copying jsch-0.1.53.jar to C:\Code\DataGenerator\dg-common\target\lib\jsch-0.1.53.jar
+[INFO] Copying commons-math3-3.5.jar to C:\Code\DataGenerator\dg-common\target\lib\commons-math3-3.5.jar
+[INFO] Copying junit-4.11.jar to C:\Code\DataGenerator\dg-common\target\lib\junit-4.11.jar
+[INFO] Copying hamcrest-core-1.3.jar to C:\Code\DataGenerator\dg-common\target\lib\hamcrest-core-1.3.jar
+[INFO] Copying scala-reflect-2.10.4.jar to C:\Code\DataGenerator\dg-common\target\lib\scala-reflect-2.10.4.jar
+[INFO] Copying scalatest_2.10-2.2.0.jar to C:\Code\DataGenerator\dg-common\target\lib\scalatest_2.10-2.2.0.jar
+[INFO] Copying cloning-1.9.1.jar to C:\Code\DataGenerator\dg-common\target\lib\cloning-1.9.1.jar
+[INFO] Copying scala-library-2.10.4.jar to C:\Code\DataGenerator\dg-common\target\lib\scala-library-2.10.4.jar
+[INFO] Copying commons-codec-1.10.jar to C:\Code\DataGenerator\dg-common\target\lib\commons-codec-1.10.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ dg-common ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.6.3.201306030806:report (jacoco-site) @ dg-common ---
+[INFO] Skipping JaCoCo execution due to missing execution data file
+[INFO] 
+[INFO] >>> maven-source-plugin:2.2.1:jar (attach-sources) > generate-sources @ dg-common >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.6.3.201306030806:prepare-agent (jacoco-initialize) @ dg-common ---
+[INFO] argLine set to -javaagent:C:\Users\K24821\.m2\repository\org\jacoco\org.jacoco.agent\0.6.3.201306030806\org.jacoco.agent-0.6.3.201306030806-runtime.jar=destfile=C:\Code\DataGenerator\dg-common\target\jacoco.exec -javaagent:C:\Users\K24821\.m2\repository\org\jacoco\org.jacoco.agent\0.6.3.201306030806\org.jacoco.agent-0.6.3.201306030806-runtime.jar=destfile=C:\Code\DataGenerator\dg-common\target\jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:2.2.1:jar (attach-sources) < generate-sources @ dg-common <<<
+[INFO] 
+[INFO] --- maven-source-plugin:2.2.1:jar (attach-sources) @ dg-common ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:2.9.1:jar (attach-javadocs) @ dg-common ---
+[INFO] 
+[INFO] --- scalastyle-maven-plugin:0.6.0:check (default) @ dg-common ---
+Starting scalastyle
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddChildToExistingNodeDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddChildToExistingNodeDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddInitialNodeDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddInitialNodeDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewChildDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewChildDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewOrphanedNodeDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewOrphanedNodeDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewParentDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewParentDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewRootNodeDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddNewRootNodeDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddParentToExistingNodeDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\AddParentToExistingNodeDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\EdgeCreationDescription.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\EdgeCreationDescription.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\Graph.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\Graph.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\Node.scala
+warning file=C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\Node.scala message=File line length exceeds 160 characters line=103
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Graph\Node.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\DataNodeGenerator.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\DataNodeGenerator.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\DataTransitions.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\DataTransitions.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\DefaultNodeGenerator.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\DefaultNodeGenerator.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\StructureBuilder.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\GraphEngine\StructureBuilder.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\BooleanHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\BooleanHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\CharHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\CharHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\CloningHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\CloningHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\DateHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\DateHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\DotHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\DotHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\FileHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\FileHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\HttpHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\HttpHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\InputStreamHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\InputStreamHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\JSchHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\JSchHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\LongHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\LongHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\NullOutputStream.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\NullOutputStream.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\NumericHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\NumericHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\OptionHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\OptionHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\RandomHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\RandomHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\ReflectionHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\ReflectionHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\RetryHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\RetryHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\StringHelper.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\Helpers\StringHelper.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\DisplayableData.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\DisplayableData.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeData.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeData.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeDataStub.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeDataStub.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeDataType.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeDataType.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeDataTypes.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\NodeData\NodeDataTypes.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\SocialNetworkExample_Program.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\SocialNetworkExample_Program.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\SocialNetworkStructureBuilder.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\SocialNetworkStructureBuilder.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\SocialNetworkUtilities.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\SocialNetworkUtilities.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\User.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\User.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\UserStub.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\UserStub.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\UserTransitions.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\UserTransitions.scala
+start file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\UserType.scala
+end file C:\Code\DataGenerator\dg-common\src\main\code\org\finra\datagenerator\common\SocialNetwork_Example\scala\UserType.scala
+start file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Graph\GraphTests.scala
+end file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Graph\GraphTests.scala
+start file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Helpers\GammaGeneratorDemo.scala
+end file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Helpers\GammaGeneratorDemo.scala
+start file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Helpers\RetryHelperTests.scala
+end file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Helpers\RetryHelperTests.scala
+start file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Helpers\StringHelperTests.scala
+end file C:\Code\DataGenerator\dg-common\src\test\code\org\finra\datagenerator\common\Helpers\StringHelperTests.scala
+Saving to outputFile=C:\Code\DataGenerator\dg-common\..\config\scalastyle-output_dg-common.xml
+Processed 47 file(s)
+Found 0 errors
+Found 1 warnings
+Found 0 infos
+Finished in 2438 ms
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] Data Generator Parent POM .......................... SUCCESS [  5.324 s]
+[INFO] Data Generator Common Utils ........................ FAILURE [  6.679 s]
+[INFO] Data Generator Core Library ........................ SKIPPED
+[INFO] Data Generator Example - Default Distributor ....... SKIPPED
+[INFO] Data Generator Example - HDFS Distributor .......... SKIPPED
+[INFO] Data Generator Simple CSV .......................... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 12.177 s
+[INFO] Finished at: 2015-08-05T10:15:10-04:00
+[INFO] Final Memory: 40M/708M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.scalastyle:scalastyle-maven-plugin:0.6.0:check (default) on project dg-common: Failed during scalastyle execution: You have 1 Scalastyle violation(s). -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <goals> -rf :dg-common
