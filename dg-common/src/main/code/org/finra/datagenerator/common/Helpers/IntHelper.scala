@@ -16,21 +16,18 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import java.text.SimpleDateFormat
-
 /**
- * Long implicit methods
+ * Integer implicit methods
  */
-object LongHelper {
-  implicit class LongImplicits(private val long: Long) {
-    private val longDateFormatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
-
+object IntHelper {
+  implicit class IntImplicits(private val int: Int) {
     /**
-     * Converts a Long formatted as yyyyMMddhhmmssSSS to a java.util.Date.
-     * @return java.util.Date formed from the Long timestring in yyyyMMddhhmmssSSS format
+     * Converts an Int formatted as yyyyMMdd to a java.sql.Date.
+     * @return java.sql.Date formed from the Int in yyyyMMdd format
      */
-    def toDateTime: java.util.Date= {
-      longDateFormatter.parse(long.toString)
+    def toDate: java.sql.Date= {
+      val str = int.toString
+      java.sql.Date.valueOf(s"${str.substring(0,4)}-${str.substring(4,6)}-${str.substring(6,8)}")
     }
   }
 }

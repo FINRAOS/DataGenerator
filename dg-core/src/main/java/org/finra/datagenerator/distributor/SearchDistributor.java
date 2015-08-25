@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * Takes Frontiers produced by an Engine and completes the search on each Frontier,
  * giving the results to a DataConsumer for post-processing and outputting.
- *
- * @author robbinbr
  */
 public interface SearchDistributor {
 

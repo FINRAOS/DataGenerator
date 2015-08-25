@@ -195,7 +195,7 @@ object JSchHelper {
      * @param recursiveDirToCreate Path of remote directory to create if not exists
      */
     def mkdirRecursivelyIfNotExists(recursiveDirToCreate: String): Unit = {
-      assert(!sftpChannel.isClosed, "SFTP channel must be open!")
+      require(!sftpChannel.isClosed, "SFTP channel must be open!")
 
       var nextDirToAdd = "/"
       val dirParts = recursiveDirToCreate.splitOnChar('/')

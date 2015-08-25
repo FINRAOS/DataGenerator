@@ -168,7 +168,7 @@ object StringHelper {
       if (str.length <= maxLength) {
         str
       } else {
-        assert(maxLength > suffixIfTruncated.length, "Suffix must not be longer than max length!")
+        require(maxLength > suffixIfTruncated.length, "Suffix must not be longer than max length!")
         s"${str.substring(0, maxLength - suffixIfTruncated.length)}${suffixIfTruncated}"
       }
     }
@@ -184,7 +184,7 @@ object StringHelper {
       if (str.length <= maxLength) {
         str
       } else {
-        assert(splitToken.length < maxLength - 2, "Split token is too long (max maxLength - 2)!")
+        require(splitToken.length < maxLength - 2, "Split token is too long (max maxLength - 2)!")
         val remainingLength = maxLength - splitToken.length
         val halfway = remainingLength / 2
         val left = remainingLength -  halfway

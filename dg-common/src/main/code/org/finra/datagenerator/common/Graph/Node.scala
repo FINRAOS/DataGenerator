@@ -153,7 +153,7 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
   def addLinkToExistingParent(nodeToLink: Node[T_NodeData @uV]): Unit = {
     // TODO: Consider making Node an inner class of org.finra.datagenerator.common.Graph. That would prevent passing in a Node from a different graph,
     // because in Scala inner classes are scoped under the containing object, not the class.
-    assert(containingGraph == nodeToLink.containingGraph, "Trying to link a node from a different graph!")
+    require(containingGraph == nodeToLink.containingGraph, "Trying to link a node from a different graph!")
     if (isRoot) containingGraph.rootNodes -= this
     parents += nodeToLink
     nodeToLink.children += this
@@ -170,7 +170,7 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
   def addLinkToExistingChild(nodeToLink: Node[T_NodeData @uV]): Unit = {
     // TODO: Consider making Node an inner class of org.finra.datagenerator.common.Graph. That would prevent passing in a Node from a different graph,
     // because in Scala inner classes are scoped under the containing object, not the class.
-    assert(containingGraph == nodeToLink.containingGraph, "Trying to link a node from a different graph!")
+    require(containingGraph == nodeToLink.containingGraph, "Trying to link a node from a different graph!")
     if (nodeToLink.isRoot) containingGraph.rootNodes -= nodeToLink
     children += nodeToLink
     nodeToLink.parents += this

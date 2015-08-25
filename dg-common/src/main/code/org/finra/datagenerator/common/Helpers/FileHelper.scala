@@ -64,7 +64,7 @@ object FileHelper {
      * Delete everything from a directory, and then delete the directory itself.
      */
     def deleteNonEmptyDirectory(): Unit = {
-      assert(fileOrDirectory.isDirectory)
+      require(fileOrDirectory.isDirectory)
       fileOrDirectory.listFiles.foreach(subFileOrDirectory => {
         if (subFileOrDirectory.isDirectory) subFileOrDirectory.deleteNonEmptyDirectory()
       })
@@ -75,7 +75,7 @@ object FileHelper {
      * Delete the files, but not the folders, from all subdirectories.
      */
     def deleteFilesRecursively(): Unit = {
-      assert(fileOrDirectory.isDirectory)
+      require(fileOrDirectory.isDirectory)
       fileOrDirectory.listFiles.foreach(subFileOrDirectory => {
         if (subFileOrDirectory.isDirectory) {
           subFileOrDirectory.deleteFilesRecursively()
@@ -89,7 +89,7 @@ object FileHelper {
      * Recursively deletes everything from a directory.
      */
     def purgeDirectory(): Unit = {
-      assert(fileOrDirectory.isDirectory)
+      require(fileOrDirectory.isDirectory)
       fileOrDirectory.listFiles.foreach(subFileOrDirectory => {
         if (subFileOrDirectory.isDirectory) subFileOrDirectory.purgeDirectory()
         subFileOrDirectory.delete()
@@ -131,7 +131,7 @@ object FileHelper {
      */
     def getFilesRecursively: Iterable[File] = {
       if (fileOrDirectory.exists) {
-        assert(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
+        require(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFiles
         files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
       } else {
@@ -147,7 +147,7 @@ object FileHelper {
      */
     def getFilesRecursivelyContaining(substring: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
-        assert(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
+        require(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFilesContaining(substring, ignoreCase = ignoreCase)
         files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyContaining(substring))
       } else {
@@ -163,7 +163,7 @@ object FileHelper {
      */
     def getFilesRecursivelyEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Iterable[File] = {
       if (fileOrDirectory.exists) {
-        assert(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
+        require(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFilesEndingWith(fileSuffix, ignoreCase = ignoreCase)
         files ++ fileOrDirectory.listFiles.filter(_.isDirectory).flatMap(_.getFilesRecursivelyEndingWith(fileSuffix))
       } else {

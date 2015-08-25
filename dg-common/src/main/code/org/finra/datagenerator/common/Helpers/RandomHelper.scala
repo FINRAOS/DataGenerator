@@ -202,12 +202,12 @@ object RandomHelper {
    * @return Random long in range [min, max)
    */
   def nextLong(minSizeInclusive: Long, maxSizeExclusive: Long) : Long = {
-    assert(minSizeInclusive >= 0)
-    assert(maxSizeExclusive > minSizeInclusive)
+    require(minSizeInclusive >= 0)
+    require(maxSizeExclusive > minSizeInclusive)
 
     val scale = maxSizeExclusive - minSizeInclusive
     val returnVal = nextLong(scale) + minSizeInclusive
-    assert(returnVal >= 0)
+    require(returnVal >= 0)
     returnVal
   }
 
