@@ -218,6 +218,33 @@ public class RangeExtensionTest {
         resultMap = resultList.get(5);
         Assert.assertEquals("4.5", resultMap.get("var_out_test"));
     }
+    
+    /**
+     * Tests with a big numbers
+     */
+    @Test
+    public void bigNumbersTest() {
+        List<Map<String, String>> pipeInputList = new LinkedList<>();
+        pipeInputList.add(new HashMap<String, String>());
+        RangeExtension rangeExtension = new RangeExtension();
+        RangeExtension.RangeTag rangeTag = new RangeExtension.RangeTag();
+        rangeTag.setName("var_out_test");
+        rangeTag.setFrom("1");
+        rangeTag.setTo("20000");
+        rangeTag.setStep("10");
+
+        List<Map<String, String>> resultList = rangeExtension.pipelinePossibleStates(rangeTag, pipeInputList);
+        Assert.assertEquals(2000, resultList.size());
+
+        Map<String, String> resultMap = resultList.get(0);
+        Assert.assertEquals("1", resultMap.get("var_out_test"));
+        resultMap = resultList.get(1);
+        Assert.assertEquals("11", resultMap.get("var_out_test"));
+        resultMap = resultList.get(100);
+        Assert.assertEquals("1001", resultMap.get("var_out_test"));
+        resultMap = resultList.get(1000);
+        Assert.assertEquals("10001", resultMap.get("var_out_test"));
+    }
 
     /**
      * Tests with a negative step
