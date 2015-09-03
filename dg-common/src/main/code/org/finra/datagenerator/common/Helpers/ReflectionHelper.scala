@@ -86,22 +86,73 @@ object ReflectionHelper {
       }
     }
 
+    /*
+                case stringClass => valueAsString
+            case longClass => valueAsString.toLong
+            case charClass => valueAsString.head
+            case boolClass => valueAsString.toBoolean
+            case intClass => valueAsString.toInt
+            case byteClass => valueAsString.toByte
+            case doubleClass => valueAsString.toDouble
+            case floatClass => valueAsString.toFloat
+            case shortClass => valueAsString.toShort
+     */
+
+    val stringClass = "".getClass
+    val longClass = 1L.getClass
+    val charClass = ' '.getClass
+    val boolClass = true.getClass
+    val intClass = 0.getClass
+    val byteClass = 0.toByte.getClass
+    val doubleClass = 0.toDouble.getClass
+    val floatClass = 0.toFloat.getClass
+    val shortClass = 0.toShort.getClass
+    val classesConvertibleFromString = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass, doubleClass, floatClass, shortClass)
+
     /**
      * Invoke the Scala setter under the current object.
      * @param name Name of setter to invoke
      * @param value Value to pass to setter
      * @param skipIfNotExists If this is false, throws IllegalArgumentException; if true, continues if getter not found
      * @param caseInsensitive Whether nor to ignore case when searching for getter by name
+     * @param forceTypeCoercion If true, do not require the setter param type to match the value type, but instead perform a cast if necessary.
      */
-    def invokeSetter(name: String, value: Any, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true): Unit = {
-      val methodOption = getClassMethods(ref.getClass).find(method =>
-        (caseInsensitive && method.getName.toLowerCase == name.toLowerCase + "_$eq"
-          || method.getName == name + "_$eq")
-        && method.getParameterTypes.length == 1
-        && method.getParameterTypes.head.isInstance(value)) // Setter param type should match passed-in value type.
+    def invokeSetter(name: String, value: Any, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true
+                      , forceTypeCoercion: Boolean = false): Unit = {
+      val methodOption = getClassMethods(ref.getClass).find(method => {
+        if (forceTypeCoercion && value.isInstanceOf[String]) {
+          ((caseInsensitive && method.getName.toLowerCase == name.toLowerCase + "_$eq"
+            || method.getName == name + "_$eq")
+          && method.getParameterTypes.length == 1
+          && classesConvertibleFromString.contains(method.getParameterTypes.head)) // Setter param type should match passed-in value type.
+        } else {
+          ((caseInsensitive && method.getName.toLowerCase == name.toLowerCase + "_$eq"
+            || method.getName == name + "_$eq")
+          && method.getParameterTypes.length == 1
+          && method.getParameterTypes.head.isInstance(value)) // Setter param type should match passed-in value type.
+        }
+      })
 
       if (methodOption.nonEmpty) {
-        methodOption.get.invoke(ref, value.asInstanceOf[AnyRef])
+        val method = methodOption.get
+        if (forceTypeCoercion && value.isInstanceOf[String]) {
+          val parameterType = method.getParameterTypes.head
+          val valueAsString = value.toString
+          val convertedValue = parameterType match {
+            case `stringClass` => valueAsString
+            case `longClass` => Long.box(valueAsString.toLong)
+            case `charClass` => Char.box(valueAsString.head)
+            case `boolClass` => Boolean.box(valueAsString.toBoolean)
+            case `intClass` => Int.box(valueAsString.toInt)
+            case `byteClass` => Byte.box(valueAsString.toByte)
+            case `doubleClass` => Double.box(valueAsString.toDouble)
+            case `floatClass` => Float.box(valueAsString.toFloat)
+            case `shortClass` => Short.box(valueAsString.toShort)
+          }
+          method.invoke(ref, convertedValue)
+        } else {
+          method.invoke(ref, value.asInstanceOf[AnyRef])
+        }
       } else if (!skipIfNotExists) {
         throw new IllegalArgumentException(
           s"Setter method for var $name not found in class ${ref.getClass.getName} with case insensitivity=$caseInsensitive and target value=$value.")
