@@ -16,6 +16,7 @@
 
 package org.finra.datagenerator.common.Helpers
 
+import java.sql.Date
 import java.text.SimpleDateFormat
 
 /**
@@ -29,8 +30,16 @@ object LongHelper {
      * Converts a Long formatted as yyyyMMddhhmmssSSS to a java.util.Date.
      * @return java.util.Date formed from the Long timestring in yyyyMMddhhmmssSSS format
      */
-    def toDateTime: java.util.Date= {
+    def toDateTime: java.util.Date = {
       longDateFormatter.parse(long.toString)
+    }
+
+    /**
+     * Converts a Long formatted as yyyyMMddhhmmssSSS to a java.sql.Date.
+     * @return java.sql.Date (no time part) formed from the Long timestring in yyyyMMddhhmmssSSS format
+     */
+    def toDate: java.sql.Date = {
+      new Date(long.toDateTime.getTime)
     }
   }
 }

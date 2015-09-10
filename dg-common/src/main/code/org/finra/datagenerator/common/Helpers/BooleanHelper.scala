@@ -32,5 +32,17 @@ object BooleanHelper {
         "Y"
       }
     }
+
+    /**
+     * Returns "Y" if boolean is true, else "N"
+     * @return Char representing boolean as either "Y" or "N"
+     */
+    def toY_or_N: Char = {
+      if (!boolean) {
+        'N'
+      } else {
+        'Y'
+      }
+    }
   }
 }
