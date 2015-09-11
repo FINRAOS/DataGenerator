@@ -27,6 +27,7 @@ import java.io.OutputStream;
  * Created by robbinbr on 5/28/2014.
  */
 public class DefaultWriter implements DataWriter {
+    private String separator = "|";
 
     /**
      * Logger
@@ -46,10 +47,20 @@ public class DefaultWriter implements DataWriter {
         this.outTemplate = outTemplate;
     }
 
+    /**
+     * Changes the current separator to the given one
+     * @param newSeparator the new separator
+     * @return a reference to this object
+     */
+    public DefaultWriter setSeparator(String newSeparator) {
+        this.separator = newSeparator;
+        return this;
+    }
+    
     @Override
     public void writeOutput(DataPipe cr) {
         try {
-            os.write(cr.getPipeDelimited(outTemplate).getBytes());
+            os.write(cr.getDelimited(outTemplate, separator).getBytes());
             os.write("\n".getBytes());
         } catch (IOException e) {
             log.error("IOException in DefaultConsumer", e);

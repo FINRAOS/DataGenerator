@@ -86,4 +86,26 @@ public class DataPipe {
 
         return b.toString();
     }
+
+    /**
+     * Given an array of variable names, returns a delimited {@link String}
+     * of values.
+     *
+     * @param outTemplate an array of {@link String}s containing the variable
+     * names.
+     * @param separator the delimiter to use
+     * @return a pipe delimited {@link String} of values
+     */
+    public String getDelimited(String[] outTemplate, String separator) {
+        StringBuilder b = new StringBuilder(1024);
+
+        for (String var : outTemplate) {
+            if (b.length() > 0) {
+                b.append(separator);
+            }
+            b.append(getDataMap().get(var));
+        }
+
+        return b.toString();
+    }
 }
