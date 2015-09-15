@@ -143,7 +143,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
     containingGraph.rootNodes += newParent
     containingGraph.allNodes += newParent
 
-    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+= new AddNewParentDescription(nodeIndexInContainingGraph, parentData)
+    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+=
+      new AddNewParentDescription(nodeIndexInContainingGraph, parentData)
 
     newParent
   }

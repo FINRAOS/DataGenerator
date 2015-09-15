@@ -124,7 +124,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * @return Added node
    */
   def addInitialNode(newNodeValue: T): Node[T] = {
-    require(allNodes.size == 0 && rootNodes.size == 0)
+    require(allNodes.size == 0 && rootNodes.size == 0, s"Can't add initial node ${newNodeValue} because the graph is not empty.")
 
     if (isEdgeLinkTrackingOn) edgeLinkTrackingDescriptions :+= new AddInitialNodeDescription[T](newNodeValue)
 
