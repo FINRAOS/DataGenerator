@@ -35,7 +35,9 @@ object InputStreamHelper {
     def downloadToFile(path: String): Unit = {
       val buffer = new Array[Byte](8 * 1024)
 
-      val outStream = new FileOutputStream(path)
+      val outStream = RetryHelper.retry(10, Seq(classOf[java.io.FileNotFoundException])){
+        new FileOutputStream(path)
+      }(Thread.sleep(100))
       try {
         var bytesRead = 0
         while ({bytesRead = inputStream.read(buffer); bytesRead != -1}) {

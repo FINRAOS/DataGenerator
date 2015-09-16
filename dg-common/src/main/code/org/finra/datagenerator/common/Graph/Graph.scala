@@ -18,7 +18,7 @@ package org.finra.datagenerator.common.Graph
 
 import java.io.{FileOutputStream, OutputStream}
 
-import org.finra.datagenerator.common.Helpers.{DotHelper, RandomHelper}
+import org.finra.datagenerator.common.Helpers.{RetryHelper, DotHelper, RandomHelper}
 import org.finra.datagenerator.common.NodeData.DisplayableData
 
 import scala.beans.BeanProperty
@@ -180,7 +180,9 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * @param alsoWriteAsPng Whether or not to call dot.exe to convert the .gv file to .png when done writing
    */
   def writeDotFile(filepathToCreate: String, isSimplified: Boolean = false, alsoWriteAsPng: Boolean = true): Unit = {
-    val writer = new FileOutputStream(filepathToCreate)
+    val writer = RetryHelper.retry(10, Seq(classOf[java.io.FileNotFoundException])){
+      new FileOutputStream(filepathToCreate)
+    }(Thread.sleep(100))
     try {
       writeDotFileToOpenStream(writer, isSimplified = isSimplified)
     }
