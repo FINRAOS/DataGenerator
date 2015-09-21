@@ -61,12 +61,16 @@ object FileHelper {
     private final val IS_NOT_A_DIRECTORY = " is not a directory!"
 
     /**
-     * Delete everything from a directory, and then delete the directory itself.
+     * Delete everything from a directory, recursively, and then delete the directory itself.
      */
     def deleteNonEmptyDirectory(): Unit = {
       require(fileOrDirectory.isDirectory)
       fileOrDirectory.listFiles.foreach(subFileOrDirectory => {
-        if (subFileOrDirectory.isDirectory) subFileOrDirectory.deleteNonEmptyDirectory()
+        if (subFileOrDirectory.isDirectory) {
+          subFileOrDirectory.deleteNonEmptyDirectory()
+        } else {
+          subFileOrDirectory.delete()
+        }
       })
       fileOrDirectory.delete()
     }
