@@ -137,7 +137,7 @@ object FileHelper {
       if (fileOrDirectory.exists) {
         require(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFiles
-        files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
+        files.filter(_.isFile) ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
       } else {
         new collection.mutable.ArrayBuffer[File]()
       }
@@ -186,11 +186,11 @@ object FileHelper {
         Seq[File]()
       } else {
         fileOrDirectory.listFiles(new FilenameFilter {
-          override def accept(dir: File, name: String): Boolean = {
+          override def accept(file: File, name: String): Boolean = {
             if (ignoreCase) {
-              name.toUpperCase.endsWith(fileSuffix.toUpperCase)
+              file.isFile && name.toUpperCase.endsWith(fileSuffix.toUpperCase)
             } else {
-              name.endsWith(fileSuffix)
+              file.isFile && name.endsWith(fileSuffix)
             }
           }
         })
@@ -209,11 +209,11 @@ object FileHelper {
         Seq[File]()
       } else {
         fileOrDirectory.listFiles(new FilenameFilter {
-          override def accept(dir: File, name: String): Boolean = {
+          override def accept(file: File, name: String): Boolean = {
             if (ignoreCase) {
-              name.toUpperCase.contains(substring.toUpperCase) && name.toUpperCase.endsWith(extension.toUpperCase)
+              file.isFile && name.toUpperCase.contains(substring.toUpperCase) && name.toUpperCase.endsWith(extension.toUpperCase)
             } else {
-              name.contains(substring) && name.endsWith(extension)
+              file.isFile && name.contains(substring) && name.endsWith(extension)
             }
           }
         })
@@ -252,8 +252,8 @@ object FileHelper {
           regexFilterString
         }
         fileOrDirectory.listFiles(new FilenameFilter {
-          override def accept(dir: File, name: String): Boolean = {
-            name.matches(modifiedRegexString)
+          override def accept(file: File, name: String): Boolean = {
+            file.isFile && name.matches(modifiedRegexString)
           }
         })
       }
