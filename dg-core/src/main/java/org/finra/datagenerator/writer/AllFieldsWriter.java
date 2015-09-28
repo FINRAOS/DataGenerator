@@ -27,6 +27,8 @@ import java.util.Arrays;
  * Created by mibrahim on 6/25/15.
  */
 public class AllFieldsWriter implements DataWriter {
+    private String separator = "|";
+
     /**
      * Logger
      */
@@ -48,12 +50,23 @@ public class AllFieldsWriter implements DataWriter {
     /**
      * Constructor
      *
-     * @param os the output stream to use in writing
+     * @param os           the output stream to use in writing
      * @param showHeadings whether or not to show the headings on the first line
      */
     public AllFieldsWriter(final boolean showHeadings, final OutputStream os) {
         this.os = os;
         this.showHeadings = showHeadings;
+    }
+
+    /**
+     * Changes the current separator to the given one
+     *
+     * @param newSeparator the new separator
+     * @return a reference to this object
+     */
+    public AllFieldsWriter setSeparator(String newSeparator) {
+        this.separator = newSeparator;
+        return this;
     }
 
     @Override
@@ -63,12 +76,12 @@ public class AllFieldsWriter implements DataWriter {
                 outTemplate = cr.getDataMap().keySet().toArray(new String[cr.getDataMap().size()]);
                 Arrays.sort(outTemplate);
                 if (showHeadings) {
-                    os.write(StringUtils.join(outTemplate, "|").getBytes());
+                    os.write(StringUtils.join(outTemplate, separator).getBytes());
                     os.write("\n".getBytes());
                 }
             }
 
-            os.write(cr.getPipeDelimited(outTemplate).getBytes());
+            os.write(cr.getDelimited(outTemplate, separator).getBytes());
             os.write("\n".getBytes());
         } catch (IOException e) {
             log.error("IOException in DefaultConsumer", e);

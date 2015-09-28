@@ -79,15 +79,17 @@ class SparkDistributor(masterURL: String, scalaDataConsumer: ScalaDataConsumer) 
 
       for (frontier <- frontierList.asScala) {
 
-        sparkContext.parallelize(1 to RandomNumberEngine.numberInEachFrontier).foreach(_ => {
-          
+        sparkContext.parallelize(1 to RandomNumberEngine.numberInEachFrontier).map{
+          i =>
             //Generate Random Number Parallel
             searchWorker(frontier, randomNumberQueue, flag)
 
             //Call Consume method for parallel processing
             produceOutput()
-
-        })
+            
+            0
+            
+        }.reduce(_ + _)
       }
   }
 

@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Data Generator (DG) is a Java library for systematically producing large volumes of data. DG frames data generation as a modeling problem,
+Data Generator (DG) is a library for systematically producing large volumes of data. DG frames data generation as a modeling problem,
 with a user providing a model of dependencies among variables and the library traversing the model to produce relevant data sets. Our
 built-in implementations build on open standards like `SCXMLDataModels <SCXMLDataModels.rst>`_ for modeling and Java threads for distributed generation to get users
 up and running quickly - but everything in DG is completely customizable. As of version 2.0, choices for underlying model, underlying
