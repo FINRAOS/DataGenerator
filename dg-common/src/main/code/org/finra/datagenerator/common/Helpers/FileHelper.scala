@@ -186,14 +186,14 @@ object FileHelper {
         Seq[File]()
       } else {
         fileOrDirectory.listFiles(new FilenameFilter {
-          override def accept(file: File, name: String): Boolean = {
+          override def accept(dir: File, name: String): Boolean = {
             if (ignoreCase) {
-              file.isFile && name.toUpperCase.endsWith(fileSuffix.toUpperCase)
+              name.toUpperCase.endsWith(fileSuffix.toUpperCase)
             } else {
-              file.isFile && name.endsWith(fileSuffix)
+              name.endsWith(fileSuffix)
             }
           }
-        })
+        }).filter(_.isFile)
       }
     }
 
@@ -209,14 +209,14 @@ object FileHelper {
         Seq[File]()
       } else {
         fileOrDirectory.listFiles(new FilenameFilter {
-          override def accept(file: File, name: String): Boolean = {
+          override def accept(dir: File, name: String): Boolean = {
             if (ignoreCase) {
-              file.isFile && name.toUpperCase.contains(substring.toUpperCase) && name.toUpperCase.endsWith(extension.toUpperCase)
+              name.toUpperCase.contains(substring.toUpperCase) && name.toUpperCase.endsWith(extension.toUpperCase)
             } else {
-              file.isFile && name.contains(substring) && name.endsWith(extension)
+              name.contains(substring) && name.endsWith(extension)
             }
           }
-        })
+        }).filter(_.isFile)
       }
     }
 
@@ -252,10 +252,10 @@ object FileHelper {
           regexFilterString
         }
         fileOrDirectory.listFiles(new FilenameFilter {
-          override def accept(file: File, name: String): Boolean = {
-            file.isFile && name.matches(modifiedRegexString)
+          override def accept(dir: File, name: String): Boolean = {
+            name.matches(modifiedRegexString)
           }
-        })
+        }).filter(_.isFile)
       }
     }
   }
