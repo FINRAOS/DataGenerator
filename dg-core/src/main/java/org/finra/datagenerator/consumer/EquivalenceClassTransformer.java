@@ -413,8 +413,8 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         break;
                 }
                 entry.setValue(b.toString());
-            }
-            if (value.contains("$")) {                      //Added by Shraddha Patel
+
+            } else if (value.contains("$")) {                      //Added by Shraddha Patel
                 String variable = value.substring(1);
                 String varValue = map.get(variable);
                 entry.setValue(varValue);
