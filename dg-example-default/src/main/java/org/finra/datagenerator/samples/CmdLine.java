@@ -78,7 +78,7 @@ public final class CmdLine {
 
         consumer.addDataWriter(new DefaultWriter(System.out,
                 new String[]{"var_1_1", "var_1_2", "var_1_3", "var_1_4", "var_1_5", "var_1_6",
-                             "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6"}));
+                             "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6", "var_2_7"}));
 
         //Prepare the distributor
         DefaultDistributor defaultDistributor = new DefaultDistributor();

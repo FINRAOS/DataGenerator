@@ -59,6 +59,8 @@
             <!-- Example of using '%ssn' from equivalence class generation  -->
             <assign name="var_2_2" expr="%ssn"/>
 
+            <dg:transform name="EQ"/>
+
             <!-- Example of using '%%currency' from equivalence class generation  -->
             <assign name="var_2_3" expr="%currency"/>
 
@@ -70,6 +72,9 @@
 
             <!-- Example of using '%number' from equivalence class generation  -->
             <assign name="var_2_6" expr="%number(5,2)"/>
+
+            <!-- Example of using '$var_name' from equivalence class generation  -->        <!-- Added by Shraddha Patel -->
+            <assign name="var_2_7" expr="$var_2_2"/>
 
         </onentry>
         <transition event="end" target="end"/>
