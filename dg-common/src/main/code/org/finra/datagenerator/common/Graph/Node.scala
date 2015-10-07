@@ -102,6 +102,31 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
   }
 
   /**
+   * Break all links and remove from rootNodes collection
+   */
+  def orphan(): Unit = {
+    breakAllLinks()
+    if (isRoot) {
+      containingGraph.rootNodes -= this
+    }
+  }
+
+  /**
+   * Break all links this node particpates in.
+   */
+  def breakAllLinks(): Unit = {
+    this.children.foreach(child => {
+      child.parents -= this
+      if (child.isRoot) {
+        containingGraph.rootNodes += child
+      }
+    })
+    this.parents.foreach(_.children -= this)
+    this.children.clear()
+    this.parents.clear()
+  }
+
+  /**
    * Get all the descendant nodes (children of this node, those children's children, to the bottom).
    * TODO: If we change org.finra.datagenerator.common.Graph to support cycles, then this method needs to change to only
    * traverse a child if it hasn't already been traversed.
