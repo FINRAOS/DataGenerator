@@ -18,7 +18,7 @@ package org.finra.datagenerator.common.Helpers
 
 import java.io.{BufferedReader, FileWriter, InputStreamReader}
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.{Properties, Date}
 import com.jcraft.jsch._
 import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
 import scala.beans.BooleanBeanProperty
@@ -33,6 +33,43 @@ object JSchHelper {
   @BooleanBeanProperty
   var logRemoteCommands = true
 
+  /**
+   * Implicit methods on a Jsch session.
+   * @param session Session
+   */
+  implicit class SessionImplicits(private val session: Session) {
+    private final val SLEEP_ON_RETRY_MS = 50
+
+    /**
+     * Connect to the session using optional timeout and number of tries.
+     * @param timeout -1 for no timeout, else milliseconds before connect attempt fails.
+     * @param tries Number of tries before failing.
+     */
+    def connectWithRetry(timeout: Int = 3000, tries: Short = 10): Unit = {
+      val config = new Properties()
+      config.put("StrictHostKeyChecking", "no")
+      config.put("PreferredAuthentications", "publickey")
+      session.setConfig(config)
+      session.setServerAliveInterval(3600000)
+
+      if (timeout < 0) {
+        RetryHelper.retry(
+          tries, Seq(classOf[JSchException]))(
+            session.connect())(
+            try { Thread.sleep(SLEEP_ON_RETRY_MS) } catch{case _:JSchException => {}})
+      } else {
+        RetryHelper.retry(
+          tries, Seq(classOf[JSchException]))(
+            session.connect(timeout))(
+            try { Thread.sleep(SLEEP_ON_RETRY_MS) } catch{case _:JSchException => {}})
+      }
+    }
+  }
+
+  /**
+   * Implicit methods on a Jsch channel.
+   * @param channel Channel
+   */
   implicit class ChannelImplicits(private val channel: Channel) {
     private final val SLEEP_ON_RETRY_MS = 50
 

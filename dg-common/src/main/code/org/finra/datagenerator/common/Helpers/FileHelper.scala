@@ -106,7 +106,7 @@ object FileHelper {
      */
     def getFirstLine: Option[String] = {
       if (fileOrDirectory.isFile) {
-        val source = io.Source.fromFile(fileOrDirectory)
+        val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
         try {
           source.getLines().find(_ => true)
         } finally {
