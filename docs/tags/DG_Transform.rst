@@ -37,3 +37,4 @@ Full scxml example:
     <state id="end">
         </state>
     </scxml>
+    
