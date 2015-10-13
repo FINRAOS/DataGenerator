@@ -23,7 +23,7 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by robbinbr on 3/14/14.
+ *
  */
 public class SearchWorker implements Runnable {
 

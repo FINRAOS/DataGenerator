@@ -26,6 +26,7 @@ Modeling with SCXML
   - `Assign (from set) Tag <tags/DG_Assign.rst>`_
   - `File Tag <tags/DG_File.rst>`_
   - `Range Tag <tags/DG_Range.rst>`_
+  - `Transform Tag <tags/DG_Transform.rst>`_
 
 Transforming and Writing with the DataConsumer
 ==============================================

@@ -75,11 +75,15 @@ The assign statement makes the search assign a value to a state machine variable
 
     <assign name="var_Date" expr="currentDate" />
 
-3. or a set assignment::
+3. a set assignment::
 
     <assign name="var_Word" expr="set:{Lorem,Ipsum,Doler,Sit,Amet}" />
 
-Text literals and text literals that represent a macro are the same as far as the state machine model and the search logic is concerned. The difference is handled by the DataConsumer and DataTransformers that perform post processing of search results. Set assignments assign to the variable one of the entries listed between the curly braces. During the search over the state machine, the search will search over all possible values of the set assignment, treating each as a separate path.
+4. or a variable's name that represents a macro::
+
+    <assign name="var_Name" expr="${var_Date}" />
+
+Text literals and text literals that represent a macro are the same as far as the state machine model and the search logic is concerned. The difference is handled by the DataConsumer and DataTransformers that perform post processing of search results. Set assignments assign to the variable one of the entries listed between the curly braces. During the search over the state machine, the search will search over all possible values of the set assignment, treating each as a separate path. Variable's name that represents a macro assigns the value of the variable that is specified in the macro. Like other macros, the DataConsumer and DataTransformers post process the search results. 
 
 A state can have more than one assign statement, and all variables will be assigned. A state can also have more than one assign statement that uses a set, and when there are multiple set assignments every combination of possible assignments will be searched over.
 

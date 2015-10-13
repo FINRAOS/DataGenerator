@@ -16,7 +16,7 @@
 package org.finra.datagenerator.reporting;
 
 /**
- * Created by RobbinBr on 7/1/2014.
+ *  A ReportingHandler
  */
 public interface ReportingHandler {
 

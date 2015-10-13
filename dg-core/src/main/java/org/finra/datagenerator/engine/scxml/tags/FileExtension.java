@@ -39,7 +39,7 @@ import org.apache.commons.scxml.model.ModelException;
 import org.apache.log4j.Logger;
 
 /**
- * Yankop Yuriy
+ *
  */
 public class FileExtension implements CustomTagExtension<FileExtension.FileTag> {
     private static final Logger log = Logger.getLogger(FileExtension.class);

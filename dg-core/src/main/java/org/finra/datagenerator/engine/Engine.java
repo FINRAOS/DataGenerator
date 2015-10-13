@@ -23,8 +23,7 @@ import java.io.InputStream;
 /**
  * Performs the bootstrapping search on a data model, producing Frontiers for a SearchDistributor to distribute. 
  *
- * Marshall Peters
- * Date: 8/21/14
+ *
  */
 public interface Engine {
 

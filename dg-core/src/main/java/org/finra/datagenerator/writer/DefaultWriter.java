@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Orders result variables based on a template and writes them seperated by pipe characters to a given OutputStream.
+ * Orders result variables based on a template and writes them separated by pipe characters to a given OutputStream.
  *
- * Created by robbinbr on 5/28/2014.
+ *
  */
 public class DefaultWriter implements DataWriter {
     private String separator = "|";
