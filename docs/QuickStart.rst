@@ -36,8 +36,8 @@ with two variables having multiple possible values, and one having a value of "c
 			<onentry>
 				<assign name="var_out_V2" expr="set:{1,2,3}"/>
 				<assign name="var_out_V3" expr="#{customplaceholder}"/>
-                <dg:transform name="EQ"/>
-                <assign name="var_out_V4" expr="${var_out_V3}"/>
+                		<dg:transform name="EQ"/>
+                		<assign name="var_out_V4" expr="${var_out_V3}"/>
 			</onentry>
 			<transition event="end" target="end"/>
 		</state>
