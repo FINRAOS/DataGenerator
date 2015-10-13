@@ -11,7 +11,7 @@ Install Java and Maven installed on your system if you do not have them already.
    		 <version>2.0</version>
 	</dependency>
 
-For this example, we will use the built-in `SCXMLDataModels <SCXMLDataModels.rst>`_ and `Multithreaded <Multithreaded>`_. The following model defines three variables,
+For this example, we will use the built-in `SCXMLDataModels <SCXMLDataModels.rst>`_ and `Multithreaded <Multithreaded.rst>`_. The following model defines three variables,
 with two variables having multiple possible values, and one having a value of "customplaceholder", to be set by a custom transformer::
 
 	<scxml xmlns="http://www.w3.org/2005/07/scxml"
