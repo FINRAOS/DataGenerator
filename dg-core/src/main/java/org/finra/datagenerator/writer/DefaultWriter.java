@@ -23,8 +23,6 @@ import java.io.OutputStream;
 
 /**
  * Orders result variables based on a template and writes them separated by pipe characters to a given OutputStream.
- *
- *
  */
 public class DefaultWriter implements DataWriter {
     private String separator = "|";

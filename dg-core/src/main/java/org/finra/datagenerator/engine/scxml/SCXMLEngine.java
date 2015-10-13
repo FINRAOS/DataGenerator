@@ -54,8 +54,6 @@ import java.util.Set;
 
 /**
  * Engine implementation for generating data with SCXML state machine models.
- * 
- *
  */
 public class SCXMLEngine extends SCXMLExecutor implements Engine {
     private SCXML model;

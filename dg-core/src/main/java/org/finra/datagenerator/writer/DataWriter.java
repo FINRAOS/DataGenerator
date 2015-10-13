@@ -19,8 +19,6 @@ import org.finra.datagenerator.consumer.DataPipe;
 
 /**
  * Outputs the search results contained in a DataPipe.
- *
- *
  */
 public interface DataWriter {
 

@@ -41,8 +41,6 @@ import java.util.Map;
 
 /**
  * Provides serialization tools for SCXMLFrontier.
- *
- *
  */
 public class SCXMLGapper {
     private SCXML model;

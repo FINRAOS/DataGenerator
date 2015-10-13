@@ -21,9 +21,7 @@ import org.finra.datagenerator.distributor.SearchDistributor;
 import java.io.InputStream;
 
 /**
- * Performs the bootstrapping search on a data model, producing Frontiers for a SearchDistributor to distribute. 
- *
- *
+ * Performs the bootstrapping search on a data model, producing Frontiers for a SearchDistributor to distribute.
  */
 public interface Engine {
 

@@ -423,7 +423,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     variable = value.substring(1);
                 }
 
-                if(map.containsKey(variable)) {
+                if (map.containsKey(variable)) {
                     varValue = map.get(variable);
                 } else {
                     varValue = null;

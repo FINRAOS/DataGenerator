@@ -22,8 +22,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Represents a partial search produced by an Engine's bootstrapping.
- * 
- *
  */
 public interface Frontier {
 

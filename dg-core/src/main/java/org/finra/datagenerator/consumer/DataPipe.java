@@ -21,8 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Wrapper for search results.
- *
- *
  */
 public class DataPipe {
 

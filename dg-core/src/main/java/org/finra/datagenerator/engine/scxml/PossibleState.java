@@ -23,8 +23,6 @@ import java.util.Map;
 /**
  * Represents a partial transversal over an SCXML state machine, storing
  * a list of variable assignments and the current state machine state.
- *
- *
  */
 public class PossibleState {
     final TransitionTarget nextState;

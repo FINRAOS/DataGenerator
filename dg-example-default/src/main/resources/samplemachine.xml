@@ -41,7 +41,7 @@
             <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
             <assign name="var_1_5" expr="%ssn"/>
 
-            Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.
+            <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied during graph traversal.-->
             <dg:transform name="EQ"/>
 
             <assign name="var_1_6" expr="77"/>
