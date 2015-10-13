@@ -17,7 +17,7 @@
 package org.finra.datagenerator.exceptions;
 
 /**
- * A null action exception
+ * A null set exception
  */
 public class NullSetException extends RuntimeException {
     /**

@@ -35,10 +35,7 @@ import java.util.Map;
 
 
 /**
- * Marshall Peters
- * Date: 11/7/14
- * <p/>
- * Updated 1/6/2014 by Michael Thomas
+ *
  */
 public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
 

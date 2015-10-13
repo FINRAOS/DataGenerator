@@ -1,4 +1,4 @@
-DG:Assign
+Assign
 ===========
 
 There is scxml feature - "assign" tag.

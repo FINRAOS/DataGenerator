@@ -11,7 +11,7 @@ Install Java and Maven installed on your system if you do not have them already.
    		 <version>2.0</version>
 	</dependency>
 
-For this example, we will use the built-in :doc:`SCXMLDataModels` and :doc:`Multithreaded`. The following model defines three variables,
+For this example, we will use the built-in `SCXMLDataModels <SCXMLDataModels.rst>`_ and `Multithreaded <Multithreaded>`_. The following model defines three variables,
 with two variables having multiple possible values, and one having a value of "customplaceholder", to be set by a custom transformer::
 
 	<scxml xmlns="http://www.w3.org/2005/07/scxml"
@@ -36,6 +36,8 @@ with two variables having multiple possible values, and one having a value of "c
 			<onentry>
 				<assign name="var_out_V2" expr="set:{1,2,3}"/>
 				<assign name="var_out_V3" expr="#{customplaceholder}"/>
+                <dg:transform name="EQ"/>
+                <assign name="var_out_V4" expr="${var_out_V3}"/>
 			</onentry>
 			<transition event="end" target="end"/>
 		</state>
@@ -71,6 +73,9 @@ into a random integer::
    		 }
 	}
 
+In order to assign V3's value to V4, V3's expression should be transformed before the assignment.
+It can be achieved by `DG_Transform <DG_Transform.rst>`_ tag.
+
 Finally, we can create a driver for our data generation which configures an SCXMLEngine to use a DefaultDistributor and DataConsumer to solve
 our problem::
 	
@@ -90,7 +95,7 @@ our problem::
    		     DataConsumer consumer = new DataConsumer();
    		     consumer.addDataTransformer(new SampleMachineTransformer());
    		     consumer.addDataWriter(new DefaultWriter(System.out,
-   			             new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3"}));
+   			             new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3", "var_out_V4"}));
 		
    		     //Prepare the distributor
    		     DefaultDistributor defaultDistributor = new DefaultDistributor();
