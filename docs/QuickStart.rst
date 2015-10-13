@@ -74,7 +74,7 @@ into a random integer::
 	}
 
 In order to assign V3's value to V4, V3's expression should be transformed before the assignment.
-It can be achieved by `DG_Transform <DG_Transform.rst>`_ tag.
+It can be achieved by `DG_Transform <tags/DG_Transform.rst>`_ tag.
 
 Finally, we can create a driver for our data generation which configures an SCXMLEngine to use a DefaultDistributor and DataConsumer to solve
 our problem::
