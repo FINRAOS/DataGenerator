@@ -35,7 +35,7 @@ import java.util.Map;
 
 
 /**
- *
+ * Implementation of dg:assign tag
  */
 public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
 

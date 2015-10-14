@@ -23,7 +23,7 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- *
+ *  Implementation of a partial search produced by an Engine's bootstrapping.
  */
 public class SearchWorker implements Runnable {
 

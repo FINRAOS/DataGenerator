@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Implementation of dg:transform tag
  */
 public class InLineTransformerExtension implements CustomTagExtension<InLineTransformerExtension.TransformTag> {
 

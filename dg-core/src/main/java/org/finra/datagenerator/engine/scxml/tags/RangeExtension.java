@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Implementation of dg:range tag
  */
 public class RangeExtension implements CustomTagExtension<RangeExtension.RangeTag> {
 

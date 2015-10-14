@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Implementation of dg:nwise tag
  */
 public class NWiseExtension implements CustomTagExtension<NWiseExtension.NWiseAction> {
 
