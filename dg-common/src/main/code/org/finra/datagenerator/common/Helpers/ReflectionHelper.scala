@@ -86,18 +86,6 @@ object ReflectionHelper {
       }
     }
 
-    /*
-                case stringClass => valueAsString
-            case longClass => valueAsString.toLong
-            case charClass => valueAsString.head
-            case boolClass => valueAsString.toBoolean
-            case intClass => valueAsString.toInt
-            case byteClass => valueAsString.toByte
-            case doubleClass => valueAsString.toDouble
-            case floatClass => valueAsString.toFloat
-            case shortClass => valueAsString.toShort
-     */
-
     val stringClass = "".getClass
     val longClass = 1L.getClass
     val charClass = ' '.getClass
