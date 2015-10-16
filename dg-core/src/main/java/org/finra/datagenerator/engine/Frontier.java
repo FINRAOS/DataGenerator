@@ -22,9 +22,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Represents a partial search produced by an Engine's bootstrapping.
- * 
- * Marshall Peters
- * Date: 8/21/14
  */
 public interface Frontier {
 

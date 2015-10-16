@@ -32,8 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Marshall Peters
- * Date: 1/14/15
+ * Implementation of dg:nwise tag
  */
 public class NWiseExtension implements CustomTagExtension<NWiseExtension.NWiseAction> {
 

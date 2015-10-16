@@ -31,10 +31,10 @@
 
             <!-- Example of using 'range'  -->
             <dg:range name="var_1_2" from="0" to="4" step="1"/>
-            
+
             <!-- Example of using 'file' with one line from csv file  -->
             <dg:file name="var_1_3" fileName="DGFileTest_step1.csv" separator=","/>
-            
+
             <!-- Example of using 'file' with 1 value per row file  -->
             <dg:file name="var_1_4" fileName="DGFileTest_step2.txt" />
 
@@ -45,6 +45,10 @@
             <dg:transform name="EQ"/>
 
             <assign name="var_1_6" expr="77"/>
+
+            <!-- Example of using '$var_name' from equivalence class generation  -->
+            <assign name="var_1_7" expr="${var_1_3}"/>
+
         </onentry>
         <transition event="step2" target="step2"/>
     </state>
@@ -59,6 +63,8 @@
             <!-- Example of using '%ssn' from equivalence class generation  -->
             <assign name="var_2_2" expr="%ssn"/>
 
+            <dg:transform name="EQ"/>
+
             <!-- Example of using '%%currency' from equivalence class generation  -->
             <assign name="var_2_3" expr="%currency"/>
 
@@ -70,6 +76,13 @@
 
             <!-- Example of using '%number' from equivalence class generation  -->
             <assign name="var_2_6" expr="%number(5,2)"/>
+
+            <!-- Example of using '$var_name' from equivalence class generation  -->
+            <assign name="var_2_7" expr="${var_2_2}"/>
+
+            <dg:transform name="EQ"/>
+
+            <assign name="var_2_8" expr="${var_2_7}"/>
 
         </onentry>
         <transition event="end" target="end"/>

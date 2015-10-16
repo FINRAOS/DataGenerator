@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Marshall Peters
- * Date: 11/7/14
+ * Implementation of assign tag of scxml model
  */
 public class SingleValueAssignExtension implements CustomTagExtension<Assign> {
 

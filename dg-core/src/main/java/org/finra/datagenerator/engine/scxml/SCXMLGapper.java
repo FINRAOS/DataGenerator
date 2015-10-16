@@ -41,9 +41,6 @@ import java.util.Map;
 
 /**
  * Provides serialization tools for SCXMLFrontier.
- *
- * Marshall Peters
- * Date: 8/28/14
  */
 public class SCXMLGapper {
     private SCXML model;

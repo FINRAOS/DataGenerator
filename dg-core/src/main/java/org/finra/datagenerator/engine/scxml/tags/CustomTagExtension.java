@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Marshall Peters
- * Date: 11/7/14
- *
  * @param <A> the action class handled by this class' filerPossibleStates logic
  */
 public interface CustomTagExtension<A extends Action> {

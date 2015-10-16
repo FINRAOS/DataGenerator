@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Marshall Peters
- * Date: 9/15/14
+ * Implementation of dg:transform tag
  */
 public class InLineTransformerExtension implements CustomTagExtension<InLineTransformerExtension.TransformTag> {
 
@@ -65,7 +64,7 @@ public class InLineTransformerExtension implements CustomTagExtension<InLineTran
      * @param action a TransformTag Action
      * @param possibleStateList a current list of possible states produced so far from expanding a model state
      *
-     * @return the same list od possible states, each processed with the stated DataTransformer
+     * @return the same list of possible states, each processed with the stated DataTransformer
      */
     public List<Map<String, String>> pipelinePossibleStates(TransformTag action,
                                                             List<Map<String, String>> possibleStateList) {

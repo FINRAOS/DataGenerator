@@ -26,8 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Marshall Peters
- * Date: 9/10/14
+ * Performs transformations for common equivalence classes/data types
  */
 public class EquivalenceClassTransformer implements DataTransformer {
 
@@ -413,6 +412,23 @@ public class EquivalenceClassTransformer implements DataTransformer {
                         break;
                 }
                 entry.setValue(b.toString());
+
+            } else if (value.startsWith("$")) {     //Added by Shraddha Patel
+                String variable, varValue;
+
+                int param = value.indexOf("{");
+                if (param != -1) {
+                    variable = value.substring(param + 1, value.length() - 1);
+                } else {
+                    variable = value.substring(1);
+                }
+
+                if (map.containsKey(variable)) {
+                    varValue = map.get(variable);
+                } else {
+                    varValue = null;
+                }
+                entry.setValue(varValue);
             }
         }
     }
