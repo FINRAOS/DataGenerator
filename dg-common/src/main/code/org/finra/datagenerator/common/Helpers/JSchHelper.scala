@@ -16,12 +16,15 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import java.io.{BufferedReader, FileWriter, InputStreamReader}
+import java.io.{File, BufferedReader, FileWriter, InputStreamReader}
 import java.text.SimpleDateFormat
 import java.util.{Properties, Date}
 import com.jcraft.jsch._
 import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
+import org.finra.datagenerator.common.Helpers.FileHelper
+import org.finra.datagenerator.common.Helpers.RetryHelper
 import scala.beans.BooleanBeanProperty
+import scala.collection.JavaConverters._
 
 /**
  * Helper methods for SFTP and SSH exec using the Java JSch library
@@ -185,15 +188,42 @@ object JSchHelper {
    */
   implicit class SftpImplicits(private var sftpChannel: ChannelSftp) {
     /**
+     * Download a directory over SFTP to local, with some retries in case of failure.
+     * @param src Remote directory to download from
+     * @param dest Local destination to download to
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
+     */
+    def downloadDir(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
+      if (logRemoteCommands) {
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Downloading dir from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+      }
+      FileHelper.ensureEmptyDirectoryExists(dest)
+      RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.get(src, dest))()
+      sftpChannel.ls(src + "*").asScala.foreach(obj => {
+        // Scala has no syntax to import a non-static inner Java class, so we have to do this ugly cast with #,
+        // because by default inner classes in Scala are members of the enclosing object, whereas in Java they are members of the enclosing class.
+        val lsEntry = obj.asInstanceOf[ChannelSftp#LsEntry]
+        if (!lsEntry.getAttrs.isDir) {
+          sftpChannel.downloadFile(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
+        } else {
+          sftpChannel.downloadDir(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
+        }
+      })
+    }
+
+    /**
      * Download a file over SFTP to local, with some retries in case of failure.
      * @param src Remote file to download from
      * @param dest Local destination to download to
      * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
-    def download(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
+    def downloadFile(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
-          .format(new Date())}: Downloading from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+          .format(new Date())}: Downloading file from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.get(src, dest))()
     }
@@ -205,10 +235,10 @@ object JSchHelper {
      * @param mode ChannelSftp mode, e.g., whether or not to overwrite
      * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
-    def upload(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
+    def uploadFile(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
-          .format(new Date())}: Uploading to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+          .format(new Date())}: Uploading file to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.put(src, dest, mode))()
     }

@@ -49,7 +49,10 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   var customGlobalSeed: Option[Short] = None
 
   @BeanProperty
-  val customBooleanAttributes = mutable.HashMap[String, Boolean]()
+  var customBooleanAttributes = mutable.HashMap[String, Boolean]()
+
+  @BeanProperty
+  var customStringAttributes = mutable.HashMap[String, String]()
 
   @BeanProperty
   var userConfiguredGraphId = false
@@ -223,6 +226,8 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
     copiedGraph.customSeed = customSeed
     copiedGraph.customGlobalSeed = customGlobalSeed
     copiedGraph.nodeIdCounters = nodeIdCounters
+    copiedGraph.customBooleanAttributes = customBooleanAttributes
+    copiedGraph.customStringAttributes = customStringAttributes
     //copiedGraph.customBooleanAttributes = customBooleanAttributes
     allNodes.tail.foreach(node => copiedGraph.addNewRootNode(node.data))
     allNodes.foreach(node => {
