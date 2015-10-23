@@ -16,13 +16,13 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import java.io.{File, BufferedReader, FileWriter, InputStreamReader}
+import java.io.{BufferedReader, File, FileWriter, InputStreamReader}
 import java.text.SimpleDateFormat
-import java.util.{Properties, Date}
+import java.util.{Date, Properties}
+
 import com.jcraft.jsch._
 import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
-import org.finra.datagenerator.common.Helpers.FileHelper
-import org.finra.datagenerator.common.Helpers.RetryHelper
+
 import scala.beans.BooleanBeanProperty
 import scala.collection.JavaConverters._
 
@@ -199,15 +199,18 @@ object JSchHelper {
           .format(new Date())}: Downloading dir from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       FileHelper.ensureEmptyDirectoryExists(dest)
-      sftpChannel.ls(src + "*").asScala.foreach(obj => {
+
+      val srcWithSlash = if (src.endsWith("/")) src else src + "/"
+
+      sftpChannel.ls(srcWithSlash + "*").asScala.foreach(obj => {
         // Scala has no syntax to import a non-static inner Java class, so we have to do this ugly cast with #,
         // because by default inner classes in Scala are members of the enclosing object, whereas in Java they are members of the enclosing class.
         val lsEntry = obj.asInstanceOf[ChannelSftp#LsEntry]
         if (lsEntry.getAttrs.isDir) {
-          sftpChannel.downloadDir(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
+          sftpChannel.downloadDir(s"${srcWithSlash}${lsEntry.getFilename}"
             , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
         } else {
-          sftpChannel.downloadFile(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
+          sftpChannel.downloadFile(s"${srcWithSlash}${lsEntry.getFilename}"
             , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
         }
       })
