@@ -199,16 +199,15 @@ object JSchHelper {
           .format(new Date())}: Downloading dir from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       FileHelper.ensureEmptyDirectoryExists(dest)
-      RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.get(src, dest))()
       sftpChannel.ls(src + "*").asScala.foreach(obj => {
         // Scala has no syntax to import a non-static inner Java class, so we have to do this ugly cast with #,
         // because by default inner classes in Scala are members of the enclosing object, whereas in Java they are members of the enclosing class.
         val lsEntry = obj.asInstanceOf[ChannelSftp#LsEntry]
-        if (!lsEntry.getAttrs.isDir) {
-          sftpChannel.downloadFile(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
+        if (lsEntry.getAttrs.isDir) {
+          sftpChannel.downloadDir(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
             , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
         } else {
-          sftpChannel.downloadDir(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
+          sftpChannel.downloadFile(s"${src}${if (src.endsWith("/")) "" else "/"}${lsEntry.getFilename}"
             , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
         }
       })
@@ -229,6 +228,29 @@ object JSchHelper {
     }
 
     /**
+     * Upload a directory over SFTP from local, with some retries in case of failure.
+     * @param src Local directory to upload from
+     * @param dest Remote destination to upload to
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
+     */
+    def uploadDir(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
+      if (logRemoteCommands) {
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Uploading local dir to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+      }
+      sftpChannel.ensureEmptyDirectoryExists(dest)
+      new File(src).listFiles().foreach(fileOrDir => {
+        if (fileOrDir.isDirectory) {
+          sftpChannel.uploadDir(s"${src}${if (src.endsWith("/")) "" else "/"}${fileOrDir.getName}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${fileOrDir.getName}")
+        } else {
+          sftpChannel.uploadFile(s"${src}${if (src.endsWith("/")) "" else "/"}${fileOrDir.getName}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${fileOrDir.getName}")
+        }
+      })
+    }
+
+    /**
      * Upload a file over SFTP from local, with some retries in case of failure.
      * @param src Local file to upload
      * @param dest Remote destination to upload to
@@ -238,7 +260,7 @@ object JSchHelper {
     def uploadFile(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
-          .format(new Date())}: Uploading file to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+          .format(new Date())}: Uploading local file to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.put(src, dest, mode))()
     }
