@@ -25,6 +25,16 @@ import javax.xml.bind.DatatypeConverter
 object StringHelper {
 
   /**
+   * Build a delimited string
+   * @param delimiter String to use as delimiter
+   * @param parts Varargs strings to separate by delimiter
+   * @return Delimited string. Example: buildDelimitedString(",", "1", "2", "3") returns "1,2,3"
+   */
+  def buildDelimitedString(delimiter: String, parts: String*): String = {
+    parts.mkString(delimiter)
+  }
+
+  /**
    * Implicit methods on String
    * @param str Value used for implicit class
    */

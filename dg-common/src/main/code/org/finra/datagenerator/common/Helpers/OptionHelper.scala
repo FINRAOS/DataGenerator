@@ -46,4 +46,20 @@ object OptionHelper {
       }
     }
   }
+
+  /**
+   * Implicit methods on an Option of String
+   * @param option Option value to use for implicit class
+   */
+  implicit class StringOptionSerialization(private val option: Option[String]) {
+    private val formatter = new SimpleDateFormat("yyyyMMdd")
+
+    /**
+     * Get the string, or if undefined, ""
+     * @return String of the value if a Some, else "" if a None
+     */
+    def getOrEmpty: String = {
+      option.getOrElse(new java.lang.String(""))
+    }
+  }
 }

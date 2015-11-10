@@ -29,15 +29,33 @@ object DateHelper {
    */
    implicit class DateImplicits(private val date: java.util.Date) {
 
-    private val yyyymmdd_formatter = new SimpleDateFormat("yyyyMMdd")
+    private val yyyyMMdd_formatter = new SimpleDateFormat("yyyyMMdd")
+    private val `yyyy-MM-dd_formatter` = new SimpleDateFormat("yyyy-MM-dd")
     private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
+    private val time_formatter = new SimpleDateFormat("hhmmssSS")
 
     /**
-     * Convert the date value to a string using the YYYYmmDD format.
-     * @return String in YYYYmmDD format
+     * Convert the date value to a string using the yyyyMMdd format.
+     * @return String in yyyyMMdd format
      */
-    def toYYYYmmDD: String = {
-      yyyymmdd_formatter.format(date)
+    def to_yyyyMMdd: String = {
+      yyyyMMdd_formatter.format(date)
+    }
+
+    /**
+     * Convert the date value to a string using the yyyy-MM-dd format.
+     * @return String in yyyy-MM-dd format
+     */
+    def `to_yyyy-MM-dd`: String = { // scalastyle:ignore
+      `yyyy-MM-dd_formatter`.format(date)
+    }
+
+    /**
+     * Convert the date value to a string using the hhmmssSS format.
+     * @return String in hhmmssSS format
+     */
+    def to_hhmmssSS: String = {
+      time_formatter.format(date)
     }
 
     /**
