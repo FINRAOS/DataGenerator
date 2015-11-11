@@ -95,7 +95,19 @@ object ReflectionHelper {
     val doubleClass = 0.toDouble.getClass
     val floatClass = 0.toFloat.getClass
     val shortClass = 0.toShort.getClass
-    val classesConvertibleFromString = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass, doubleClass, floatClass, shortClass)
+    val shortSomeClass = Some(0.toShort).getClass
+    val intSomeClass = Some(0).getClass
+    val longSomeClass = Some(0L).getClass
+    val charSomeClass = Some(' ').getClass
+    val doubleSomeClass = Some(0.toDouble).getClass
+    val shortOptionClass = Some(0.toShort).getClass.getSuperclass
+    val intOptionClass = Some(0).getClass.getSuperclass
+    val longOptionClass = Some(0L).getClass.getSuperclass
+    val charOptionClass = Some(' ').getClass.getSuperclass
+    val doubleOptionClass = Some(0.toDouble).getClass.getSuperclass
+    val classesConvertibleFromString = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass, doubleClass, floatClass, shortClass
+      , shortOptionClass, intOptionClass, longOptionClass, charOptionClass, doubleOptionClass
+      , shortSomeClass, intSomeClass, longSomeClass, charSomeClass, doubleSomeClass)
 
     /**
      * Invoke the Scala setter under the current object.
@@ -111,8 +123,8 @@ object ReflectionHelper {
         if (forceTypeCoercion && value.isInstanceOf[String]) {
           ((caseInsensitive && method.getName.toLowerCase == name.toLowerCase + "_$eq"
             || method.getName == name + "_$eq")
-          && method.getParameterTypes.length == 1
-          && classesConvertibleFromString.contains(method.getParameterTypes.head)) // Setter param type should match passed-in value type.
+            && method.getParameterTypes.length == 1
+            && classesConvertibleFromString.contains(method.getParameterTypes.head)) // Setter param type should match passed-in value type.
         } else {
           ((caseInsensitive && method.getName.toLowerCase == name.toLowerCase + "_$eq"
             || method.getName == name + "_$eq")
@@ -136,6 +148,36 @@ object ReflectionHelper {
             case `doubleClass` => Double.box(valueAsString.toDouble)
             case `floatClass` => Float.box(valueAsString.toFloat)
             case `shortClass` => Short.box(valueAsString.toShort)
+            case `shortOptionClass` =>
+              if (valueAsString.isEmpty) {
+                None
+              } else {
+                Some(valueAsString.toShort)
+              }
+            case `intOptionClass` =>
+              if (valueAsString.isEmpty) {
+                None
+              } else {
+                Some(valueAsString.toInt)
+              }
+            case `longOptionClass` =>
+              if (valueAsString.isEmpty) {
+                None
+              } else {
+                Some(valueAsString.toLong)
+              }
+            case `charOptionClass` =>
+              if (valueAsString.isEmpty) {
+                None
+              } else {
+                Some(valueAsString.head)
+              }
+            case `doubleOptionClass` =>
+              if (valueAsString.isEmpty) {
+                None
+              } else {
+                Some(valueAsString.toDouble)
+              }
           }
           method.invoke(ref, convertedValue)
         } else {
