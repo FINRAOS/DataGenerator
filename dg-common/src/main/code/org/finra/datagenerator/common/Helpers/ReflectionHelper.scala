@@ -148,36 +148,11 @@ object ReflectionHelper {
             case `doubleClass` => Double.box(valueAsString.toDouble)
             case `floatClass` => Float.box(valueAsString.toFloat)
             case `shortClass` => Short.box(valueAsString.toShort)
-            case `shortOptionClass` =>
-              if (valueAsString.isEmpty) {
-                None
-              } else {
-                Some(valueAsString.toShort)
-              }
-            case `intOptionClass` =>
-              if (valueAsString.isEmpty) {
-                None
-              } else {
-                Some(valueAsString.toInt)
-              }
-            case `longOptionClass` =>
-              if (valueAsString.isEmpty) {
-                None
-              } else {
-                Some(valueAsString.toLong)
-              }
-            case `charOptionClass` =>
-              if (valueAsString.isEmpty) {
-                None
-              } else {
-                Some(valueAsString.head)
-              }
-            case `doubleOptionClass` =>
-              if (valueAsString.isEmpty) {
-                None
-              } else {
-                Some(valueAsString.toDouble)
-              }
+            case `shortOptionClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toShort)
+            case `intOptionClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toInt)
+            case `longOptionClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toLong)
+            case `charOptionClass` => if (valueAsString.isEmpty) None else Some(valueAsString.head)
+            case `doubleOptionClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toDouble)
           }
           method.invoke(ref, convertedValue)
         } else {
