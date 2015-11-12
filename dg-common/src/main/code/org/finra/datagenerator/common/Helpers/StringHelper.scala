@@ -17,6 +17,8 @@
 package org.finra.datagenerator.common.Helpers
 
 import java.security.MessageDigest
+import java.sql.Date
+import java.text.SimpleDateFormat
 import javax.xml.bind.DatatypeConverter
 
 /**
@@ -58,6 +60,38 @@ object StringHelper {
         case e: NumberFormatException => None
       }
     }
+
+    /**
+     * Converts a String with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.util.Date.
+     * @return java.util.Date formed from the string
+     */
+    def toDateTime: java.util.Date = {
+      require(str.isNumeric && str.length >= 8, s"Trying to convert ${str} to date, but it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
+      var format = "yyyyMMdd"
+      if (str.length >= 10) {
+        format += "hh"
+      }
+      if (str.length >= 12) {
+        format += "mm"
+      }
+      if (str.length >= 14) {
+        format += "ss"
+      }
+      (1 to (str.length - 14)).foreach(_ => format += "S")
+
+      val formatter = new SimpleDateFormat(format)
+      formatter.parse(str)
+    }
+
+    /**
+     * Converts a String with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.sql.Date.
+     * @return java.sql.Date (no time part) formed from the string
+     */
+    def toDate: java.sql.Date = {
+      new Date(str.toDateTime.getTime)
+    }
+
+
 
     /**
      * Split into a sequence based on a specified separator character.
