@@ -66,7 +66,8 @@ object StringHelper {
      * @return java.util.Date formed from the string
      */
     def toDateTime: java.util.Date = {
-      require(str.isNumeric && str.length >= 8, s"Trying to convert ${str} to date, but it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
+      require(str.isNumeric && str.length >= 8
+        , s"Trying to convert ${str} to date, but it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
       var format = "yyyyMMdd"
       if (str.length >= 10) {
         format += "hh"
