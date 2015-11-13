@@ -37,6 +37,14 @@ object DateHelper {
     private val time_formatter = new SimpleDateFormat("hhmmssSS")
 
     /**
+     * Convert to a date with no time information (java.sql.Date)
+     * @return
+     */
+    def toSqlDate: java.sql.Date = {
+      new java.sql.Date(date.getTime)
+    }
+
+    /**
      * Convert the date value to a string using the yyyyMM format.
      * @return String in yyyyMM format
      */
@@ -80,7 +88,7 @@ object DateHelper {
      * Add specified number of years to the date
      * @param yearsToAdd
      */
-    def addYears(yearsToAdd: Int) {
+    def addYears(yearsToAdd: Int): java.util.Date = {
       val cal = Calendar.getInstance()
       cal.setTime(date)
       cal.add(Calendar.YEAR, yearsToAdd)
@@ -115,7 +123,7 @@ object DateHelper {
      * Add specified number of hours to the date
      * @param hoursToAdd
      */
-    def addHours(hoursToAdd: Int) {
+    def addHours(hoursToAdd: Int): java.util.Date = {
       val cal = Calendar.getInstance()
       cal.setTime(date)
       cal.add(Calendar.HOUR, hoursToAdd)
@@ -126,7 +134,7 @@ object DateHelper {
      * Adds specified number of minutes to the date
      * @param minutesToAdd
      */
-    def addMinutes(minutesToAdd: Int) {
+    def addMinutes(minutesToAdd: Int): java.util.Date = {
       val cal = Calendar.getInstance()
       cal.setTime(date)
       cal.add(Calendar.MINUTE, minutesToAdd)
@@ -137,7 +145,7 @@ object DateHelper {
      * Adds specified number of seconds to the date
      * @param secondsToAdd
      */
-    def addSeconds(secondsToAdd: Int) {
+    def addSeconds(secondsToAdd: Int): java.util.Date = {
       val cal = Calendar.getInstance()
       cal.setTime(date)
       cal.add(Calendar.SECOND, secondsToAdd)
