@@ -92,8 +92,6 @@ object StringHelper {
       new Date(str.toDateTime.getTime)
     }
 
-
-
     /**
      * Split into a sequence based on a specified separator character.
      * @param separator Character to split on
