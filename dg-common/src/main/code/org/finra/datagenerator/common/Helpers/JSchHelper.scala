@@ -121,6 +121,14 @@ object JSchHelper {
    */
   implicit class ExecImplicits(private var execChannel: ChannelExec) {
     /**
+     * Gets an open SFTP channel from this exec channel's session, which is assumed already open.
+     * @return
+     */
+    def getOpenSftp(): ChannelSftp = {
+      execChannel.getSession.openChannel("sftp").asInstanceOf[ChannelSftp]
+    }
+
+    /**
      * Define the command (including any parameters) to execute remotely over SSH.
      * @param command Command to run remotely
      */
@@ -187,6 +195,14 @@ object JSchHelper {
    * @param sftpChannel SFTP channel
    */
   implicit class SftpImplicits(private var sftpChannel: ChannelSftp) {
+    /**
+     * Gets an open exec channel from this SFTP channel's session, which is assumed already open.
+     * @return
+     */
+    def getOpenExec(): ChannelExec = {
+      sftpChannel.getSession.openChannel("exec").asInstanceOf[ChannelExec]
+    }
+
     /**
      * Download a directory over SFTP to local, with some retries in case of failure.
      * @param src Remote directory to download from
@@ -271,15 +287,13 @@ object JSchHelper {
     /**
      * Create a remote directory if it doesn't alraedy exist, and if it does, empty it.
      * @param dirPath Remote directory path
-     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
-    def ensureEmptyDirectoryExists(dirPath: String, triesBeforeFailure: Short = 3): Unit = {
-      sftpChannel.mkdirRecursivelyIfNotExists(dirPath)
-      sftpChannel.cd(dirPath)
+    def ensureEmptyDirectoryExists(dirPath: String): Unit = {
       if (logRemoteCommands) {
-        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Deleting * from $dirPath") // scalastyle:ignore
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Emptying $dirPath") // scalastyle:ignore
       }
-      RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.rm("*"))()
+      // This is kind of cheating, but much better than doing recursive deletes through SFTP...
+      getOpenExec().runCommand(s"""rm -r "${dirPath}"; mkdir -p "${dirPath}"""")
     }
 
     /**
