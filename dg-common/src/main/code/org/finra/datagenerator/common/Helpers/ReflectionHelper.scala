@@ -17,8 +17,10 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import StringHelper.StringImplicits
+import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
+
 import scala.language.{implicitConversions, reflectiveCalls}
+import scala.reflect.runtime.{universe => ru}
 
 /**
  * Reflection helper methods
@@ -71,7 +73,7 @@ object ReflectionHelper {
      * @param caseInsensitive Whether nor to ignore case when searching for getter by name
      * @return Value returned after invoking specified getter, else returns Unit
      */
-    def invokeGetter(name: String, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true): Any = {
+    def invokeScalaGetter(name: String, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true): Any = {
       val methodOption = getClassMethods(ref.getClass).find(method =>
         (caseInsensitive && method.getName.toLowerCase == name.toLowerCase
           || method.getName == name)
@@ -98,35 +100,15 @@ object ReflectionHelper {
     val shortClass = 0.toShort.getClass
     val dateClass = ("20080405".toDateTime).getClass
     val sqlDateClass = ("20080405".toDate).getClass
-    val shortSomeClass = Some(0.toShort).getClass
-    val intSomeClass = Some(0).getClass
-    val longSomeClass = Some(0L).getClass
-    val charSomeClass = Some(' ').getClass
-    val doubleSomeClass = Some(0.toDouble).getClass
-    val boolSomeClass = Some(true).getClass
-    val byteSomeClass = Some(0.toByte).getClass
-    val stringSomeClass = Some("").getClass
-    val floatSomeClass = Some(0.toFloat).getClass
-    val dateSomeClass = Some("20080405".toDateTime).getClass
-    val sqlDateSomeClass = Some("20080405".toDate).getClass
-    val shortOptionClass = shortSomeClass.getSuperclass
-    val intOptionClass = intSomeClass.getSuperclass
-    val longOptionClass = longSomeClass.getSuperclass
-    val charOptionClass = charSomeClass.getSuperclass
-    val doubleOptionClass = doubleSomeClass.getSuperclass
-    val boolOptionClass = boolSomeClass.getSuperclass
-    val byteOptionClass = byteSomeClass.getSuperclass
-    val stringOptionClass = stringSomeClass.getSuperclass
-    val floatOptionClass = floatSomeClass.getSuperclass
-    val dateOptionClass = dateSomeClass.getSuperclass
-    val sqlDateOptionClass = sqlDateSomeClass.getSuperclass
+    val someClass = Some(true).getClass // My kingdom for type reification! Grrrr, type erasure is the pits!!
+    val optionClass = someClass.getSuperclass
 
-    val classesConvertibleFromString = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass
-      , doubleClass, floatClass, shortClass, dateClass, sqlDateClass
-      , shortOptionClass, intOptionClass, longOptionClass, charOptionClass, doubleOptionClass
-      , boolOptionClass, byteOptionClass, stringOptionClass, floatOptionClass, dateOptionClass, sqlDateOptionClass
-      , shortSomeClass, intSomeClass, longSomeClass, charSomeClass, doubleSomeClass
-      , boolSomeClass, byteSomeClass, stringSomeClass, floatSomeClass, dateSomeClass, sqlDateSomeClass)
+    val simpleClasses = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass
+      , doubleClass, floatClass, shortClass, dateClass, sqlDateClass)
+    val optionClasses = Seq(someClass, optionClass)
+    val complexClasses = optionClasses
+
+    val classesConvertibleFromString = simpleClasses ++ complexClasses
 
     /**
      * Invoke the Scala setter under the current object.
@@ -136,9 +118,9 @@ object ReflectionHelper {
      * @param caseInsensitive Whether nor to ignore case when searching for getter by name
      * @param forceTypeCoercion If true, do not require the setter param type to match the value type, but instead perform a cast if necessary.
      */
-    def invokeSetter(name: String, value: Any, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true
+    def invokeScalaSetter(name: String, value: Any, skipIfNotExists: Boolean = false, caseInsensitive: Boolean = true
                       , forceTypeCoercion: Boolean = false): Unit = {
-      val methodOption = getClassMethods(ref.getClass).find(method => {
+      val methods = getClassMethods(ref.getClass).filter(method => {
         if (forceTypeCoercion && value.isInstanceOf[String]) {
           ((caseInsensitive && method.getName.toLowerCase == name.toLowerCase + "_$eq"
             || method.getName == name + "_$eq")
@@ -152,38 +134,90 @@ object ReflectionHelper {
         }
       })
 
-      if (methodOption.nonEmpty) {
-        val method = methodOption.get
-        if (forceTypeCoercion && value.isInstanceOf[String]) {
-          val parameterType = method.getParameterTypes.head
-          val valueAsString = value.toString
-          val convertedValue = parameterType match {
-            case `stringClass` => valueAsString
-            case `longClass` => Long.box(valueAsString.toLong)
-            case `charClass` => Char.box(valueAsString.head)
-            case `boolClass` => Boolean.box(valueAsString.toBoolean)
-            case `intClass` => Int.box(valueAsString.toInt)
-            case `byteClass` => Byte.box(valueAsString.toByte)
-            case `doubleClass` => Double.box(valueAsString.toDouble)
-            case `floatClass` => Float.box(valueAsString.toFloat)
-            case `dateClass` => valueAsString.toDateTime
-            case `sqlDateClass` => valueAsString.toDate
-            case `shortClass` => Short.box(valueAsString.toShort)
-            case `shortOptionClass` | `shortSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toShort)
-            case `intOptionClass` | `intSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toInt)
-            case `longOptionClass` | `longSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toLong)
-            case `charOptionClass` | `charSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.head)
-            case `doubleOptionClass` | `doubleSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toDouble)
-            case `boolOptionClass` | `boolSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toBoolean)
-            case `byteOptionClass` | `byteSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toByte)
-            case `stringOptionClass` | `stringSomeClass` => if (valueAsString == null) None else Some(valueAsString)
-            case `floatOptionClass` | `floatSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toFloat)
-            case `dateOptionClass` | `dateSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toDateTime)
-            case `sqlDateOptionClass` | `sqlDateSomeClass` => if (valueAsString.isEmpty) None else Some(valueAsString.toDate)
+      if (methods.nonEmpty) {
+        val methodWithPrimitiveArgMaybe = methods.find(method => simpleClasses.contains(method.getParameterTypes.head))
+        if (methodWithPrimitiveArgMaybe.nonEmpty) {
+          val method = methodWithPrimitiveArgMaybe.get
+          if (forceTypeCoercion && value.isInstanceOf[String]) {
+            val parameterType = method.getParameterTypes.head
+            val valueAsString = value.toString
+            val convertedValue = parameterType match {
+              case `stringClass` => valueAsString
+              case `longClass` => Long.box(valueAsString.toLong)
+              case `charClass` => Char.box(valueAsString.head)
+              case `boolClass` => Boolean.box(valueAsString.toBoolean)
+              case `intClass` => Int.box(valueAsString.toInt)
+              case `byteClass` => Byte.box(valueAsString.toByte)
+              case `doubleClass` => Double.box(valueAsString.toDouble)
+              case `floatClass` => Float.box(valueAsString.toFloat)
+              case `dateClass` => valueAsString.toDateTime
+              case `sqlDateClass` => valueAsString.toDate
+              case `shortClass` => Short.box(valueAsString.toShort)
+            }
+            method.invoke(ref, convertedValue)
+          } else {
+            method.invoke(ref, value.asInstanceOf[AnyRef])
           }
-          method.invoke(ref, convertedValue)
         } else {
-          method.invoke(ref, value.asInstanceOf[AnyRef])
+          val method = methods.find(method => complexClasses.contains(method.getParameterTypes.head)).get
+
+          if (forceTypeCoercion && value.isInstanceOf[String]) {
+            val parameterType = method.getParameterTypes.head
+            val valueAsString = value.toString
+
+            if (optionClasses.contains(method.getParameterTypes.head)) {
+              // Because of type erasure, there is no way (believe me, I've tried) to get the type argument using Java reflection.
+              // If we have Object[Int] as method param, JVM sees it as Option[Object] and that's all we can get via reflection. Boo hoo hoo. :(
+              // Even if we try to get creative by calling the setter and then getter to check for a ClassCastException
+              // that would tell us the type, nope, that doesn't work either, because calling a getter by reflection doesn't
+              // throw an exception even if the wrong type has been forced into the variable.
+              // But in Scala 2.10+, the Scala compiler hides some type information in the compiled output,
+              // which allows us to jump through a few hoops to learn the erased type (TypeTags and mirrors and whatnot).
+              // This code is very ugly -- Scala reflection is way too complicated and hard to use.
+              // I don't understand it fully -- with some work this code could probably be cleaned up somewhat...
+              // but it gets the job done and that's probably fine.
+
+              val typeMirror = ru.runtimeMirror(ref.getClass.getClassLoader)
+              val instanceMirror = typeMirror.reflect(ref)
+              val members = instanceMirror.symbol.typeSignature.members
+
+              val scalaReflectionMethod = members.find(member => {
+                member.name.toString.trim == method.getName &&
+                member.typeSignature.isInstanceOf[scala.reflect.internal.Types#MethodType] &&
+                  {
+                    val methodTypeSignature = member.typeSignature.asInstanceOf[scala.reflect.internal.Types#MethodType]
+                    methodTypeSignature.params.size == 1 && methodTypeSignature.resultType.toString == "Unit"
+                  }
+              }).get
+
+              val typeSignature = scalaReflectionMethod.typeSignature
+              val singleParam: scala.reflect.internal.Symbols#TermSymbol = typeSignature.asInstanceOf[scala.reflect.internal.Types#MethodType].
+                params.head.asInstanceOf[scala.reflect.internal.Symbols#TermSymbol]
+              val typeString = singleParam.originalInfo.toString // e.g., "Option[Int]"
+
+              // Would be nice if we could refactor this matching to be strongly typed based on the actual type, not the type to string.
+
+              val convertedValue = typeString match {
+                case "Option[Int]" | "Some[Int]" => if (valueAsString.isEmpty) None else Some(valueAsString.toInt)
+                case "Option[Long]" | "Some[Long]" => if (valueAsString.isEmpty) None else Some(valueAsString.toLong)
+                case "Option[Char]" | "Some[Char]" => if (valueAsString.isEmpty) None else Some(valueAsString.head)
+                case "Option[Double]" | "Some[Double]" => if (valueAsString.isEmpty) None else Some(valueAsString.toDouble)
+                case "Option[Boolean]" | "Some[Boolean]" => if (valueAsString.isEmpty) None else Some(valueAsString.toBoolean)
+                case "Option[Byte]" | "Some[Byte]" => if (valueAsString.isEmpty) None else Some(valueAsString.toByte)
+                case "Option[String]" | "Some[String]" => if (valueAsString.isEmpty) None else Some(valueAsString)
+                case "Option[Float]" | "Some[Float]" => if (valueAsString.isEmpty) None else Some(valueAsString.toFloat)
+                case "Option[java.util.Date]" | "Some[java.util.Date]" => if (valueAsString.isEmpty) None else Some(valueAsString.toDateTime)
+                case "Option[java.sql.Date]" | "Some[java.sql.Date]" => if (valueAsString.isEmpty) None else Some(valueAsString.toDate)
+              }
+
+              method.invoke(ref, convertedValue)
+            } else {
+              throw new IllegalArgumentException(s"Cannot call setter [instance of ${ref.getClass.getName}]."
+                +s"${method.getParameterTypes.head.getName} because ReflectionHandler does not support its type.")
+            }
+          } else {
+            method.invoke(ref, value.asInstanceOf[AnyRef])
+          }
         }
       } else if (!skipIfNotExists) {
         throw new IllegalArgumentException(

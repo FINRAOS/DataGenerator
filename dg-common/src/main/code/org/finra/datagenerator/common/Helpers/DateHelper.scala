@@ -38,7 +38,7 @@ object DateHelper {
 
     /**
      * Convert to a date with no time information (java.sql.Date)
-     * @return
+     * @return SQL Date (date with no time information)
      */
     def toSqlDate: java.sql.Date = {
       new java.sql.Date(date.getTime)
