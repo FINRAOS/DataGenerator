@@ -51,8 +51,8 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
 
         if (minLen != null && maxLen != null) { //minLen and maxLen presence overrides length
             lengthPresent = false;
-            randomNumber = (int) (1 + Math.random() * (Integer.parseInt(maxLen) -
-                Integer.parseInt(minLen)));
+            randomNumber = (int) (1 + Math.random() * (Integer.parseInt(maxLen)
+                - Integer.parseInt(minLen)));
         }
 
         if (positive) {
