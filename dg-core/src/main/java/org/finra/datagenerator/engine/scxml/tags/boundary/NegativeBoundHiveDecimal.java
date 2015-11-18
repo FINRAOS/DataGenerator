@@ -15,14 +15,14 @@
  */
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
-    import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDecimal;
+import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDecimal;
 
-    import java.util.List;
-    import java.util.Map;
+import java.util.List;
+import java.util.Map;
 
 /**
-* Implementation of dg:negativeBoundHiveDecimal tag
-*/
+ * Implementation of dg:negativeBoundHiveDecimal tag
+ */
 public class NegativeBoundHiveDecimal extends BoundaryDecimal<NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag> {
 
     public Class<NegativeBoundHiveDecimalTag> getTagActionClass() {

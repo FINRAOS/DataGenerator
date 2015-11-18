@@ -115,7 +115,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         variableValue.add(varcharMid.toString());
 
         if (nullable) {
-            variableValue.add("null");
+            variableValue.add("");
         }
 
         return variableValue;
@@ -158,7 +158,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         }
 
         if (!nullable) {
-            variableValue.add("null");
+            variableValue.add("");
         }
 
         return variableValue;

@@ -100,7 +100,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         values.add(decimalMid.toString());
 
         if (nullable) {
-            values.add("null");
+            values.add("");
         }
 
         return values;
@@ -148,7 +148,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         values.add(string.toString());
 
         if (!nullable) {
-            values.add("null");
+            values.add("");
         }
 
         return values;

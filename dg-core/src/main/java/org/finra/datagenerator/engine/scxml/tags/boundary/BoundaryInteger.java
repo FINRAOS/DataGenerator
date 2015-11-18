@@ -45,7 +45,7 @@ public abstract class BoundaryInteger<T extends BoundaryActionNumeric> implement
         BigInteger min = new BigInteger(action.getMin());
         BigInteger max = new BigInteger(action.getMax());
         List<String> values = new LinkedList<>();
-        String nullString = "null";
+        String nullString = "";
 
         if (min.compareTo(max) == 1) {
             BigInteger temp = new BigInteger(action.getMin());
