@@ -41,38 +41,47 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         String maxLen = action.getMaxLen();
         String min = action.getMin();
         String max = action.getMax();
-        boolean minMaxLengthPresent = true;
+        boolean minMaxLengthPresent = false;
         boolean nullable = true;
-        int leadingDigits;
-        int trailingDigits;
+        int leadingDigits = Integer.parseInt(length[0]);
+        int trailingDigits = Integer.parseInt(length[1]);
         boolean minMaxPresent = false;
+
+        if (minLen != null) {
+            if (maxLen != null) {
+                minMaxLengthPresent = true;
+            } else {
+                maxLen = Integer.toString(Integer.parseInt(length[0]) + Integer.parseInt(length[1]));
+            }
+        } else {
+            if (maxLen != null) {
+                minLen = "1";
+            }
+            else {
+                minLen = "1";
+                maxLen = Integer.toString(Integer.parseInt(length[0]) + Integer.parseInt(length[1]));
+            }
+        }
 
         if (!action.getNullable().equals("true")) {
             nullable = false;
         }
-
-        leadingDigits = Integer.parseInt(length[0]);
-        trailingDigits = Integer.parseInt(length[1]);
-
-        if (minLen != null && maxLen != null) { // minLen and maxLen presence overrides length
-            minMaxLengthPresent = false;
-        }
-
         if (min != null && max != null) {
             minMaxPresent = true;
         }
-
         if (positive) {
             if (minMaxPresent) {
                 if (minMaxLengthPresent) {
-                    return positiveCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max), Integer.parseInt(minLen), Integer.parseInt(maxLen), trailingDigits);
+                    return positiveCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max),
+                        Integer.parseInt(minLen), Integer.parseInt(maxLen), trailingDigits);
                 } else {
-                    return positiveCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max), 1, leadingDigits + trailingDigits, trailingDigits);
+                    return positiveCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max),
+                        1, leadingDigits + trailingDigits, trailingDigits);
                 }
-
             } else {
                 if (minMaxLengthPresent) {
-                    return positiveCaseDecimal2(nullable, Integer.parseInt(minLen), Integer.parseInt(maxLen), trailingDigits);
+                    return positiveCaseDecimal2(nullable, Integer.parseInt(minLen), Integer.parseInt(maxLen),
+                        trailingDigits);
                 } else {
                     return positiveCaseDecimal3(nullable, leadingDigits, trailingDigits);
                 }
@@ -80,14 +89,17 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         } else {
             if (minMaxPresent) {
                 if (minMaxLengthPresent) {
-                    return negativeCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max), Integer.parseInt(minLen), Integer.parseInt(maxLen));
+                    return negativeCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max),
+                        Integer.parseInt(minLen), Integer.parseInt(maxLen));
                 } else {
-                    return negativeCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max), 1, leadingDigits + trailingDigits);
+                    return negativeCaseDecimal1(nullable, Integer.parseInt(min), Integer.parseInt(max),
+                        1, leadingDigits + trailingDigits);
                 }
 
             } else {
                 if (minMaxLengthPresent) {
-                    return negativeCaseDecimal2(nullable, Integer.parseInt(minLen), Integer.parseInt(maxLen), trailingDigits);
+                    return negativeCaseDecimal2(nullable, Integer.parseInt(minLen), Integer.parseInt(maxLen),
+                        trailingDigits);
                 } else {
                     return negativeCaseDecimal3(nullable, leadingDigits, trailingDigits);
                 }
@@ -102,7 +114,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param minLen         minimum length
      * @param maxLen         maximum length
      * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the states
+     * @return a list of Strings that contain the boundary cases
      */
     public List<String> positiveCaseDecimal1(boolean nullable, int min, int max, int minLen, int maxLen, int numTrailing) {
         StringBuilder decimalUpperBound = new StringBuilder();
@@ -161,7 +173,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param minLen         minimum length
      * @param maxLen         maximum length
      * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the states
+     * @return a list of Strings that contain the boundary cases
      */
     public List<String> positiveCaseDecimal2(boolean nullable, int minLen, int maxLen, int numTrailing) {
         StringBuilder decimalUpperBound = new StringBuilder();
@@ -185,7 +197,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
             m.invoke(eq, decimalUpperBound, numTrailing);
             values.add(decimalUpperBound.toString());
 
-            m.invoke(eq, decimalMid, ((maxLen - minLen) / 2) - numTrailing);
+            m.invoke(eq, decimalMid, (maxLen - minLen) / 2 - numTrailing);
             decimalMid.append(".");
             m.invoke(eq, decimalMid, numTrailing);
             values.add(decimalMid.toString());
@@ -203,7 +215,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param nullable       nullable
      * @param numLeading     number of leading digits
      * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the states
+     * @return a list of Strings that contain the boundary cases
      */
     public List<String> positiveCaseDecimal3(boolean nullable, int numLeading, int numTrailing) {
         StringBuilder decimalLowerBound = new StringBuilder();
@@ -243,7 +255,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param max            maximum value
      * @param minLen         minimum length
      * @param maxLen         maximum length
-     * @return a list of Strings that contain the states
+     * @return a list of Strings that contain the boundary cases
      */
     public List<String> negativeCaseDecimal1(boolean nullable, int min, int max, int minLen, int maxLen) {
         StringBuilder decimalUpperBound = new StringBuilder();
@@ -283,7 +295,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        if (nullable) {
+        if (!nullable) {
             values.add("");
         }
         return values;
@@ -294,7 +306,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param minLen         minimum length
      * @param maxLen         maximum length
      * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the states
+     * @return a list of Strings that contain the boundary cases
      */
     public List<String> negativeCaseDecimal2(boolean nullable, int minLen, int maxLen, int numTrailing) {
         StringBuilder decimalUpperBound = new StringBuilder();
@@ -332,7 +344,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        if (nullable) {
+        if (!nullable) {
             values.add("");
         }
         return values;
@@ -342,7 +354,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param nullable       nullable
      * @param numLeading     number of leading digits
      * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the states
+     * @return a list of Strings that contain the boundary cases
      */
     public List<String> negativeCaseDecimal3(boolean nullable, int numLeading, int numTrailing) {
         StringBuilder decimalLowerBound = new StringBuilder();
@@ -368,7 +380,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        if (nullable) {
+        if (!nullable) {
             values.add("");
         }
         return values;
