@@ -97,11 +97,11 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
                 min = new BigInteger(action.getMin());
                 max = new BigInteger(action.getMax());
                 if (minMaxLengthPresent) {
-                    return negativeCaseDecimal1(nullable, action.getName(), min, max, minLen, maxLen);
+                    return negativeCaseDecimal1(nullable, action.getName(), min, max, minLen, maxLen, trailingDigits);
                 } else {
                     return negativeCaseDecimal1(nullable, action.getName(), min, max,
                         new BigInteger(Integer.toString(min.toString().length())),
-                        leadingDigits.add(trailingDigits));
+                        leadingDigits.add(trailingDigits), trailingDigits);
                 }
             } else {
                 if (minMaxLengthPresent) {
@@ -148,9 +148,12 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
                 decimalLowerBound.append(min.add(BigInteger.ONE).toString());
                 decimalLowerBound.append(".");
                 int length = Integer.parseInt(Integer.toString(min.toString().length()));
-                int length2 = Integer.parseInt(maxLen.toString());
-                m.invoke(eq, decimalUpperBound, length2 - length);
-                values.add(decimalLowerBound.toString());
+                int length2 = Integer.parseInt(maxLen.toString()) - length;
+                if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
+                    m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()));
+                } else {
+                    m.invoke(eq, decimalUpperBound, length2);
+                }
                 values.add(decimalLowerBound.toString());
             } else {
                 m.invoke(eq, decimalLowerBound, minLen);
@@ -160,9 +163,12 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
             decimalUpperBound.append(new BigInteger(max.subtract(BigInteger.ONE).toString()));
             decimalUpperBound.append(".");
             int length = Integer.parseInt(Integer.toString(max.toString().length()));
-            int length2 = Integer.parseInt(maxLen.toString());
-            m.invoke(eq, decimalUpperBound, length2 - length);
-            values.add(decimalLowerBound.toString());
+            int length2 = Integer.parseInt(maxLen.toString()) - length;
+            if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
+                m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()));
+            } else {
+                m.invoke(eq, decimalUpperBound, length2);
+            }
             values.add(decimalUpperBound.toString());
 
             decimalMid.append(mid);
@@ -267,9 +273,11 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
      * @param max            maximum value
      * @param minLen         minimum length
      * @param maxLen         maximum length
+     * @param numTrailing    number of trailing digits
      * @return a list of Strings that contain the boundary cases
      */
-    public List<String> negativeCaseDecimal1(boolean nullable, String name, BigInteger min, BigInteger max, BigInteger minLen, BigInteger maxLen) {
+    public List<String> negativeCaseDecimal1(boolean nullable, String name, BigInteger min,
+                                             BigInteger max, BigInteger minLen, BigInteger maxLen, BigInteger numTrailing) {
         StringBuilder decimalUpperBound = new StringBuilder();
         StringBuilder decimalLowerBound = new StringBuilder();
         Method m;
@@ -291,8 +299,12 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
                 decimalLowerBound.append(min.subtract(BigInteger.ONE).toString());
                 decimalLowerBound.append(".");
                 int length = Integer.parseInt(Integer.toString(min.toString().length()));
-                int length2 = Integer.parseInt(maxLen.toString());
-                m.invoke(eq, decimalUpperBound, length2 - length);
+                int length2 = Integer.parseInt(maxLen.toString()) - length;
+                if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
+                    m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString() + 1));
+                } else {
+                    m.invoke(eq, decimalUpperBound, length2 + 1);
+                }
                 values.add(decimalLowerBound.toString());
             } else {
                 m.invoke(eq, decimalLowerBound, Integer.parseInt(minLen.subtract(BigInteger.ONE).toString()));
@@ -302,9 +314,14 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
             decimalUpperBound.append(new BigInteger(max.add(BigInteger.ONE).toString()));
             decimalUpperBound.append(".");
             m.invoke(eq, decimalUpperBound, 1);
+
             int length = Integer.parseInt(Integer.toString(max.toString().length()));
-            int length2 = Integer.parseInt(maxLen.toString());
-            m.invoke(eq, decimalUpperBound, length2 - length);
+            int length2 = Integer.parseInt(maxLen.toString()) - length;
+            if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
+                m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()) + 1);
+            } else {
+                m.invoke(eq, decimalUpperBound, length2 + 1);
+            }
 
             values.add(decimalUpperBound.toString());
 
