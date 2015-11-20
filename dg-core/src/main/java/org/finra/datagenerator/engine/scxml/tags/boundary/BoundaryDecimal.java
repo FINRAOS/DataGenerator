@@ -56,8 +56,7 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
         } else {
             if (maxLen != null) {
                 minLen = "1";
-            }
-            else {
+            } else {
                 minLen = "1";
                 maxLen = Integer.toString(Integer.parseInt(length[0]) + Integer.parseInt(length[1]));
             }

@@ -59,8 +59,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         } else {
             if (maxLen != null) {
                 minLen = "1";
-            }
-            else {
+            } else {
                 minLen = "1";
                 maxLen = length;
             }
