@@ -57,29 +57,28 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
 
         if (positive) {
             if (lengthPresent) {
-                return positiveCaseVarchar(nullable, lengthPresent, Integer.parseInt(length),
+                return positiveCaseVarchar(nullable, Integer.parseInt(length),
                     randomNumber);
             } else {
-                return positiveCaseVarchar(nullable, lengthPresent, Integer.parseInt(maxLen),
+                return positiveCaseVarchar(nullable, Integer.parseInt(maxLen),
                     Integer.parseInt(minLen), randomNumber);
             }
         } else {
             if (lengthPresent) {
-                return negativeCaseVarchar(nullable, lengthPresent, Integer.parseInt(length));
+                return negativeCaseVarchar(nullable, Integer.parseInt(length));
             } else {
-                return negativeCaseVarchar(nullable, lengthPresent, Integer.parseInt(maxLen),
+                return negativeCaseVarchar(nullable, Integer.parseInt(maxLen),
                     Integer.parseInt(minLen));
             }
         }
     }
 
     /**
-     * @param lengthPresent whether length is present or not
      * @param nullable      nullable
      * @param lengths       contains either the length or minLen and maxLen, and random
      * @return a list of boundary cases
      */
-    public List<String> positiveCaseVarchar(boolean nullable, boolean lengthPresent, int... lengths) {
+    public List<String> positiveCaseVarchar(boolean nullable, int... lengths) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder varcharBound = new StringBuilder();
@@ -93,7 +92,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 StringBuilder.class, int.class);
             m.setAccessible(true);
 
-            if (lengthPresent) {
+            if (lengths.length == 2) {
                 m.invoke(eq, varcharBound, lengths[0]);
                 m.invoke(eq, varcharMid, lengths[1]);
                 variableValue.add(varcharBound.toString());
@@ -122,12 +121,11 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
     }
 
     /**
-     * @param lengthPresent whether length is present or not
      * @param nullable      nullable
      * @param lengths       contains either the length or minLen and maxLen, and random
      * @return a list of boundary cases
      */
-    public List<String> negativeCaseVarchar(boolean nullable, boolean lengthPresent, int... lengths) {
+    public List<String> negativeCaseVarchar(boolean nullable, int... lengths) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder varcharBound = new StringBuilder();
@@ -140,7 +138,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 StringBuilder.class, int.class);
             m.setAccessible(true);
 
-            if (lengthPresent) {
+            if (lengths.length == 1) {
                 m.invoke(eq, varcharBound, lengths[0] + 1);
                 variableValue.add(varcharBound.toString());
             } else {
