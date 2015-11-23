@@ -53,13 +53,7 @@ public class PositiveBoundHiveDecimal extends BoundaryDecimal<PositiveBoundHiveD
     /**
      * A custom Action for the 'dg:positiveBoundHiveDecimal' tag inside models
      */
-    public static class PositiveBoundHiveDecimalTag extends BoundaryActionDecimal {
-        /**
-         * constructor
-         */
-        public PositiveBoundHiveDecimalTag() {
-            this.setLength("18,8");
-        }
-    }
+    public static class PositiveBoundHiveDecimalTag extends BoundaryActionDecimal { }
+
 }
 

@@ -53,12 +53,5 @@ public class NegativeBoundHiveDecimal extends BoundaryDecimal<NegativeBoundHiveD
     /**
      * A custom Action for the 'dg:negativeBoundHiveDecimal' tag inside models
      */
-    public static class NegativeBoundHiveDecimalTag extends BoundaryActionDecimal {
-        /**
-         * constructor
-         */
-        public NegativeBoundHiveDecimalTag() {
-            this.setLength("18,8");
-        }
-    }
+    public static class NegativeBoundHiveDecimalTag extends BoundaryActionDecimal { }
 }
