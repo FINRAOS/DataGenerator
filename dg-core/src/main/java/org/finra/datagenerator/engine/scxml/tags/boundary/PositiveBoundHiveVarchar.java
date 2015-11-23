@@ -53,12 +53,5 @@ public class PositiveBoundHiveVarchar extends BoundaryVarchar<PositiveBoundHiveV
     /**
      * A custom Action for the 'dg:positiveBoundHiveVarchar' tag inside models
      */
-    public static class PositiveBoundHiveVarcharTag extends BoundaryActionVarchar {
-        /**
-         * constructor
-         */
-        public PositiveBoundHiveVarcharTag() {
-            this.setLength("10");
-        }
-    }
+    public static class PositiveBoundHiveVarcharTag extends BoundaryActionVarchar { }
 }
