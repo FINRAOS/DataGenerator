@@ -20,7 +20,7 @@ import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDecimal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,150 +30,146 @@ import java.util.Map;
  * @param <T> a generic type that represents a BoundaryTag
  */
 public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implements CustomTagExtension<T> {
+
     /**
      * @param action   an Action of the type handled by this class
      * @param positive a boolean denoting positive or negative cases
      * @return a list of Strings that contain the states
      */
     public List<String> buildDecimalData(T action, boolean positive) {
-        BigInteger maxLen, minLen;
-        String[] length = action.getLength().split(",");
-        String minLength = action.getMinLen();
-        String maxLength = action.getMaxLen();
-        String minimum = action.getMin();
-        String maximum = action.getMax();
-        BigInteger min, max;
-        boolean minMaxLengthPresent = false;
-        boolean nullable = true;
-        BigInteger leadingDigits = new BigInteger(length[0]).subtract(new BigInteger(length[1]));
-        BigInteger trailingDigits = new BigInteger(length[1]);
-        boolean minMaxPresent = false;
 
-        if (minLength != null) {
-            minLen = new BigInteger(minLength);
-            if (maxLength != null) {
-                maxLen = new BigInteger(maxLength);
-                minMaxLengthPresent = true;
-            } else {
-                maxLen = new BigInteger(length[0]);
-            }
+        BigDecimal max, min;
+        int minLen;
+        int maxLen;
+        String[] lengths = new String[2];
+        boolean isNullable;
+        String nullable = action.getNullable();
+
+        if (nullable.equalsIgnoreCase("true")) {
+            isNullable = true;
         } else {
-            if (maxLength != null) {
-                maxLen = new BigInteger(maxLength);
-                minLen = null;
+            isNullable = false;
+        }
+
+        if (action.getLength() == null) {
+            lengths[0] = "10";
+            lengths[1] = "0";
+        } else  {
+            if (action.getLength().contains(",")) {
+                lengths = action.getLength().split(",");
             } else {
-                minLen = null;
-                maxLen = new BigInteger(length[0]);
+                lengths[0] = action.getLength();
+                if (Integer.parseInt(action.getLength()) > 38) {
+                    lengths[0] = "38";
+                }
+                lengths[1] = "0";
             }
         }
-        if (!action.getNullable().equals("true")) {
-            nullable = false;
+
+        if (action.getMinLen() != null) {
+            minLen = Integer.parseInt(action.getMinLen());
+        } else {
+            minLen = 0;
         }
-        if (minimum != null && maximum != null) {
-            minMaxPresent = true;
+
+        if (action.getMaxLen() != null) {
+            maxLen = Integer.parseInt(action.getMaxLen());
+        } else {
+            maxLen = 0;
         }
+
+        if (action.getMin() != null) {
+            min = new BigDecimal(action.getMin());
+        } else {
+            int exp = Integer.parseInt(lengths[0]);
+            min = BigDecimal.TEN.pow(exp);
+            min = min.negate();
+            min = min.add(BigDecimal.ONE);
+        }
+
+        if (action.getMax() != null) {
+            max = new BigDecimal(action.getMax());
+        } else {
+            int exp = Integer.parseInt(lengths[0]);
+            max = BigDecimal.TEN.pow(exp).subtract(BigDecimal.ONE);
+        }
+
         if (positive) {
-            if (minMaxPresent) {
-                min = new BigInteger(action.getMin());
-                max = new BigInteger(action.getMax());
-                if (minMaxLengthPresent) {
-                    return positiveCaseDecimal1(nullable, action.getName(), min, max, minLen, maxLen,
-                        trailingDigits);
-                } else {
-                    return positiveCaseDecimal1(nullable, action.getName(), min, max,
-                        new BigInteger(Integer.toString(min.toString().length())),
-                        leadingDigits.add(trailingDigits), trailingDigits);
-                }
-            } else {
-                if (minMaxLengthPresent) {
-                    return positiveCaseDecimal2(nullable, minLen, maxLen,
-                        trailingDigits);
-                } else {
-                    return positiveCaseDecimal3(nullable, leadingDigits, trailingDigits);
-                }
-            }
+            return positiveCase(isNullable, min, max, minLen, maxLen, lengths);
         } else {
-            if (minMaxPresent) {
-                min = new BigInteger(action.getMin());
-                max = new BigInteger(action.getMax());
-                if (minMaxLengthPresent) {
-                    return negativeCaseDecimal1(nullable, action.getName(), min, max, minLen, maxLen, trailingDigits);
-                } else {
-                    return negativeCaseDecimal1(nullable, action.getName(), min, max,
-                        new BigInteger(Integer.toString(min.toString().length())),
-                        leadingDigits.add(trailingDigits), trailingDigits);
-                }
-            } else {
-                if (minMaxLengthPresent) {
-                    return negativeCaseDecimal2(nullable, minLen, maxLen, trailingDigits);
-                } else {
-                    return negativeCaseDecimal3(nullable, leadingDigits, trailingDigits);
-                }
-            }
+            return negativeCase(isNullable, min, max, minLen, maxLen, lengths);
         }
     }
 
     /**
      * @param nullable       nullable
-     * @param name           name of variable
      * @param min            minimum value
      * @param max            maximum value
      * @param minLen         minimum length
      * @param maxLen         maximum length
-     * @param numTrailing    number of trailing digits
+     * @param lengths        number of leading and trailing digits
      * @return a list of Strings that contain the boundary cases
      */
-    public List<String> positiveCaseDecimal1(boolean nullable, String name, BigInteger min, BigInteger max,
-                                             BigInteger minLen, BigInteger maxLen, BigInteger numTrailing) {
+    public List<String> positiveCase(boolean nullable, BigDecimal min, BigDecimal max,
+                                            int minLen, int maxLen, String[] lengths) {
+
+        int exp = Integer.parseInt(lengths[0]);
+        BigDecimal defaultMin = BigDecimal.TEN.pow(exp).subtract(BigDecimal.ONE);
+        defaultMin = defaultMin.negate();
+        BigDecimal defaultMax = BigDecimal.TEN.pow(exp).subtract(BigDecimal.ONE);
+        boolean minMaxLenPresent = false;
+        Method m;
+
+        List<String> values = new LinkedList<>();
+        EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder decimalUpperBound = new StringBuilder();
         StringBuilder decimalLowerBound = new StringBuilder();
         StringBuilder decimalMid = new StringBuilder();
-        Method m;
-        List<String> values = new LinkedList<>();
-        EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
+
+        if (minLen != 0 && maxLen != 0) {
+            minMaxLenPresent = true;
+        }
 
         try {
-            if (new BigInteger(Integer.toString(min.toString().length())).compareTo(maxLen) == 1
-                || new BigInteger(Integer.toString(max.toString().length())).compareTo(maxLen) == 1) {
-                System.err.println("check length parameters for " + name);
-                System.exit(0);
-            }
-
             m = EquivalenceClassTransformer.class.getDeclaredMethod("digitSequence", StringBuilder.class, int.class);
             m.setAccessible(true);
-            BigInteger mid = max.subtract(min).divide(new BigInteger("2"));
-
-            if (new BigInteger(Integer.toString(min.add(BigInteger.ONE).toString().length())).compareTo(maxLen) == 0
-                || new BigInteger(Integer.toString(min.add(BigInteger.ONE).toString().length())).compareTo(maxLen) == 1) {
-                decimalLowerBound.append(min.add(BigInteger.ONE).toString());
-                decimalLowerBound.append(".");
-                int length = Integer.parseInt(Integer.toString(min.toString().length()));
-                int length2 = Integer.parseInt(maxLen.toString()) - length;
-                if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
-                    m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()));
-                } else {
-                    m.invoke(eq, decimalUpperBound, length2);
-                }
-                values.add(decimalLowerBound.toString());
-            } else {
+            if (minMaxLenPresent) {
                 m.invoke(eq, decimalLowerBound, minLen);
-                values.add(decimalLowerBound.toString());
-            }
-
-            decimalUpperBound.append(new BigInteger(max.subtract(BigInteger.ONE).toString()));
-            decimalUpperBound.append(".");
-            int length = Integer.parseInt(Integer.toString(max.toString().length()));
-            int length2 = Integer.parseInt(maxLen.toString()) - length;
-            if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
-                m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()));
+                m.invoke(eq, decimalUpperBound, maxLen);
+                m.invoke(eq, decimalMid, maxLen - minLen);
             } else {
-                m.invoke(eq, decimalUpperBound, length2);
+                if (min.compareTo(defaultMin) == 0 && max.compareTo(defaultMax) == 0) {
+                    decimalLowerBound.append(min.toString());
+                    decimalUpperBound.append(max.toString());
+                    decimalMid.append("0");
+                } else {
+                    decimalLowerBound.append(min.toString());
+                    values.add(decimalLowerBound.toString());
+                    decimalLowerBound.append(".");
+                    if (min.toString().length() + Integer.parseInt(lengths[1]) <= Integer.parseInt(lengths[0])) {
+                        m.invoke(eq, decimalLowerBound, Integer.parseInt(lengths[1]));
+                    } else {
+                        m.invoke(eq, decimalLowerBound, Integer.parseInt(lengths[0]) - min.toString().length());
+                    }
+                    decimalUpperBound.append(max.subtract(BigDecimal.ONE).toString());
+                    values.add(decimalUpperBound.toString());
+                    decimalUpperBound.append(".");
+                    BigDecimal mid = max.subtract(min);
+                    mid = mid.divide(new BigDecimal("2"));
+                    decimalMid.append(mid.toString());
+                    decimalMid.append(".");
+
+                    if (max.toString().length() + Integer.parseInt(lengths[1]) <= Integer.parseInt(lengths[0])) {
+                        m.invoke(eq, decimalUpperBound, Integer.parseInt(lengths[1]));
+                        m.invoke(eq, decimalMid, Integer.parseInt(lengths[1]));
+                    } else {
+                        m.invoke(eq, decimalUpperBound, Integer.parseInt(lengths[0]) - max.toString().length());
+                        m.invoke(eq, decimalMid, Integer.parseInt(lengths[0]) - max.toString().length());
+                    }
+                }
             }
+            values.add(decimalLowerBound.toString());
             values.add(decimalUpperBound.toString());
-
-            decimalMid.append(mid);
-            decimalMid.append(".");
-            m.invoke(eq, decimalMid, numTrailing);
             values.add(decimalMid.toString());
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
@@ -187,233 +183,70 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
 
     /**
      * @param nullable       nullable
-     * @param minLen         minimum length
-     * @param maxLen         maximum length
-     * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the boundary cases
-     */
-    public List<String> positiveCaseDecimal2(boolean nullable, BigInteger minLen, BigInteger maxLen, BigInteger numTrailing) {
-        StringBuilder decimalUpperBound = new StringBuilder();
-        StringBuilder decimalLowerBound = new StringBuilder();
-        StringBuilder decimalMid = new StringBuilder();
-        Method m;
-        List<String> values = new LinkedList<>();
-        EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
-
-        try {
-            m = EquivalenceClassTransformer.class.getDeclaredMethod("digitSequence", StringBuilder.class, int.class);
-            m.setAccessible(true);
-
-            m.invoke(eq, decimalLowerBound, minLen.subtract(numTrailing).toString());
-            decimalLowerBound.append(".");
-            m.invoke(eq, decimalLowerBound, numTrailing);
-            values.add(decimalLowerBound.toString());
-
-            m.invoke(eq, decimalLowerBound, maxLen.subtract(numTrailing).toString());
-            decimalUpperBound.append(".");
-            m.invoke(eq, decimalUpperBound, numTrailing);
-            values.add(decimalUpperBound.toString());
-
-            m.invoke(eq, decimalLowerBound, maxLen.subtract(minLen).toString());
-            decimalMid.append(".");
-            m.invoke(eq, decimalMid, numTrailing);
-            values.add(decimalMid.toString());
-
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        if (nullable) {
-            values.add("");
-        }
-        return values;
-    }
-
-    /**
-     * @param nullable       nullable
-     * @param numLeading     number of leading digits
-     * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the boundary cases
-     */
-    public List<String> positiveCaseDecimal3(boolean nullable, BigInteger numLeading, BigInteger numTrailing) {
-        StringBuilder decimalLowerBound = new StringBuilder();
-        StringBuilder decimalUpper = new StringBuilder();
-        Method m;
-        List<String> values = new LinkedList<>();
-        EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
-        int randomLeading = (int) (1 + Math.random() * Integer.parseInt(numLeading.subtract(BigInteger.ONE).toString()));
-        int randomTrailing = (int) (1 + Math.random() * Integer.parseInt(numTrailing.subtract(BigInteger.ONE).toString()));
-
-        try {
-            m = EquivalenceClassTransformer.class.getDeclaredMethod("digitSequence", StringBuilder.class, int.class);
-            m.setAccessible(true);
-
-            m.invoke(eq, decimalLowerBound, Integer.parseInt(numTrailing.toString()));
-            decimalLowerBound.append(".");
-            m.invoke(eq, decimalLowerBound, Integer.parseInt(numTrailing.toString()));
-            values.add(decimalLowerBound.toString());
-
-            m.invoke(eq, decimalUpper, randomLeading);
-            decimalUpper.append(".");
-            m.invoke(eq, decimalUpper, randomTrailing);
-            values.add(decimalUpper.toString());
-
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        if (nullable) {
-            values.add("");
-        }
-        return values;
-    }
-
-    /**
-     * @param nullable       nullable
-     * @param name           name of variable
      * @param min            minimum value
      * @param max            maximum value
      * @param minLen         minimum length
      * @param maxLen         maximum length
-     * @param numTrailing    number of trailing digits
+     * @param lengths        number of leading and trailing digits
      * @return a list of Strings that contain the boundary cases
      */
-    public List<String> negativeCaseDecimal1(boolean nullable, String name, BigInteger min,
-                                             BigInteger max, BigInteger minLen, BigInteger maxLen, BigInteger numTrailing) {
-        StringBuilder decimalUpperBound = new StringBuilder();
-        StringBuilder decimalLowerBound = new StringBuilder();
+    public List<String> negativeCase(boolean nullable, BigDecimal min, BigDecimal max,
+                                     int minLen, int maxLen, String[] lengths) {
+
+        int exp = Integer.parseInt(lengths[0]);
+        BigDecimal defaultMin = BigDecimal.TEN.pow(exp).subtract(BigDecimal.ONE);
+        defaultMin = defaultMin.negate();
+        BigDecimal defaultMax = BigDecimal.TEN.pow(exp).subtract(BigDecimal.ONE);
+        boolean minMaxLenPresent = false;
         Method m;
+
         List<String> values = new LinkedList<>();
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
+        StringBuilder decimalUpperBound = new StringBuilder();
+        StringBuilder decimalLowerBound = new StringBuilder();
+
+        if (minLen != 0 && maxLen != 0) {
+            minMaxLenPresent = true;
+        }
 
         try {
-            if (new BigInteger(Integer.toString(min.toString().length())).compareTo(maxLen) == 1
-                || new BigInteger(Integer.toString(max.toString().length())).compareTo(maxLen) == 1) {
-                System.err.println("check length parameters for " + name);
-                System.exit(0);
-            }
-
             m = EquivalenceClassTransformer.class.getDeclaredMethod("digitSequence", StringBuilder.class, int.class);
             m.setAccessible(true);
-
-            if (new BigInteger(Integer.toString(min.subtract(BigInteger.ONE).toString().length())).compareTo(maxLen) == 0
-                || new BigInteger(Integer.toString(min.subtract(BigInteger.ONE).toString().length())).compareTo(maxLen) == 1) {
-                decimalLowerBound.append(min.subtract(BigInteger.ONE).toString());
-                decimalLowerBound.append(".");
-                int length = Integer.parseInt(Integer.toString(min.toString().length()));
-                int length2 = Integer.parseInt(maxLen.toString()) - length;
-                if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
-                    m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString() + 1));
+            if (minMaxLenPresent) {
+                m.invoke(eq, decimalLowerBound, minLen - 1);
+                m.invoke(eq, decimalUpperBound, maxLen + 1);
+            } else {
+                if (min.compareTo(defaultMin) == 0 && max.compareTo(defaultMax) == 0) {
+                    decimalLowerBound.append(min.toString());
+                    decimalLowerBound.append("9");
+                    decimalUpperBound.append(max.toString());
+                    decimalUpperBound.append("9");
                 } else {
-                    m.invoke(eq, decimalUpperBound, length2 + 1);
+                    decimalLowerBound.append(min.toString());
+                    decimalLowerBound.append(".");
+                    if (min.toString().length() + Integer.parseInt(lengths[1]) <= Integer.parseInt(lengths[0])) {
+                        m.invoke(eq, decimalLowerBound, Integer.parseInt(lengths[1]) + 1);
+                    } else {
+                        m.invoke(eq, decimalLowerBound, Integer.parseInt(lengths[0]) - min.toString().length());
+                    }
+                    decimalUpperBound.append(max.toString());
+                    decimalUpperBound.append("9");
+                    decimalUpperBound.append(".");
+
+                    if (max.toString().length() + Integer.parseInt(lengths[1]) <= Integer.parseInt(lengths[0])) {
+                        m.invoke(eq, decimalUpperBound, Integer.parseInt(lengths[1]));
+                    } else {
+                        m.invoke(eq, decimalUpperBound, Integer.parseInt(lengths[0]) - max.toString().length());
+                    }
                 }
-                values.add(decimalLowerBound.toString());
-            } else {
-                m.invoke(eq, decimalLowerBound, Integer.parseInt(minLen.subtract(BigInteger.ONE).toString()));
-                values.add(decimalLowerBound.toString());
             }
-
-            decimalUpperBound.append(new BigInteger(max.add(BigInteger.ONE).toString()));
-            decimalUpperBound.append(".");
-            m.invoke(eq, decimalUpperBound, 1);
-
-            int length = Integer.parseInt(Integer.toString(max.toString().length()));
-            int length2 = Integer.parseInt(maxLen.toString()) - length;
-            if (Integer.parseInt(numTrailing.toString()) + length <= Integer.parseInt(maxLen.toString())) {
-                m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()) + 1);
-            } else {
-                m.invoke(eq, decimalUpperBound, length2 + 1);
-            }
-
-            values.add(decimalUpperBound.toString());
-
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        if (!nullable) {
-            values.add("");
-        }
-        return values;
-    }
-
-    /**
-     * @param nullable       nullable
-     * @param minLen         minimum length
-     * @param maxLen         maximum length
-     * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the boundary cases
-     */
-    public List<String> negativeCaseDecimal2(boolean nullable, BigInteger minLen, BigInteger maxLen, BigInteger numTrailing) {
-        StringBuilder decimalUpperBound = new StringBuilder();
-        StringBuilder decimalUpperBound2 = new StringBuilder();
-        StringBuilder decimalLowerBound = new StringBuilder();
-        StringBuilder decimalLowerBound2 = new StringBuilder();
-        Method m;
-        List<String> values = new LinkedList<>();
-        EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
-
-        try {
-            m = EquivalenceClassTransformer.class.getDeclaredMethod("digitSequence", StringBuilder.class, int.class);
-            m.setAccessible(true);
-
-            m.invoke(eq, decimalLowerBound, Integer.parseInt(minLen.subtract(numTrailing).add(BigInteger.ONE).toString()));
-            decimalLowerBound.append(".");
-            m.invoke(eq, decimalLowerBound, numTrailing);
             values.add(decimalLowerBound.toString());
-
-            m.invoke(eq, decimalLowerBound2, Integer.parseInt(minLen.subtract(numTrailing).toString()));
-            decimalLowerBound2.append(".");
-            m.invoke(eq, decimalLowerBound2, Integer.parseInt(numTrailing.add(BigInteger.ONE).toString()));
-            values.add(decimalLowerBound2.toString());
-
-            m.invoke(eq, decimalUpperBound, Integer.parseInt(maxLen.subtract(numTrailing).add(BigInteger.ONE).toString()));
-            decimalUpperBound.append(".");
-            m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.toString()));
-            values.add(decimalUpperBound.toString());
-
-            m.invoke(eq, decimalUpperBound2, Integer.parseInt(maxLen.subtract(numTrailing).toString()));
-            decimalUpperBound2.append(".");
-            m.invoke(eq, decimalUpperBound2, Integer.parseInt(numTrailing.add(BigInteger.ONE).toString()));
-            values.add(decimalUpperBound2.toString());
-
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        if (!nullable) {
-            values.add("");
-        }
-        return values;
-    }
-
-    /**
-     * @param nullable       nullable
-     * @param numLeading     number of leading digits
-     * @param numTrailing    number of trailing digits
-     * @return a list of Strings that contain the boundary cases
-     */
-    public List<String> negativeCaseDecimal3(boolean nullable, BigInteger numLeading, BigInteger numTrailing) {
-        StringBuilder decimalLowerBound = new StringBuilder();
-        StringBuilder decimalUpperBound = new StringBuilder();
-        Method m;
-        List<String> values = new LinkedList<>();
-        EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
-
-        try {
-            m = EquivalenceClassTransformer.class.getDeclaredMethod("digitSequence", StringBuilder.class, int.class);
-            m.setAccessible(true);
-
-            m.invoke(eq, decimalLowerBound, Integer.parseInt(numLeading.add(BigInteger.ONE).toString()));
-            decimalLowerBound.append(".");
-            m.invoke(eq, decimalLowerBound, Integer.parseInt(numTrailing.toString()));
-            values.add(decimalLowerBound.toString());
-
-            m.invoke(eq, decimalUpperBound, Integer.parseInt(numLeading.toString()));
-            decimalUpperBound.append(".");
-            m.invoke(eq, decimalUpperBound, Integer.parseInt(numTrailing.add(BigInteger.ONE).toString()));
             values.add(decimalUpperBound.toString());
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        if (!nullable) {
+        if (nullable) {
             values.add("");
         }
         return values;
