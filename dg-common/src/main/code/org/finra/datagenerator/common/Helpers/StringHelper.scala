@@ -242,5 +242,14 @@ object StringHelper {
     def md5: String = {
       DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(str.getBytes("UTF-8")))
     }
+
+    /**
+     * Remove all occurrences of a substring
+     * @param substringToRemove Substring to remove
+     * @return String with all occurrences of substring removed
+     */
+    def remove(substringToRemove: String): String = {
+      str.replaceAllLiterally(substringToRemove, "")
+    }
   }
 }
