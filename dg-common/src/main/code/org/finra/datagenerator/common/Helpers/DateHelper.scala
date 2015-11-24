@@ -23,19 +23,17 @@ import java.util.Calendar
  * Helper methods on Option
  */
 object DateHelper {
+  private val yyyyMM_formatter = new SimpleDateFormat("yyyyMM")
+  private val yyyyMMdd_formatter = new SimpleDateFormat("yyyyMMdd")
+  private val `yyyy-MM-dd_formatter` = new SimpleDateFormat("yyyy-MM-dd")
+  private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
+  private val time_formatter = new SimpleDateFormat("hhmmssSS")
 
   /**
    * Implicit methods on a java.util.Date
    * @param date Date
    */
-   implicit class DateImplicits(private val date: java.util.Date) {
-
-    private val yyyyMM_formatter = new SimpleDateFormat("yyyyMM")
-    private val yyyyMMdd_formatter = new SimpleDateFormat("yyyyMMdd")
-    private val `yyyy-MM-dd_formatter` = new SimpleDateFormat("yyyy-MM-dd")
-    private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
-    private val time_formatter = new SimpleDateFormat("hhmmssSS")
-
+   implicit class DateImplicits(val date: java.util.Date) extends AnyVal {
     /**
      * Convert to a date with no time information (java.sql.Date)
      * @return SQL Date (date with no time information)

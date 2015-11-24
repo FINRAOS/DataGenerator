@@ -36,13 +36,13 @@ object JSchHelper {
   @BooleanBeanProperty
   var logRemoteCommands = true
 
+  private final val SLEEP_ON_RETRY_MS = 50
+
   /**
    * Implicit methods on a Jsch session.
    * @param session Session
    */
-  implicit class SessionImplicits(private val session: Session) {
-    private final val SLEEP_ON_RETRY_MS = 50
-
+  implicit class SessionImplicits(val session: Session) extends AnyVal {
     /**
      * Connect to the session using optional timeout and number of tries.
      * @param timeout -1 for no timeout, else milliseconds before connect attempt fails.
@@ -73,9 +73,7 @@ object JSchHelper {
    * Implicit methods on a Jsch channel.
    * @param channel Channel
    */
-  implicit class ChannelImplicits(private val channel: Channel) {
-    private final val SLEEP_ON_RETRY_MS = 50
-
+  implicit class ChannelImplicits(val channel: Channel) extends AnyVal {
     /**
      * Get allowable JSCH channel types
      * @return Name of the JSCH channel type for the channel
@@ -119,7 +117,7 @@ object JSchHelper {
    * Implicit methods on an Exec channel.
    * @param execChannel Exec channel
    */
-  implicit class ExecImplicits(private var execChannel: ChannelExec) {
+  implicit class ExecImplicits(val execChannel: ChannelExec) extends AnyVal {
     /**
      * Gets an open SFTP channel from this exec channel's session, which is assumed already open.
      * @return
@@ -194,7 +192,7 @@ object JSchHelper {
    * Implicit methods on an SFTP channel
    * @param sftpChannel SFTP channel
    */
-  implicit class SftpImplicits(private var sftpChannel: ChannelSftp) {
+  implicit class SftpImplicits(val sftpChannel: ChannelSftp) extends AnyVal {
     /**
      * Gets an open exec channel from this SFTP channel's session, which is assumed already open.
      * @return

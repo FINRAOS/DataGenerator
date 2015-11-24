@@ -25,7 +25,7 @@ object CloningHelper {
   // Uses third-party tool
   private val cloner = new Cloner()
 
-  implicit class ObjectCloning[T](private val cloneableObject: T) {
+  implicit class ObjectCloning[T](val cloneableObject: T) extends AnyVal {
 
     /**
      * Performs a deep clone of the specified object, using a third-party library utilizing Java reflection.

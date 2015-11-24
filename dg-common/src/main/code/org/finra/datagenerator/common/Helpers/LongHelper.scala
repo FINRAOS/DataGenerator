@@ -22,7 +22,7 @@ import StringHelper.StringImplicits
  * Long implicit methods
  */
 object LongHelper {
-  implicit class LongImplicits(private val long: Long) {
+  implicit class LongImplicits(val long: Long) extends AnyVal {
     /**
      * Converts a Long with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.util.Date.
      * @return java.util.Date formed from the Long timestring

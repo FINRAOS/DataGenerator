@@ -20,7 +20,7 @@ package org.finra.datagenerator.common.Helpers
  * Boolean implicit methods
  */
 object BooleanHelper {
-  implicit class BooleanSerialization(private val boolean: Boolean) {
+  implicit class BooleanSerialization(val boolean: Boolean) extends AnyVal {
     /**
      * Returns "Y" if boolean is true, else ""
      * @return String representing boolean as either "Y" or ""

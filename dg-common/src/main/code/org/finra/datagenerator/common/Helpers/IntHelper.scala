@@ -20,7 +20,7 @@ package org.finra.datagenerator.common.Helpers
  * Integer implicit methods
  */
 object IntHelper {
-  implicit class IntImplicits(private val int: Int) {
+  implicit class IntImplicits(val int: Int) extends AnyVal {
     /**
      * Converts an Int formatted as yyyyMMdd to a java.sql.Date.
      * @return java.sql.Date formed from the Int in yyyyMMdd format

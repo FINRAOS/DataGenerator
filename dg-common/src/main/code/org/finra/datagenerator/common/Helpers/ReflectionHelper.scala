@@ -61,11 +61,32 @@ object ReflectionHelper {
     classToMethodsMap.get(value).get
   }
 
+  val stringClass = "".getClass
+  val longClass = 1L.getClass
+  val charClass = ' '.getClass
+  val boolClass = true.getClass
+  val intClass = 0.getClass
+  val byteClass = 0.toByte.getClass
+  val doubleClass = 0.toDouble.getClass
+  val floatClass = 0.toFloat.getClass
+  val shortClass = 0.toShort.getClass
+  val dateClass = ("20080405".toDateTime).getClass
+  val sqlDateClass = ("20080405".toDate).getClass
+  val someClass = Some(true).getClass // My kingdom for type reification! Grrrr, type erasure is the pits!!
+  val optionClass = someClass.getSuperclass
+
+  val simpleClasses = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass
+    , doubleClass, floatClass, shortClass, dateClass, sqlDateClass)
+  val optionClasses = Seq(someClass, optionClass)
+  val complexClasses = optionClasses
+
+  val classesConvertibleFromString = simpleClasses ++ complexClasses
+
   /**
    * Implicit methods to do reflection on any reference object.
    * @param ref Reference object
    */
-  implicit class Reflector(ref: AnyRef) {
+  implicit class Reflector(val ref: AnyRef) extends AnyVal {
     /**
      * Invoke the Scala getter under the current object, and return the value from the getter.
      * @param name Name of getter to invoke
@@ -88,27 +109,6 @@ object ReflectionHelper {
         Unit
       }
     }
-
-    val stringClass = "".getClass
-    val longClass = 1L.getClass
-    val charClass = ' '.getClass
-    val boolClass = true.getClass
-    val intClass = 0.getClass
-    val byteClass = 0.toByte.getClass
-    val doubleClass = 0.toDouble.getClass
-    val floatClass = 0.toFloat.getClass
-    val shortClass = 0.toShort.getClass
-    val dateClass = ("20080405".toDateTime).getClass
-    val sqlDateClass = ("20080405".toDate).getClass
-    val someClass = Some(true).getClass // My kingdom for type reification! Grrrr, type erasure is the pits!!
-    val optionClass = someClass.getSuperclass
-
-    val simpleClasses = Seq(stringClass, longClass, charClass, boolClass, intClass, byteClass
-      , doubleClass, floatClass, shortClass, dateClass, sqlDateClass)
-    val optionClasses = Seq(someClass, optionClass)
-    val complexClasses = optionClasses
-
-    val classesConvertibleFromString = simpleClasses ++ complexClasses
 
     /**
      * Invoke the Scala setter under the current object.
