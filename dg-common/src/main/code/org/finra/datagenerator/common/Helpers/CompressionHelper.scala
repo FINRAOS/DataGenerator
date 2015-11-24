@@ -16,7 +16,7 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import java.io.{FileOutputStream, FileInputStream, File}
+import java.io.{File, FileInputStream, FileOutputStream}
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.commons.io.IOUtils
