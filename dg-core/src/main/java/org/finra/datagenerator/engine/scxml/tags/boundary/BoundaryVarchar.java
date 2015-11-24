@@ -18,6 +18,7 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionVarchar;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -49,7 +50,13 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         randomNumber = (int) (1 + Math.random() * (Integer.parseInt(length) - 1));
 
         if (minLen != null) {
+            if (Integer.parseInt(minLen) > Integer.parseInt(length)) {
+                minLen = length;
+            }
             if (maxLen != null) {
+                if (Integer.parseInt(maxLen) > Integer.parseInt(length)) {
+                    maxLen = length;
+                }
                 lengthPresent = false;
                 randomNumber = (int) (1 + Math.random() * (Integer.parseInt(maxLen)
                     - Integer.parseInt(minLen)));
@@ -57,10 +64,12 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 maxLen = length;
             }
         } else {
+            minLen = "1";
             if (maxLen != null) {
-                minLen = "1";
+                if (Integer.parseInt(maxLen) > Integer.parseInt(length)) {
+                    maxLen = length;
+                }
             } else {
-                minLen = "1";
                 maxLen = length;
             }
         }

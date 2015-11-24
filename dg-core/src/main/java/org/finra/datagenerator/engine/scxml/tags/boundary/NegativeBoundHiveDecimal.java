@@ -47,7 +47,7 @@ public class NegativeBoundHiveDecimal extends BoundaryDecimal<NegativeBoundHiveD
     public List<Map<String, String>> pipelinePossibleStates(NegativeBoundHiveDecimalTag action,
                                                             List<Map<String, String>> possibleStateList) {
 
-        return returnStates(action, possibleStateList, buildDecimalData(action, false));
+        return returnStates(action, possibleStateList, setParameters(action, false));
     }
 
     /**

@@ -47,7 +47,7 @@ public class PositiveBoundHiveDecimal extends BoundaryDecimal<PositiveBoundHiveD
     public List<Map<String, String>> pipelinePossibleStates(PositiveBoundHiveDecimalTag action,
                                                             List<Map<String, String>> possibleStateList) {
 
-        return returnStates(action, possibleStateList, buildDecimalData(action, true));
+        return returnStates(action, possibleStateList, setParameters(action, true));
     }
 
     /**
