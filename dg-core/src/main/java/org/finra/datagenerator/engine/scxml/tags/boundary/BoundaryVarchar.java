@@ -72,16 +72,18 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
             return positiveCaseVarchar(nullable, Integer.parseInt(maxLen),
                 Integer.parseInt(minLen));
         } else {
-            return negativeCaseVarchar(nullable, Integer.parseInt(length));
+            return negativeCaseVarchar(nullable, Integer.parseInt(maxLen),
+                Integer.parseInt(minLen));
         }
     }
 
     /**
      * @param nullable nullable
-     * @param lengths  contains either the length or minLen and maxLen, and random
+     * @param maxLen   contains max length for varchar
+     * @param minLen   contains min legnth for varchar
      * @return a list of boundary cases
      */
-    public List<String> positiveCaseVarchar(boolean nullable, int... lengths) {
+    public List<String> positiveCaseVarchar(boolean nullable, int maxLen, int minLen) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder varcharMid = new StringBuilder();
@@ -94,11 +96,11 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 StringBuilder.class, int.class);
             m.setAccessible(true);
 
-            m.invoke(eq, varcharMax, lengths[0]);
-            m.invoke(eq, varcharMin, lengths[1]);
-            m.invoke(eq, varcharMid, (lengths[1] - lengths[0]) / 2 + lengths[0]);
+            m.invoke(eq, varcharMax, maxLen);
+            m.invoke(eq, varcharMin, minLen);
+            m.invoke(eq, varcharMid, (maxLen - minLen) / 2 + minLen);
 
-            if (lengths[0] != lengths[1]) { // if they are the same, only need to add one
+            if (maxLen != minLen) { // if they are the same, only need to add one
                 variableValue.add(varcharMin.toString());
             }
             variableValue.add(varcharMax.toString());
@@ -119,10 +121,11 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
 
     /**
      * @param nullable nullable
-     * @param lengths  contains either the length or minLen and maxLen, and random
+     * @param maxLen   contains the max length for this varchar
+     * @param minLen   contains the min length for this varchar
      * @return a list of boundary cases
      */
-    public List<String> negativeCaseVarchar(boolean nullable, int... lengths) {
+    public List<String> negativeCaseVarchar(boolean nullable, int maxLen, int minLen) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder varcharMin = new StringBuilder();
@@ -134,10 +137,18 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 StringBuilder.class, int.class);
             m.setAccessible(true);
 
-            m.invoke(eq, varcharMax, lengths[0] + 1);
-            m.invoke(eq, varcharMin, lengths[1] - 1);
+            if (minLen == 1) {
+                if (!nullable) {
+                    minLen--;
+                }
+            } else {
+                minLen--;
+            }
 
-            if (lengths[0] != lengths[1]) { // if they are the same, only need to add one
+            m.invoke(eq, varcharMax, maxLen + 1);
+            m.invoke(eq, varcharMin, minLen);
+
+            if (maxLen != minLen) { // if they are the same, only need to add one
                 variableValue.add(varcharMin.toString());
             }
             variableValue.add(varcharMax.toString());
@@ -147,7 +158,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
             e.printStackTrace();
         }
 
-        if (!nullable) {
+        if (!nullable && !variableValue.contains("")) {
             variableValue.add("");
         }
 
@@ -159,7 +170,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @param possibleStateList a current list of possible states produced so far from
      *                          expanding a model state
      * @param variableValue     a list storing the values
-     * @return a list of Maps containing the states
+     * @return a list of Maps containing the cross product of all states
      */
     public List<Map<String, String>> returnStates(T action,
                                                   List<Map<String, String>> possibleStateList, List<String> variableValue) {

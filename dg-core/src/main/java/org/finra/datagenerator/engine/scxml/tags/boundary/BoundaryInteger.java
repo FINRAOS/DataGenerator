@@ -125,7 +125,7 @@ public abstract class BoundaryInteger<T extends BoundaryActionNumeric> implement
      * @param possibleStateList a current list of possible states produced so far from
      *                          expanding a model state
      * @param variableValue     a list storing the values
-     * @return a list of Maps containing the states
+     * @return a list of Maps containing the cross product of all states
      */
     public List<Map<String, String>> returnStates(T action,
                 List<Map<String, String>> possibleStateList, List<String> variableValue) {
