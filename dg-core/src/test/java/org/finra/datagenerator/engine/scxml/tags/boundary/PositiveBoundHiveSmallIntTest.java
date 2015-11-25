@@ -35,7 +35,7 @@ public class PositiveBoundHiveSmallIntTest {
      */
     @Test
     public void nameTest() {
-        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger();
+        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
 
         pos.setName("hive_small_test");
         Assert.assertEquals(pos.getName(), "hive_small_test");
@@ -49,7 +49,7 @@ public class PositiveBoundHiveSmallIntTest {
      */
     @Test
     public void nullTest() {
-        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger();
+        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
 
         pos.setNullable("true");
         Assert.assertEquals(pos.getNullable(), "true");
@@ -63,7 +63,7 @@ public class PositiveBoundHiveSmallIntTest {
      */
     @Test
     public void minTest() {
-        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger();
+        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
 
         pos.setMin("10");
         Assert.assertEquals(pos.getMin(), "10");
@@ -78,7 +78,7 @@ public class PositiveBoundHiveSmallIntTest {
     @Test
     public void minTest2() {
         Map<String, String> variableDomains = new HashMap<>();
-        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger();
+        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
         PositiveBoundHiveSmallInt test = new PositiveBoundHiveSmallInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
         ArrayList<String> al = new ArrayList<>();
@@ -108,7 +108,7 @@ public class PositiveBoundHiveSmallIntTest {
     @Test
     public void minTest3() {
         Map<String, String> variableDomains = new HashMap<>();
-        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger();
+        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
         PositiveBoundHiveSmallInt test = new PositiveBoundHiveSmallInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
         ArrayList<String> al = new ArrayList<>();
@@ -138,7 +138,7 @@ public class PositiveBoundHiveSmallIntTest {
      */
     @Test
     public void maxTest() {
-        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTagInteger();
+        PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
 
         pos.setMax("10");
         Assert.assertEquals(pos.getMax(), "10");

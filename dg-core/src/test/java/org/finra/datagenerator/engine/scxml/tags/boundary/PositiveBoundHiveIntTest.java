@@ -33,7 +33,7 @@ public class PositiveBoundHiveIntTest {
      */
     @Test
     public void maxTest() {
-        PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger();
+        PositiveBoundHiveInt.PositiveBoundHiveIntTag pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTag();
 
         pos.setMax("10");
         Assert.assertEquals(pos.getMax(), "10");
@@ -47,7 +47,7 @@ public class PositiveBoundHiveIntTest {
      */
     @Test
     public void minTest() {
-        PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger();
+        PositiveBoundHiveInt.PositiveBoundHiveIntTag pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTag();
 
         pos.setMin("10");
         Assert.assertEquals(pos.getMin(), "10");
@@ -61,7 +61,7 @@ public class PositiveBoundHiveIntTest {
      */
     @Test
     public void nameTest() {
-        PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger();
+        PositiveBoundHiveInt.PositiveBoundHiveIntTag pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTag();
 
         pos.setName("hive_int_test");
         Assert.assertEquals(pos.getName(), "hive_int_test");
@@ -75,7 +75,7 @@ public class PositiveBoundHiveIntTest {
      */
     @Test
     public void nullTest() {
-        PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTagInteger();
+        PositiveBoundHiveInt.PositiveBoundHiveIntTag pos = new PositiveBoundHiveInt.PositiveBoundHiveIntTag();
 
         pos.setNullable("true");
         Assert.assertEquals(pos.getNullable(), "true");
@@ -90,7 +90,7 @@ public class PositiveBoundHiveIntTest {
     @Test
     public void nullTest2() {
         Map<String, String> variableDomains = new HashMap<>();
-        PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTagInteger pos = new PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTagInteger();
+        PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTag pos = new PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTag();
         PositiveBoundHiveBigInt test = new PositiveBoundHiveBigInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
 
@@ -116,7 +116,7 @@ public class PositiveBoundHiveIntTest {
     @Test
     public void zeroTest() {
         Map<String, String> variableDomains = new HashMap<>();
-        PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTagInteger pos = new PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTagInteger();
+        PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTag pos = new PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTag();
         PositiveBoundHiveBigInt test = new PositiveBoundHiveBigInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
 

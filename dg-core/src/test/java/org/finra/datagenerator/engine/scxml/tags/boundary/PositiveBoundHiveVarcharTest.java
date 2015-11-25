@@ -18,6 +18,11 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Nathaniel Lee
  * Date: 10/27/15
@@ -54,6 +59,31 @@ public class PositiveBoundHiveVarcharTest {
         Assert.assertEquals(pos.getLength(), "10");
     }
 
+//    /**
+//     * test for length
+//     */
+//    @Test
+//    public void lengthTest2() {
+//        Map<String, String> variableDomains = new HashMap<>();
+//        List<Map<String, String>> listOfMaps = new LinkedList<>();
+//        listOfMaps.add(variableDomains);
+//
+//        PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
+//        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag pos = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
+//
+//        pos.setName("name");
+//        pos.setMaxLen("10");
+//        Assert.assertEquals(pos.getMaxLen(), "10");
+//
+//        pos.setMaxLen("12");
+//        Assert.assertEquals(pos.getMaxLen(), "12");
+//
+//        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(pos, listOfMaps);
+//
+//        Assert.assertEquals(newList.get(0).get("name").length(), 10);
+//        Assert.assertEquals(newList.get(1).get("name").length(), 12);
+//    }
+
     /**
      * test for setNullable() and getNullable()
      */
@@ -66,5 +96,51 @@ public class PositiveBoundHiveVarcharTest {
 
         pos.setNullable("false");
         Assert.assertEquals(pos.getNullable(), "false");
+    }
+
+    /**
+     * test for minLen
+     */
+    @Test
+    public void minLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
+        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag neg = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
+
+        neg.setName("name");
+        neg.setMinLen("10");
+        Assert.assertEquals(neg.getMinLen(), "10");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
+        Assert.assertEquals(newList.get(0).get("name").length(), 10);
+    }
+
+    /**
+     * test for maxLen
+     */
+    @Test
+    public void maxLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
+        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag pos = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
+        pos.setLength("18");
+
+        pos.setName("name");
+        pos.setMaxLen("10");
+        Assert.assertEquals(pos.getMaxLen(), "10");
+
+        pos.setMaxLen("12");
+        Assert.assertEquals(pos.getMaxLen(), "12");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(pos, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name").length(), 1);
+        Assert.assertEquals(newList.get(1).get("name").length(), 12);
     }
 }

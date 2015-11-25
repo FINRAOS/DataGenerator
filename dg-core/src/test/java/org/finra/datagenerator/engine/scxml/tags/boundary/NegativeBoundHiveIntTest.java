@@ -29,7 +29,7 @@ public class NegativeBoundHiveIntTest {
      */
     @Test
     public void nameTest() {
-        NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger();
+        NegativeBoundHiveInt.NegativeBoundHiveIntTag neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTag();
 
         neg.setName("hive_int_test");
         Assert.assertEquals(neg.getName(), "hive_int_test");
@@ -43,7 +43,7 @@ public class NegativeBoundHiveIntTest {
      */
     @Test
     public void nullTest() {
-        NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger();
+        NegativeBoundHiveInt.NegativeBoundHiveIntTag neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTag();
 
         neg.setNullable("true");
         Assert.assertEquals(neg.getNullable(), "true");
@@ -57,7 +57,7 @@ public class NegativeBoundHiveIntTest {
      */
     @Test
     public void minTest() {
-        NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger();
+        NegativeBoundHiveInt.NegativeBoundHiveIntTag neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTag();
 
         neg.setMin("10");
         Assert.assertEquals(neg.getMin(), "10");
@@ -71,7 +71,7 @@ public class NegativeBoundHiveIntTest {
      */
     @Test
     public void maxTest() {
-        NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger();
+        NegativeBoundHiveInt.NegativeBoundHiveIntTag neg = new NegativeBoundHiveInt.NegativeBoundHiveIntTag();
 
         neg.setMax("10");
         Assert.assertEquals(neg.getMax(), "10");

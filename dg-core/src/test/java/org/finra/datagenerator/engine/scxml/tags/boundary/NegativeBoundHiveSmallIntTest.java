@@ -29,7 +29,7 @@ public class NegativeBoundHiveSmallIntTest {
      */
     @Test
     public void nameTest() {
-        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger();
+        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag();
 
         neg.setName("hive_small_test");
         Assert.assertEquals(neg.getName(), "hive_small_test");
@@ -43,7 +43,7 @@ public class NegativeBoundHiveSmallIntTest {
      */
     @Test
     public void nullTest() {
-        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger();
+        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag();
 
         neg.setNullable("true");
         Assert.assertEquals(neg.getNullable(), "true");
@@ -57,7 +57,7 @@ public class NegativeBoundHiveSmallIntTest {
      */
     @Test
     public void minTest() {
-        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger();
+        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag();
 
         neg.setMin("10");
         Assert.assertEquals(neg.getMin(), "10");
@@ -71,7 +71,7 @@ public class NegativeBoundHiveSmallIntTest {
      */
     @Test
     public void maxTest() {
-        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTagInteger();
+        NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag neg = new NegativeBoundHiveSmallInt.NegativeBoundHiveSmallIntTag();
 
         neg.setMax("10");
         Assert.assertEquals(neg.getMax(), "10");

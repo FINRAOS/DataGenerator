@@ -31,9 +31,6 @@ import java.util.Map;
  */
 public class NegativeBoundHiveDecimalTest {
 
-    //TODO tests for min and max length
-    //TODO tests for min and max
-
     /**
      * test for setName() and getName()
      */
@@ -112,6 +109,176 @@ public class NegativeBoundHiveDecimalTest {
         neg.setNullable("false");
         list = test.pipelinePossibleStates(neg, listOfMaps);
         Assert.assertEquals(list.size(), 3);
+    }
+
+    /**
+     *  check min and max parameters
+     */
+    @Test
+    public void minMaxTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal minMaxTest = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+
+        tag.setName("Name");
+        tag.setMin("10");
+        tag.setMax("20");
+
+        Assert.assertEquals(tag.getMin(), "10");
+        Assert.assertEquals(tag.getMax(), "20");
+
+        tag.setMin("100");
+        tag.setMax("200");
+
+        Assert.assertEquals(tag.getMin(), "100");
+        Assert.assertEquals(tag.getMax(), "200");
+
+        List<Map<String, String>> newList = minMaxTest.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("Name"), "99");
+        Assert.assertEquals(newList.get(1).get("Name"), "201");
+    }
+
+    /**
+     *  check minLen parameter
+     */
+    @Test
+    public void minLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal minLenTest = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+
+        tag.setName("name");
+        tag.setMinLen("10");
+        Assert.assertEquals(tag.getMinLen(), "10");
+
+        tag.setMinLen("100");
+        Assert.assertEquals(tag.getMinLen(), "100");
+
+        List<Map<String, String>> newList = minLenTest.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name").length(), 9);
+        Assert.assertEquals(newList.get(1).get("name").length(), 11);
+    }
+
+    /**
+     * maxLen test
+     */
+    @Test
+    public void maxLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal maxLenTest = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+
+        tag.setName("name");
+        tag.setMinLen("100");
+        Assert.assertEquals(tag.getMinLen(), "100");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name").length(), 9);
+        Assert.assertEquals(newList.get(1).get("name").length(), 11);
+    }
+
+    /**
+     * minLen and maxLen
+     */
+    @Test
+    public void minLenAndmaxLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal maxLenTest = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+
+        tag.setName("name");
+        tag.setMinLen("5");
+        tag.setMaxLen("9");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name").length(), 4);
+        Assert.assertEquals(newList.get(1).get("name").length(), 10);
+
+    }
+
+    /**
+     * no parameters set
+     */
+    @Test
+    public void defaultBehaviorTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal setTest = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+        tag.setName("Name");
+
+        List<Map<String, String>> newList = setTest.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("Name").length(), 11);
+        Assert.assertEquals(newList.get(1).get("Name").length(), 11);
+    }
+
+    /**
+     * test with minLen and max set
+     */
+    @Test
+    public void minLenAndMaxTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal defaultBehavior = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+
+        tag.setName("name");
+        tag.setMinLen("10");
+        tag.setMax("1000");
+
+        List<Map<String, String>> newList = defaultBehavior.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name"), "-100000000");
+        Assert.assertEquals(newList.get(1).get("name"), "1001");
+    }
+
+    /**
+     * test with min and maxLen set
+     */
+    @Test
+    public void minAndMaxLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDecimal defaultBehavior = new NegativeBoundHiveDecimal();
+        NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag tag = new NegativeBoundHiveDecimal.NegativeBoundHiveDecimalTag();
+
+        tag.setName("name");
+        tag.setMin("10");
+        tag.setMaxLen("12");
+
+        List<Map<String, String>> newList = defaultBehavior.pipelinePossibleStates(tag, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name"), "9");
+        Assert.assertEquals(newList.get(1).get("name").length(), 11);
+
+        for (Map<String, String> map : newList) {
+            for (String key : map.keySet()) {
+                System.out.println("key: " + key + "\n" + "value: " + map.get(key) + "\n");
+            }
+        }
     }
 
     /**

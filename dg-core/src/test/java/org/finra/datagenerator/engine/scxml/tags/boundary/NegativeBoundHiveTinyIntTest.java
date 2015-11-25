@@ -35,7 +35,7 @@ public class NegativeBoundHiveTinyIntTest {
      */
     @Test
     public void nameTest() {
-        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger();
+        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag();
 
         neg.setName("hive_tiny_test");
         Assert.assertEquals(neg.getName(), "hive_tiny_test");
@@ -49,7 +49,7 @@ public class NegativeBoundHiveTinyIntTest {
      */
     @Test
     public void nullTest() {
-        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger();
+        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag();
 
         neg.setNullable("true");
         Assert.assertEquals(neg.getNullable(), "true");
@@ -63,7 +63,7 @@ public class NegativeBoundHiveTinyIntTest {
      */
     @Test
     public void minTest() {
-        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger();
+        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag();
 
         neg.setMin("10");
         Assert.assertEquals(neg.getMin(), "10");
@@ -77,7 +77,7 @@ public class NegativeBoundHiveTinyIntTest {
      */
     @Test
     public void maxTest() {
-        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger();
+        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag();
 
         neg.setMax("10");
         Assert.assertEquals(neg.getMax(), "10");
@@ -92,7 +92,7 @@ public class NegativeBoundHiveTinyIntTest {
     @Test
     public void maxTest2() {
         Map<String, String> variableDomains = new HashMap<>();
-        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger();
+        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag();
         NegativeBoundHiveTinyInt test = new NegativeBoundHiveTinyInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
         ArrayList<String> al = new ArrayList<>();
@@ -122,7 +122,7 @@ public class NegativeBoundHiveTinyIntTest {
     @Test
     public void maxTest3() {
         Map<String, String> variableDomains = new HashMap<>();
-        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTagInteger();
+        NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag neg = new NegativeBoundHiveTinyInt.NegativeBoundHiveTinyIntTag();
         NegativeBoundHiveTinyInt test = new NegativeBoundHiveTinyInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
         ArrayList<String> al = new ArrayList<>();

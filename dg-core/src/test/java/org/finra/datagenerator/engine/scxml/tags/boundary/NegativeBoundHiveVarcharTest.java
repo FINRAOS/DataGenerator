@@ -18,6 +18,11 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Nathaniel Lee
  * Date: 10/27/15
@@ -66,5 +71,50 @@ public class NegativeBoundHiveVarcharTest {
 
         neg.setNullable("false");
         Assert.assertEquals(neg.getNullable(), "false");
+    }
+
+    /**
+     * test for minLen
+     */
+    @Test
+    public void minLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveVarchar maxLenTest = new NegativeBoundHiveVarchar();
+        NegativeBoundHiveVarchar.NegativeBoundHiveVarcharTag neg = new NegativeBoundHiveVarchar.NegativeBoundHiveVarcharTag();
+
+        neg.setName("name");
+        neg.setLength("18");
+        neg.setMinLen("10");
+        Assert.assertEquals(neg.getMinLen(), "10");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
+        Assert.assertEquals(newList.get(0).get("name").length(), 19);
+    }
+
+
+    /**
+     * test for maxLen
+     */
+    @Test
+    public void maxLenTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveVarchar maxLenTest = new NegativeBoundHiveVarchar();
+        NegativeBoundHiveVarchar.NegativeBoundHiveVarcharTag neg = new NegativeBoundHiveVarchar.NegativeBoundHiveVarcharTag();
+
+        neg.setName("name");
+        neg.setLength("18");
+        neg.setMaxLen("10");
+        Assert.assertEquals(neg.getMaxLen(), "10");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
+
+        neg.setMaxLen("100");
+        Assert.assertEquals(newList.get(0).get("name").length(), 19);
     }
 }
