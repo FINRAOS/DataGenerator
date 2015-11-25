@@ -208,7 +208,6 @@ public class NegativeBoundHiveDecimalTest {
 
         Assert.assertEquals(newList.get(0).get("name").length(), 4);
         Assert.assertEquals(newList.get(1).get("name").length(), 10);
-
     }
 
     /**
@@ -272,12 +271,6 @@ public class NegativeBoundHiveDecimalTest {
 
         Assert.assertEquals(newList.get(0).get("name"), "9");
         Assert.assertEquals(newList.get(1).get("name").length(), 11);
-
-        for (Map<String, String> map : newList) {
-            for (String key : map.keySet()) {
-                System.out.println("key: " + key + "\n" + "value: " + map.get(key) + "\n");
-            }
-        }
     }
 
     /**

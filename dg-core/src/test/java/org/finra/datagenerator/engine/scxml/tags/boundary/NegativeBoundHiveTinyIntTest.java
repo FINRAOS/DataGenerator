@@ -106,14 +106,8 @@ public class NegativeBoundHiveTinyIntTest {
         neg.setName("test");
 
         List<Map<String, String>> list = test.pipelinePossibleStates(neg, listOfMaps);
-        for (Map<String, String> map : list) {
-            for (String key : map.keySet()) {
-                al.add(map.get(key));
-            }
-        }
-
-        Assert.assertTrue(al.contains("100"));
-        Assert.assertTrue(al.contains("101"));
+        Assert.assertTrue(list.get(0).get("test").equals("9"));
+        Assert.assertTrue(list.get(1).get("test").equals("101"));
     }
 
     /**
@@ -136,13 +130,8 @@ public class NegativeBoundHiveTinyIntTest {
         neg.setName("test");
 
         List<Map<String, String>> list = test.pipelinePossibleStates(neg, listOfMaps);
-        for (Map<String, String> map : list) {
-            for (String key : map.keySet()) {
-                al.add(map.get(key));
-            }
-        }
 
-        Assert.assertTrue(al.contains("128"));
-        Assert.assertTrue(al.contains("127"));
+        Assert.assertTrue(list.get(0).get("test").equals("-1"));
+        Assert.assertTrue(list.get(1).get("test").equals("128"));
     }
 }

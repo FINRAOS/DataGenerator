@@ -17,7 +17,7 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,9 +80,6 @@ public class PositiveBoundHiveSmallIntTest {
         PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
         PositiveBoundHiveSmallInt test = new PositiveBoundHiveSmallInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
-        ArrayList<String> al = new ArrayList<>();
-
-        variableDomains.put("test", "");
         listOfMaps.add(variableDomains);
 
         pos.setMin("0");
@@ -91,14 +88,12 @@ public class PositiveBoundHiveSmallIntTest {
         pos.setName("test");
 
         List<Map<String, String>> list = test.pipelinePossibleStates(pos, listOfMaps);
-        for (Map<String, String> map : list) {
-            for (String key : map.keySet()) {
-                al.add(map.get(key));
-            }
-        }
 
-        Assert.assertTrue(al.contains("0"));
-        Assert.assertTrue(al.contains("1"));
+        Assert.assertEquals(list.get(0).get("test"), "0");
+        Assert.assertEquals(list.get(1).get("test"), "1");
+        Assert.assertEquals(list.get(2).get("test"), "50");
+        Assert.assertEquals(list.get(3).get("test"), "99");
+        Assert.assertEquals(list.get(4).get("test"), "100");
     }
 
     /**
@@ -110,9 +105,6 @@ public class PositiveBoundHiveSmallIntTest {
         PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag pos = new PositiveBoundHiveSmallInt.PositiveBoundHiveSmallIntTag();
         PositiveBoundHiveSmallInt test = new PositiveBoundHiveSmallInt();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
-        ArrayList<String> al = new ArrayList<>();
-
-        variableDomains.put("test", "");
         listOfMaps.add(variableDomains);
 
         pos.setMin("-1300");
@@ -121,15 +113,12 @@ public class PositiveBoundHiveSmallIntTest {
         pos.setName("test");
 
         List<Map<String, String>> list = test.pipelinePossibleStates(pos, listOfMaps);
-        for (Map<String, String> map : list) {
-            for (String key : map.keySet()) {
-                System.out.println(map.get(key));
-                al.add(map.get(key));
-            }
-        }
 
-        Assert.assertTrue(al.contains("-128"));
-        Assert.assertTrue(al.contains("-127"));
+        Assert.assertEquals(list.get(0).get("test"), "-1300");
+        Assert.assertEquals(list.get(1).get("test"), "-1299");
+        Assert.assertEquals(list.get(2).get("test"), "700");
+        Assert.assertEquals(list.get(3).get("test"), "99");
+        Assert.assertEquals(list.get(4).get("test"), "100");
     }
 
     /**

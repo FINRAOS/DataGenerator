@@ -123,7 +123,6 @@ public class PositiveBoundHiveTinyIntTest {
         List<Map<String, String>> list = test.pipelinePossibleStates(pos, listOfMaps);
         for (Map<String, String> map : list) {
             for (String key : map.keySet()) {
-                System.out.println(map.get(key));
                 al.add(map.get(key));
             }
         }

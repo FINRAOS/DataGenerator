@@ -17,6 +17,7 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -76,12 +77,12 @@ public class NegativeBoundHiveBigIntTest {
         neg.setName("test");
 
         List<Map<String, String>> list = test.pipelinePossibleStates(neg, listOfMaps);
-        Assert.assertEquals(list.size(), 4);
+        Assert.assertEquals(list.size(), 2);
 
         neg.setNullable("false");
 
         list = test.pipelinePossibleStates(neg, listOfMaps);
-        Assert.assertEquals(list.size(), 5);
+        Assert.assertEquals(list.size(), 3);
     }
 
     /**
@@ -124,8 +125,8 @@ public class NegativeBoundHiveBigIntTest {
             }
         }
 
-        Assert.assertTrue(al.contains("10"));
         Assert.assertTrue(al.contains("9"));
+        Assert.assertTrue(al.contains("101"));
     }
 
     /**
@@ -168,7 +169,7 @@ public class NegativeBoundHiveBigIntTest {
             }
         }
 
-        Assert.assertTrue(al.contains("100"));
+        Assert.assertTrue(al.contains("9"));
         Assert.assertTrue(al.contains("101"));
     }
 }
