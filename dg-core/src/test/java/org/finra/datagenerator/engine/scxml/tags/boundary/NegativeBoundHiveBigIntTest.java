@@ -17,7 +17,6 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;

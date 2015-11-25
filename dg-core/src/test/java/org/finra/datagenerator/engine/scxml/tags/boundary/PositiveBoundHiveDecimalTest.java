@@ -17,7 +17,6 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,9 +27,6 @@ import java.util.Map;
  * Date: 10/27/15
  */
 public class PositiveBoundHiveDecimalTest {
-
-    //TODO tests for min and max length
-    //TODO tests for min and max
 
     /**
      * test for setName() and getName()

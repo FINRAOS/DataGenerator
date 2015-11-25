@@ -19,7 +19,6 @@ import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.ModelException;
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
