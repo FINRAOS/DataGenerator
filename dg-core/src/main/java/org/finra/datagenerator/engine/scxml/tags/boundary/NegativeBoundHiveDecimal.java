@@ -16,7 +16,6 @@
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDecimal;
-
 import java.util.List;
 import java.util.Map;
 

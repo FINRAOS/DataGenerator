@@ -25,10 +25,10 @@ import java.util.Map;
  * Implementation of dg:positiveBoundHiveTinyInt tag
  */
 public class PositiveBoundHiveTinyInt extends
-    BoundaryInteger<PositiveBoundHiveTinyInt.PositiveBoundHiveTinyIntTagInteger> {
+    BoundaryInteger<PositiveBoundHiveTinyInt.PositiveBoundHiveTinyIntTag> {
 
-    public Class<PositiveBoundHiveTinyIntTagInteger> getTagActionClass() {
-        return PositiveBoundHiveTinyIntTagInteger.class;
+    public Class<PositiveBoundHiveTinyIntTag> getTagActionClass() {
+        return PositiveBoundHiveTinyIntTag.class;
     }
 
     public String getTagName() {
@@ -46,7 +46,7 @@ public class PositiveBoundHiveTinyInt extends
      * @return a list with positive boundary conditions assigned
      * to the variable
      */
-    public List<Map<String, String>> pipelinePossibleStates(PositiveBoundHiveTinyIntTagInteger action,
+    public List<Map<String, String>> pipelinePossibleStates(PositiveBoundHiveTinyIntTag action,
                                                 List<Map<String, String>> possibleStateList) {
         final String minVALUE = "-128";
         final String maxVALUE = "127";
@@ -56,11 +56,11 @@ public class PositiveBoundHiveTinyInt extends
     /**
      * A custom Action for the 'dg:positiveBoundHiveTinyInt' tag inside models
      */
-    public static class PositiveBoundHiveTinyIntTagInteger extends BoundaryActionNumeric {
+    public static class PositiveBoundHiveTinyIntTag extends BoundaryActionNumeric {
         /**
          * constructor
          */
-        public PositiveBoundHiveTinyIntTagInteger() {
+        public PositiveBoundHiveTinyIntTag() {
             this.setMin("-128");
             this.setMax("127");
         }

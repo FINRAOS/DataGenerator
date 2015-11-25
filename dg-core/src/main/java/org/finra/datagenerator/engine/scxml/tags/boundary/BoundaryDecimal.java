@@ -151,12 +151,13 @@ public abstract class BoundaryDecimal<T extends BoundaryActionDecimal> implement
             if (minMaxLenPresent && !minMaxPresent) {
                 m.invoke(eq, decimalLowerBound, minLen - 1);
                 m.invoke(eq, decimalUpperBound, maxLen + 1);
-                values.add(decimalLowerBound.toString());
-                values.add(decimalUpperBound.toString());
+
             } else {
-                values.add(constructData(min.subtract(BigDecimal.ONE), minLen - 1, maxLen + 1, lengths, false));
-                values.add(constructData(max.add(BigDecimal.ONE), minLen - 1, maxLen + 1, lengths, true));
+                decimalLowerBound.append(constructData(min.subtract(BigDecimal.ONE), minLen - 1, maxLen + 1, lengths, false));
+                decimalUpperBound.append(constructData(max.add(BigDecimal.ONE), minLen - 1, maxLen + 1, lengths, true));
             }
+            values.add(decimalLowerBound.toString());
+            values.add(decimalUpperBound.toString());
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }

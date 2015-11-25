@@ -23,10 +23,10 @@ import java.util.Map;
 /**
  * Implementation of dg:negativeBoundHiveInt tag
  */
-public class NegativeBoundHiveInt extends BoundaryInteger<NegativeBoundHiveInt.NegativeBoundHiveIntTagInteger> {
+public class NegativeBoundHiveInt extends BoundaryInteger<NegativeBoundHiveInt.NegativeBoundHiveIntTag> {
 
-    public Class<NegativeBoundHiveIntTagInteger> getTagActionClass() {
-        return NegativeBoundHiveIntTagInteger.class;
+    public Class<NegativeBoundHiveIntTag> getTagActionClass() {
+        return NegativeBoundHiveIntTag.class;
     }
 
     public String getTagName() {
@@ -44,7 +44,7 @@ public class NegativeBoundHiveInt extends BoundaryInteger<NegativeBoundHiveInt.N
      * @return a list with negative boundary conditions assigned
      * to the variable
      */
-    public List<Map<String, String>> pipelinePossibleStates(NegativeBoundHiveIntTagInteger action,
+    public List<Map<String, String>> pipelinePossibleStates(NegativeBoundHiveIntTag action,
                                                             List<Map<String, String>> possibleStateList) {
         final String minVALUE = Integer.toString(Integer.MIN_VALUE);
         final String maxVALUE = Integer.toString(Integer.MAX_VALUE);
@@ -54,11 +54,11 @@ public class NegativeBoundHiveInt extends BoundaryInteger<NegativeBoundHiveInt.N
     /**
      * A custom Action for the 'dg:negativeBoundHiveInt' tag inside models
      */
-    public static class NegativeBoundHiveIntTagInteger extends BoundaryActionNumeric {
+    public static class NegativeBoundHiveIntTag extends BoundaryActionNumeric {
         /**
          * constructor
          */
-        public NegativeBoundHiveIntTagInteger() {
+        public NegativeBoundHiveIntTag() {
             this.setMin(Integer.toString(Integer.MIN_VALUE));
             this.setMax(Integer.toString(Integer.MAX_VALUE));
         }

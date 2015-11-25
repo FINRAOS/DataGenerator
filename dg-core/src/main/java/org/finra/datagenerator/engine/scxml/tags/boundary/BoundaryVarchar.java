@@ -37,8 +37,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @return a list of boundary cases
      */
     public List<String> buildVarcharData(T action, boolean positive) {
-        boolean lengthPresent = true;
-        int randomNumber;
+
         String length = action.getLength();
         String minLen = action.getMinLen();
         String maxLen = action.getMaxLen();
@@ -47,7 +46,6 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         if (!action.getNullable().equals("true")) {
             nullable = false;
         }
-        randomNumber = (int) (1 + Math.random() * (Integer.parseInt(length) - 1));
 
         if (minLen != null) {
             if (Integer.parseInt(minLen) > Integer.parseInt(length)) {
@@ -57,9 +55,6 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 if (Integer.parseInt(maxLen) > Integer.parseInt(length)) {
                     maxLen = length;
                 }
-                lengthPresent = false;
-                randomNumber = (int) (1 + Math.random() * (Integer.parseInt(maxLen)
-                    - Integer.parseInt(minLen)));
             } else {
                 maxLen = length;
             }
@@ -74,32 +69,21 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
             }
         }
         if (positive) {
-            if (lengthPresent) {
-                return positiveCaseVarchar(nullable, Integer.parseInt(length),
-                    randomNumber);
-            } else {
-                return positiveCaseVarchar(nullable, Integer.parseInt(maxLen),
-                    Integer.parseInt(minLen), randomNumber);
-            }
+            return positiveCaseVarchar(nullable, Integer.parseInt(maxLen),
+                Integer.parseInt(minLen));
         } else {
-            if (lengthPresent) {
-                return negativeCaseVarchar(nullable, Integer.parseInt(length));
-            } else {
-                return negativeCaseVarchar(nullable, Integer.parseInt(maxLen),
-                    Integer.parseInt(minLen));
-            }
+            return negativeCaseVarchar(nullable, Integer.parseInt(length));
         }
     }
 
     /**
-     * @param nullable      nullable
-     * @param lengths       contains either the length or minLen and maxLen, and random
+     * @param nullable nullable
+     * @param lengths  contains either the length or minLen and maxLen, and random
      * @return a list of boundary cases
      */
     public List<String> positiveCaseVarchar(boolean nullable, int... lengths) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
-        StringBuilder varcharBound = new StringBuilder();
         StringBuilder varcharMid = new StringBuilder();
         StringBuilder varcharMin = new StringBuilder();
         StringBuilder varcharMax = new StringBuilder();
@@ -110,20 +94,15 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 StringBuilder.class, int.class);
             m.setAccessible(true);
 
-            if (lengths.length == 2) {
-                m.invoke(eq, varcharBound, lengths[0]);
-                m.invoke(eq, varcharMid, lengths[1]);
-                variableValue.add(varcharBound.toString());
-            } else {
-                m.invoke(eq, varcharMax, lengths[0]);
-                m.invoke(eq, varcharMin, lengths[1]);
-                m.invoke(eq, varcharMid, lengths[2]);
+            m.invoke(eq, varcharMax, lengths[0]);
+            m.invoke(eq, varcharMin, lengths[1]);
+            m.invoke(eq, varcharMid, (lengths[1] - lengths[0]) / 2 + lengths[0]);
 
-                if (lengths[0] != lengths[1]) { // if they are the same, only need to add one
-                    variableValue.add(varcharMin.toString());
-                }
-                variableValue.add(varcharMax.toString());
+            if (lengths[0] != lengths[1]) { // if they are the same, only need to add one
+                variableValue.add(varcharMin.toString());
             }
+            variableValue.add(varcharMax.toString());
+
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
@@ -139,14 +118,13 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
     }
 
     /**
-     * @param nullable      nullable
-     * @param lengths       contains either the length or minLen and maxLen, and random
+     * @param nullable nullable
+     * @param lengths  contains either the length or minLen and maxLen, and random
      * @return a list of boundary cases
      */
     public List<String> negativeCaseVarchar(boolean nullable, int... lengths) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
-        StringBuilder varcharBound = new StringBuilder();
         StringBuilder varcharMin = new StringBuilder();
         StringBuilder varcharMax = new StringBuilder();
         List<String> variableValue = new LinkedList<>();
@@ -156,18 +134,14 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
                 StringBuilder.class, int.class);
             m.setAccessible(true);
 
-            if (lengths.length == 1) {
-                m.invoke(eq, varcharBound, lengths[0] + 1);
-                variableValue.add(varcharBound.toString());
-            } else {
-                m.invoke(eq, varcharMax, lengths[0] + 1);
-                m.invoke(eq, varcharMin, lengths[1] - 1);
+            m.invoke(eq, varcharMax, lengths[0] + 1);
+            m.invoke(eq, varcharMin, lengths[1] - 1);
 
-                if (lengths[0] != lengths[1]) { // if they are the same, only need to add one
-                    variableValue.add(varcharMin.toString());
-                }
-                variableValue.add(varcharMax.toString());
+            if (lengths[0] != lengths[1]) { // if they are the same, only need to add one
+                variableValue.add(varcharMin.toString());
             }
+            variableValue.add(varcharMax.toString());
+
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
@@ -188,7 +162,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @return a list of Maps containing the states
      */
     public List<Map<String, String>> returnStates(T action,
-              List<Map<String, String>> possibleStateList, List<String> variableValue) {
+                                                  List<Map<String, String>> possibleStateList, List<String> variableValue) {
         List<Map<String, String>> states = new LinkedList<>();
         for (Map<String, String> p : possibleStateList) {
             for (String s : variableValue) {

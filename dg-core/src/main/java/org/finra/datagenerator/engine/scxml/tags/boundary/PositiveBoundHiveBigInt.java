@@ -24,10 +24,10 @@ import java.util.Map;
 /**
  * Implementation of dg:positiveBoundHiveBigInt tag
  */
-public class PositiveBoundHiveBigInt extends BoundaryInteger<PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTagInteger> {
+public class PositiveBoundHiveBigInt extends BoundaryInteger<PositiveBoundHiveBigInt.PositiveBoundHiveBigIntTag> {
 
-    public Class<PositiveBoundHiveBigIntTagInteger> getTagActionClass() {
-        return PositiveBoundHiveBigIntTagInteger.class;
+    public Class<PositiveBoundHiveBigIntTag> getTagActionClass() {
+        return PositiveBoundHiveBigIntTag.class;
     }
 
     public String getTagName() {
@@ -45,7 +45,7 @@ public class PositiveBoundHiveBigInt extends BoundaryInteger<PositiveBoundHiveBi
      * @return a list with positive boundary conditions assigned
      * to the variable
      */
-    public List<Map<String, String>> pipelinePossibleStates(PositiveBoundHiveBigIntTagInteger action,
+    public List<Map<String, String>> pipelinePossibleStates(PositiveBoundHiveBigIntTag action,
                                                             List<Map<String, String>> possibleStateList) {
         final String minVALUE = Long.toString(Long.MIN_VALUE);
         final String maxVALUE = Long.toString(Long.MAX_VALUE);
@@ -55,11 +55,11 @@ public class PositiveBoundHiveBigInt extends BoundaryInteger<PositiveBoundHiveBi
     /**
      * A custom Action for the 'dg:positiveBoundHiveBigInt' tag inside models
      */
-    public static class PositiveBoundHiveBigIntTagInteger extends BoundaryActionNumeric {
+    public static class PositiveBoundHiveBigIntTag extends BoundaryActionNumeric {
         /**
          * constructor
          */
-        public PositiveBoundHiveBigIntTagInteger() {
+        public PositiveBoundHiveBigIntTag() {
             this.setMin(Long.toString(Long.MIN_VALUE));
             this.setMax(Long.toString(Long.MAX_VALUE));
         }
