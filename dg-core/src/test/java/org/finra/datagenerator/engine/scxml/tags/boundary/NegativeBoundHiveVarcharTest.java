@@ -88,7 +88,8 @@ public class NegativeBoundHiveVarcharTest {
         Assert.assertEquals(neg.getMinLen(), "10");
 
         List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
-        Assert.assertEquals(newList.get(0).get("name").length(), 19);
+        Assert.assertEquals(newList.get(0).get("name").length(), 9);
+        Assert.assertEquals(newList.get(1).get("name").length(), 19);
     }
 
 
@@ -112,6 +113,7 @@ public class NegativeBoundHiveVarcharTest {
         List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
 
         neg.setMaxLen("100");
-        Assert.assertEquals(newList.get(0).get("name").length(), 19);
+        Assert.assertEquals(newList.get(0).get("name").length(), 1);
+        Assert.assertEquals(newList.get(1).get("name").length(), 11);
     }
 }
