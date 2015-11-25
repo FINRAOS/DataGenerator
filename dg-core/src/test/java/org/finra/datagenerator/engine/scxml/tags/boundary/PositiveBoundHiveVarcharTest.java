@@ -29,8 +29,6 @@ import java.util.Map;
  */
 public class PositiveBoundHiveVarcharTest {
 
-    //TODO tests for min and max length
-
     /**
      * test for setName() and getName()
      */
@@ -59,30 +57,30 @@ public class PositiveBoundHiveVarcharTest {
         Assert.assertEquals(pos.getLength(), "10");
     }
 
-//    /**
-//     * test for length
-//     */
-//    @Test
-//    public void lengthTest2() {
-//        Map<String, String> variableDomains = new HashMap<>();
-//        List<Map<String, String>> listOfMaps = new LinkedList<>();
-//        listOfMaps.add(variableDomains);
-//
-//        PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
-//        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag pos = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
-//
-//        pos.setName("name");
-//        pos.setMaxLen("10");
-//        Assert.assertEquals(pos.getMaxLen(), "10");
-//
-//        pos.setMaxLen("12");
-//        Assert.assertEquals(pos.getMaxLen(), "12");
-//
-//        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(pos, listOfMaps);
-//
-//        Assert.assertEquals(newList.get(0).get("name").length(), 10);
-//        Assert.assertEquals(newList.get(1).get("name").length(), 12);
-//    }
+    /**
+     * test for length
+     */
+    @Test
+    public void lengthTest2() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
+        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag pos = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
+
+        pos.setName("name");
+        pos.setMaxLen("10");
+        Assert.assertEquals(pos.getMaxLen(), "10");
+
+        pos.setMaxLen("12");
+        Assert.assertEquals(pos.getMaxLen(), "12");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(pos, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name").length(), 1);
+        Assert.assertEquals(newList.get(1).get("name").length(), 10);
+    }
 
     /**
      * test for setNullable() and getNullable()

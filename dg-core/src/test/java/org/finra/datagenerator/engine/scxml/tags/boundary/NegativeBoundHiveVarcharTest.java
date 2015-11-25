@@ -29,8 +29,6 @@ import java.util.Map;
  */
 public class NegativeBoundHiveVarcharTest {
 
-    //TODO:tests for min and max Length
-
     /**
      * test for setName() and getName()
      */
