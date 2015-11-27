@@ -43,7 +43,7 @@ trait ResettableSingleton[T] {
    * Some might prefer shorter syntax, so this is just an alias for "instance"
    * @return Instance
    */
-  def get = instance
+  def get: T = instance
 
   /**
    * Create an instance of the class
