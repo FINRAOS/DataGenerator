@@ -18,7 +18,7 @@ package org.finra.datagenerator.common.Graph
 
 import java.io.{FileOutputStream, OutputStream}
 
-import org.finra.datagenerator.common.Helpers.{DotHelper, RandomHelper}
+import org.finra.datagenerator.common.Helpers.{RetryHelper, DotHelper, RandomHelper}
 import org.finra.datagenerator.common.NodeData.DisplayableData
 
 import scala.beans.BeanProperty
@@ -49,7 +49,10 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   var customGlobalSeed: Option[Short] = None
 
   @BeanProperty
-  val customBooleanAttributes = mutable.HashMap[String, Boolean]()
+  var customBooleanAttributes = mutable.HashMap[String, Boolean]()
+
+  @BeanProperty
+  var customStringAttributes = mutable.HashMap[String, String]()
 
   @BeanProperty
   var userConfiguredGraphId = false
@@ -124,7 +127,7 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * @return Added node
    */
   def addInitialNode(newNodeValue: T): Node[T] = {
-    require(allNodes.size == 0 && rootNodes.size == 0)
+    require(allNodes.size == 0 && rootNodes.size == 0, s"Can't add initial node ${newNodeValue} because the graph is not empty.")
 
     if (isEdgeLinkTrackingOn) edgeLinkTrackingDescriptions :+= new AddInitialNodeDescription[T](newNodeValue)
 
@@ -180,7 +183,9 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * @param alsoWriteAsPng Whether or not to call dot.exe to convert the .gv file to .png when done writing
    */
   def writeDotFile(filepathToCreate: String, isSimplified: Boolean = false, alsoWriteAsPng: Boolean = true): Unit = {
-    val writer = new FileOutputStream(filepathToCreate)
+    val writer = RetryHelper.retry(10, Seq(classOf[java.io.FileNotFoundException])){
+      new FileOutputStream(filepathToCreate)
+    }(Thread.sleep(100))
     try {
       writeDotFileToOpenStream(writer, isSimplified = isSimplified)
     }
@@ -221,6 +226,8 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
     copiedGraph.customSeed = customSeed
     copiedGraph.customGlobalSeed = customGlobalSeed
     copiedGraph.nodeIdCounters = nodeIdCounters
+    copiedGraph.customBooleanAttributes = customBooleanAttributes
+    copiedGraph.customStringAttributes = customStringAttributes
     //copiedGraph.customBooleanAttributes = customBooleanAttributes
     allNodes.tail.foreach(node => copiedGraph.addNewRootNode(node.data))
     allNodes.foreach(node => {

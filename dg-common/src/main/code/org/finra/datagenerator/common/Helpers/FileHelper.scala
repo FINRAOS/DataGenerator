@@ -61,12 +61,16 @@ object FileHelper {
     private final val IS_NOT_A_DIRECTORY = " is not a directory!"
 
     /**
-     * Delete everything from a directory, and then delete the directory itself.
+     * Delete everything from a directory, recursively, and then delete the directory itself.
      */
     def deleteNonEmptyDirectory(): Unit = {
       require(fileOrDirectory.isDirectory)
       fileOrDirectory.listFiles.foreach(subFileOrDirectory => {
-        if (subFileOrDirectory.isDirectory) subFileOrDirectory.deleteNonEmptyDirectory()
+        if (subFileOrDirectory.isDirectory) {
+          subFileOrDirectory.deleteNonEmptyDirectory()
+        } else {
+          subFileOrDirectory.delete()
+        }
       })
       fileOrDirectory.delete()
     }
@@ -97,12 +101,29 @@ object FileHelper {
     }
 
     /**
+     * Returns all lines from a file, else None if not a file.
+     * @return All lines from the file, or None if not a file
+     */
+    def getLines: Option[Iterator[String]] = {
+      if (fileOrDirectory.isFile) {
+        val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
+        try {
+          Some(source.getLines())
+        } finally {
+          source.close()
+        }
+      } else {
+        None
+      }
+    }
+
+    /**
      * Returns the first line from a file, else None if not a file.
      * @return First line from the file, or None if not a filee
      */
     def getFirstLine: Option[String] = {
       if (fileOrDirectory.isFile) {
-        val source = io.Source.fromFile(fileOrDirectory)
+        val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
         try {
           source.getLines().find(_ => true)
         } finally {
@@ -133,7 +154,7 @@ object FileHelper {
       if (fileOrDirectory.exists) {
         require(!fileOrDirectory.isFile, s"$fileOrDirectory $IS_NOT_A_DIRECTORY")
         val files = fileOrDirectory.listFiles
-        files ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
+        files.filter(_.isFile) ++ files.filter(_.isDirectory).flatMap(_.getFilesRecursively)
       } else {
         new collection.mutable.ArrayBuffer[File]()
       }
@@ -189,7 +210,7 @@ object FileHelper {
               name.endsWith(fileSuffix)
             }
           }
-        })
+        }).filter(_.isFile)
       }
     }
 
@@ -212,7 +233,7 @@ object FileHelper {
               name.contains(substring) && name.endsWith(extension)
             }
           }
-        })
+        }).filter(_.isFile)
       }
     }
 
@@ -251,7 +272,7 @@ object FileHelper {
           override def accept(dir: File, name: String): Boolean = {
             name.matches(modifiedRegexString)
           }
-        })
+        }).filter(_.isFile)
       }
     }
   }

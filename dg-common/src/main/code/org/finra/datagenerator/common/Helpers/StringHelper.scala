@@ -17,6 +17,8 @@
 package org.finra.datagenerator.common.Helpers
 
 import java.security.MessageDigest
+import java.sql.Date
+import java.text.SimpleDateFormat
 import javax.xml.bind.DatatypeConverter
 
 /**
@@ -25,10 +27,20 @@ import javax.xml.bind.DatatypeConverter
 object StringHelper {
 
   /**
+   * Build a delimited string
+   * @param delimiter String to use as delimiter
+   * @param parts Varargs strings to separate by delimiter
+   * @return Delimited string. Example: buildDelimitedString(",", "1", "2", "3") returns "1,2,3"
+   */
+  def buildDelimitedString(delimiter: String, parts: String*): String = {
+    parts.mkString(delimiter)
+  }
+
+  /**
    * Implicit methods on String
    * @param str Value used for implicit class
    */
-  implicit class StringImplicits(private val str: String) {
+  implicit class StringImplicits(val str: String) extends AnyVal {
     /**
      * Whether or not the string is comprised entirely of digits
      * @return Whether or not string is numeric
@@ -47,6 +59,37 @@ object StringHelper {
       } catch {
         case e: NumberFormatException => None
       }
+    }
+
+    /**
+     * Converts a String with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.util.Date.
+     * @return java.util.Date formed from the string
+     */
+    def toDateTime: java.util.Date = {
+      require(str.isNumeric && str.length >= 8
+        , s"Trying to convert ${str} to date, but it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
+      var format = "yyyyMMdd"
+      if (str.length >= 10) {
+        format += "hh"
+      }
+      if (str.length >= 12) {
+        format += "mm"
+      }
+      if (str.length >= 14) {
+        format += "ss"
+      }
+      (1 to (str.length - 14)).foreach(_ => format += "S")
+
+      val formatter = new SimpleDateFormat(format)
+      formatter.parse(str)
+    }
+
+    /**
+     * Converts a String with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.sql.Date.
+     * @return java.sql.Date (no time part) formed from the string
+     */
+    def toDate: java.sql.Date = {
+      new Date(str.toDateTime.getTime)
     }
 
     /**
@@ -198,6 +241,15 @@ object StringHelper {
      */
     def md5: String = {
       DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(str.getBytes("UTF-8")))
+    }
+
+    /**
+     * Remove all occurrences of a substring
+     * @param substringToRemove Substring to remove
+     * @return String with all occurrences of substring removed
+     */
+    def remove(substringToRemove: String): String = {
+      str.replaceAllLiterally(substringToRemove, "")
     }
   }
 }

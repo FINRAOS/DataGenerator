@@ -16,12 +16,15 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import java.io.{BufferedReader, FileWriter, InputStreamReader}
+import java.io.{BufferedReader, File, FileWriter, InputStreamReader}
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.{Date, Properties}
+
 import com.jcraft.jsch._
 import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
+
 import scala.beans.BooleanBeanProperty
+import scala.collection.JavaConverters._
 
 /**
  * Helper methods for SFTP and SSH exec using the Java JSch library
@@ -33,9 +36,44 @@ object JSchHelper {
   @BooleanBeanProperty
   var logRemoteCommands = true
 
-  implicit class ChannelImplicits(private val channel: Channel) {
-    private final val SLEEP_ON_RETRY_MS = 50
+  private final val SLEEP_ON_RETRY_MS = 50
 
+  /**
+   * Implicit methods on a Jsch session.
+   * @param session Session
+   */
+  implicit class SessionImplicits(val session: Session) extends AnyVal {
+    /**
+     * Connect to the session using optional timeout and number of tries.
+     * @param timeout -1 for no timeout, else milliseconds before connect attempt fails.
+     * @param tries Number of tries before failing.
+     */
+    def connectWithRetry(timeout: Int = 3000, tries: Short = 10): Unit = {
+      val config = new Properties()
+      config.put("StrictHostKeyChecking", "no")
+      config.put("PreferredAuthentications", "publickey")
+      session.setConfig(config)
+      session.setServerAliveInterval(3600000)
+
+      if (timeout < 0) {
+        RetryHelper.retry(
+          tries, Seq(classOf[JSchException]))(
+            session.connect())(
+            try { Thread.sleep(SLEEP_ON_RETRY_MS) } catch{case _:JSchException => {}})
+      } else {
+        RetryHelper.retry(
+          tries, Seq(classOf[JSchException]))(
+            session.connect(timeout))(
+            try { Thread.sleep(SLEEP_ON_RETRY_MS) } catch{case _:JSchException => {}})
+      }
+    }
+  }
+
+  /**
+   * Implicit methods on a Jsch channel.
+   * @param channel Channel
+   */
+  implicit class ChannelImplicits(val channel: Channel) extends AnyVal {
     /**
      * Get allowable JSCH channel types
      * @return Name of the JSCH channel type for the channel
@@ -79,7 +117,15 @@ object JSchHelper {
    * Implicit methods on an Exec channel.
    * @param execChannel Exec channel
    */
-  implicit class ExecImplicits(private var execChannel: ChannelExec) {
+  implicit class ExecImplicits(val execChannel: ChannelExec) extends AnyVal {
+    /**
+     * Gets an open SFTP channel from this exec channel's session, which is assumed already open.
+     * @return
+     */
+    def getOpenSftp(): ChannelSftp = {
+      execChannel.getSession.openChannel("sftp").asInstanceOf[ChannelSftp]
+    }
+
     /**
      * Define the command (including any parameters) to execute remotely over SSH.
      * @param command Command to run remotely
@@ -146,19 +192,79 @@ object JSchHelper {
    * Implicit methods on an SFTP channel
    * @param sftpChannel SFTP channel
    */
-  implicit class SftpImplicits(private var sftpChannel: ChannelSftp) {
+  implicit class SftpImplicits(val sftpChannel: ChannelSftp) extends AnyVal {
+    /**
+     * Gets an open exec channel from this SFTP channel's session, which is assumed already open.
+     * @return
+     */
+    def getOpenExec(): ChannelExec = {
+      sftpChannel.getSession.openChannel("exec").asInstanceOf[ChannelExec]
+    }
+
+    /**
+     * Download a directory over SFTP to local, with some retries in case of failure.
+     * @param src Remote directory to download from
+     * @param dest Local destination to download to
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
+     */
+    def downloadDir(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
+      if (logRemoteCommands) {
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Downloading dir from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+      }
+      FileHelper.ensureEmptyDirectoryExists(dest)
+
+      val srcWithSlash = if (src.endsWith("/")) src else src + "/"
+
+      sftpChannel.ls(srcWithSlash + "*").asScala.foreach(obj => {
+        // Scala has no syntax to import a non-static inner Java class, so we have to do this ugly cast with #,
+        // because by default inner classes in Scala are members of the enclosing object, whereas in Java they are members of the enclosing class.
+        val lsEntry = obj.asInstanceOf[ChannelSftp#LsEntry]
+        if (lsEntry.getAttrs.isDir) {
+          sftpChannel.downloadDir(s"${srcWithSlash}${lsEntry.getFilename}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
+        } else {
+          sftpChannel.downloadFile(s"${srcWithSlash}${lsEntry.getFilename}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${lsEntry.getFilename}")
+        }
+      })
+    }
+
     /**
      * Download a file over SFTP to local, with some retries in case of failure.
      * @param src Remote file to download from
      * @param dest Local destination to download to
      * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
-    def download(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
+    def downloadFile(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
-          .format(new Date())}: Downloading from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+          .format(new Date())}: Downloading file from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.get(src, dest))()
+    }
+
+    /**
+     * Upload a directory over SFTP from local, with some retries in case of failure.
+     * @param src Local directory to upload from
+     * @param dest Remote destination to upload to
+     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
+     */
+    def uploadDir(src: String, dest: String, triesBeforeFailure: Short = 3): Unit = {
+      if (logRemoteCommands) {
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
+          .format(new Date())}: Uploading local dir to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+      }
+      sftpChannel.ensureEmptyDirectoryExists(dest)
+      new File(src).listFiles().foreach(fileOrDir => {
+        if (fileOrDir.isDirectory) {
+          sftpChannel.uploadDir(s"${src}${if (src.endsWith("/")) "" else "/"}${fileOrDir.getName}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${fileOrDir.getName}")
+        } else {
+          sftpChannel.uploadFile(s"${src}${if (src.endsWith("/")) "" else "/"}${fileOrDir.getName}"
+            , s"${dest}${if (dest.endsWith("/")) "" else "/"}${fileOrDir.getName}")
+        }
+      })
     }
 
     /**
@@ -168,10 +274,10 @@ object JSchHelper {
      * @param mode ChannelSftp mode, e.g., whether or not to overwrite
      * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
-    def upload(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
+    def uploadFile(src: String, dest: String, mode: Int = ChannelSftp.OVERWRITE, triesBeforeFailure: Short = 3): Unit = {
       if (logRemoteCommands) {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
-          .format(new Date())}: Uploading to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
+          .format(new Date())}: Uploading local file to ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
       RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.put(src, dest, mode))()
     }
@@ -179,15 +285,13 @@ object JSchHelper {
     /**
      * Create a remote directory if it doesn't alraedy exist, and if it does, empty it.
      * @param dirPath Remote directory path
-     * @param triesBeforeFailure Number of times to retry SftpExceptions before failing
      */
-    def ensureEmptyDirectoryExists(dirPath: String, triesBeforeFailure: Short = 3): Unit = {
-      sftpChannel.mkdirRecursivelyIfNotExists(dirPath)
-      sftpChannel.cd(dirPath)
+    def ensureEmptyDirectoryExists(dirPath: String): Unit = {
       if (logRemoteCommands) {
-        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Deleting * from $dirPath") // scalastyle:ignore
+        println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss").format(new Date())}: Emptying $dirPath") // scalastyle:ignore
       }
-      RetryHelper.retry[Unit](3, Seq(classOf[SftpException]))(sftpChannel.rm("*"))()
+      // This is kind of cheating, but much better than doing recursive deletes through SFTP...
+      getOpenExec().runCommand(s"""rm -r "${dirPath}"; mkdir -p "${dirPath}"""")
     }
 
     /**

@@ -17,27 +17,61 @@
 package org.finra.datagenerator.common.Helpers
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
 /**
  * Helper methods on Option
  */
 object DateHelper {
+  private val yyyyMM_formatter = new SimpleDateFormat("yyyyMM")
+  private val yyyyMMdd_formatter = new SimpleDateFormat("yyyyMMdd")
+  private val `yyyy-MM-dd_formatter` = new SimpleDateFormat("yyyy-MM-dd")
+  private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
+  private val time_formatter = new SimpleDateFormat("hhmmssSS")
 
   /**
    * Implicit methods on a java.util.Date
    * @param date Date
    */
-   implicit class DateImplicits(private val date: java.util.Date) {
-
-    private val yyyymmdd_formatter = new SimpleDateFormat("yyyyMMdd")
-    private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
+   implicit class DateImplicits(val date: java.util.Date) extends AnyVal {
+    /**
+     * Convert to a date with no time information (java.sql.Date)
+     * @return SQL Date (date with no time information)
+     */
+    def toSqlDate: java.sql.Date = {
+      new java.sql.Date(date.getTime)
+    }
 
     /**
-     * Convert the date value to a string using the YYYYmmDD format.
-     * @return String in YYYYmmDD format
+     * Convert the date value to a string using the yyyyMM format.
+     * @return String in yyyyMM format
      */
-    def toYYYYmmDD: String = {
-      yyyymmdd_formatter.format(date)
+    def to_yyyyMM: String = {
+      yyyyMM_formatter.format(date)
+    }
+
+    /**
+     * Convert the date value to a string using the yyyyMMdd format.
+     * @return String in yyyyMMdd format
+     */
+    def to_yyyyMMdd: String = {
+      yyyyMMdd_formatter.format(date)
+    }
+
+    /**
+     * Convert the date value to a string using the yyyy-MM-dd format.
+     * @return String in yyyy-MM-dd format
+     */
+    def `to_yyyy-MM-dd`: String = { // scalastyle:ignore
+      `yyyy-MM-dd_formatter`.format(date)
+    }
+
+    /**
+     * Convert the date value to a string using the hhmmssSS format.
+     * @return String in hhmmssSS format
+     */
+    def to_hhmmssSS: String = {
+      time_formatter.format(date)
     }
 
     /**
@@ -47,5 +81,74 @@ object DateHelper {
     def toLong: Long = {
       timestamp_formatter.format(date).toLong
     }
+
+    /**
+     * Add specified number of years to the date
+     * @param yearsToAdd
+     */
+    def addYears(yearsToAdd: Int): java.util.Date = {
+      val cal = Calendar.getInstance()
+      cal.setTime(date)
+      cal.add(Calendar.YEAR, yearsToAdd)
+      cal.getTime()
+    }
+
+    /**
+     * Add specified number of months to the date
+     * @param monthsToAdd
+     * @return
+     */
+    def addMonths(monthsToAdd: Int): java.util.Date = {
+      val cal = Calendar.getInstance()
+      cal.setTime(date)
+      cal.add(Calendar.MONTH, monthsToAdd)
+      cal.getTime()
+    }
+
+    /**
+     * Add specified number of days to the date
+     * @param daysToAdd
+     * @return
+     */
+    def addDays(daysToAdd: Int): java.util.Date = {
+      val cal = Calendar.getInstance()
+      cal.setTime(date)
+      cal.add(Calendar.DATE, daysToAdd)
+      cal.getTime()
+    }
+
+    /**
+     * Add specified number of hours to the date
+     * @param hoursToAdd
+     */
+    def addHours(hoursToAdd: Int): java.util.Date = {
+      val cal = Calendar.getInstance()
+      cal.setTime(date)
+      cal.add(Calendar.HOUR, hoursToAdd)
+      cal.getTime()
+    }
+
+    /**
+     * Adds specified number of minutes to the date
+     * @param minutesToAdd
+     */
+    def addMinutes(minutesToAdd: Int): java.util.Date = {
+      val cal = Calendar.getInstance()
+      cal.setTime(date)
+      cal.add(Calendar.MINUTE, minutesToAdd)
+      cal.getTime()
+    }
+
+    /**
+     * Adds specified number of seconds to the date
+     * @param secondsToAdd
+     */
+    def addSeconds(secondsToAdd: Int): java.util.Date = {
+      val cal = Calendar.getInstance()
+      cal.setTime(date)
+      cal.add(Calendar.SECOND, secondsToAdd)
+      cal.getTime()
+    }
   }
 }
+

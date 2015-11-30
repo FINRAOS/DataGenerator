@@ -40,6 +40,12 @@ trait ResettableSingleton[T] {
   }
 
   /**
+   * Some might prefer shorter syntax, so this is just an alias for "instance"
+   * @return Instance
+   */
+  def get: T = instance
+
+  /**
    * Create an instance of the class
    * This is abstract because there's no guarantee that every class has, e.g., a parameterless constructor.
    * @return Object of the class

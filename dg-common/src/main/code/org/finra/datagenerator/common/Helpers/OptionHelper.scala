@@ -23,14 +23,14 @@ import java.text.SimpleDateFormat
  */
 object OptionHelper {
 
+  private val formatter = new SimpleDateFormat("yyyyMMdd")
+
   /**
    * Implicit methods on an Option
    * @param option Option value to use for implicit class
    * @tparam T Type of option
    */
-   implicit class OptionSerialization[T](private val option: Option[T]) {
-    private val formatter = new SimpleDateFormat("yyyyMMdd")
-
+   implicit class OptionSerialization[T](val option: Option[T]) extends AnyVal {
     /**
      * Convert the option value to a string, or if undefined, to ""
      * @return String representing the option's value if a Some, else "" if a None
@@ -44,6 +44,20 @@ object OptionHelper {
       else {
         option.get.toString
       }
+    }
+  }
+
+  /**
+   * Implicit methods on an Option of String
+   * @param option Option value to use for implicit class
+   */
+  implicit class StringOptionSerialization(val option: Option[String]) extends AnyVal {
+    /**
+     * Get the string, or if undefined, ""
+     * @return String of the value if a Some, else "" if a None
+     */
+    def getOrEmpty: String = {
+      option.getOrElse(new java.lang.String(""))
     }
   }
 }

@@ -85,6 +85,9 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
   def delete(): Unit = {
     if (isRoot) {
       containingGraph.rootNodes -= this
+      parents.foreach(parent => {
+        parent.children -= this
+      })
       children.foreach(child => {
         child.parents -= this
         if (child.isRoot) {
@@ -96,6 +99,31 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
       containingGraph.allNodes(index).nodeIndexInContainingGraph -= 1
     })
     containingGraph.allNodes -= this
+  }
+
+  /**
+   * Break all links and remove from rootNodes collection
+   */
+  def orphan(): Unit = {
+    breakAllLinks()
+    if (isRoot) {
+      containingGraph.rootNodes -= this
+    }
+  }
+
+  /**
+   * Break all links this node particpates in.
+   */
+  def breakAllLinks(): Unit = {
+    this.children.foreach(child => {
+      child.parents -= this
+      if (child.isRoot) {
+        containingGraph.rootNodes += child
+      }
+    })
+    this.parents.foreach(_.children -= this)
+    this.children.clear()
+    this.parents.clear()
   }
 
   /**
@@ -124,15 +152,15 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Create a new node and link it as the parent to this node.
-   * @param data Node to add parent to
+   * @param parentData Node to add parent to
    * @return Added parent node
    */
-  def addParent(data: T_NodeData @uV): Node[T_NodeData @uV] = {
+  def addParent(parentData: T_NodeData @uV): Node[T_NodeData @uV] = {
     if (isRoot) {
       containingGraph.rootNodes -= this
     }
 
-    val newParent = new Node[T_NodeData @uV](data, containingGraph, containingGraph.allNodes.size)
+    val newParent = new Node[T_NodeData @uV](parentData, containingGraph, containingGraph.allNodes.size)
 
     newParent.children += this
     parents += newParent
@@ -140,7 +168,8 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
     containingGraph.rootNodes += newParent
     containingGraph.allNodes += newParent
 
-    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+= new AddNewParentDescription(nodeIndexInContainingGraph, data)
+    if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+=
+      new AddNewParentDescription(nodeIndexInContainingGraph, parentData)
 
     newParent
   }
@@ -181,18 +210,18 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
 
   /**
    * Create a new node and link it as the child to this node.
-   * @param data Node to add child to
+   * @param childData Node to add child to
    * @return Added child node
    */
-  def addChild(data: T_NodeData @uV): Node[T_NodeData @uV] = {
-    val newChild = new Node[T_NodeData @uV](data, containingGraph, containingGraph.allNodes.size)
+  def addChild(childData: T_NodeData @uV): Node[T_NodeData @uV] = {
+    val newChild = new Node[T_NodeData @uV](childData, containingGraph, containingGraph.allNodes.size)
     children += newChild
     newChild.parents += this
 
     containingGraph.allNodes += newChild
 
     if (containingGraph.isEdgeLinkTrackingOn) containingGraph.edgeLinkTrackingDescriptions :+=
-      new AddNewChildDescription(nodeIndexInContainingGraph, data)
+      new AddNewChildDescription(nodeIndexInContainingGraph, childData)
 
     newChild
   }

@@ -1,3 +1,5 @@
+package org.finra.datagenerator.common.Helpers
+
 /*
  * Copyright 2014 DataGenerator Contributors
  *
@@ -14,20 +16,18 @@
  * limitations under the License.
  */
 
-package org.finra.datagenerator.common.Helpers
-
 /**
- * Integer implicit methods
+ * Class used to do reflection testing against
  */
-object IntHelper {
-  implicit class IntImplicits(val int: Int) extends AnyVal {
-    /**
-     * Converts an Int formatted as yyyyMMdd to a java.sql.Date.
-     * @return java.sql.Date formed from the Int in yyyyMMdd format
-     */
-    def toDate: java.sql.Date= {
-      val str = int.toString
-      java.sql.Date.valueOf(s"${str.substring(0,4)}-${str.substring(4,6)}-${str.substring(6,8)}")
-    }
-  }
+class ReflectionTestObject {
+  var intMaybe: Option[Int] = None
+  var longMaybe: Option[Long] = None
+  var charMaybe: Option[Char] = None
+  var doubleMaybe: Option[Double] = None
+  var booleanMaybe: Option[Boolean] = None
+  var byteMaybe: Option[Byte] = None
+  var stringMaybe: Option[String] = None
+  var floatMaybe: Option[Float] = None
+  var dateMaybe: Option[java.util.Date] = None
+  var sqlDateMaybe: Option[java.sql.Date] = None
 }
