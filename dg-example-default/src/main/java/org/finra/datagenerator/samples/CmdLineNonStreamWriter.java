@@ -26,7 +26,8 @@ import org.finra.datagenerator.engine.scxml.SCXMLEngine;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.InLineTransformerExtension;
 import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
-import org.finra.datagenerator.writer.DefaultWriter;
+import org.finra.datagenerator.writer.JsonWriter;
+import org.finra.datagenerator.writer.NonStreamDataWriter;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -36,13 +37,13 @@ import java.util.Vector;
 /**
  * Driver for a simple Data Generator example using the Default Distributor and a single transformer.
  */
-public final class CmdLine {
+public final class CmdLineNonStreamWriter {
 
-    private CmdLine() {
+    private CmdLineNonStreamWriter() {
         // Do nothing
     }
 
-    private static final Logger log = Logger.getLogger(CmdLine.class);
+    private static final Logger log = Logger.getLogger(CmdLineNonStreamWriter.class);
 
     /**
      * Entry point for the example.
@@ -61,7 +62,7 @@ public final class CmdLine {
         Engine engine = new SCXMLEngine(cte);
 
         //will default to samplemachine, but you could specify a different file if you choose to
-        InputStream is = CmdLine.class.getResourceAsStream("/" + (args.length == 0 ? "samplemachine" : args[0]) + ".xml");
+        InputStream is = CmdLineNonStreamWriter.class.getResourceAsStream("/" + (args.length == 0 ? "samplemachine" : args[0]) + ".xml");
 
         engine.setModelByInputFileStream(is);
 
@@ -76,9 +77,16 @@ public final class CmdLine {
         //MODEL USAGE EXAMPLE: <dg:assign name="var_out_V2" set="%regex([0-9]{3}[A-Z0-9]{5})"/>
         consumer.addDataTransformer(new EquivalenceClassTransformer());
 
-        consumer.addDataWriter(new DefaultWriter(System.out,
+//        NonStreamDataWriter xmlWriter = new XmlWriter(System.out,
+//                new String[]{"var_1_1", "var_1_2", "var_1_3", "var_1_4", "var_1_5", "var_1_6",
+//                        "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6"},
+//                "root", "record");
+
+        NonStreamDataWriter jsonWriter = new JsonWriter(System.out,
                 new String[]{"var_1_1", "var_1_2", "var_1_3", "var_1_4", "var_1_5", "var_1_6",
-                             "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6"}));
+                        "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6"});
+
+        consumer.addDataWriter(jsonWriter);
 
         //Prepare the distributor
         DefaultDistributor defaultDistributor = new DefaultDistributor();
@@ -87,5 +95,8 @@ public final class CmdLine {
         Logger.getLogger("org.apache").setLevel(Level.WARN);
 
         engine.process(defaultDistributor);
+
+        jsonWriter.finish();
+
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.finra.datagenerator.consumer;
 
+import org.finra.datagenerator.writer.SqlWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by RobbinBr on 7/2/2014.
+ * Updated by Mauricio Silva on 8/16/2015.
  */
 public class DataPipeTest {
 
@@ -95,4 +97,76 @@ public class DataPipeTest {
         Assert.assertEquals("localhost:8080", thePipe.getDataConsumer().getReportingHost());
         Assert.assertEquals(100000, thePipe.getDataConsumer().getMaxNumberOfLines());
     }
+
+    /**
+     * Tests getJsonFormatted
+     */
+    @Test
+    public void testGetJsonFormatted() {
+        DataPipe thePipe = new DataPipe();
+        thePipe.getDataMap().put("var1", "var1val");
+        thePipe.getDataMap().put("var2", "var2val");
+        thePipe.getDataMap().put("var3", "var3val");
+        thePipe.getDataMap().put("var4", "var4val");
+        thePipe.getDataMap().put("var5", "var5val");
+
+        String[] outTemplate = new String[]{
+                "var1", "var2", "var3", "var4", "var5"
+        };
+        String expected = "{\"var5\":\"var5val\",\"var4\":\"var4val\",\"var3\":\"var3val\",\"var2\":\"var2val\","
+                + "\"var1\":\"var1val\"}";
+        Assert.assertEquals(5, thePipe.getDataMap().size());
+
+        Assert.assertEquals(expected, thePipe.getJsonFormatted(outTemplate).toString());
+    }
+
+    /**
+     * Tests getSqlFormatted
+     */
+    @Test
+    public void testGetSqlFormatted() {
+        DataPipe thePipe = new DataPipe();
+        thePipe.getDataMap().put("var1", "var1val");
+        thePipe.getDataMap().put("var2", "var2val");
+        thePipe.getDataMap().put("var3", "var3val");
+        thePipe.getDataMap().put("var4", "var4val");
+        thePipe.getDataMap().put("var5", "var5val");
+
+        String[] outTemplate = new String[]{
+                "var1", "var2", "var3", "var4", "var5"
+        };
+        String schema = "QC_ADMIN";
+        String tableName = "DATA_SERVICE";
+        SqlWriter.SqlStatement sqlStatement = SqlWriter.SqlStatement.INSERT;
+        String expected = sqlStatement + " INTO " + schema + "." + tableName + " (var1,var2,var3,var4,var5) "
+                + "VALUES (var1val,var2val,var3val,var4val,var5val);";
+
+        Assert.assertEquals(5, thePipe.getDataMap().size());
+
+        Assert.assertEquals(expected, thePipe.getSqlFormatted(outTemplate, schema, tableName, sqlStatement).toString());
+    }
+
+    /**
+     * Tests getSqlFormatted
+     */
+    @Test
+    public void testGetXmlFormatted() {
+        DataPipe thePipe = new DataPipe();
+        thePipe.getDataMap().put("var1", "var1val");
+        thePipe.getDataMap().put("var2", "var2val");
+        thePipe.getDataMap().put("var3", "var3val");
+        thePipe.getDataMap().put("var4", "var4val");
+        thePipe.getDataMap().put("var5", "var5val");
+
+        String[] outTemplate = new String[]{
+                "var1", "var2", "var3", "var4", "var5"
+        };
+        String expected = "<var1>var1val</var1><var2>var2val</var2><var3>var3val</var3>"
+                + "<var4>var4val</var4><var5>var5val</var5>";
+
+        Assert.assertEquals(5, thePipe.getDataMap().size());
+
+        Assert.assertEquals(expected, thePipe.getXmlFormatted(outTemplate).toString());
+    }
+
 }
