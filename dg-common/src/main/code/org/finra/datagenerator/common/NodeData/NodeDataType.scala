@@ -16,6 +16,7 @@
 
 package org.finra.datagenerator.common.NodeData
 
+import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
 import org.finra.datagenerator.common.Graph.Node
 import org.finra.datagenerator.common.GraphEngine.{DefaultNodeGenerator, DataNodeGenerator}
 import scala.annotation.unchecked.{uncheckedVariance => uV}
@@ -68,7 +69,13 @@ object NodeDataType {
     /**
      * Name that uniquely identifies this type
      */
-    val name: String
+    val name: String = getClass.getSimpleName.remove("$")
+
+    /**
+     * Lowercased name
+     * @return Lowercased name
+     */
+    def nameLowercase: String = name.toLowerCase()
 
     /**
      * Name that uniquely identifies this type, to be used for display
