@@ -251,5 +251,18 @@ object StringHelper {
     def remove(substringToRemove: String): String = {
       str.replaceAllLiterally(substringToRemove, "")
     }
+
+    /**
+     * Returns a string if non-empty. If empty (""), then returns a specified default value.
+     * @param defaultValue Default value to return if string is empty
+     * @return Non-empty value or else default
+     */
+    def defaultIfEmpty(defaultValue: String): String = {
+      if (str.nonEmpty) {
+        str
+      } else {
+        defaultValue
+      }
+    }
   }
 }
