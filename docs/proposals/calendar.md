@@ -17,15 +17,15 @@ Consider the Christmas week of 2015. Christmas falls on Friday, 2015-12-25:
 The markets close at 3:00 on Thrusday, 2015-12-25 and are closed on Friday, 2015-12-25. 
 
  If T is Monday, 2015-12-21, then  
-  * T-1 is Friday, 2015-12-18  
-  * T+1 is Tuesday, 2015-12-22  
-  * T+4 is Monday, 2015-12-28
+  1. T-1 is Friday, 2015-12-18  
+  1. T+1 is Tuesday, 2015-12-22  
+  1. T+4 is Monday, 2015-12-28
 
 ##Proposal
 
 This feature can be implemented in stages:
 
-Stage 1: Use the Java Calendar class. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
-1. all days
-2. weekdays
-3. weekends
+Stage 1: Using the Java Calendar class, implement the distinction between weedkdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
+ 1. all days
+ 1. weekdays
+ 1. weekends
