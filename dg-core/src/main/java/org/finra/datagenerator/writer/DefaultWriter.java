@@ -16,7 +16,7 @@
 package org.finra.datagenerator.writer;
 
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -47,7 +47,7 @@ public class DefaultWriter implements DataWriter {
     }
 
     @Override
-    public void writeOutput(DataPipe cr) {
+    public void writeOutput(DataFormatter cr) {
         try {
             os.write(cr.getPipeDelimited(outTemplate).getBytes());
             os.write("\n".getBytes());

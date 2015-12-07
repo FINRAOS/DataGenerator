@@ -17,7 +17,7 @@ package org.finra.datagenerator.writer;
 
 
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.io.OutputStream;
  *
  * Created by Mauricio Silva on 6/27/2015.
  */
-public class JsonWriter implements NonStreamDataWriter {
+public class JsonWriter implements BulkWriter {
 
 
     /**
@@ -53,7 +53,7 @@ public class JsonWriter implements NonStreamDataWriter {
     }
 
     @Override
-    public void writeOutput(DataPipe cr) {
+    public void writeOutput(DataFormatter cr) {
         jsonArray.put(cr.getJsonFormatted(outTemplate));
     }
 

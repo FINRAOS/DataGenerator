@@ -17,7 +17,7 @@ package org.finra.datagenerator.writer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,7 +57,7 @@ public class AllFieldsWriter implements DataWriter {
     }
 
     @Override
-    public void writeOutput(DataPipe cr) {
+    public void writeOutput(DataFormatter cr) {
         try {
             if (outTemplate == null) {
                 outTemplate = cr.getDataMap().keySet().toArray(new String[cr.getDataMap().size()]);

@@ -20,7 +20,7 @@ package org.finra.datagenerator.writer;
  *
  * Created by Mauricio Silva on 6/23/2014.
  */
-public interface NonStreamDataWriter extends DataWriter {
+public interface BulkWriter extends DataWriter {
 
     /**
      * Tells the DataWrite to write all output to an output stream upon completion of data generation.

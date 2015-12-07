@@ -25,14 +25,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by RobbinBr on 7/2/2014.
  * Updated by Mauricio Silva on 8/16/2015.
  */
-public class DataPipeTest {
+public class DataFormatterTest {
 
     /**
-     * Tests the DataPipe's variable map
+     * Tests the DataFormatter's variable map
      */
     @Test
     public void testDataMap() {
-        DataPipe thePipe = new DataPipe();
+        DataFormatter thePipe = new DataFormatter();
         thePipe.getDataMap().put("var1", "var1val");
         thePipe.getDataMap().put("var2", "var2val");
         thePipe.getDataMap().put("var3", "var3val");
@@ -53,7 +53,7 @@ public class DataPipeTest {
      */
     @Test
     public void testGetPipeDelimited() {
-        DataPipe thePipe = new DataPipe();
+        DataFormatter thePipe = new DataFormatter();
         thePipe.getDataMap().put("var1", "var1val");
         thePipe.getDataMap().put("var2", "var2val");
         thePipe.getDataMap().put("var3", "var3val");
@@ -74,7 +74,7 @@ public class DataPipeTest {
      */
     @Test
     public void testDefaultDataConsumerAccess() {
-        DataPipe thePipe = new DataPipe();
+        DataFormatter thePipe = new DataFormatter();
         DataConsumer dc = thePipe.getDataConsumer();
         dc.setExitFlag(new AtomicBoolean(false));
 
@@ -89,7 +89,7 @@ public class DataPipeTest {
     @Test
     public void testCustomDataConsumerAccess() {
         DataConsumer dc = new DataConsumer();
-        DataPipe thePipe = new DataPipe(dc);
+        DataFormatter thePipe = new DataFormatter(dc);
 
         dc.setReportingHost("localhost:8080");
         dc.setMaxNumberOfLines(100000);
@@ -103,7 +103,7 @@ public class DataPipeTest {
      */
     @Test
     public void testGetJsonFormatted() {
-        DataPipe thePipe = new DataPipe();
+        DataFormatter thePipe = new DataFormatter();
         thePipe.getDataMap().put("var1", "var1val");
         thePipe.getDataMap().put("var2", "var2val");
         thePipe.getDataMap().put("var3", "var3val");
@@ -125,7 +125,7 @@ public class DataPipeTest {
      */
     @Test
     public void testGetSqlFormatted() {
-        DataPipe thePipe = new DataPipe();
+        DataFormatter thePipe = new DataFormatter();
         thePipe.getDataMap().put("var1", "var1val");
         thePipe.getDataMap().put("var2", "var2val");
         thePipe.getDataMap().put("var3", "var3val");
@@ -151,7 +151,7 @@ public class DataPipeTest {
      */
     @Test
     public void testGetXmlFormatted() {
-        DataPipe thePipe = new DataPipe();
+        DataFormatter thePipe = new DataFormatter();
         thePipe.getDataMap().put("var1", "var1val");
         thePipe.getDataMap().put("var2", "var2val");
         thePipe.getDataMap().put("var3", "var3val");

@@ -19,7 +19,7 @@ package org.finra.datagenerator.samples.consumer;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper.Context;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 import org.finra.datagenerator.writer.DataWriter;
 
 /**
@@ -44,9 +44,9 @@ public class ContextWriter implements DataWriter {
     /**
      * Write to a context. Uses NullWritable for key so that only value of output string is ultimately written
      *
-     * @param cr the DataPipe to write to
+     * @param cr the DataFormatter to write to
      */
-    public void writeOutput(DataPipe cr) {
+    public void writeOutput(DataFormatter cr) {
         try {
             context.write(NullWritable.get(), new Text(cr.getPipeDelimited(outTemplate)));
         } catch (Exception e) {

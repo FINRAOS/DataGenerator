@@ -15,10 +15,10 @@
  */
 package org.finra.datagenerator.writer;
 
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 
 /**
- * Outputs the search results contained in a DataPipe.
+ * Outputs the search results contained in a DataFormatter.
  *
  * Created by robbinbr on 5/28/2014.
  */
@@ -27,7 +27,7 @@ public interface DataWriter {
     /**
      * Writes an output to a given data pipe
      *
-     * @param cr the DataPipe to write to
+     * @param cr the DataFormatter to write to
      */
-    void writeOutput(DataPipe cr);
+    void writeOutput(DataFormatter cr);
 }

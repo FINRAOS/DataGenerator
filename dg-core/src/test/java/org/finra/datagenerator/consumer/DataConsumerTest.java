@@ -101,11 +101,11 @@ public class DataConsumerTest {
 
         theConsumer.consume(data);
 
-        Assert.assertEquals("var1val", theConsumer.getDataPipe().getDataMap().get("var1"));
-        Assert.assertEquals("var2val", theConsumer.getDataPipe().getDataMap().get("var2"));
-        Assert.assertEquals("var3val", theConsumer.getDataPipe().getDataMap().get("var3"));
-        Assert.assertEquals("var4val", theConsumer.getDataPipe().getDataMap().get("var4"));
-        Assert.assertEquals("var5val", theConsumer.getDataPipe().getDataMap().get("var5"));
+        Assert.assertEquals("var1val", theConsumer.getDataFormatter().getDataMap().get("var1"));
+        Assert.assertEquals("var2val", theConsumer.getDataFormatter().getDataMap().get("var2"));
+        Assert.assertEquals("var3val", theConsumer.getDataFormatter().getDataMap().get("var3"));
+        Assert.assertEquals("var4val", theConsumer.getDataFormatter().getDataMap().get("var4"));
+        Assert.assertEquals("var5val", theConsumer.getDataFormatter().getDataMap().get("var5"));
 
     }
 
@@ -162,7 +162,7 @@ public class DataConsumerTest {
 
         Assert.assertEquals(0, theTransformerWriter.getData().size());
 
-        Map<String, String> firstMap = theConsumer.getDataPipe().getDataMap();
+        Map<String, String> firstMap = theConsumer.getDataFormatter().getDataMap();
         Assert.assertEquals(5, firstMap.size());
         Assert.assertEquals("transformed_var1val", firstMap.get("var1"));
         Assert.assertEquals("transformed_var2val", firstMap.get("var2"));
@@ -274,7 +274,7 @@ public class DataConsumerTest {
         }
 
         @Override
-        public void writeOutput(DataPipe cr) {
+        public void writeOutput(DataFormatter cr) {
             data.add(cr.getDataMap());
             cr.getDataConsumer().sendRequest("" + data.size(), this);
 //            try {
@@ -304,7 +304,7 @@ public class DataConsumerTest {
         private List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
         @Override
-        public void transform(DataPipe cr) {
+        public void transform(DataFormatter cr) {
             for (String key : cr.getDataMap().keySet()) {
                 String value = cr.getDataMap().get(key);
                 cr.getDataMap().put(key, "transformed_" + value);
@@ -312,7 +312,7 @@ public class DataConsumerTest {
         }
 
         @Override
-        public void writeOutput(DataPipe cr) {
+        public void writeOutput(DataFormatter cr) {
             data.add(cr.getDataMap());
             System.out.println("Output saw a : " + cr.getDataMap());
         }

@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by RobbinBr on 5/18/2014.
  * Updated by Mauricio Silva on 4/24/2015
  */
-public class DataPipe {
+public class DataFormatter {
 
     private final Map<String, String> dataMap = new HashMap<>();
     private final DataConsumer dataConsumer;
@@ -36,9 +36,8 @@ public class DataPipe {
     /**
      * Default constructor. Initializes the dataConsumer to {@link DataConsumer}
      */
-    public DataPipe() {
+    public DataFormatter() {
         dataConsumer = new DataConsumer();
-
     }
 
     /**
@@ -46,19 +45,19 @@ public class DataPipe {
      *
      * @param dataConsumer a reference to {@link DataConsumer}
      */
-    public DataPipe(final DataConsumer dataConsumer) {
+    public DataFormatter(final DataConsumer dataConsumer) {
         this.dataConsumer = dataConsumer;
     }
 
     /**
      * Constructor sets a max number of lines and shares an exit flag with the
-     * DataPipe
+     * DataFormatter
      *
      * @param maxNumberOfLines a long containing the maximum number of lines
      * expected to flow through this pipe
      * @param flag an AtomicBoolean exit flag
      */
-    public DataPipe(final long maxNumberOfLines, final AtomicBoolean flag) {
+    public DataFormatter(final long maxNumberOfLines, final AtomicBoolean flag) {
         this.dataConsumer = new DataConsumer().setMaxNumberOfLines(maxNumberOfLines).setExitFlag(flag);
     }
 

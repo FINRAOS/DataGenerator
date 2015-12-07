@@ -18,7 +18,7 @@ package org.finra.datagenerator.engine.scxml.tags;
 
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.ModelException;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 import org.finra.datagenerator.consumer.DataTransformer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -102,9 +102,9 @@ public class InLineTransformerExtensionTest {
         /**
          * Sets wasCalled to true
          *
-         * @param cr a reference to DataPipe from which to read the current map
+         * @param cr a reference to DataFormatter from which to read the current map
          */
-        public void transform(DataPipe cr) {
+        public void transform(DataFormatter cr) {
             wasCalled = true;
         }
 
@@ -166,7 +166,7 @@ public class InLineTransformerExtensionTest {
     @Test
     public void nonEmptyListTest() {
         DataTransformer appendTransformer = new DataTransformer() {
-            public void transform(DataPipe cr) {
+            public void transform(DataFormatter cr) {
                 cr.getDataMap().put("Test", "Lorum");
             }
         };

@@ -23,7 +23,7 @@ import org.apache.commons.scxml.SCInstance;
 import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 import org.finra.datagenerator.consumer.DataTransformer;
 
 import java.util.Collection;
@@ -70,7 +70,7 @@ public class InLineTransformerExtension implements CustomTagExtension<InLineTran
     public List<Map<String, String>> pipelinePossibleStates(TransformTag action,
                                                             List<Map<String, String>> possibleStateList) {
         DataTransformer tr = transformers.get(action.getName());
-        DataPipe pipe = new DataPipe(0, null);
+        DataFormatter pipe = new DataFormatter(0, null);
 
         for (Map<String, String> possibleState : possibleStateList) {
             pipe.getDataMap().putAll(possibleState);

@@ -15,6 +15,7 @@
  */
 package org.finra.datagenerator.consumer;
 
+import org.finra.datagenerator.utils.EquivalenceClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void regexCUSIPTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String testRegularExpression = "^\\d{5}(?:[-\\s]\\d{4})?$";
@@ -53,7 +54,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void regexNumbersTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String testRegularExpression = "\\d{4}/\\d{2}/\\d{2}-\\d{2}:\\d{2}";
@@ -69,7 +70,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void regexDateTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String testRegularExpression = "^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\\d\\d$";
@@ -85,7 +86,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void regexEmailTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String testRegularExpression = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$";
@@ -102,7 +103,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void alphaTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         pipeToTransform.getDataMap().put("TEST", "%alpha(1)");
@@ -127,7 +128,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void alphaWithSpacesTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         pipeToTransform.getDataMap().put("TEST", "%alphaWithSpaces(1)");
@@ -152,7 +153,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void numberTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         pipeToTransform.getDataMap().put("TEST", "%number(5)");
@@ -189,14 +190,28 @@ public class EquivalenceClassTransformerTest {
     }
 
     /**
+     * %date produces a date with a partial validness check
+     */
+    @Test
+    public void dateTest() {
+        DataFormatter pipeToTransform = new DataFormatter();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+        pipeToTransform.getDataMap().put("TEST", "%date");
+        String testRegularExpression = "^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\\d\\d$";
+        eqTransformer.transform(pipeToTransform);
+        Pattern pattern = Pattern.compile(testRegularExpression);
+        Matcher didItMatch = pattern.matcher(pipeToTransform.getDataMap().get("TEST"));
+        Assert.assertTrue(didItMatch.matches());
+    }
+    /**
      * %digits macro gives a string of n digits
      */
     @Test
     public void digitsTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
-        
+
         pipeToTransform.getDataMap().put("TEST", "%digits(5)");
         eqTransformer.transform(pipeToTransform);
         Pattern alphaWithSpacesPattern = Pattern.compile("^[\\d]{5}$");
@@ -219,7 +234,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void ssnTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         for (int i = 0; i < 500; i++) {
@@ -237,7 +252,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void zipTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         for (int i = 0; i < 500; i++) {
@@ -254,16 +269,16 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void phoneDomesticUSATest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
-        
+
         for (int i = 0; i < 500; i++) {
             pipeToTransform.getDataMap().put("TEST_phoneDomesticUSA", "%phoneDomesticUSA");
             eqTransformer.transform(pipeToTransform);
             Pattern alphaWithSpacesPattern = Pattern.compile("^([2-9]\\d{2})(\\D*)([2-9]\\d{2})(\\D*)(\\d{4})$");
             Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST_phoneDomesticUSA"));
-            Assert.assertTrue("Wrong USA domestic phone number without extension generation! Created '" 
-            + pipeToTransform.getDataMap().get("TEST_phoneDomesticUSA") + "'...", didItMatch.matches());
+            Assert.assertTrue("Wrong USA domestic phone number without extension generation! Created '"
+                    + pipeToTransform.getDataMap().get("TEST_phoneDomesticUSA") + "'...", didItMatch.matches());
         }
     }
 
@@ -272,18 +287,128 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void phoneDomesticUSAWithExtTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
-        
+
         for (int i = 0; i < 500; i++) {
             pipeToTransform.getDataMap().put("TEST_phoneDomesticUSAWithExt", "%phoneDomesticUSAWithExt");
             eqTransformer.transform(pipeToTransform);
             Pattern alphaWithSpacesPattern = Pattern.compile("^([2-9]\\d{2})(\\D*)([2-9]\\d{2})(\\D*)"
                     + "(\\d{4})((\\D{1})(ext|e|extension)?(\\D*)(\\d*))?$");
             Matcher didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST_phoneDomesticUSAWithExt"));
-            Assert.assertTrue("Wrong USA domestic phone number with extension generation! Created '" 
-            + pipeToTransform.getDataMap().get("TEST_phoneDomesticUSAWithExt") + "'...", didItMatch.matches());
+            Assert.assertTrue("Wrong USA domestic phone number with extension generation! Created '"
+                    + pipeToTransform.getDataMap().get("TEST_phoneDomesticUSAWithExt") + "'...", didItMatch.matches());
         }
+    }
+
+    /**
+     * %nameCombinationsTest produces a full name with a full validness check
+     */
+    @Test
+    public void nameCombinationsTest() {
+        DataFormatter pipeToTransform = new DataFormatter();
+        EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
+
+        String[] maleNames = new String[] {
+                "Cade", "Melvin", "Ignatius", "Ashton", "Nehru", "Garth", "Rigel", "Lester",
+                "Dean", "Harper", "Mauricio", "Boris", "Amos", "Holmes", "Amir", "Tad", "Trevor", "Carson", "Kamal", "Brennan", "Harding", "Alfonso",
+                "Brendan", "Dante", "Rooney", "Tucker", "Vance", "Joshua", "August", "Dieter", "Hayes", "Kevin", "Lucas", "Amery", "Jakeem",
+                "Hiram", "Garrison", "Neville", "Flynn", "Hyatt", "Simon", "Kirk", "Dexter", "Keith", "Avram", "Gage", "Jared", "Austin",
+                "Arden", "Kennan", "Guy", "Acton", "Channing", "Ferris", "Galvin", "Acton", "Walter", "Valentine", "Eaton", "Marsden", "Dillon",
+                "Flynn", "Raphael", "Oscar", "Fitzgerald", "Victor", "Dominic", "Lucius", "Bert", "Tucker", "Barry", "Gregory", "Bert", "Anthony",
+                "Thor", "Troy", "Ryan", "Hamish", "Mason", "Mark", "Rahim", "Holmes", "Quentin", "Warren", "Arden", "Elijah", "Hayes", "Mohammad",
+                "Lars", "Dane", "Tucker", "Uriah", "Joseph", "Ivan", "Ezra", "Martin", "Leo", "Lewis", "Daquan", "Lyle", "Judah"};
+
+        String [] femaleNames = new String[] {
+                "Giselle", "Chava", "Justine", "Jael", "Wynne", "Belle", "TaShya", "Judith", "Lysandra", "Nell", "Nadine", "Lila", "Ella",
+                "Isadora", "Ariana", "Quemby", "Riley", "Rina", "Veda", "Kirestin", "Bianca", "Rana", "Mia", "Dara", "Ivy", "Rina", "Sade",
+                "Dominique", "Clio", "Guinevere", "Clare", "Laurel", "Demetria", "Erin", "Stacey", "Mary", "Justine", "Glenna", "Roanna",
+                "Grace", "Zenia", "Kitra", "Kylee", "Zoe", "Odessa", "Beatrice", "Robin", "Kellie", "Sierra", "Ivana", "Ignacia", "Meredith",
+                "Kyra", "Bryar", "Jolie", "Josephine", "Quail", "Sonia", "Penelope", "Macey", "Desirae", "Helen", "Joy", "Ashely", "Wilma", "Rae",
+                "Nyssa", "Mari", "Harriet", "Belle", "Eliana", "Galena", "Rama", "Nelle", "Jillian", "Hanae", "Ima", "Oprah", "Portia",
+                "Jessamine", "Elizabeth", "Cassidy", "Karyn", "Idola", "Dacey", "Abra", "Caryn", "Kaitlin", "Pandora", "Angela", "Lana",
+                "Melanie", "Uma", "Joan", "Flavia", "Colette", "Fleur", "Phyllis", "Venus", "Nerea"};
+
+        String[] lastNames = new String[] {
+                "Horne", "Burgess", "Kirby", "Barrett", "Giles", "Harmon", "Case", "Rosales", "Dillard", "Kemp", "Santana", "Williams",
+                "Valenzuela", "Kirby", "Swanson", "Howe", "Bright", "Webb", "Stokes", "Montgomery", "York", "Brewer", "Gallagher", "Jarvis",
+                "Hurst", "Baker", "Dunlap", "Gibson", "Leonard", "Bruce", "Stephenson", "Levine", "Rivera", "Maynard", "Cherry", "Beasley",
+                "Horne", "Gentry", "Ratliff", "Franks", "Santiago", "Wolf", "Young", "Gillespie", "Mcleod", "Ray", "Greene", "David", "Pickett",
+                "Vance", "Jackson", "Rush", "Slater", "Shaffer", "Washington", "Herrera", "Rose", "Perry", "Burke", "Cash", "Barrera", "Carrillo",
+                "Blake", "Mckee", "Rogers", "Parks", "Noble", "Hodges", "Sanford", "Santiago", "Mcclure", "Blake", "Bradley", "Bright", "Hobbs",
+                "Swanson", "Erickson", "Foster", "Medina", "Shaffer", "Clay", "Nguyen", "Duncan", "Walls", "Manning", "Hickman", "Mcclain",
+                "Hanson", "Graham", "Hudson", "Bryant", "Mcfarland", "Weaver", "Sargent", "Buck", "Scott", "Moore", "Oneal", "Carver", "Sims"};
+
+        HashSet<String> maleNamesLookUp = new HashSet<>(Arrays.asList(maleNames));
+        HashSet<String> femaleNamesLookUp = new HashSet<>(Arrays.asList(femaleNames));
+        HashSet<String> lastNamesLookUp = new HashSet<>(Arrays.asList(lastNames));
+
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_MALE", "%name(male)");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue(maleNamesLookUp.contains(pipeToTransform.getDataMap().get("TEST_MALE")));
+
+            pipeToTransform.getDataMap().put("TEST_FEMALE", "%name(female)");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue(femaleNamesLookUp.contains(pipeToTransform.getDataMap().get("TEST_FEMALE")));
+
+            pipeToTransform.getDataMap().put("TEST_ANY", "%name(any)");
+            eqTransformer.transform(pipeToTransform);
+            Assert.assertTrue(maleNamesLookUp.contains(pipeToTransform.getDataMap().get("TEST_ANY"))
+                    || femaleNamesLookUp.contains(pipeToTransform.getDataMap().get("TEST_ANY")));
+        }
+
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_firstAndLastName_FEMALE", "%firstAndLastName(female)");
+            eqTransformer.transform(pipeToTransform);
+            String[] femaleNamesTest = pipeToTransform.getDataMap().get("TEST_firstAndLastName_FEMALE").split("\\s+");
+            Assert.assertTrue(femaleNamesLookUp.contains(femaleNamesTest[0]));
+            Assert.assertTrue(lastNamesLookUp.contains(femaleNamesTest[1]));
+
+            pipeToTransform.getDataMap().put("TEST_firstAndLastName_MALE", "%firstAndLastName(male)");
+            eqTransformer.transform(pipeToTransform);
+            String[] maleNamesTest = pipeToTransform.getDataMap().get("TEST_firstAndLastName_MALE").split("\\s+");
+            Assert.assertTrue(maleNamesLookUp.contains(maleNamesTest[0]));
+            Assert.assertTrue(lastNamesLookUp.contains(maleNamesTest[1]));
+
+            pipeToTransform.getDataMap().put("TEST_firstAndLastName_ANY", "%firstAndLastName(any)");
+            eqTransformer.transform(pipeToTransform);
+            String[] userNames = pipeToTransform.getDataMap().get("TEST_firstAndLastName_MALE").split("\\s+");
+            Assert.assertTrue(maleNamesLookUp.contains(userNames[0])
+                    || femaleNamesLookUp.contains(userNames[0]));
+            Assert.assertTrue(lastNamesLookUp.contains(userNames[1]));
+        }
+
+        Pattern alphaWithSpacesPattern = Pattern.compile("[A-Z].");
+
+        for (int i = 0; i < 500; i++) {
+            pipeToTransform.getDataMap().put("TEST_fullName_FEMALE", "%fullName(female)");
+            eqTransformer.transform(pipeToTransform);
+            String[] femaleNamesTest = pipeToTransform.getDataMap().get("TEST_fullName_FEMALE").split("\\s+");
+            Matcher didItMatchFemale = alphaWithSpacesPattern.matcher(femaleNamesTest[1]);
+            Assert.assertTrue(femaleNamesLookUp.contains(femaleNamesTest[0]));
+            Assert.assertTrue(femaleNamesTest[1], didItMatchFemale.matches());
+            Assert.assertTrue(lastNamesLookUp.contains(femaleNamesTest[2]));
+
+            pipeToTransform.getDataMap().put("TEST_fullName_MALE", "%fullName(male)");
+            eqTransformer.transform(pipeToTransform);
+            String[] maleNamesTest = pipeToTransform.getDataMap().get("TEST_fullName_MALE").split("\\s+");
+            Matcher didItMatchMale = alphaWithSpacesPattern.matcher(maleNamesTest[1]);
+            Assert.assertTrue(maleNamesLookUp.contains(maleNamesTest[0]));
+            Assert.assertTrue(maleNamesTest[1], didItMatchMale.matches());
+            Assert.assertTrue(lastNamesLookUp.contains(maleNamesTest[2]));
+
+            pipeToTransform.getDataMap().put("TEST_fullName_ANY", "%fullName(any)");
+            eqTransformer.transform(pipeToTransform);
+            String[] userNames = pipeToTransform.getDataMap().get("TEST_fullName_ANY").split("\\s+");
+            Matcher didItMatchUser = alphaWithSpacesPattern.matcher(userNames[1]);
+            Assert.assertTrue(maleNamesLookUp.contains(userNames[0])
+                    || femaleNamesLookUp.contains(userNames[0]));
+            Assert.assertTrue(userNames[1], didItMatchUser.matches());
+            Assert.assertTrue(lastNamesLookUp.contains(userNames[2]));
+        }
+
+
     }
 
     /**
@@ -291,7 +416,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void currencyTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String[] currencyCodes = {
@@ -319,7 +444,7 @@ public class EquivalenceClassTransformerTest {
                 "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XSU", "XTS",
                 "XUA", "XXX", "YER", "ZAR", "ZMK", "ZWL"};
 
-        Assert.assertTrue("Too small number of currency codes!", eqTransformer.CURRENCY_CODES.length >= 180);
+        Assert.assertTrue("Too small number of currency codes!", EquivalenceClass.CURRENCY_CODES.length >= 180);
 
         HashSet<String> currencyCodeLookUp = new HashSet<>(Arrays.asList(currencyCodes));
 
@@ -335,7 +460,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void nonMacrosUnaffectedTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         pipeToTransform.getDataMap().put("TEST", "Lorem ipsum doler  sit amet.");
@@ -353,7 +478,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void statesLongTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String[] statesLong = {
@@ -369,16 +494,16 @@ public class EquivalenceClassTransformerTest {
                 "Utah", "Vermont", "Virginia", "Virgin Islands", "Washington", "West Virginia",
                 "Wisconsin", "Wyoming"};
 
-        Assert.assertTrue("Missed state long name(s)!", EquivalenceClassTransformer.STATE_LONG.length == 59);
+        Assert.assertTrue("Missed state long name(s)!", EquivalenceClass.STATE_LONG.length == 59);
 
         HashSet<String> statesLongLookUp = new HashSet<>(Arrays.asList(statesLong));
 
-        // check 'state' 
+        // check 'state'
         for (int i = 0; i < 500; i++) {
             pipeToTransform.getDataMap().put("TEST_states", "%state");
             eqTransformer.transform(pipeToTransform);
             Assert.assertTrue("Wrong state name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_states") + "',"
-                    + " but wait for one of '" + statesLongLookUp + "'...",
+                            + " but wait for one of '" + statesLongLookUp + "'...",
                     statesLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_states")));
         }
 
@@ -387,7 +512,7 @@ public class EquivalenceClassTransformerTest {
             pipeToTransform.getDataMap().put("TEST_statesLong", "%stateLong");
             eqTransformer.transform(pipeToTransform);
             Assert.assertTrue("Wrong state long name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_statesLong") + "',"
-                    + " but wait for one of '" + statesLongLookUp + "'...",
+                            + " but wait for one of '" + statesLongLookUp + "'...",
                     statesLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_statesLong")));
         }
     }
@@ -397,24 +522,24 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void statesShortTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String[] statesShort = {
-                "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", 
-                "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO", 
-                "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", 
+                "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID",
+                "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO",
+                "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA",
                 "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "VI", "WA", "WV", "WI", "WY"};
 
-        Assert.assertTrue("Missed state short name(s)!", EquivalenceClassTransformer.STATES_SHORT.length == 59);
-        
+        Assert.assertTrue("Missed state short name(s)!", EquivalenceClass.STATES_SHORT.length == 59);
+
         HashSet<String> statesShortLookUp = new HashSet<>(Arrays.asList(statesShort));
 
         for (int i = 0; i < 500; i++) {
             pipeToTransform.getDataMap().put("TEST_statesShort", "%stateShort");
             eqTransformer.transform(pipeToTransform);
             Assert.assertTrue("Wrong state short name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_statesShort") + "',"
-                    + " but wait for one of '" + statesShortLookUp + "'...",
+                            + " but wait for one of '" + statesShortLookUp + "'...",
                     statesShortLookUp.contains(pipeToTransform.getDataMap().get("TEST_statesShort")));
         }
     }
@@ -424,7 +549,7 @@ public class EquivalenceClassTransformerTest {
      */
     @Test
     public void countryLongTest() {
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String[] countryLong = {
@@ -452,10 +577,10 @@ public class EquivalenceClassTransformerTest {
                 "Thailand", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
                 "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan",
                 "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-                };
+        };
 
-        Assert.assertTrue("Missed country long name(s)!", EquivalenceClassTransformer.COUNTRIES.length == 197);
-        
+        Assert.assertTrue("Missed country long name(s)!", EquivalenceClass.COUNTRIES.length == 197);
+
         HashSet<String> countryLongLookUp = new HashSet<>(Arrays.asList(countryLong));
 
         // check 'country'
@@ -463,7 +588,7 @@ public class EquivalenceClassTransformerTest {
             pipeToTransform.getDataMap().put("TEST_country", "%country");
             eqTransformer.transform(pipeToTransform);
             Assert.assertTrue("Wrong country name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_country") + "',"
-                    + " but wait for one of '" + countryLongLookUp + "'...",
+                            + " but wait for one of '" + countryLongLookUp + "'...",
                     countryLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_country")));
         }
 
@@ -472,28 +597,28 @@ public class EquivalenceClassTransformerTest {
             pipeToTransform.getDataMap().put("TEST_countryLong", "%countryLong");
             eqTransformer.transform(pipeToTransform);
             Assert.assertTrue("Wrong country long name(s)! Have '" + pipeToTransform.getDataMap().get("TEST_countryLong") + "',"
-                    + " but wait for one of '" + countryLongLookUp + "'...",
+                            + " but wait for one of '" + countryLongLookUp + "'...",
                     countryLongLookUp.contains(pipeToTransform.getDataMap().get("TEST_countryLong")));
         }
     }
 
-    
+
     /**
      * %symbolNASDAQ and %securityNameNASDAQ generates from a predefined list
      */
     @Test
     public void securityNASDAQTest() {
-        securityTestDo("nasdaqlisted.txt", EquivalenceClassTransformer.COUNT_NASDAQ_SECURITIES, "NASDAQ", "symbolNASDAQ",
-                "securityNameNASDAQ", EquivalenceClassTransformer.SYMBOLS_NASDAQ, EquivalenceClassTransformer.SECURITY_NAMES_NASDAQ);
+        securityTestDo("nasdaqlisted.txt", EquivalenceClass.COUNT_NASDAQ_SECURITIES, "NASDAQ", "symbolNASDAQ",
+                "securityNameNASDAQ", EquivalenceClass.SYMBOLS_NASDAQ, EquivalenceClass.SECURITY_NAMES_NASDAQ);
 
-        securityTestDo("otherlisted.txt", EquivalenceClassTransformer.COUNT_NOT_NASDAQ_SECURITIES, "not NASDAQ", "symbolNotNASDAQ",
-                "securityNameNotNASDAQ", EquivalenceClassTransformer.SYMBOLS_NOT_NASDAQ, EquivalenceClassTransformer.SECURITY_NAMES_NOT_NASDAQ);
+        securityTestDo("otherlisted.txt", EquivalenceClass.COUNT_NOT_NASDAQ_SECURITIES, "not NASDAQ", "symbolNotNASDAQ",
+                "securityNameNotNASDAQ", EquivalenceClass.SYMBOLS_NOT_NASDAQ, EquivalenceClass.SECURITY_NAMES_NOT_NASDAQ);
     }
 
     private void securityTestDo(String fileName, int numberOfRecords, String securityType, String equivClass1,
-            String equivClass2, String[] symbolSet, String[] nameSet) {
+                                String equivClass2, String[] symbolSet, String[] nameSet) {
 
-        DataPipe pipeToTransform = new DataPipe();
+        DataFormatter pipeToTransform = new DataFormatter();
         EquivalenceClassTransformer eqTransformer = new EquivalenceClassTransformer();
 
         String[] symbols = new String[numberOfRecords];
@@ -518,7 +643,7 @@ public class EquivalenceClassTransformerTest {
 
         Assert.assertTrue("Wrong number of " + securityType + " securities!", symbolSet.length == numberOfRecords);
         Assert.assertTrue("Wrong number of " + securityType + " securities!", nameSet.length == numberOfRecords);
-        
+
         HashSet<String> symbolsLookUp = new HashSet<>(Arrays.asList(symbols));
         for (int i = 0; i < numberOfRecords * 10; i++) {
             pipeToTransform.getDataMap().put("TEST_symbol", "%" + equivClass1);

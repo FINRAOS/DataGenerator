@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DataConsumer {
 
     private static final Logger log = Logger.getLogger(DataConsumer.class);
-    private DataPipe dataPipe;
+    private DataFormatter dataFormatter;
     private final List<DataTransformer> dataTransformers = new ArrayList<>();
     private final List<DataWriter> dataWriters = new ArrayList<>();
     private AtomicBoolean hardExitFlag;
@@ -54,7 +54,7 @@ public class DataConsumer {
      * Public default constructor
      */
     public DataConsumer() {
-        this.dataPipe = new DataPipe(this);
+        this.dataFormatter = new DataFormatter(this);
     }
 
     /**
@@ -124,8 +124,8 @@ public class DataConsumer {
         return this.reportingHost;
     }
 
-    public DataPipe getDataPipe() {
-        return this.dataPipe;
+    public DataFormatter getDataFormatter() {
+        return this.dataFormatter;
     }
 
     /**
@@ -136,22 +136,22 @@ public class DataConsumer {
      * @return the number of lines written
      */
     public int consume(Map<String, String> initialVars) {
-        this.dataPipe = new DataPipe(this);
+        this.dataFormatter = new DataFormatter(this);
 
         // Set initial variables
         for (Map.Entry<String, String> ent : initialVars.entrySet()) {
-            dataPipe.getDataMap().put(ent.getKey(), ent.getValue());
+            dataFormatter.getDataMap().put(ent.getKey(), ent.getValue());
         }
 
         // Call transformers
         for (DataTransformer dc : dataTransformers) {
-            dc.transform(dataPipe);
+            dc.transform(dataFormatter);
         }
 
         // Call writers
         for (DataWriter oneOw : dataWriters) {
             try {
-                oneOw.writeOutput(dataPipe);
+                oneOw.writeOutput(dataFormatter);
             } catch (Exception e) { //NOPMD
                 log.error("Exception in DataWriter", e);
             }

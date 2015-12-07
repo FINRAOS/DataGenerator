@@ -16,14 +16,14 @@
 package org.finra.datagenerator.consumer;
 
 /**
- * Applies transformations on a given DataPipe.
+ * Applies transformations on a given DataFormatter.
  */
 public interface DataTransformer {
 
     /**
      * Applies transformations on a given data
      *
-     * @param cr a reference to DataPipe from which to read the current map
+     * @param cr a reference to DataFormatter from which to read the current map
      */
-    void transform(DataPipe cr);
+    void transform(DataFormatter cr);
 }

@@ -76,7 +76,7 @@ public class RepeatingDataConsumerTest {
                 return callCount;
             }
 
-            public void transform(DataPipe cr) {
+            public void transform(DataFormatter cr) {
                 Assert.assertEquals(inputDataMap, cr.getDataMap());
                 callCount++;
             }

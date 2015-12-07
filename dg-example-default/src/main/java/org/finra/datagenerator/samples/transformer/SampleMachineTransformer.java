@@ -17,7 +17,7 @@
 package org.finra.datagenerator.samples.transformer;
 
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 import org.finra.datagenerator.consumer.DataTransformer;
 
 import java.util.Map;
@@ -33,9 +33,9 @@ public class SampleMachineTransformer implements DataTransformer {
 
     /**
      * The transform method for this DataTransformer
-     * @param cr a reference to DataPipe from which to read the current map
+     * @param cr a reference to DataFormatter from which to read the current map
      */
-    public void transform(DataPipe cr) {
+    public void transform(DataFormatter cr) {
         for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
             String value = entry.getValue();
 

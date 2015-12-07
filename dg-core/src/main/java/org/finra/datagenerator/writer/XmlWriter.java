@@ -16,7 +16,7 @@
 package org.finra.datagenerator.writer;
 
 import org.apache.log4j.Logger;
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * Created by Mauricio Silva on 6/27/2015.
  */
-public class XmlWriter implements NonStreamDataWriter {
+public class XmlWriter implements BulkWriter {
     /**
      * Logger
      */
@@ -58,7 +58,7 @@ public class XmlWriter implements NonStreamDataWriter {
     }
 
     @Override
-    public void writeOutput(DataPipe cr) {
+    public void writeOutput(DataFormatter cr) {
         xmlRecords.add(cr.getXmlFormatted(outTemplate));
     }
 

@@ -126,7 +126,7 @@ The number of solutions to the eight lonely rooks problem is relatively small (8
 
 The Main class makes an SCXMLEngine, loads the SCXML state machine seen above from the resources folder, and requests a bootstrap of 64. Ten threads process the 64 Frontiers produced by the bootstrap, overseen by a DefaultDistributor. It uses the standard DataConsumer with a custom DataWriter that produces chess style notation instead of pipe delineated output::
 
-    import org.finra.datagenerator.consumer.DataPipe;
+    import org.finra.datagenerator.consumer.DataFormatter;
     import org.finra.datagenerator.writer.DataWriter;
 
     import java.io.IOException;

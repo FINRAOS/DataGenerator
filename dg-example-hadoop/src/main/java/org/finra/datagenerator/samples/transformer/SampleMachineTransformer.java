@@ -16,7 +16,7 @@
 
 package org.finra.datagenerator.samples.transformer;
 
-import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.consumer.DataFormatter;
 import org.finra.datagenerator.consumer.DataTransformer;
 
 import java.util.Map;
@@ -33,9 +33,9 @@ public class SampleMachineTransformer implements DataTransformer {
     /**
      * Replace known tags in the current data values with actual values as appropriate
      *
-     * @param cr a reference to DataPipe from which to read the current map
+     * @param cr a reference to DataFormatter from which to read the current map
      */
-    public void transform(DataPipe cr) {
+    public void transform(DataFormatter cr) {
         Map<String, String> map = cr.getDataMap();
 
         for (String key : map.keySet()) {
