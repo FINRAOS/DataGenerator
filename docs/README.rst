@@ -36,6 +36,7 @@ Transforming and Writing with the DataConsumer
 * Built-in Transformers
 
   - `Equivalence Class Transformer <transformers/EquivalenceClass.rst>`_
+* `Boundary Values <tags/DG_Boundary.rst>`_
 
 Usage Examples
 ==============
