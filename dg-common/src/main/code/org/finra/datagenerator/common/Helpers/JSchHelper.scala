@@ -51,7 +51,7 @@ object JSchHelper {
     def connectWithRetry(timeout: Int = 3000, tries: Short = 10): Unit = {
       val config = new Properties()
       config.put("StrictHostKeyChecking", "no")
-      config.put("PreferredAuthentications", "publickey")
+      config.put("PreferredAuthentications", "password,gssapi-with-mic,publickey,keyboard-interactive")
       session.setConfig(config)
       session.setServerAliveInterval(3600000)
 
