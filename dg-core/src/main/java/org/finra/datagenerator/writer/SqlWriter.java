@@ -20,6 +20,7 @@ import org.finra.datagenerator.consumer.DataFormatter;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 
 /**
@@ -73,10 +74,39 @@ public class SqlWriter implements DataWriter {
     @Override
     public void writeOutput(DataFormatter cr) {
         try {
-            os.write(cr.getSqlFormatted(outTemplate, schema, tableName, sqlStatement).getBytes());
+            os.write(getSqlFormatted(cr.getDataMap()).getBytes());
             os.write("\n".getBytes());
         } catch (IOException e) {
             log.error("IOException in SqlWriter", e);
         }
+    }
+
+    /**
+     * Given an array of variable names, returns a sql statement {@link String}
+     * of values.
+     *
+     * @param dataMap an map containing variable names and their corresponding values
+     * names.
+     * @return values in Sql format
+     */
+    //INSERT/UPDATE INTO schema.table (key1, key2) VALUES ("value1","valu2");
+    public String getSqlFormatted(Map<String, String> dataMap) {
+        StringBuilder keys = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+        StringBuilder query = new StringBuilder();
+
+        for (String var : outTemplate) {
+            if (keys.length() > 0) {
+                keys.append(',');
+            }
+            if (values.length() > 0) {
+                values.append(',');
+            }
+            keys.append(var);
+            values.append(dataMap.get(var));
+        }
+        return query.append(sqlStatement).append(" INTO ").append(schema).append(".")
+                .append(tableName).append(" (").append(keys).append(") ").append("VALUES")
+                .append(" (").append(values).append(");").toString();
     }
 }

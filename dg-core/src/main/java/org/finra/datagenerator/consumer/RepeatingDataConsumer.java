@@ -47,5 +47,4 @@ public class RepeatingDataConsumer extends DataConsumer {
 
         return result;
     }
-
 }

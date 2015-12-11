@@ -26,7 +26,7 @@ import org.finra.datagenerator.engine.scxml.SCXMLEngine;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.InLineTransformerExtension;
 import org.finra.datagenerator.samples.transformer.SampleMachineTransformer;
-import org.finra.datagenerator.writer.DefaultWriter;
+import org.finra.datagenerator.writer.AllFieldsWriter;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -76,9 +76,7 @@ public final class CmdLine {
         //MODEL USAGE EXAMPLE: <dg:assign name="var_out_V2" set="%regex([0-9]{3}[A-Z0-9]{5})"/>
         consumer.addDataTransformer(new EquivalenceClassTransformer());
 
-        consumer.addDataWriter(new DefaultWriter(System.out,
-                new String[]{"var_1_1", "var_1_2", "var_1_3", "var_1_4", "var_1_5", "var_1_6",
-                             "var_2_1", "var_2_2", "var_2_3", "var_2_4", "var_2_5", "var_2_6"}));
+        consumer.addDataWriter(new AllFieldsWriter(true, System.out));
 
         //Prepare the distributor
         DefaultDistributor defaultDistributor = new DefaultDistributor();

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -59,22 +60,42 @@ public class XmlWriter implements BulkWriter {
 
     @Override
     public void writeOutput(DataFormatter cr) {
-        xmlRecords.add(cr.getXmlFormatted(outTemplate));
+        xmlRecords.add(getXmlFormatted(cr.getDataMap()));
     }
 
     @Override
     public void finish() {
         try {
-            writeOutputXmlStart(rootNode);
+            os.write(appendXmlStartTag(rootNode).getBytes());
             for (String xml : xmlRecords) {
-                writeOutputXmlStart(recordNode);
+                os.write(appendXmlStartTag(recordNode).getBytes());
                 os.write(xml.getBytes());
-                writeOutputXmlEnd(recordNode);
+                os.write(appendXmlEndingTag(rootNode).getBytes());
             }
-            writeOutputXmlEnd(rootNode);
+            os.write(appendXmlEndingTag(rootNode).getBytes());
+            os.write("\n".getBytes());
         } catch (IOException e) {
             log.error("IOException in XmlWriter", e);
         }
+    }
+
+    /**
+     * Given an array of variable names, returns an Xml String
+     * of values.
+     *
+     * @param dataMap an map containing variable names and their corresponding values
+     * names.
+     * @param dataMap
+     * @return values in Xml format
+     */
+    public String getXmlFormatted(Map<String, String> dataMap) {
+        StringBuilder sb = new StringBuilder();
+        for (String var : outTemplate) {
+            sb.append(appendXmlStartTag(var));
+            sb.append(dataMap.get(var));
+            sb.append(appendXmlEndingTag(var));
+        }
+        return sb.toString();
     }
 
     /**
@@ -82,10 +103,11 @@ public class XmlWriter implements BulkWriter {
      *
      * @param value the output stream to use in writing
      */
-    private void writeOutputXmlStart(String value) throws IOException {
-        os.write("<".getBytes());
-        os.write(value.getBytes());
-        os.write(">".getBytes());
+    private String appendXmlStartTag(String value)  {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<").append(value).append(">");
+
+        return sb.toString();
     }
 
     /**
@@ -93,9 +115,10 @@ public class XmlWriter implements BulkWriter {
      *
      * @param value the output stream to use in writing
      */
-    private void writeOutputXmlEnd(String value) throws IOException {
-        os.write("</".getBytes());
-        os.write(value.getBytes());
-        os.write(">".getBytes());
+    private String appendXmlEndingTag(String value) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("</").append(value).append(">");
+
+        return sb.toString();
     }
 }

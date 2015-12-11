@@ -19,9 +19,11 @@ package org.finra.datagenerator.writer;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.consumer.DataFormatter;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 
 /**
@@ -54,7 +56,7 @@ public class JsonWriter implements BulkWriter {
 
     @Override
     public void writeOutput(DataFormatter cr) {
-        jsonArray.put(cr.getJsonFormatted(outTemplate));
+        jsonArray.put(getJsonFormatted(cr.getDataMap()));
     }
 
     @Override
@@ -65,6 +67,24 @@ public class JsonWriter implements BulkWriter {
         } catch (IOException e) {
             log.error("IOException in JsonWriter", e);
         }
+    }
+
+    /**
+     * Given an array of variable names, returns a JsonObject
+     * of values.
+     *
+     * @param dataMap an map containing variable names and their corresponding values
+     * names.
+     * @return a json object of values
+     */
+    public JSONObject getJsonFormatted(Map<String, String> dataMap) {
+        JSONObject oneRowJson = new JSONObject();
+
+        for (String var : outTemplate) {
+            oneRowJson.put(var, dataMap.get(var));
+        }
+
+        return oneRowJson;
     }
 
 }

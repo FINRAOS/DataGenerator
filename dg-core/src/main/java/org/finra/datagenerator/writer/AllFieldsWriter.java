@@ -22,6 +22,7 @@ import org.finra.datagenerator.consumer.DataFormatter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created by mibrahim on 6/25/15.
@@ -68,10 +69,31 @@ public class AllFieldsWriter implements DataWriter {
                 }
             }
 
-            os.write(cr.getPipeDelimited(outTemplate).getBytes());
+            os.write(getPipeDelimited(cr.getDataMap()).getBytes());
             os.write("\n".getBytes());
         } catch (IOException e) {
             log.error("IOException in DefaultConsumer", e);
         }
+    }
+
+    /**
+     * Given an array of variable names, returns a pipe delimited {@link String}
+     * of values.
+     *
+     * @param dataMap an map containing variable names and their corresponding values
+     * names.
+     * @return a pipe delimited {@link String} of values
+     */
+    public String getPipeDelimited(Map<String, String> dataMap) {
+        StringBuilder b = new StringBuilder(1024);
+
+        for (String var : outTemplate) {
+            if (b.length() > 0) {
+                b.append('|');
+            }
+            b.append(dataMap.get(var));
+        }
+
+        return b.toString();
     }
 }

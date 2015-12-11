@@ -36,7 +36,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
      */
     public void transform(DataFormatter cr) {
         Map<String, String> map = cr.getDataMap();
-        EquivalenceClass.initializeEquivalenceClass();
+        EquivalenceClass equivalenceClass = new EquivalenceClass();
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String value = entry.getValue();
@@ -58,98 +58,98 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
                 switch (macro) {
                     case "regex":
-                        b.append(EquivalenceClass.generateFromRegex(expr));
+                        b.append(equivalenceClass.generateFromRegex(expr));
                         break;
 
                     case "name":
-                        b.append(EquivalenceClass.name(expr));
+                        b.append(equivalenceClass.name(expr));
                         break;
 
                     case "lastName":
-                        b.append(EquivalenceClass.lastName());
+                        b.append(equivalenceClass.lastName());
                         break;
 
                     case "firstAndLastName":
-                        b.append(EquivalenceClass.firstAndLastName(expr));
+                        b.append(equivalenceClass.firstAndLastName(expr));
                         break;
 
                     case "fullName":
-                        b.append(EquivalenceClass.fullName(expr));
+                        b.append(equivalenceClass.fullName(expr));
                         break;
 
                     case "email":
-                        b.append(EquivalenceClass.email());
+                        b.append(equivalenceClass.email());
                         break;
 
                     case "alpha":
-                        b.append(EquivalenceClass.alpha(Integer.valueOf(expr)));
+                        b.append(equivalenceClass.alpha(Integer.valueOf(expr)));
                         break;
 
                     case "alphaWithSpaces":
-                        b.append(EquivalenceClass.alphaWithSpaces(Integer.valueOf(expr)));
+                        b.append(equivalenceClass.alphaWithSpaces(Integer.valueOf(expr)));
                         break;
 
                     case "number":
-                        b.append(EquivalenceClass.number(expr));
+                        b.append(equivalenceClass.number(expr));
                         break;
 
                     case "digits":
                         int length = Integer.valueOf(expr);
-                        EquivalenceClass.digitSequence(b, length);
+                        equivalenceClass.digitSequence(b, length);
                         break;
 
                     case "date":
-                        b.append(EquivalenceClass.date());
+                        b.append(equivalenceClass.date());
                         break;
 
                     case "ssn":
-                        b.append(EquivalenceClass.ssn());
+                        b.append(equivalenceClass.ssn());
                         break;
 
                     case "zip":
-                        b.append(EquivalenceClass.zip());
+                        b.append(equivalenceClass.zip());
                         break;
 
                     case "phoneDomesticUSA":
-                        b.append(EquivalenceClass.phoneDomesticUSA());
+                        b.append(equivalenceClass.phoneDomesticUSA());
                         break;
 
                     case "phoneDomesticUSAWithExt":
-                        b.append(EquivalenceClass.phoneDomesticUSAWithExt());
+                        b.append(equivalenceClass.phoneDomesticUSAWithExt());
                         break;
 
                     case "currency":
-                        b.append(EquivalenceClass.currency());
+                        b.append(equivalenceClass.currency());
                         break;
 
                     case "state":
                     case "stateLong":
-                        b.append(EquivalenceClass.stateLong());
+                        b.append(equivalenceClass.stateLong());
                         break;
 
                     case "stateShort":
-                        b.append(EquivalenceClass.stateShort());
+                        b.append(equivalenceClass.stateShort());
                         break;
 
                     case "country":
                     case "countryLong":
-                        b.append(EquivalenceClass.countryLong());
+                        b.append(equivalenceClass.countryLong());
                         break;
 
                     case "symbolNASDAQ":
-                        b.append(EquivalenceClass.symbolNASDAQ());
+                        b.append(equivalenceClass.symbolNASDAQ());
                         break;
 
                     case "symbolNotNASDAQ":
-                        b.append(EquivalenceClass.symbolNotNASDAQ());
+                        b.append(equivalenceClass.symbolNotNASDAQ());
                         break;
 
                     case "securityNameNASDAQ":
-                        b.append(EquivalenceClass.securityNameNASDAQ());
+                        b.append(equivalenceClass.securityNameNASDAQ());
                         break;
 
                     case "securityNameNotNASDAQ":
-                        b.append(EquivalenceClass.securityNameNotNASDAQ());
+                        b.append(equivalenceClass.securityNameNotNASDAQ());
                         break;
 
                     default:

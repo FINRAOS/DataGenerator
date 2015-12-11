@@ -34,16 +34,17 @@ import static java.lang.System.currentTimeMillis;
  * Updated: Mauricio Silva
  * Date: 3/24/15
  */
-public final class EquivalenceClass {
+public class EquivalenceClass {
 
     /**
      * Default private Constructor
      */
-    private EquivalenceClass()  {
-
+    public EquivalenceClass() {
+        random = new Random(currentTimeMillis());
+        readSecuritiesList();
     }
 
-    private static Random random;
+    private Random random;
 
     /**
      * List of alpha numeric chars
@@ -65,7 +66,7 @@ public final class EquivalenceClass {
     /**
      * List of female names
      */
-    private static final String [] FEMALE_NAMES = new String[]{
+    private static final String[] FEMALE_NAMES = new String[]{
             "Giselle", "Chava", "Justine", "Jael", "Wynne", "Belle", "TaShya", "Judith", "Lysandra", "Nell", "Nadine", "Lila", "Ella",
             "Isadora", "Ariana", "Quemby", "Riley", "Rina", "Veda", "Kirestin", "Bianca", "Rana", "Mia", "Dara", "Ivy", "Rina", "Sade",
             "Dominique", "Clio", "Guinevere", "Clare", "Laurel", "Demetria", "Erin", "Stacey", "Mary", "Justine", "Glenna", "Roanna",
@@ -201,28 +202,19 @@ public final class EquivalenceClass {
      * Not NASDAQ names list (from ftp://ftp.nasdaqtrader.com/symboldirectory/otherlisted.txt)
      */
     public static final String[] SECURITY_NAMES_NOT_NASDAQ = new String[COUNT_NOT_NASDAQ_SECURITIES];
-    /**
-     * SPACE
-     */
-    public static final String SPACE = " ";
-    /**
-     * Constructor
-     */
-    public static void initializeEquivalenceClass() {
-        random = new Random(currentTimeMillis());
-        readSecuritiesList();
-    }
+
     /**
      * Read securities from both files
      */
-    private static void readSecuritiesList() {
+    private void readSecuritiesList() {
         readSecuritiesListDo("nasdaqlisted.txt", SYMBOLS_NASDAQ, SECURITY_NAMES_NASDAQ);
         readSecuritiesListDo("otherlisted.txt", SYMBOLS_NOT_NASDAQ, SECURITY_NAMES_NOT_NASDAQ);
     }
+
     /**
      * Read securities from file and stores them into an array
      */
-    private static void readSecuritiesListDo(String fileName, String[] var1, String[] var2) {
+    private void readSecuritiesListDo(String fileName, String[] var1, String[] var2) {
         InputStream fileData = EquivalenceClass.class.getClassLoader().getResourceAsStream(fileName);
         BufferedReader reader = new BufferedReader(new InputStreamReader(fileData));
         String line;
@@ -241,12 +233,14 @@ public final class EquivalenceClass {
             System.out.println(e);
         }
     }
+
     /**
      * alpha
+     *
      * @param len length of alpha values
      * @return response
      */
-    public static String alpha(int len) {
+    public String alpha(int len) {
         StringBuilder response = new StringBuilder();
         while (len > 0) {
             int word = random.nextInt(WORDS.length);
@@ -256,12 +250,14 @@ public final class EquivalenceClass {
         }
         return response.toString();
     }
+
     /**
      * alpha with Spaces
+     *
      * @param len length of alpha values
      * @return response
      */
-    public static String alphaWithSpaces(int len) {
+    public String alphaWithSpaces(int len) {
         StringBuilder response = new StringBuilder();
         int nextSpacePos = len - random.nextInt(9);
 
@@ -278,14 +274,16 @@ public final class EquivalenceClass {
         }
         return response.toString();
     }
+
     /**
      * Random Date
+     *
      * @return response
      */
-    public static String date() {
+    public String date() {
 
         String temp = generateFromRegex("^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\\d\\d$.");
-        String [] date = temp.split("/|\\.|-");
+        String[] date = temp.split("/|\\.|-");
         int monthValue = Integer.valueOf(date[0]);
         int dayValue = Integer.valueOf(date[1]);
         int year = Integer.valueOf(date[2]);
@@ -299,32 +297,37 @@ public final class EquivalenceClass {
 
         return twoDigitFormat(monthValue) + "/" + twoDigitFormat(dayValue) + "/" + year;
     }
+
     /**
      * Add a '0' if number is less than 10
+     *
      * @param value to be adjusted with 2 digits
      * @return new Digit
      */
-    private  static String twoDigitFormat(int value) {
+    private String twoDigitFormat(int value) {
         if (value < 10) {
-            return  "0" + value;
+            return "0" + value;
         } else {
             return String.valueOf(value);
         }
     }
+
     /**
      * random Email
+     *
      * @return response
      */
-    public static String email() {
+    public String email() {
         return generateFromRegex("^[a-z0-9._]{2,10}@[a-z]{2,6}+\\.(com|net|org|edu)$");
     }
 
     /**
      * number
+     *
      * @param expr expr
      * @return response
      */
-    public static String number(String expr) {
+    public String number(String expr) {
         StringBuilder b = new StringBuilder();
         String[] lengths = expr.split(",");
         int whole = Integer.valueOf(lengths[0]);
@@ -342,134 +345,166 @@ public final class EquivalenceClass {
             digitSequence(b, whole - 1);
             if (decimal > 0) {
                 b.append(".");
-                EquivalenceClass.digitSequence(b, decimal);
+                digitSequence(b, decimal);
             }
         }
 
         return b.toString();
     }
+
     /**
      * Digit Sequence
-     * @param b appends digits
+     *
+     * @param b              appends digits
      * @param numberOfDigits amount of numbers
      * @return response
      */
-    public static String digitSequence(StringBuilder b, int numberOfDigits) {
+    public String digitSequence(StringBuilder b, int numberOfDigits) {
         for (int i = 0; i < numberOfDigits; i++) {
             b.append(random.nextInt(10));
         }
         return b.toString();
     }
+
     /**
      * Random ssn
+     *
      * @return response
      */
-    public static String ssn() {
+    public String ssn() {
         //See more details here - http://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs
         return generateFromRegex("^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
                 + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
 
     }
+
     /**
      * Random phone USA
+     *
      * @return response
      */
-    public static String phoneDomesticUSA() {
+    public String phoneDomesticUSA() {
         //See more details here - http://en.wikipedia.org/wiki/North_American_Numbering_Plan
         return generateFromRegex("^([2-9]\\d{2})( )([2-9]\\d{2})( )(\\d{4})$");
     }
+
     /**
      * Random Zip
+     *
      * @return response
      */
-    public static String zip() {
+    public String zip() {
         return generateFromRegex("^((\\d{5})([- ]\\d{4})?)$");
     }
+
     /**
      * Random Phone Domestic USA with Ext
+     *
      * @return response
      */
-    public static String phoneDomesticUSAWithExt() {
+    public String phoneDomesticUSAWithExt() {
         //See more details here - http://en.wikipedia.org/wiki/North_American_Numbering_Plan
         return generateFromRegex("^([2-9]\\d{2})( )([2-9]\\d{2})( )(\\d{4})( ext )(\\d{3})$");
     }
+
     /**
      * Random Currency
+     *
      * @return response
      */
-    public static String currency() {
+    public String currency() {
         return CURRENCY_CODES[random.nextInt(CURRENCY_CODES.length)];
     }
+
     /**
      * Random State
+     *
      * @return response
      */
-    public static String state() {
+    public String state() {
         return stateLong();
     }
+
     /**
      * Random State long abbreviation
+     *
      * @return response
      */
-    public static String stateLong() {
+    public String stateLong() {
         return STATE_LONG[random.nextInt(STATE_LONG.length)];
     }
+
     /**
      * Random State Short abbreviation
+     *
      * @return response
      */
-    public static String stateShort() {
+    public String stateShort() {
         return STATES_SHORT[random.nextInt(STATES_SHORT.length)];
     }
+
     /**
      * Random country
+     *
      * @return response
      */
-    public static String country() {
+    public String country() {
         return countryLong();
     }
+
     /**
      * Random country
+     *
      * @return response
      */
-    public static String countryLong() {
+    public String countryLong() {
         return COUNTRIES[random.nextInt(COUNTRIES.length)];
     }
+
     /**
      * Random symbolNASDAQ
+     *
      * @return response
      */
-    public static String symbolNASDAQ() {
+    public String symbolNASDAQ() {
         return SYMBOLS_NASDAQ[random.nextInt(SYMBOLS_NASDAQ.length)];
     }
+
     /**
      * Random symbolNotNASDAQ
+     *
      * @return response
      */
-    public static String symbolNotNASDAQ() {
+    public String symbolNotNASDAQ() {
         return SYMBOLS_NOT_NASDAQ[random.nextInt(SYMBOLS_NASDAQ.length)];
     }
+
     /**
      * Random securityNameNASDAQ
+     *
      * @return response
      */
-    public  static String securityNameNASDAQ() {
-      return SECURITY_NAMES_NASDAQ[random.nextInt(SECURITY_NAMES_NASDAQ.length)];
+    public String securityNameNASDAQ() {
+        return SECURITY_NAMES_NASDAQ[random.nextInt(SECURITY_NAMES_NASDAQ.length)];
     }
+
     /**
      * Random securityNameNotNASDAQ
+     *
      * @return response
      */
-    public  static String securityNameNotNASDAQ() {
+    public String securityNameNotNASDAQ() {
         return SECURITY_NAMES_NOT_NASDAQ[random.nextInt(SECURITY_NAMES_NOT_NASDAQ.length)];
     }
+
     /**
      * Random name
+     *
      * @param expr (female, male, any)
      * @return response
      */
-    public static String name(String expr) {
-        switch(expr) {
+    public String name(String expr) {
+        switch (expr) {
             case "female":
                 return FEMALE_NAMES[random.nextInt(FEMALE_NAMES.length)];
             case "male":
@@ -486,11 +521,13 @@ public final class EquivalenceClass {
 
         }
     }
+
     /**
      * Random last Name
+     *
      * @return response
      */
-    public static String lastName() {
+    public String lastName() {
         return LAST_NAMES[random.nextInt(LAST_NAMES.length)];
     }
 
@@ -498,24 +535,24 @@ public final class EquivalenceClass {
      * @param expr (female, male, any)
      * @return response  first And Last Name
      */
-    public static String firstAndLastName(String expr) {
-        return name(expr) + SPACE + lastName();
+    public String firstAndLastName(String expr) {
+        return name(expr) + " " + lastName();
     }
 
     /**
      * @param expr (female, male, any)
      * @return response  first, Middle. And Last Name
      */
-    public static String fullName(String expr) {
+    public String fullName(String expr) {
         int letter = random.nextInt(WORDS[0].length());
-        return name(expr) + SPACE + WORDS[0].charAt(letter) + "." + SPACE + lastName();
+        return name(expr) + " " + WORDS[0].charAt(letter) + ". " + lastName();
     }
 
     /**
      * @param regex regular expresion
      * @return response  from RegEx
      */
-    public static String generateFromRegex(String regex) {
+    public String generateFromRegex(String regex) {
         StringBuilder response = new StringBuilder();
 
         Pattern p = Pattern.compile(regex);
@@ -564,6 +601,6 @@ public final class EquivalenceClass {
             }
         }
 
-       return response.toString();
+        return response.toString();
     }
 }
