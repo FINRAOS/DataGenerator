@@ -38,6 +38,36 @@ object JSchHelper {
 
   private final val SLEEP_ON_RETRY_MS = 50
 
+  def getOpenSession(sessionMaybe: Option[Session] = None,
+                     host: String, user: String, port: Short = 22, publicKeyPathMaybe: Option[String] = None,
+                     privateKeyPathMaybe: Option[String] = None, passphraseMaybe: Option[String] = None,
+                     passwordMaybe: Option[String] = None): Session = {
+    if (sessionMaybe.isEmpty || sessionMaybe.get == null || !sessionMaybe.get.isConnected) {
+      val jsch = new JSch()
+      if (privateKeyPathMaybe.nonEmpty) {
+        if (publicKeyPathMaybe.nonEmpty) {
+          if (passphraseMaybe.isEmpty) {
+            jsch.addIdentity(privateKeyPathMaybe.get, publicKeyPathMaybe.get, null)
+          } else {
+            jsch.addIdentity(privateKeyPathMaybe.get, publicKeyPathMaybe.get, passphraseMaybe.get.getBytes)
+          }
+        } else {
+          jsch.addIdentity(privateKeyPathMaybe.get)
+        }
+      } else {
+        require(passwordMaybe.nonEmpty, "Must set either private key path or password for SSH connection!")
+      }
+      val session = jsch.getSession(user, host, port)
+      if (passwordMaybe.nonEmpty) {
+        session.setPassword(passwordMaybe.get)
+      }
+      session.connectWithRetry(3000)
+      session
+    } else {
+      sessionMaybe.get
+    }
+  }
+
   /**
    * Implicit methods on a Jsch session.
    * @param session Session
@@ -51,7 +81,7 @@ object JSchHelper {
     def connectWithRetry(timeout: Int = 3000, tries: Short = 10): Unit = {
       val config = new Properties()
       config.put("StrictHostKeyChecking", "no")
-      config.put("PreferredAuthentications", "password,gssapi-with-mic,publickey,keyboard-interactive")
+      config.put("PreferredAuthentications", "password,publickey")
       session.setConfig(config)
       session.setServerAliveInterval(3600000)
 
