@@ -67,7 +67,7 @@ object CompressionHelper {
    * @param destinationPath Local destination to save to -- must be different than sourcePath. Overwrites if already exists.
    * @param deleteSourceFile Whether or not to delete the source file after compressing. Defaults to false.
    */
-  def extractBz2ToSingleFile(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false) {
+  def extractBz2ToSingleFile(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false): Unit = {
     val sourceFile = new File(sourcePath)
     require(sourceFile.exists && sourceFile.isFile, s"Path `${sourceFile.getAbsolutePath}` must be a file that exists to call extractBz2ToSingleFile!")
     require(sourcePath != destinationPath, s"extractBz2ToSingleFile requires destinationPath (${destinationPath}) different than sourcePath (${sourcePath})!")
