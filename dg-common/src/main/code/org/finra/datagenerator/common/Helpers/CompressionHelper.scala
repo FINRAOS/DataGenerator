@@ -16,9 +16,9 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import java.io.{File, FileInputStream, FileOutputStream}
+import java.io._
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
+import org.apache.commons.compress.compressors.bzip2.{BZip2CompressorInputStream, BZip2CompressorOutputStream}
 import org.apache.commons.io.IOUtils
 
 /**
@@ -37,18 +37,63 @@ object CompressionHelper {
     require(sourcePath != destinationPath, s"writeFileAsBz2 requires destinationPath (${destinationPath}) different than sourcePath (${sourcePath})!")
 
     val destinationFile = new File(destinationPath)
+    FileHelper.createDirIfNotExists(destinationFile.getParent)
     destinationFile.delete()
 
     val fileOutStream = new FileOutputStream(destinationFile)
-    val bzOutStream = new BZip2CompressorOutputStream(fileOutStream)
-    val inputStream = new FileInputStream(sourceFile)
     try {
-      IOUtils.copy(inputStream, bzOutStream)
+      val bzOutStream = new BZip2CompressorOutputStream(fileOutStream)
+      try {
+        val inputStream = new FileInputStream(sourceFile)
+        try {
+          IOUtils.copy(inputStream, bzOutStream)
+        } finally {
+          inputStream.close()
+        }
+      } finally {
+        bzOutStream.close()
+      }
     } finally {
-      inputStream.close()
-      bzOutStream.close()
       fileOutStream.close()
     }
-    sourceFile.delete()
+    if (deleteSourceFile) {
+      sourceFile.delete()
+    }
+  }
+
+  /**
+   * Extracts a bz2-compressed file to a single file
+   * @param sourcePath Local destination to
+   * @param destinationPath Local destination to save to -- must be different than sourcePath. Overwrites if already exists.
+   * @param deleteSourceFile Whether or not to delete the source file after compressing. Defaults to false.
+   */
+  def extractBz2ToSingleFile(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false) {
+    val sourceFile = new File(sourcePath)
+    require(sourceFile.exists && sourceFile.isFile, s"Path `${sourceFile.getAbsolutePath}` must be a file that exists to call extractBz2ToSingleFile!")
+    require(sourcePath != destinationPath, s"extractBz2ToSingleFile requires destinationPath (${destinationPath}) different than sourcePath (${sourcePath})!")
+
+    val destinationFile = new File(destinationPath)
+    FileHelper.createDirIfNotExists(destinationFile.getParent)
+    destinationFile.delete()
+
+    val fileOutStream = new FileOutputStream(destinationFile)
+    try {
+      val inputStream = new FileInputStream(sourceFile)
+      try {
+        val bzInputStream = new BZip2CompressorInputStream(inputStream)
+        try {
+          IOUtils.copy(bzInputStream, fileOutStream)
+        } finally {
+          bzInputStream.close()
+        }
+      } finally {
+        inputStream.close()
+      }
+    } finally {
+      fileOutStream.close()
+    }
+    if (deleteSourceFile) {
+      sourceFile.delete()
+    }
   }
 }

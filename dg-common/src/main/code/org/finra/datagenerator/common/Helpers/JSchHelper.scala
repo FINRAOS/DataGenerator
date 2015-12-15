@@ -242,7 +242,7 @@ object JSchHelper {
         println(s"${new SimpleDateFormat("yyyy_MM_dd HH-mm-ss") // scalastyle:ignore
           .format(new Date())}: Downloading dir from ${sftpChannel.getSession.getHost}: `$src` to `$dest`")
       }
-      FileHelper.ensureEmptyDirectoryExists(dest)
+      FileHelper.ensureDirectoryExists(dest)
 
       val srcWithSlash = if (src.endsWith("/")) src else src + "/"
 
