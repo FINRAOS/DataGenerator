@@ -58,7 +58,7 @@ Using the calendar, we should be able to support the following equvalence classe
 Using the trade calendar table, we should be able to support the following equivalence classes:
  1. all days and times within a range of dates
  2. all business days and times within a range of dates 
-  * business day == weekday && ! holiday && time >= openTime && time <= closeTime)
+  * business day: weekday && ! holiday && time >= openTime && time <= closeTime)
  
 We will need positve and negative generators. Both should take into account:
  1. If a range of weekdays is specified, a weekends within the range is a negative case.
