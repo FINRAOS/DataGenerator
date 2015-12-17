@@ -26,6 +26,6 @@ The markets close at 3:00 on Thrusday, 2015-12-25 and are closed on Friday, 2015
 This feature can be implemented in stages:
 
 Stage 1: Using the Java Calendar class, implement the distinction between weedkdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
- 1. all days
- 1. weekdays
- 1. weekends
+ 1. all days - within a range of dates
+ 1. weekdays - within a range of dates
+ 1. weekends - within a range of dates
