@@ -25,12 +25,12 @@ The markets close at 3:00 on Thrusday, 2015-12-25 and are closed on Friday, 2015
 
 This feature can be implemented in stages:
 
-Stage 1: Using the Java Calendar class, implement the distinction between weedkdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
+######Stage 1: Using the Java Calendar class, implement the distinction between weedkdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
  1. all days within a range of dates
  1. weekdays within a range of dates
  1. weekends within a range of dates
  
-Stage 2: Introduce a user supplied date list which lists dates as YYYY-mm-dd. This list can be used to specify inclusions or omissions. Using the list and stage 1, we should be able to support the following equivalence classes:
+######Stage 2: Introduce a user supplied date list which lists dates as YYYY-mm-dd. This list can be used to specify inclusions or omissions. Using the list and stage 1, we should be able to support the following equivalence classes:
  1. all days within a range of dates, including only the dates in the list. 
  2. all days within a range of dates, excluding the dates in the list
  1. all weekdays within a range of dates, including only the dates in the list. 
@@ -38,7 +38,7 @@ Stage 2: Introduce a user supplied date list which lists dates as YYYY-mm-dd. Th
  1. all weekends within a range of dates, including only the dates in the list. 
  2. all weekends within a range of dates, excluding the dates in the list
 
-Stage 3: Introduce a trade calendar table with columns
+######Stage 3: Introduce a trade calendar table with columns
  1. date (YYYY-mm-dd)
  1. weekday (boolean)
  1. holiday (boolean)
@@ -55,7 +55,7 @@ Using the calendar, we should be able to support the following equvalence classe
 Using the trade calendar table, we should be able to support the following equivalence classes:
  1. all days and times within a range of dates
  2. all business days and times within a range of dates 
- (business day == weekday && ! holiday && time >= openTime && time <= closeTime)
+  * business day == weekday && ! holiday && time >= openTime && time <= closeTime)
  
 We will need positve and negative generators. Both positive and negative generators should take into account:
  1. If a range of weekdays is specified, a weekend within the range is a negative case.
