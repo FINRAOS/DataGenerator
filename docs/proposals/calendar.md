@@ -48,20 +48,20 @@ Introduce a trade calendar table with columns
  1. openTime (hh:mm:ss)
  1. closeTime (hh:mm:ss)
  
-Using the calendar, we should be able to support the following equvalence classes:
+Using the trade calendar, we should be able to support the following equvalence classes:
  1. all days/weekdays/weekends within a range of dates
  2. all days/weekdays/weekends within a range of dates excluding holidays
  3. all holidays within a range of dates excluding weekdays/weekends
  4. other combinations of the above
  5. all date/times between openTime and closeTime
  
-Using the trade calendar table, we should be able to support the following equivalence classes:
+Using the trade calendar, we should be able to support the following equivalence classes:
  1. all days and times within a range of dates
  2. all business days and times within a range of dates 
   * business day: weekday && ! holiday && time >= openTime && time <= closeTime)
  
-We will need positve and negative generators. Both should take into account:
- 1. If a range of weekdays is specified, a weekends within the range is a negative case.
+For all stages, we will need positve and negative generators. Both should take into account scenarios such as:
+ 1. If a range of weekdays is specified, a weekends within the range are negative cases.
  2. Is a range of business days is specified
   3. weekends and holidays within the range are negative test cases
   4. times before openTime and after closeTime are negative test cases
