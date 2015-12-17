@@ -26,11 +26,17 @@ The markets close at 3:00 on Thrusday, 2015-12-25 and are closed on Friday, 2015
 This feature can be implemented in stages:
 
 Stage 1: Using the Java Calendar class, implement the distinction between weedkdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
- 1. all days - within a range of dates
- 1. weekdays - within a range of dates
- 1. weekends - within a range of dates
+ 1. all days within a range of dates
+ 1. weekdays within a range of dates
+ 1. weekends within a range of dates
  
-Stage 2: Introduce a user supplied date list which lists dates as YYYY-mm-dd. This list can be used to specify omissions or inclusion.
+Stage 2: Introduce a user supplied date list which lists dates as YYYY-mm-dd. This list can be used to specify inclusions or omissions. Using the list and stage 1, we should be able to support the following equivalence classes:
+ 1. all days within a range of dates, including only the dates in the list. 
+ 2. all days within a range of dates, excluding the dates in the list
+ 1. all weekdays within a range of dates, including only the dates in the list. 
+ 2. all weekdays within a range of dates, excluding the dates in the list
+ 1. all weekends within a range of dates, including only the dates in the list. 
+ 2. all weekends within a range of dates, excluding the dates in the list
 
 Stage 3: Introduce a trade calendar table with columns
  1. date (YYYY-mm-dd)
