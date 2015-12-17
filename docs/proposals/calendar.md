@@ -64,6 +64,6 @@ We will need positve and negative generators. Both should take into account:
  1. If a range of weekdays is specified, a weekends within the range is a negative case.
  2. Is a range of business days is specified
   3. weekends and holidays within the range are negative test cases
-  4. Times before openTime and after closeTime are negative test cases
+  4. times before openTime and after closeTime are negative test cases
  
 
