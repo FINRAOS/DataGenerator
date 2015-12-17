@@ -29,3 +29,14 @@ Stage 1: Using the Java Calendar class, implement the distinction between weedkd
  1. all days - within a range of dates
  1. weekdays - within a range of dates
  1. weekends - within a range of dates
+ 
+Stage 2: Introduce a user supplied date list which lists dates as YYYY-mm-dd. This list can be used to specify omissions or inclusion.
+
+Stage 3: Introduce a trade calendar table with columns
+1. date (YYYY-mm-dd)
+2. weekday (boolean)
+3. holiday (boolean)
+4. openTime (hh:mm:ss)
+5. closeTime (hh:mm:ss)
+ 
+
