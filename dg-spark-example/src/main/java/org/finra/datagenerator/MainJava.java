@@ -46,7 +46,7 @@ public final class MainJava implements Serializable {
         //second line as "Number of Split"
 
         //Read input data from file using File and InputStream
-        File file = new File("/Users/k25469/projects/DataGeneratorFinal/dg-spark-example/src/main/resources/file/input.txt");
+        File file = new File("./dg-spark-example/src/main/resources/file/input.txt");
 
         InputStream is = new FileInputStream(file);
 
