@@ -21,19 +21,24 @@ The markets close at 3:00 on Thursday, 2015-12-24 and are closed on Friday, 2015
   1. T+1 is Tuesday, 2015-12-22  
   1. T+4 is Monday, 2015-12-28
 
-In order to test business applications effectively, it is necessary to generate test data for:
+To effectively test business applications, it is necessary to generate dates for:
  1. business days
+  1. ranges of business days between a start date and an end date
+  2. ranges of business days from a start date and extending forward N buisness days
+  3. ranges of business days from an end date and extending back N business days
  2. non-business days
- 3. between market open and close times on business days
- 4. outside of market open and close times on business days
- 5. boundary
+ 3. business days between market open and close times
+ 4. business days outside of market open and close times
+ 5. equivalence classes:
+  1. positive and negative dates and/or times for each range of dates and/or times
+  2. positive and negative boundary dates and/or times for each range of dates and/or times
 
 ##Proposal
 
 This feature can be implemented in stages:
 
 ######Stage 1: 
-Using the Java Calendar class, implement the distinction between weedkdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
+Using the Java Calendar class, implement the distinction between weekdays and weekends. Because the Java Calendar class returns day of week, we can leverage it to implement three equivalence classes:
  1. all days within a range of dates
  1. weekdays within a range of dates
  1. weekends within a range of dates
