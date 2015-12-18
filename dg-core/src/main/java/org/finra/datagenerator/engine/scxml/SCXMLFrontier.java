@@ -27,9 +27,12 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.consumer.DataPipe;
+import org.finra.datagenerator.distributor.multithreaded.SingleThreadedProcessing;
 import org.finra.datagenerator.engine.Frontier;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,12 +42,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Frontier implementation for generating data with SCXML state machine models.
+ *
+ * Marshall Peters
+ * Date: 8/26/14
  */
 public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
     private final PossibleState root;
     private static final Logger log = Logger.getLogger(SCXMLFrontier.class);
     private List<CustomTagExtension> tagExtensionList;
+    private SingleThreadedProcessing singleThreadedProcessing;
+    private DataPipe dataPipe;
+    private long maxNumberOfLines = -1;
 
     /**
      * Constructor
@@ -80,14 +89,109 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
      * Performs a DFS on the model, starting from root, placing results in the queue
      * Just a public wrapper for private dfs function
      *
-     * @param queue the results queue
+     * @param singleThreadedProcessing Processing Strategy
      * @param flag used to stop the search before completion
+     * @param outTemplate output Template
+     * @param sb StringBuilder
+     * @return StringBuilder
+     * @throws IOException io exception
      */
-    public void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag) {
+    public StringBuilder searchForScenarios(SingleThreadedProcessing singleThreadedProcessing,
+                                            AtomicBoolean flag, String[] outTemplate, StringBuilder sb)
+            throws IOException {
+        return dfs(singleThreadedProcessing, flag, root, outTemplate, sb);
+    }
+
+    /**
+     * Performs a DFS on the model, starting from root, placing results in the queue
+     * Just a public wrapper for private dfs function
+     *
+     * @param queue the queue
+     * @param flag used to stop the search before completion
+     * @throws IOException io exception
+     */
+    public void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag) throws IOException {
         dfs(queue, flag, root);
     }
 
-    private void dfs(Queue<Map<String, String>> queue, AtomicBoolean flag, PossibleState state) {
+    private StringBuilder dfs(SingleThreadedProcessing singleThreadedProcessing, AtomicBoolean flag, PossibleState state,
+                              String[] outTemplate, StringBuilder stringBuilder) throws IOException {
+
+        if (flag.get()) {
+            return stringBuilder;
+        }
+
+        TransitionTarget nextState = state.nextState;
+
+        maxNumberOfLines = singleThreadedProcessing.getMaximumNumberOfLines();
+
+        if (nextState.getId().equalsIgnoreCase("end")) {
+            String[] numOfLines = stringBuilder.toString().split("\\n");
+
+            dataPipe = singleThreadedProcessing.processOutput(state.variables);
+
+            if (numOfLines.length < maxNumberOfLines) {
+                stringBuilder.append(dataPipe.getPipeDelimited(outTemplate)).append("\n");
+            }
+        }
+
+        //run every action in series
+        List<Map<String, String>> product = new LinkedList<>();
+        product.add(new HashMap<String, String>(state.variables));
+
+        OnEntry entry = nextState.getOnEntry();
+        List<Action> actions = entry.getActions();
+
+        for (Action action : actions) {
+            for (CustomTagExtension tagExtension : tagExtensionList) {
+                if (tagExtension.getTagActionClass().isInstance(action)) {
+                    product = tagExtension.pipelinePossibleStates(action, product);
+                }
+            }
+        }
+
+        //go through every transition and see which of the products are valid, recursive searching on them
+        List<Transition> transitions = nextState.getTransitionsList();
+
+        for (Transition transition : transitions) {
+            String condition = transition.getCond();
+            TransitionTarget target = ((List<TransitionTarget>) transition.getTargets()).get(0);
+
+            for (Map<String, String> p : product) {
+                Boolean pass;
+
+                if (condition == null) {
+                    pass = true;
+                } else {
+                    //scrub the context clean so we may use it to evaluate transition conditional
+                    Context context = this.getRootContext();
+                    context.reset();
+
+                    //set up new context
+                    for (Map.Entry<String, String> e : p.entrySet()) {
+                        context.set(e.getKey(), e.getValue());
+                    }
+
+                    //evaluate condition
+                    try {
+                        pass = (Boolean) this.getEvaluator().eval(context, condition);
+                    } catch (SCXMLExpressionException ex) {
+                        pass = false;
+                    }
+                }
+
+                //transition condition satisfied, continue search recursively
+                if (pass) {
+                    PossibleState result = new PossibleState(target, p);
+                    dfs(singleThreadedProcessing, flag, result, outTemplate, stringBuilder);
+                }
+            }
+        }
+
+        return stringBuilder;
+    }
+
+    private void dfs(Queue<Map<String, String>> queue, AtomicBoolean flag, PossibleState state) throws IOException {
         if (flag.get()) {
             return;
         }
