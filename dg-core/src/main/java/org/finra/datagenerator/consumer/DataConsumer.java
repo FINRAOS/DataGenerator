@@ -223,4 +223,27 @@ public class DataConsumer {
         }
         return content.toString();
     }
+
+    /**
+     * Consumes a produced result. Calls every transformer in sequence without
+     * calling data writers.
+     *
+     * @param initialVars a map containing the initial variables assignments
+     * @return the datapipe - number of lines written
+     */
+    public DataPipe consumeMap(Map<String, String> initialVars) {
+        this.dataPipe = new DataPipe(this);
+
+        // Set initial variables
+        for (Map.Entry<String, String> ent : initialVars.entrySet()) {
+            dataPipe.getDataMap().put(ent.getKey(), ent.getValue());
+        }
+
+        // Call transformers
+        for (DataTransformer dc : dataTransformers) {
+            dc.transform(dataPipe);
+        }
+
+        return dataPipe;
+    }
 }
