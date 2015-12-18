@@ -92,7 +92,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
      * @param singleThreadedProcessing Processing Strategy
      * @param flag used to stop the search before completion
      * @param outTemplate output Template
-     * @param sb StringBuilder with Data 
+     * @param sb StringBuilder with Data
      * @return StringBuilder
      * @throws IOException io exception
      */

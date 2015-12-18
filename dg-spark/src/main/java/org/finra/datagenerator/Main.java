@@ -55,7 +55,7 @@ public final class Main implements Serializable {
 
             SparkDistributorJava sparkDistributor = new SparkDistributorJava(masterURL, outTemplate);
 
-            sparkDistributor.setMaxNumberOfLines(40);
+            sparkDistributor.setMaxNumberOfLines(60);
             scxmlEngine.process(sparkDistributor);
 
         }
