@@ -27,6 +27,7 @@ import org.apache.commons.scxml.model.ModelException;
 import org.finra.datagenerator.exceptions.NullActionException;
 import org.finra.datagenerator.exceptions.NullSetException;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,7 +38,7 @@ import java.util.Map;
 /**
  * Implementation of dg:assign tag
  */
-public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag> {
+public class SetAssignExtension implements CustomTagExtension<SetAssignExtension.SetAssignTag>, Serializable {
 
     public Class<SetAssignTag> getTagActionClass() {
         return SetAssignTag.class;

@@ -24,6 +24,7 @@ import org.apache.commons.scxml.SCXMLExpressionException;
 import org.apache.commons.scxml.model.Action;
 import org.apache.commons.scxml.model.ModelException;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,7 @@ import java.util.Map;
 /**
  * Implementation of dg:range tag
  */
-public class RangeExtension implements CustomTagExtension<RangeExtension.RangeTag> {
+public class RangeExtension implements CustomTagExtension<RangeExtension.RangeTag>, Serializable {
 
     public Class<RangeTag> getTagActionClass() {
         return RangeTag.class;
