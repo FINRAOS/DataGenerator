@@ -18,6 +18,7 @@ package org.finra.datagenerator.distributor.multithreaded;
 import org.apache.log4j.Logger;
 import org.finra.datagenerator.engine.Frontier;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,7 +53,11 @@ public class SearchWorker implements Runnable {
     @Override
     public void run() {
         log.info(Thread.currentThread().getName() + " is starting DFS");
-        frontier.searchForScenarios(queue, flag);
+        try {
+            frontier.searchForScenarios(queue, flag);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         log.info(Thread.currentThread().getName() + " is done with DFS");
     }
 }
