@@ -36,7 +36,9 @@ object ReflectionHelper {
     val companionClassName = classOfT.getName + "$"
     val companionClass = Class.forName(companionClassName)
     val moduleField = companionClass.getField("MODULE$")
+    // scalastyle:off null
     Option(moduleField.get(null))
+    // scalastyle:on null
   } catch {
     case e: Exception => None
   }
