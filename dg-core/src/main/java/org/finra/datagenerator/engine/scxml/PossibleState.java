@@ -21,11 +21,8 @@ import org.apache.commons.scxml.model.TransitionTarget;
 import java.util.Map;
 
 /**
- * Represents a partial transversal over an SCXML state machine, storing
+ * Represents a partial traversal over an SCXML state machine, storing
  * a list of variable assignments and the current state machine state.
- *
- * Marshall Peters
- * Date: 8/26/14
  */
 public class PossibleState {
     final TransitionTarget nextState;

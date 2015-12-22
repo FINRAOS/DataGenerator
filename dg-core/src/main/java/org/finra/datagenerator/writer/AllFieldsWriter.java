@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 /**
- * Created by mibrahim on 6/25/15.
+ * Outputs fields in sorted order
  */
 public class AllFieldsWriter implements DataWriter {
     private String separator = "|";

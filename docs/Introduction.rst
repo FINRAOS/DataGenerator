@@ -8,7 +8,7 @@ up and running quickly - but everything in DG is completely customizable. As of 
 execution architecture, generation technique, data transformations, and output formatting can all be described in Java code.
 
 DG 2.0 has been intentionally designed to support the data generation challenges of the Big Data domain. Currently, our
-:doc:`Hadoop` documentation describes the Hadoop sample implementation available in our repository on Github. In the future, we plan 
+`Hadoop <Hadoop.rst>`_ documentation describes the Hadoop sample implementation available in our repository on Github. In the future, we plan
 to provide a library of Hadoop-specific implemenations for even easier adoption of Data Generator on this platform.
 
 Users of Data Generator should be able to focus on the core issues of their specific data generation challenges, leaving less-important
