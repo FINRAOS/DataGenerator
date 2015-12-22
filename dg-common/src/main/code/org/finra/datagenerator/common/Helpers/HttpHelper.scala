@@ -78,8 +78,10 @@ object HttpHelper {
   def getInputStreamFromUrl(url: String, userAndPasswordOrTokenMaybe: Option[(String, String)] = None
     , requestProperties: Map[String, String] = Map(DEFAULT_PROPERTIES)) : InputStream = {
     userAndPasswordOrTokenMaybe match {
+      // scalastyle:off null
       case Some((_, null)) => throw new IllegalArgumentException("Password/token must not be null!")
       case Some((null, _)) => throw new IllegalArgumentException("User must not be null!")
+      // scalastyle:on null
       case _ => // continue
     }
 

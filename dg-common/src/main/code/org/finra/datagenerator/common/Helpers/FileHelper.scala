@@ -104,11 +104,11 @@ object FileHelper {
      * Returns all lines from a file, else None if not a file.
      * @return All lines from the file, or None if not a file
      */
-    def getLines: Option[Iterator[String]] = {
+    def getLinesMaybe: Option[Seq[String]] = {
       if (fileOrDirectory.isFile) {
         val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
         try {
-          Some(source.getLines())
+          Some(source.getLines().toSeq)
         } finally {
           source.close()
         }

@@ -42,12 +42,14 @@ object JSchHelper {
                      host: String, user: String, port: Short = 22, publicKeyPathMaybe: Option[String] = None,
                      privateKeyPathMaybe: Option[String] = None, passphraseMaybe: Option[String] = None,
                      passwordMaybe: Option[String] = None): Session = {
+    // scalastyle:off null
     if (sessionMaybe.isEmpty || sessionMaybe.get == null || !sessionMaybe.get.isConnected) {
       val jsch = new JSch()
-      if (privateKeyPathMaybe.nonEmpty) {
+      if (privateKeyPathMaybe.nonEmpty && new File(privateKeyPathMaybe.get).exists) {
         if (publicKeyPathMaybe.nonEmpty) {
           if (passphraseMaybe.isEmpty) {
             jsch.addIdentity(privateKeyPathMaybe.get, publicKeyPathMaybe.get, null)
+            // scalastyle:on null
           } else {
             jsch.addIdentity(privateKeyPathMaybe.get, publicKeyPathMaybe.get, passphraseMaybe.get.getBytes)
           }
@@ -55,7 +57,8 @@ object JSchHelper {
           jsch.addIdentity(privateKeyPathMaybe.get)
         }
       } else {
-        require(passwordMaybe.nonEmpty, "Must set either private key path or password for SSH connection!")
+        require(passwordMaybe.nonEmpty, "Must set either private key path or password for SSH connection!"
+          + s"${if (privateKeyPathMaybe.nonEmpty) s" Private key file `${privateKeyPathMaybe.get}` does not exist."}")
       }
       val session = jsch.getSession(user, host, port)
       if (passwordMaybe.nonEmpty) {
@@ -245,6 +248,8 @@ object JSchHelper {
       FileHelper.ensureDirectoryExists(dest)
 
       val srcWithSlash = if (src.endsWith("/")) src else src + "/"
+
+      val javaCollection = Seq[String]().asJava
 
       sftpChannel.ls(srcWithSlash + "*").asScala.foreach(obj => {
         // Scala has no syntax to import a non-static inner Java class, so we have to do this ugly cast with #,
