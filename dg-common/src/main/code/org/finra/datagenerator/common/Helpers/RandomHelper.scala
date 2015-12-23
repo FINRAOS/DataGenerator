@@ -28,6 +28,27 @@ import scala.util.Random
  * (the unique IDs that key the data).
  */
 object RandomHelper {
+  /**
+   * Implicit methods for a random generator
+   * @param random Random number generator
+   */
+  implicit class RandomImplicits(random: Random) {
+    /**
+     * Get next long between 0 (inclusive) and max (exclusive)
+     * @return Long >= 0 and < max
+     * @param max Max number (exclusive)
+     */
+    def nextLong(max: Long): Long = {
+      var bits: Long = 0L
+      var result: Long = 0L
+      do {
+        bits = (random.nextLong << 1) >>> 1
+        result = bits % max
+      } while (bits - result + (max - 1) < 0L)
+      result
+    }
+  }
+
   private val threadToRandomSeedsMap = new collection.parallel.mutable.ParHashMap[Thread, (scala.util.Random, scala.util.Random)]()
   /**
    * Generates random seeds for creating randomizers for data that doesn't need to be globally unique.
