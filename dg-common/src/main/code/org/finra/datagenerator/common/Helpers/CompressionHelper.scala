@@ -65,7 +65,7 @@ object CompressionHelper {
    * Extracts a bz2-compressed file to a single file
    * @param sourcePath Local destination to
    * @param destinationPath Local destination to save to -- must be different than sourcePath. Overwrites if already exists.
-   * @param deleteSourceFile Whether or not to delete the source file after compressing. Defaults to false.
+   * @param deleteSourceFile Whether or not to delete the source file after decompressing. Defaults to false.
    */
   def extractBz2ToSingleFile(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false): Unit = {
     val sourceFile = new File(sourcePath)
