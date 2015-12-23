@@ -34,12 +34,15 @@ import scala.collection.mutable
   * @param appendSharedDisplayIdsWithNumericalSuffix If true, if multiple nodes with same displayableDataId, appends with _1, _2, etc.
   */
 class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdgeLinkTrackingOn: Boolean = false,
-                                  private var _graphId: String = "", var appendSharedDisplayIdsWithNumericalSuffix: Boolean = false) {
+                                  private var _graphId: String = "", var appendSharedDisplayIdsWithNumericalSuffix: Boolean = true) {
   def this(graphId: String) {
     this(_graphId=graphId, appendSharedDisplayIdsWithNumericalSuffix = true)
   }
   def this(initialNodeValue: T, graphId: String) {
     this(initialNodeValue=Option(initialNodeValue), _graphId=graphId)
+  }
+  def this(initialNodeValue: T) {
+    this(initialNodeValue=Option(initialNodeValue))
   }
 
   @BeanProperty
