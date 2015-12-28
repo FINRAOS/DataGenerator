@@ -192,9 +192,9 @@ public class DataConsumerTest {
      *
      * @throws Exception exception
      */
-	 @Test
-	 @Ignore("Flaky...")
-	 public void testSendRequestSync() throws Exception {
+   @Test
+   @Ignore("Flaky...")
+   public void testSendRequestSync() throws Exception {
         String reportingHost = runJetty();
         DataConsumer theConsumer = new DataConsumer();
         theConsumer.setReportingHost(reportingHost);
