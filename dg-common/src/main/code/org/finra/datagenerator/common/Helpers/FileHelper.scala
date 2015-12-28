@@ -100,30 +100,15 @@ object FileHelper {
       })
     }
 
-
-    /**
-     * Returns all lines from a file, else throws exception if not a file.
-     * @return All lines from the file
-     */
-    def getLines: Iterator[String] = {
-      require(fileOrDirectory.exists && fileOrDirectory.isFile)
-      val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
-      try {
-        source.getLines()
-      } finally {
-        source.close()
-      }
-    }
-
     /**
      * Returns all lines from a file, else None if not a file.
      * @return All lines from the file, or None if not a file
      */
-    def getLinesMaybe: Option[Seq[String]] = {
+    def getLinesMaybe: Option[Array[String]] = {
       if (fileOrDirectory.isFile) {
         val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
         try {
-          Some(source.getLines().toSeq)
+          Some(source.getLines().toArray)
         } finally {
           source.close()
         }
@@ -213,7 +198,7 @@ object FileHelper {
      * @param ignoreCase Case insensitive by default
      * @return Matched files
      */
-    def listFilesEndingWith(fileSuffix: String, ignoreCase: Boolean = true): Seq[File] = {
+    def listFilesEndingWith(fileSuffix: String, ignoreCase: Boolean = true, includeDirectories: Boolean = false): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {
         Seq[File]()
       } else {
@@ -225,7 +210,7 @@ object FileHelper {
               name.endsWith(fileSuffix)
             }
           }
-        }).filter(_.isFile)
+        }).filter(includeDirectories || _.isFile)
       }
     }
 
@@ -236,7 +221,7 @@ object FileHelper {
      * @param ignoreCase Case insensitive by default
      * @return All matched files
      */
-    def listFilesContaining(substring: String, extension: String = "", ignoreCase: Boolean = true): Seq[File] = {
+    def listFilesContaining(substring: String, extension: String = "", ignoreCase: Boolean = true, includeDirectories: Boolean = false): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {
         Seq[File]()
       } else {
@@ -248,7 +233,7 @@ object FileHelper {
               name.contains(substring) && name.endsWith(extension)
             }
           }
-        }).filter(_.isFile)
+        }).filter(includeDirectories || _.isFile)
       }
     }
 
@@ -259,13 +244,14 @@ object FileHelper {
      * @param isRegex Whether or not the filter string is a regex. Defaults to false, in which case it's a glob-style filter.
      * @return All matched files
      */
-    def listFilesMatchingPipeDelimitedGlobFilter(pipeDelimitedFilterString: String = "*", ignoreCase: Boolean = true, isRegex: Boolean = false): Seq[File] = {
+    def listFilesMatchingPipeDelimitedGlobFilter(pipeDelimitedFilterString: String = "*", ignoreCase: Boolean = true
+                                                 , isRegex: Boolean = false, includeDirectories: Boolean = false): Seq[File] = {
       val regexFilterString = if (isRegex) {
         pipeDelimitedFilterString
       } else {
         pipeDelimitedFilterString.replace(".", "\\.").replace("*", ".*")
       }
-      fileOrDirectory.listFilesMatchingRegexFilter(regexFilterString, ignoreCase = ignoreCase)
+      fileOrDirectory.listFilesMatchingRegexFilter(regexFilterString, ignoreCase = ignoreCase, includeDirectories = includeDirectories)
     }
 
     /**
@@ -274,7 +260,7 @@ object FileHelper {
      * @param ignoreCase Case insensitive by default
      * @return All matched files
      */
-    def listFilesMatchingRegexFilter(regexFilterString: String = ".*", ignoreCase: Boolean = true): Seq[File] = {
+    def listFilesMatchingRegexFilter(regexFilterString: String = ".*", ignoreCase: Boolean = true, includeDirectories: Boolean = false): Seq[File] = {
       if (!fileOrDirectory.isDirectory) {
         Seq[File]()
       } else {
@@ -287,7 +273,7 @@ object FileHelper {
           override def accept(dir: File, name: String): Boolean = {
             name.matches(modifiedRegexString)
           }
-        }).filter(_.isFile)
+        }).filter(includeDirectories || _.isFile)
       }
     }
   }
