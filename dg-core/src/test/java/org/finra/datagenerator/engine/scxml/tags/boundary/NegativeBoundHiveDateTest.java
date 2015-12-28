@@ -62,7 +62,7 @@ public class NegativeBoundHiveDateTest {
      * testing lower bound
      */
     @Test
-	@Ignore("Failing, at least sometimes, since PR 263 was merged in... Ignoring temporarily to unblock build.")
+    @Ignore("Failing, at least sometimes, since PR 263 was merged in... Ignoring temporarily to unblock build.")
     public void lowerBoundTest2() {
         Map<String, String> variableDomains = new HashMap<>();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
