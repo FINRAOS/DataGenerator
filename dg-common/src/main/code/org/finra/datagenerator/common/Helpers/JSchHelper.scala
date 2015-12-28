@@ -249,8 +249,6 @@ object JSchHelper {
 
       val srcWithSlash = if (src.endsWith("/")) src else src + "/"
 
-      val javaCollection = Seq[String]().asJava
-
       sftpChannel.ls(srcWithSlash + "*").asScala.foreach(obj => {
         // Scala has no syntax to import a non-static inner Java class, so we have to do this ugly cast with #,
         // because by default inner classes in Scala are members of the enclosing object, whereas in Java they are members of the enclosing class.

@@ -100,6 +100,21 @@ object FileHelper {
       })
     }
 
+
+    /**
+     * Returns all lines from a file, else throws exception if not a file.
+     * @return All lines from the file
+     */
+    def getLines: Iterator[String] = {
+      require(fileOrDirectory.exists && fileOrDirectory.isFile)
+      val source = io.Source.fromFile(fileOrDirectory)("ISO-8859-1")
+      try {
+        source.getLines()
+      } finally {
+        source.close()
+      }
+    }
+
     /**
      * Returns all lines from a file, else None if not a file.
      * @return All lines from the file, or None if not a file
