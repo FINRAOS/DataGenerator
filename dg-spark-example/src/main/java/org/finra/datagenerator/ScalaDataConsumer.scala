@@ -16,8 +16,9 @@
 
 package org.finra.datagenerator
 
-import org.finra.datagenerator.consumer.{DataPipe, DataConsumer}
 import java.util
+
+import org.finra.datagenerator.consumer.DataConsumer
 
 import scala.collection.JavaConversions._
 

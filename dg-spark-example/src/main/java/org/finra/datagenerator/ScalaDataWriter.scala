@@ -16,8 +16,7 @@
 
 package org.finra.datagenerator
 
-import java.io.OutputStream
-import java.io.ObjectOutputStream
+import java.io.{ObjectOutputStream, OutputStream}
 
 import org.finra.datagenerator.consumer.DataPipe
 import org.finra.datagenerator.writer.DataWriter

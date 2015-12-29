@@ -46,7 +46,7 @@ public final class MainJava implements Serializable {
         //second line as "Number of Split"
 
         //Read input data from file using File and InputStream
-        File file = new File("./dg-spark/src/main/resources/file/input.txt");
+        File file = new File("./dg-spark-example/src/main/resources/file/input.txt");
 
         InputStream is = new FileInputStream(file);
 
@@ -58,17 +58,18 @@ public final class MainJava implements Serializable {
             randomNumberEngine.setModelByInputFileStream(is);
 
             //Define your host name here with port 7077 i.e hostname:7077
-            String masterURL = "spark://sandbox.hortonworks.com:7077";
+            String masterURL = "local[5]";
+            //String masterURL = "spark://sandbox.hortonworks.com:7077";
 
             //Define Spark Context and Scala Data Consumer object
             //SparkContext sparkContext = new SparkContext();
             ScalaDataConsumer scalaDataConsumer = new ScalaDataConsumer();
 
             //Create instance of SparkDistributor and set masterURL to Spark Context
-            SparkDistributor sparkDistributor = new SparkDistributor(masterURL, scalaDataConsumer);
+            SparkDistributorScala sparkDistributorScala = new SparkDistributorScala(masterURL, scalaDataConsumer);
 
             //Generate data, distribute it and send it to data consumer
-            randomNumberEngine.process(sparkDistributor);
+            randomNumberEngine.process(sparkDistributorScala);
         } finally {
             //Close the output Stream
             is.close();

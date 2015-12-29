@@ -11,6 +11,7 @@
         <module>dg-example-hadoop</module>
         <module>dg-simple-csv</module>
         <module>dg-spark</module>
+        <module>dg-spark-example</module>
     </modules>
     <packaging>pom</packaging>
 

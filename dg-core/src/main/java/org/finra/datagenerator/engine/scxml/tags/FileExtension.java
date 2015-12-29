@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ import org.apache.log4j.Logger;
 /**
  * Implementation of dg:file tag
  */
-public class FileExtension implements CustomTagExtension<FileExtension.FileTag> {
+public class FileExtension implements CustomTagExtension<FileExtension.FileTag>, Serializable {
     private static final Logger log = Logger.getLogger(FileExtension.class);
 
     private static Map<String, Set<String>> cachedDataFiles = new HashMap<>();

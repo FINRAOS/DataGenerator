@@ -19,14 +19,12 @@ package org.finra.datagenerator
 import java._
 import java.io.{ObjectOutputStream, OutputStream}
 
-import org.finra.datagenerator.consumer.{DataPipe, DataConsumer}
-import org.finra.datagenerator.writer.{DefaultWriter, DataWriter}
-
-import scala.collection.JavaConverters._
-
 import org.apache.spark.{SparkConf, SparkContext}
+import org.finra.datagenerator.consumer.DataConsumer
 import org.finra.datagenerator.distributor.SearchDistributor
 import org.finra.datagenerator.engine.Frontier
+
+import scala.collection.JavaConverters._
 
 /**
  * Take Frontiers produced by an Engine and process the Frontiers in parallel,
@@ -36,7 +34,7 @@ import org.finra.datagenerator.engine.Frontier
  *
  * Created by Brijesh on 6/2/2015.
  */
-class SparkDistributor(masterURL: String, scalaDataConsumer: ScalaDataConsumer) extends
+class SparkDistributorScala(masterURL: String, scalaDataConsumer: ScalaDataConsumer) extends
   SearchDistributor with java.io.Serializable {
 
   val flag: Boolean = true
@@ -75,7 +73,7 @@ class SparkDistributor(masterURL: String, scalaDataConsumer: ScalaDataConsumer) 
      * NOTE: if you change something compile maven file from command line using
      * "mvn clean package"
      */
-    sparkContext.addJar("./dg-spark/target/dg-spark-2.2-SNAPSHOT.jar")
+    sparkContext.addJar("./dg-spark-example/target/dg-spark-example-2.2-SNAPSHOT.jar")
 
       for (frontier <- frontierList.asScala) {
 

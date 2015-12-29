@@ -18,13 +18,14 @@ package org.finra.datagenerator.engine.scxml.tags;
 
 import org.apache.commons.scxml.model.Assign;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Implementation of assign tag of scxml model
  */
-public class SingleValueAssignExtension implements CustomTagExtension<Assign> {
+public class SingleValueAssignExtension implements CustomTagExtension<Assign>, Serializable {
 
     public Class<Assign> getTagActionClass() {
         return Assign.class;

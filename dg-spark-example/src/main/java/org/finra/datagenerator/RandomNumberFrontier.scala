@@ -16,9 +16,10 @@
 
 package org.finra.datagenerator
 
-import java.util
 import java.util.concurrent.atomic.AtomicBoolean
+import java.{lang, util}
 
+import org.finra.datagenerator.distributor.multithreaded.SingleThreadedProcessing
 import org.finra.datagenerator.engine.Frontier
 
 /**
@@ -58,4 +59,6 @@ class RandomNumberFrontier extends Frontier with java.io.Serializable {
       }
     }
   }
+
+  override def searchForScenarios(singleThreadedProcessing: SingleThreadedProcessing, flag: AtomicBoolean, outTemplate: Array[String], sb: lang.StringBuilder): lang.StringBuilder = ???
 }
