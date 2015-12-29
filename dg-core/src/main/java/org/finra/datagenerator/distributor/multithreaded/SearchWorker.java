@@ -56,7 +56,7 @@ public class SearchWorker implements Runnable {
         try {
             frontier.searchForScenarios(queue, flag);
         } catch (IOException e) {
-            log.error("",e);
+            log.error("", e);
         }
         log.info(Thread.currentThread().getName() + " is done with DFS");
     }
