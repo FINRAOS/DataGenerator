@@ -75,7 +75,13 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
 
         values.add("" + earlyYear + "-" + earlyMo + "-" + earlyDy);
 
-        if (earlyDay < 28) {
+        if ((earlyMonth == 1 || earlyMonth == 3 || earlyMonth == 5 || earlyMonth == 7
+                || earlyMonth == 8 || earlyMonth == 10 || earlyMonth == 12) && earlyDay < 31) {
+            earlyDay++;
+        } else if ((earlyMonth == 4 || earlyMonth == 6 || earlyMonth == 9 || earlyMonth == 11)
+                && earlyDay < 30) {
+            earlyDay++;
+        } else if (earlyMonth == 2 && earlyDay < 28) {
             earlyDay++;
         } else {
             if (earlyMonth < 12) {
@@ -87,6 +93,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
                 earlyYear++;
             }
         }
+
         earlyMo = (Integer.toString(earlyMonth).length() < 2 ? "0" + earlyMonth : "" + earlyMonth);
         earlyDy = (Integer.toString(earlyDay).length() < 2 ? "0" + earlyDay : "" + earlyDay);
 
@@ -99,9 +106,17 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         if (lateDay > 1) {
             lateDay--;
         } else {
-            if (lateMonth > 1) {
-                lateDay = 28;
-                lateMonth--;
+            if (lateMonth == 2 || lateMonth == 4 || lateMonth == 6 || lateMonth == 8
+                    || lateMonth == 9 || lateMonth == 11) {
+                lateDay = 31;
+            } else if (lateMonth == 5 || lateMonth == 7 || lateMonth == 10 || lateMonth == 12) {
+                lateDay = 30;
+            } else if (lateMonth == 3) {
+                if (lateYear % 4 == 0) {
+                    lateDay = 28;
+                } else {
+                    lateDay = 29;
+                }
             } else {
                 if (lateYear > 1970) {
                     lateMonth = 12;
@@ -110,6 +125,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
                 }
             }
         }
+
         String lateMo = (Integer.toString(lateMonth).length() < 2 ? "0" + lateMonth : "" + lateMonth);
         String lateDy = (Integer.toString(lateDay).length() < 2 ? "0" + lateDay : "" + lateDay);
 
@@ -147,15 +163,24 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         if (earlyDay > 1) {
             earlyDay--;
         } else {
-            if (earlyMonth > 1) {
-                earlyDay = 28;
-                earlyMonth--;
+            if (earlyMonth == 2 || earlyMonth == 4 || earlyMonth == 6 || earlyMonth == 8 || earlyMonth == 9
+                    || earlyMonth == 11) {
+                earlyDay = 31;
+            } else if (earlyMonth == 5 || earlyMonth == 7 || earlyMonth == 10) {
+                earlyDay = 30;
+            } else if (earlyMonth == 3) {
+                if (earlyYear % 4 == 0) {
+                    earlyDay = 29;
+                } else {
+                    earlyDay = 28;
+                }
             } else {
                 earlyMonth = 12;
                 earlyDay = 31;
                 earlyYear--;
             }
         }
+
         String earlyMo = (Integer.toString(earlyMonth).length() < 2 ? "0" + earlyMonth : "" + earlyMonth);
         String earlyDy = (Integer.toString(earlyDay).length() < 2 ? "0" + earlyDay : "" + earlyDay);
         values.add("" + earlyYear + "-" + earlyMo + "-" + earlyDy);
@@ -164,7 +189,13 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         int lateMonth = Integer.parseInt(latest.substring(5, 7));
         int lateYear = Integer.parseInt(latest.substring(0, 4));
 
-        if (lateDay < 28) {
+        if ((lateMonth == 1 || lateMonth == 3 || lateMonth == 5 || lateMonth == 7
+                || lateMonth == 8 || lateMonth == 10 || lateMonth == 12) && lateDay < 31) {
+            lateDay++;
+        } else if ((lateMonth == 4 || lateMonth == 6 || lateMonth == 9 || lateMonth == 11)
+                && lateDay < 30) {
+            lateDay++;
+        } else if (lateMonth == 2 && lateDay < 28) {
             lateDay++;
         } else {
             if (lateMonth < 12) {
@@ -176,6 +207,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
                 lateYear++;
             }
         }
+
         String lateMo = (Integer.toString(lateMonth).length() < 2 ? "0" + lateMonth : "" + lateMonth);
         String lateDy = (Integer.toString(lateDay).length() < 2 ? "0" + lateDay : "" + lateDay);
 
