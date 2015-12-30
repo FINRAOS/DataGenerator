@@ -66,22 +66,24 @@ object StringHelper {
      * @return java.util.Date formed from the string
      */
     def toDateTime: java.util.Date = {
-      require(str.isNumeric && str.length >= 8
-        , s"Trying to convert ${str} to date, but it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
+      val dateString = str.replaceAll("/|-|_", "")
+      require(dateString.isNumeric && dateString.length >= 8
+        , s"Trying to convert ${dateString} to date, but, after removing /, -, and _, "
+          + "it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
       var format = "yyyyMMdd"
-      if (str.length >= 10) {
+      if (dateString.length >= 10) {
         format += "hh"
       }
-      if (str.length >= 12) {
+      if (dateString.length >= 12) {
         format += "mm"
       }
-      if (str.length >= 14) {
+      if (dateString.length >= 14) {
         format += "ss"
       }
-      (1 to (str.length - 14)).foreach(_ => format += "S")
+      (1 to (dateString.length - 14)).foreach(_ => format += "S")
 
       val formatter = new SimpleDateFormat(format)
-      formatter.parse(str)
+      formatter.parse(dateString)
     }
 
     /**
