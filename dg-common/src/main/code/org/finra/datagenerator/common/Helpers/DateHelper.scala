@@ -33,7 +33,7 @@ object DateHelper {
    * Implicit methods on a java.util.Date
    * @param date Date
    */
-   implicit class DateImplicits(val date: java.util.Date) extends AnyVal {
+   implicit class DateExtensions(val date: java.util.Date) extends AnyVal {
     /**
      * Convert to a date with no time information (java.sql.Date)
      * @return SQL Date (date with no time information)

@@ -19,8 +19,8 @@ package org.finra.datagenerator.common.Helpers
 import org.junit.runner.RunWith
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
-import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
-import org.finra.datagenerator.common.Helpers.CharHelper.CharImplicits
+import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
+import org.finra.datagenerator.common.Helpers.CharHelper.CharExtensions
 
 /**
  * Unit tests for RetryHelper

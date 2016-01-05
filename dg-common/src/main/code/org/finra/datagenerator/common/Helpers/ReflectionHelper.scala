@@ -17,7 +17,7 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
+import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
 
 import scala.language.{implicitConversions, reflectiveCalls}
 import scala.reflect.runtime.{universe => ru}

@@ -40,7 +40,7 @@ object StringHelper {
    * Implicit methods on String
    * @param str Value used for implicit class
    */
-  implicit class StringImplicits(val str: String) extends AnyVal {
+  implicit class StringExtensions(val str: String) extends AnyVal {
     /**
      * Whether or not the string is comprised entirely of digits
      * @return Whether or not string is numeric
