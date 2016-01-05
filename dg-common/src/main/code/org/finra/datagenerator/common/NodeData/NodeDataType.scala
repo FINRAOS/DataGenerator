@@ -16,7 +16,7 @@
 
 package org.finra.datagenerator.common.NodeData
 
-import org.finra.datagenerator.common.Helpers.StringHelper.StringImplicits
+import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
 import org.finra.datagenerator.common.Graph.Node
 import org.finra.datagenerator.common.GraphEngine.{DefaultNodeGenerator, DataNodeGenerator}
 import scala.annotation.unchecked.{uncheckedVariance => uV}

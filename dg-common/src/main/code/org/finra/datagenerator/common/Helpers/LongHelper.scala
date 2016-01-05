@@ -16,13 +16,13 @@
 
 package org.finra.datagenerator.common.Helpers
 
-import StringHelper.StringImplicits
+import StringHelper.StringExtensions
 
 /**
  * Long implicit methods
  */
 object LongHelper {
-  implicit class LongImplicits(val long: Long) extends AnyVal {
+  implicit class LongExtensions(val long: Long) extends AnyVal {
     /**
      * Converts a Long with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.util.Date.
      * @return java.util.Date formed from the Long timestring

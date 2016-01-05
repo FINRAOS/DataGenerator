@@ -32,7 +32,7 @@ object RandomHelper {
    * Implicit methods for a random generator
    * @param random Random number generator
    */
-  implicit class RandomImplicits(val random: Random) extends AnyVal {
+  implicit class RandomExtensions(val random: Random) extends AnyVal {
     /**
      * Get next long between 0 (inclusive) and max (exclusive)
      * @return Long >= 0 and < max

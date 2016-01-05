@@ -45,7 +45,7 @@ object CharHelper {
    */
   val hexCharsBetween8AndB = ('8' to '9') ++ ('a' to 'b')
 
-  implicit class CharImplicits(val char: Char) extends AnyVal {
+  implicit class CharExtensions(val char: Char) extends AnyVal {
     def isHexadecimal: Boolean = {
       hexCharsAll.contains(char)
     }
