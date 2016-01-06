@@ -13,7 +13,8 @@ import scala.collection.JavaConverters._
  * Easy to set from config file, command-line, code, or any combination thereof.
  * To use, extend this class and define one or more config keys in the subclass.
  * A config key should extend Key, or, preferably, a subclass of Key.
- * Each config key in the subclass should be a singleton (either Scala object or a class with private[SubclassName] constructor and with a single lazy val pointing to it).
+ * Each config key in the subclass should be a singleton (either Scala object or a class with private[SubclassName] constructor
+ *  and with a single lazy val pointing to it).
  * Each config key, to be made configurable, should be referenced in allConfigKeys.
  * Each config key should override calculateDefaultValue, and may also override other methods.
  */
