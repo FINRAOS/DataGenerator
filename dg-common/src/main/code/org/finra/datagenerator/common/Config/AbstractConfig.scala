@@ -59,7 +59,7 @@ abstract class AbstractConfig {
 
   // Purposefully using nonstandard method names to minimize possible conflicts with user-defined config-key names.
   val _PRODUCTNAME: String
-  val _DEFAULTCONFIGFILENAME = s"${_PRODUCTNAME}.config"
+  lazy val _DEFAULTCONFIGFILENAME = s"${_PRODUCTNAME}.config"
   def _CONFIGDIR: String = System.getProperty("user.home").replace('\\', '/') // scalastyle:ignore
   def _DEFAULTCONFIGDIR: String = System.getProperty("user.home").replace('\\', '/') // scalastyle:ignore
 
