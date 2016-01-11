@@ -1,8 +1,9 @@
 package org.finra.datagenerator.common.Config
 
 import java.io.{BufferedReader, File, FileReader}
+
 import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
-import scala.beans.BeanProperty
+
 import scala.collection.JavaConverters._
 
 // scalastyle:off regex // Because we use printlns in this class.
@@ -173,7 +174,7 @@ abstract class AbstractConfig {
   trait Key {
     protected type T
     def instance: Key = this
-    @BeanProperty
+    def getName(): String = name
     def name: String = getClass.getSimpleName.remove("$")
     def nameLowercase: String = name.toLowerCase
     override def equals(other: Any): Boolean = {
@@ -222,17 +223,17 @@ abstract class AbstractConfig {
       }
       _userSpecifiedValueMaybe = value
     }
-    @BeanProperty
+    def getValue(): T = value
     def value: T = {
       userSpecifiedValueMaybe.getOrElse(defaultValue)
     }
-    @BeanProperty
+    def getValueAsString(): String = valueAsString
     def valueAsString: String = {
       value.toString
     }
-    @BeanProperty
-    def value_=(value: T): Unit = {
-      userSpecifiedValueMaybe = Some(value)
+    def setValue(_value: T): Unit = value_=(_value)
+    def value_=(_value: T): Unit = {
+      userSpecifiedValueMaybe = Some(_value)
       clearDefaultValue
     }
     def setValueFromString(value: String): Unit
