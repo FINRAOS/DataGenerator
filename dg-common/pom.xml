@@ -89,17 +89,36 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
+                        <id>compile</id>
                         <goals>
                             <goal>compile</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals>
                             <goal>testCompile</goal>
+                        </goals>
+                        <phase>test-compile</phase>
+                    </execution>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>compile</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <sourceDir>src/main/code</sourceDir>
-                    <testSourceDir>src/test/code</testSourceDir>
-                </configuration>
             </plugin>
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -144,8 +163,8 @@
                     <!-- Disabled for tests because they'll by nature have lots of magic numbers and hardcoded strings. -->
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <failOnWarning>true</failOnWarning>
-                    <sourceDirectory>${basedir}/src/main/code</sourceDirectory>
-                    <testSourceDirectory>${basedir}/src/test/code</testSourceDirectory>
+                    <sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
+                    <testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory>
                     <configLocation>${project.basedir}/../config/scalastyle_config.xml</configLocation>
                     <outputFile>${project.basedir}/../config/scalastyle-output_dg-common.xml</outputFile>
                     <outputEncoding>UTF-8</outputEncoding>
@@ -185,7 +204,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -203,8 +221,8 @@
                             <resourceIncludes>**/*.*</resourceIncludes>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
-                            <failOnViolation>true</failOnViolation>
-                            <failsOnError>true</failsOnError>
+                            <failOnViolation>false</failOnViolation>
+                            <failsOnError>false</failsOnError>
                         </configuration>
                         <goals>
                             <goal>check</goal>
