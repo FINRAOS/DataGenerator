@@ -6,15 +6,32 @@ Using DataGenerator, a user can generate boundary values to test edge case scena
 
 A range is defined by it lower bound and upper bound. If the lower bound is included in the range, the range is said to be left-closed. If the lower bound is not included in the range, the range is said to be left-open. Similarly, depending whether the upper bound is included in the range, the range is said to be right-closed or right-open.
 
-For the Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types, a positive test case will include the lower bound (if the lower bound is closed), the upper bound (if the upper bound is closed), a mid point, values just inside the upper and lower bounds, ``0`` if it is in the range, and ``null`` if ``nullable=true``. Negative cases will include the lower bound (if the lower bound is open), the upper bound (if the upper bound is open), values just outside the upper and lower bounds, and ``null`` if ``nullable=false``. If the lower bound or upper bound is not specified, the it is closed at the minimum or maximum value for that data type.
+*Hive Integer Types*
 
-The Hive ``Decimal`` type not only has a lower and upper bound, but also a precision and scale, where precision is the total number of digits and scale is the number of digits after the decimal point. Consequently, in addition to the lower and upper bound test cases described for the integer types, there are test cases for precision and scale. For the Hive ``Decimal`` data type, a positive test will also include a decimal with ``precision-scale`` digits to the left of the decimal point and ``scale`` digits to the right, ``0`` digits to the left of the decimal point and ``scale`` digits to the right, ``precision-scale`` digits to the left of the decimal point and ``0`` digits to the right, precision-scale digits and decimal point, and ``null`` if ``nullable=true``. A negative test will also include a decimal with ``precision-scale+1`` digits to the left of the decimal point and ``scale-1`` digits to the right, ``precision-scale-1`` digits to the left of the decimal point and ``scale+1`` digits to the right, and ``null`` if ``nullable=false``.
+For the Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types, a positive test cases includes
+ 1. the lower bound (if the lower bound is closed)
+ 2. the upper bound (if the upper bound is closed)
+ 3. a mid point
+ 4. the lower bound + 1
+ 5. the upper bound - 1 
+ 6. ``0`` if it is in the range
+ 7. ``null`` if ``nullable=true``. 
+
+Negative cases include
+ 1. the lower bound (if the lower bound is open)
+ 2. the upper bound (if the upper bound is open)
+ 3. the lower bound - 1
+ 4. the upper bound + 1
+ 5. ``null`` if ``nullable=false``.
+
+If the lower bound or upper bound is not specified, the it is closed at the minimum or maximum value for that data type.
+
+The Hive ``Decimal`` data type not only has a lower and upper bound, but also a precision and scale, where precision is the total number of digits and scale is the number of digits after the decimal point. Consequently, in addition to the lower and upper bound test cases described for the integer types, there are test cases for precision and scale. For the Hive ``Decimal`` data type, a positive test will also include a decimal with ``precision-scale`` digits to the left of the decimal point and ``scale`` digits to the right, ``0`` digits to the left of the decimal point and ``scale`` digits to the right, ``precision-scale`` digits to the left of the decimal point and ``0`` digits to the right, precision-scale digits and decimal point, and ``null`` if ``nullable=true``. A negative test will also include a decimal with ``precision-scale+1`` digits to the left of the decimal point and ``scale-1`` digits to the right, ``precision-scale-1`` digits to the left of the decimal point and ``scale+1`` digits to the right, and ``null`` if ``nullable=false``.
 
 For the Hive ``Varchar`` data type, a positive test will include a varchar of length ``length``, a varchar of length random length
 less than ``length``, and null if ``nullable=true``. A negative test case will include a varchar of length 
 ``length`` + 1 and null if ``nullable=false``.
 
-|
 
 **Examples**
 
@@ -23,7 +40,7 @@ the values that will be generated for this field are -10, -9, 0, 45, 99, 100, an
 
 <dg:positiveBoundHiveTinyInt name="SIZE" min="-10" max="100" nullable="true"/>
 
-Now, we slightly modify the previous tag to make it a negative case and set nullable to false. The values that will be generated for this field are -11, 101, and null. ::
+Now, we modify the previous tag to make it a negative case and set nullable to false. The values that will be generated for this field are -11, 101, and null. ::
 
 <dg:negativeBoundHiveTinyInt name="SIZE" min="-10" max="100" nullable="false"/>
 
