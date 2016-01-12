@@ -57,7 +57,10 @@ object CompressionHelper {
       destinationFile.delete() // Without this line sometimes there's an infinite loop!
       Thread.sleep(50)
     }
-    val fileOutStream = new FileOutputStream(destinationFile)
+    val fileOutStream = RetryHelper.retry(10, Seq(classOf[java.io.FileNotFoundException])){
+      new FileOutputStream(destinationFile)
+    }(Thread.sleep(100))
+
     try {
       val bzOutStream = new BZip2CompressorOutputStream(fileOutStream)
       try {
@@ -93,7 +96,9 @@ object CompressionHelper {
     FileHelper.createDirIfNotExists(destinationFile.getParent)
     destinationFile.delete()
 
-    val fileOutStream = new FileOutputStream(destinationFile)
+    val fileOutStream = RetryHelper.retry(10, Seq(classOf[java.io.FileNotFoundException])){
+      new FileOutputStream(destinationFile)
+    }(Thread.sleep(100))
     try {
       val inputStream = new FileInputStream(sourceFile)
       try {
