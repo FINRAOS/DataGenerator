@@ -1,13 +1,14 @@
 Boundary Values
-====
+===============
 
 
 Using DataGenerator, a user can generate boundary values to test edge case scenarios for ranges of Hive or ANSI SQL* data types.
 
 A range is defined by it lower bound and upper bound. If the lower bound is included in the range, the range is said to be left-closed. If the lower bound is not included in the range, the range is said to be left-open. Similarly, depending whether the upper bound is included in the range, the range is said to be right-closed or right-open.
 
-Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types
-------------------------------------------------------------------
+**Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types**
+
+
 Positive test cases includes
  1. the lower bound (if the lower bound is closed)
  2. the upper bound (if the upper bound is closed)
