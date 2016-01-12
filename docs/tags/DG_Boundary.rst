@@ -9,14 +9,13 @@ A range is defined by it lower bound and upper bound. If the lower bound is incl
 **Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types**
  
 Positive test cases include
-
- 1. the lower bound (if the lower bound is closed)
- 2. the upper bound (if the upper bound is closed)
- 3. a mid point
- 4. the lower bound + 1
- 5. the upper bound - 1 
- 6. ``0`` if it is in the range
- 7. ``null`` if ``nullable=true``. 
+1. the lower bound (if the lower bound is closed)
+2. the upper bound (if the upper bound is closed)
+3. a mid point
+4. the lower bound + 1
+5. the upper bound - 1 
+6. ``0`` if it is in the range
+7. ``null`` if ``nullable=true``. 
  
 Negative cases include
 
