@@ -9,13 +9,13 @@ A range is defined by it lower bound and upper bound. If the lower bound is incl
 **Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types**
  
 Positive test cases include
-1. the lower bound (if the lower bound is closed)
-2. the upper bound (if the upper bound is closed)
-3. a mid point
-4. the lower bound + 1
-5. the upper bound - 1 
-6. ``0`` if it is in the range
-7. ``null`` if ``nullable=true``. 
+ 1. the lower bound (if the lower bound is closed)
+ 2. the upper bound (if the upper bound is closed)
+ 3. a mid point
+ 4. the lower bound + 1
+ 5. the upper bound - 1 
+ 6. ``0`` if it is in the range
+ 7. ``null`` if ``nullable=true``. 
  
 Negative cases include
 
@@ -25,13 +25,37 @@ Negative cases include
  4. the upper bound + 1
  5. ``null`` if ``nullable=false``.
 
-If the lower bound or upper bound is not specified, the it is closed at the minimum or maximum value for that data type.
+If the lower bound or upper bound is not specified, then it is closed at the lower or upper bound for that data type.
 
-The Hive ``Decimal`` data type not only has a lower and upper bound, but also a precision and scale, where precision is the total number of digits and scale is the number of digits after the decimal point. Consequently, in addition to the lower and upper bound test cases described for the integer types, there are test cases for precision and scale. For the Hive ``Decimal`` data type, a positive test will also include a decimal with ``precision-scale`` digits to the left of the decimal point and ``scale`` digits to the right, ``0`` digits to the left of the decimal point and ``scale`` digits to the right, ``precision-scale`` digits to the left of the decimal point and ``0`` digits to the right, precision-scale digits and decimal point, and ``null`` if ``nullable=true``. A negative test will also include a decimal with ``precision-scale+1`` digits to the left of the decimal point and ``scale-1`` digits to the right, ``precision-scale-1`` digits to the left of the decimal point and ``scale+1`` digits to the right, and ``null`` if ``nullable=false``.
+**Hive ``Decimal`` data type**
 
-For the Hive ``Varchar`` data type, a positive test will include a varchar of length ``length``, a varchar of length random length
-less than ``length``, and null if ``nullable=true``. A negative test case will include a varchar of length 
-``length`` + 1 and null if ``nullable=false``.
+The Hive ``Decimal`` data type not only has a lower and upper bound, but also a precision and scale, where precision is the total number of digits and scale is the number of digits after the decimal point. Consequently, in addition to the lower and upper bound test cases described for the integer types, there are test cases for precision and scale. 
+
+Positive precision and scale test cases include
+
+ 1. ``precision-scale`` digits to the left of the decimal point and ``scale`` digits to the right
+ 2. ``0`` digits to the left of the decimal point and ``scale`` digits to the right
+ 3. ``precision-scale`` digits to the left of the decimal point and ``0`` digits to the right
+ 4. ``precision-scale`` digits and decimal point
+ 5. ``null`` if ``nullable=true``. 
+ 
+Negative precision and scale test cases include
+ 1. ``precision-scale+1`` digits to the left of the decimal point and ``scale-1`` digits to the right
+ 2. ``precision-scale-1`` digits to the left of the decimal point and ``scale+1`` digits to the right
+ 3. ``null`` if ``nullable=false``.
+
+**Hive ``Varchar`` data type**
+
+Positive test cases include
+
+ 1. a varchar of length ``length``
+ 2. a varchar of a random length less than ``length``
+ 3. ``null`` if ``nullable=true``. 
+ 
+ Negative test cases include
+ 
+  1. a varchar of length ``length`` + 1
+  2. null if ``nullable=false``
 
 
 **Examples**
