@@ -60,7 +60,7 @@ object ReflectionHelper {
    */
   def getClassMethods(value: Class[_ <: AnyRef]) : Array[java.lang.reflect.Method] = {
     ensureClassMethodsPopulated(value)
-    classToMethodsMap.get(value).get
+    classToMethodsMap.get(value).getOrElse(Array[java.lang.reflect.Method]())
   }
 
   val stringClass = "".getClass

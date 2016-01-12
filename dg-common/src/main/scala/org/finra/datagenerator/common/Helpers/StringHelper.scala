@@ -203,6 +203,22 @@ object StringHelper {
     }
 
     /**
+     * Get the index of the Nth occurrence of a substring in the string.
+     * @param substring Substring to search for
+     * @param n Number of occurrence, 1-based
+     * @return Index of Nth occurrence of character
+     */
+    def indexOfNthOccurrence(substring: String, n: Int): Int = {
+      var index = str.indexOf(substring)
+      var counter = n - 1
+      while (counter > 0 && index != -1) {
+        index = str.indexOf(substring, index + 1)
+        counter -= 1
+      }
+      index
+    }
+
+    /**
      * Truncate a string to a maximum length.
      * @param maxLength Maximum length to truncate the string to. This factors in the length of the suffix.
      * @param suffixIfTruncated Suffix to append to string if it was truncated.

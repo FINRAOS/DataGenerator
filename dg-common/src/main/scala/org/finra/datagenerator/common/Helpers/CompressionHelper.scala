@@ -30,8 +30,22 @@ object CompressionHelper {
    * @param sourcePath Local path to compress
    * @param destinationPath Local destination to save to -- must be different than sourcePath. Overwrites if already exists.
    * @param deleteSourceFile Whether or not to delete the source file after compressing. Defaults to false.
+   * @param tries Number of times to retry file-access exceptions because Java file operations are buggy...
    */
-  def writeFileAsBz2(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false): Unit = {
+  def writeFileAsBz2(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false, tries: Short = 5): Unit = {
+    var tryNum = 1
+    RetryHelper.retry(tries, Seq(classOf[FileNotFoundException], classOf[IOException]))(
+      writeFileAsBz2_Inner(sourcePath, destinationPath, deleteSourceFile)
+    ){println(s"writeFileAsBz2 try ${tryNum} failed..."); tryNum += 1}
+  }
+
+  /**
+   * Compress a file and write using BZip2 format.
+   * @param sourcePath Local path to compress
+   * @param destinationPath Local destination to save to -- must be different than sourcePath. Overwrites if already exists.
+   * @param deleteSourceFile Whether or not to delete the source file after compressing. Defaults to false.
+   */
+  private def writeFileAsBz2_Inner(sourcePath: String, destinationPath: String, deleteSourceFile: Boolean = false): Unit = {
     val sourceFile = new File(sourcePath)
     require(sourceFile.exists && sourceFile.isFile, s"Path `${sourceFile.getAbsolutePath}` must be a file that exists to call writeFileAsBz2!")
     require(sourcePath != destinationPath, s"writeFileAsBz2 requires destinationPath (${destinationPath}) different than sourcePath (${sourcePath})!")
@@ -39,7 +53,10 @@ object CompressionHelper {
     val destinationFile = new File(destinationPath)
     FileHelper.createDirIfNotExists(destinationFile.getParent)
     destinationFile.delete()
-
+    while (destinationFile.exists()) { // Apparent Java bug -- was getting Access denied on creating FileOutputStream on next line!
+      destinationFile.delete() // Without this line sometimes there's an infinite loop!
+      Thread.sleep(50)
+    }
     val fileOutStream = new FileOutputStream(destinationFile)
     try {
       val bzOutStream = new BZip2CompressorOutputStream(fileOutStream)
