@@ -16,7 +16,7 @@ Positive test cases include
  4. the lower bound + 1
  5. the upper bound - 1 
  6. ``0`` if it is in the range
- 7. ``null`` if ``nullable=true``. 
+ 7. ``null`` if ``nullable=true`` 
  
 Negative cases include
 
@@ -24,7 +24,7 @@ Negative cases include
  2. the upper bound (if the upper bound is open)
  3. the lower bound - 1
  4. the upper bound + 1
- 5. ``null`` if ``nullable=false``.
+ 5. ``null`` if ``nullable=false``
 
 If the lower bound or upper bound is not specified, then it is closed at the lower or upper bound for that data type.
 
@@ -38,12 +38,12 @@ Positive precision and scale test cases include
  2. ``0`` digits to the left of the decimal point and ``scale`` digits to the right
  3. ``precision-scale`` digits to the left of the decimal point and ``0`` digits to the right
  4. ``precision-scale`` digits and decimal point
- 5. ``null`` if ``nullable=true``. 
+ 5. ``null`` if ``nullable=true`` 
  
 Negative precision and scale test cases include
  1. ``precision-scale+1`` digits to the left of the decimal point and ``scale-1`` digits to the right
  2. ``precision-scale-1`` digits to the left of the decimal point and ``scale+1`` digits to the right
- 3. ``null`` if ``nullable=false``.
+ 3. ``null`` if ``nullable=false``
 
 **Hive ``Varchar`` data type**
 
@@ -51,12 +51,12 @@ Positive test cases include
 
  1. a varchar of length ``length``
  2. a varchar of a random length less than ``length``
- 3. ``null`` if ``nullable=true``. 
+ 3. ``null`` if ``nullable=true`` 
  
- Negative test cases include
+Negative test cases include
  
-  1. a varchar of length ``length`` + 1
-  2. null if ``nullable=false``
+ 1. a varchar of length ``length`` + 1
+ 2. null if ``nullable=false``
 
 
 **Examples**
