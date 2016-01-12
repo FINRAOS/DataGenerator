@@ -8,7 +8,6 @@ A range is defined by it lower bound and upper bound. If the lower bound is incl
 
 **Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types**
 
-asdfasdfasdf
 Positive test cases includes
  1. the lower bound (if the lower bound is closed)
  2. the upper bound (if the upper bound is closed)
