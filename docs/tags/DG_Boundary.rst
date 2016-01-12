@@ -7,8 +7,8 @@ Using DataGenerator, a user can generate boundary values to test edge case scena
 A range is defined by it lower bound and upper bound. If the lower bound is included in the range, the range is said to be left-closed. If the lower bound is not included in the range, the range is said to be left-open. Similarly, depending whether the upper bound is included in the range, the range is said to be right-closed or right-open.
 
 **Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types**
-| 
-Positive test cases includes
+ 
+ Positive test cases includes
  1. the lower bound (if the lower bound is closed)
  2. the upper bound (if the upper bound is closed)
  3. a mid point
@@ -16,8 +16,8 @@ Positive test cases includes
  5. the upper bound - 1 
  6. ``0`` if it is in the range
  7. ``null`` if ``nullable=true``. 
-| 
-Negative cases include
+ 
+ Negative cases include
  1. the lower bound (if the lower bound is open)
  2. the upper bound (if the upper bound is open)
  3. the lower bound - 1
