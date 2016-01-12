@@ -40,15 +40,21 @@ object RetryHelper {
               (handlingCode: => Unit = () => ()): T = {
     var result: Option[T] = None
     var left = maxTries
-    while(!result.isDefined) {
+    while (!result.isDefined) {
       left = left - 1
 
       // try/catch{case...} doesn't seem to support dynamic exception types, so using handling block instead.
 
-      handling(exceptionTypesToRetry:_*)
-        .by(ex => if (left <= 0) throw ex else handlingCode).apply({
-          result = Option(codeToRetry)
-        })
+      handling(exceptionTypesToRetry: _*)
+        .by(ex => {
+        if (left <= 0) {
+          throw ex
+        } else {
+          handlingCode
+        }
+      }).apply({
+        result = Option(codeToRetry)
+      })
     }
     result.get
   }
