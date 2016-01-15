@@ -1,29 +1,63 @@
 Boundary Values
-====
+===============
 
-|
 
-Overview
-----
+Using DataGenerator, a user can generate boundary values to test edge case scenarios for ranges of Hive or ANSI SQL* data types.
 
-|
+A range is defined by it lower bound and upper bound. If the lower bound is included in the range, the range is said to be left-closed. If the lower bound is not included in the range, the range is said to be left-open. Similarly, depending whether the upper bound is included in the range, the range is said to be right-closed or right-open.
 
-Using DataGenerator, a user can generate boundary values to test edge case scenarios for any Hive or ANSI SQL* data types. 
+**Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types**
+ 
+Positive test cases include
 
-For the Hive ``tinyInt``, ``smallInt``, ``int``, and ``bigInt`` data types, a positive test case will include a value for the 
-lower bound, upper bound, a mid point, values just inside the upper and lower bounds, ``0`` if it is in the range, and null
-if ``nullable=true``. Negative cases will include a value for the lower bound, upper bound, values just outside the upper and 
-lower bounds, and null if ``nullable=false``.
+ 1. the lower bound (if the lower bound is closed)
+ 2. the upper bound (if the upper bound is closed)
+ 3. a mid point
+ 4. the lower bound + 1
+ 5. the upper bound - 1 
+ 6. ``0`` if it is in the range
+ 7. ``null`` if ``nullable=true`` 
+ 
+Negative cases include
 
-For the Hive ``Decimal`` data type, a positive test case will include a decimal of length ``length``, a decimal of random length,
-less than or equal to ``length``, and null if ``nullable=true``. A negative test case will include a decimal of length 
-``length``, a decimal with length greater than ``length`` and null if ``nullable=false``.
+ 1. the lower bound (if the lower bound is open)
+ 2. the upper bound (if the upper bound is open)
+ 3. the lower bound - 1
+ 4. the upper bound + 1
+ 5. ``null`` if ``nullable=false``
 
-For the Hive ``Varchar`` data type, a positive test case will include a varchar of length ``length``, a varchar of random length,
-less than or equal to ``length``, and null if ``nullable=true``. A negative test case will include a varchar of length 
-``length``, a varchar with length greater than ``length`` and null if ``nullable=false``.
+If the lower bound or upper bound is not specified, then it is closed at the lower or upper bound for that data type.
 
-|
+**Hive ``Decimal`` data type**
+
+The Hive ``Decimal`` data type not only has a lower and upper bound, but also a precision and scale, where precision is the total number of digits and scale is the number of digits after the decimal point. Consequently, in addition to the lower and upper bound test cases described for the integer types, there are test cases for precision and scale. 
+
+Positive precision and scale test cases include
+
+ 1. ``precision-scale`` digits to the left of the decimal point and ``scale`` digits to the right
+ 2. ``0`` digits to the left of the decimal point and ``scale`` digits to the right
+ 3. ``precision-scale`` digits to the left of the decimal point and ``0`` digits to the right
+ 4. ``precision-scale`` digits and decimal point
+ 5. ``null`` if ``nullable=true`` 
+ 
+Negative precision and scale test cases include
+ 1. ``precision-scale+1`` digits to the left of the decimal point and ``scale-1`` digits to the right
+ 2. ``precision-scale-1`` digits to the left of the decimal point and ``scale+1`` digits to the right
+ 3. ``null`` if ``nullable=false``
+
+**Hive ``Varchar`` data type**
+
+Positive test cases include
+
+ 1. a varchar of length ``length``
+ 2. a varchar of a random length less than ``length``
+ 3. ``null`` if ``nullable=true`` 
+ 
+Negative test cases include
+ 
+ 1. a varchar of length ``length`` + 1
+ 2. null if ``nullable=false``
+
 
 **Examples**
 
@@ -32,7 +66,7 @@ the values that will be generated for this field are -10, -9, 0, 45, 99, 100, an
 
 <dg:positiveBoundHiveTinyInt name="SIZE" min="-10" max="100" nullable="true"/>
 
-Now, we slightly modify the previous tag to make it a negative case and set nullable to false. The values that will be generated for this field are -11, 101, and null. ::
+Now, we modify the previous tag to make it a negative case and set nullable to false. The values that will be generated for this field are -11, 101, and null. ::
 
 <dg:negativeBoundHiveTinyInt name="SIZE" min="-10" max="100" nullable="false"/>
 
