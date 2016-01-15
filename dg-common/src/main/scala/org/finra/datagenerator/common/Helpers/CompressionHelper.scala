@@ -36,7 +36,7 @@ object CompressionHelper {
     var tryNum = 1
     RetryHelper.retry(tries, Seq(classOf[FileNotFoundException], classOf[IOException]))(
       writeFileAsBz2_Inner(sourcePath, destinationPath, deleteSourceFile)
-    ){println(s"writeFileAsBz2 try ${tryNum} failed..."); tryNum += 1}
+    ){println(s"writeFileAsBz2 try ${tryNum} failed..."); tryNum += 1} //scalastyle:ignore
   }
 
   /**
