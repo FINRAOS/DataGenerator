@@ -47,11 +47,10 @@ trait ResettableSingleton[T] {
 
   /**
    * Create an instance of the class
-   * There is no guarantee that every class has, e.g., a parameterless constructor.
-   * This method should be overridden if that is the case.
+   * This is abstract because there's no guarantee that every class has, e.g., a parameterless constructor.
    * @return Object of the class
    */
-  protected def instantiate: T = new T
+  protected def instantiate: T
 
   /**
    * Resets the singleton instance. Intended to be used if performing multiple test runs without restarting the JVM.
