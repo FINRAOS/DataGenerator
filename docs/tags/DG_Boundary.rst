@@ -8,13 +8,13 @@ Using DataGenerator, a user can generate boundary values to test edge case scena
  
 Positive test cases include
 
- #. the minimum
- #. the maximum
- #. a random value between the minimum and maximum
- #. the minimum + 1
- #. the maximum - 1 
- #. ``0`` if it is in the range
- #. ``null`` if ``nullable=true`` 
+| #. the minimum
+| #. the maximum
+| #. a random value between the minimum and maximum
+| #. the minimum + 1
+| #. the maximum - 1 
+| #. ``0`` if it is in the range
+| #. ``null`` if ``nullable=true`` 
  
 Negative cases include
 
