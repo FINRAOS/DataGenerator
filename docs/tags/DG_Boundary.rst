@@ -8,13 +8,13 @@ Using DataGenerator, a user can generate boundary values to test edge case scena
  
 Positive test cases include
 
-| #. the minimum
-| #. the maximum
-| #. a random value between the minimum and maximum
-| #. the minimum + 1
-| #. the maximum - 1 
-| #. ``0`` if it is in the range
-| #. ``null`` if ``nullable=true`` 
+ #. the minimum
+ #. the maximum
+ #. a random value between the minimum and maximum
+ #. the minimum + 1
+ #. the maximum - 1 
+ #. ``0`` if it is in the range
+ #. ``null`` if ``nullable=true`` 
  
 Negative cases include
 
@@ -70,28 +70,23 @@ The ``length`` must be specified.
 
 **Examples**
 
-Hive TinyInt:
+Hive ``TinyInt``:
 
 <dg:positiveBoundHiveTinyInt name="SIZE" min="-10" max="100" nullable="true"/> generates {-10, -9, 0 45, 99, null}.
 
 <dg:negativeBoundHiveTinyInt name="SIZE" min="-10" max="100" nullable="false"/> generates {-11, 101, null}.
 
-Hive Decimal
+Hive ``Decimal``
 
 <dg:positiveBoundHiveDecimal name="SIZE" precision="7" scale="3" min="100" max="1000" nullable="true"/> generates {100, 100.001 455.555, 999.999, 1000, null}
 
 <dg:negativeBoundHiveDecimal name="SIZE" precision="7" scale="3" min="100" max="1000" nullable="false"/> generates {99.999, 1000.001, 4555.55, 455.5555, null}
 
-For positive test cases:
+Hive ``Varchar``
 
+<dg:positiveBoundHiveVarchar name="varField" length="10" minLen="5" nullable="true"/> generates {"asdf1234_$", "asdf1", null}
 
-Below, we create boundary conditions for a hive Varchar type. We specify ``length`` of 10 and ``minLen`` of 5.
-The values that will be generated for a positive case are a varchar of length 5, a varchar of length 10, a varchar of length 7, and null. ::
-
-<dg:positiveBoundHiveVarchar name="varField" length="10" minLen="5" nullable="true"/>
-
-Had this been a negative case, DG would generate a varchar of length 4, and a varchar of length 11.
-
+<dg:negativeBoundHiveVarchar name="varField" length="10" minLen="5" nullable="false"/> generates {"asdf1234_$a", "asdf", null, "asdf~"}
 
 Below, we create boundary conditions for the hive ``date`` type. We specify the ``earliest`` and ``latest`` dates in the range. For a positive case, DG will generate a date equal to ``earliest``, a date one day after ``earliest`` a date equal to ``latest`` and a date one day before ``latest``. If we do not specify the ``earliest``, the default is 1970-01-01. If we do not specify ``latest``, the default is the current date. For negative cases, DG will generate a date one day before ``earliest``, and one day after ``latest``.
 
