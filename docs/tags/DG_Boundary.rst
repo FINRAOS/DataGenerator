@@ -105,8 +105,8 @@ Hive Types
 
 **Date** 
 
-| ``<dg:positiveBoundHiveDate name="TDATE" nullable="true"/>`` 
-| ``<dg:negativeBoundHiveDate name="TDATE" nullable="true"/>``
+ ``<dg:positiveBoundHiveDate name="TDATE" nullable="true"/>`` 
+ ``<dg:negativeBoundHiveDate name="TDATE" nullable="true"/>``
 |  
 | Required Parameters: ``name``
 | Optional Parameters: ``earliest``, ``latest``, ``nullable``
