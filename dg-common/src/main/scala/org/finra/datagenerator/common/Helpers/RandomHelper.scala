@@ -120,6 +120,16 @@ object RandomHelper {
   }
 
   /**
+   * Generate a random alphabetic string from allowable characters
+   * @param length Length of string to generate; acts as max length if minLength is also specified
+   * @param isGloballyRandom Whether or not to use global randomizer
+   * @param minLengthMaybe If specified, then length is randomized between minLength and length
+   * @return Random string containing only alphabetic characters
+   */
+  def randomAlphabeticString(length: Int, isGloballyRandom: Boolean = false, minLengthMaybe: Option[Int] = None): String = {
+    randomStringFromAllowableChars(length, CharHelper.alphabeticChars, isGloballyRandom, minLengthMaybe)
+  }
+  /**
    * Generate a random alphanumeric string from allowable characters
    * @param length Length of string to generate; acts as max length if minLength is also specified
    * @param isGloballyRandom Whether or not to use global randomizer

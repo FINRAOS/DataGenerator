@@ -21,6 +21,11 @@ package org.finra.datagenerator.common.Helpers
  */
 object CharHelper {
   /**
+   * A-Z a-z
+   */
+  val alphabeticChars = ('a' to 'z') ++ ('A' to 'Z')
+
+  /**
    * A-Z a-z 0-9 - _
    */
   val alphanumericChars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9') ++ ('_' to '_')

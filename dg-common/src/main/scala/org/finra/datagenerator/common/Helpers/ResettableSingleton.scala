@@ -26,7 +26,8 @@ package org.finra.datagenerator.common.Helpers
  * between runs.
  */
 trait ResettableSingleton[T] {
-  private var instanceMaybe: Option[T] = None
+  protected var instanceMaybe: Option[T] = None
+  def isInstantiated: Boolean = instanceMaybe.nonEmpty
 
   /**
    * Singleton instance
