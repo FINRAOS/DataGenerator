@@ -59,6 +59,28 @@ public class PositiveBoundHiveDateTest {
     }
 
     /**
+     * testing leap year
+     */
+    @Test
+    public void leapYearTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        PositiveBoundHiveDate dateTest = new PositiveBoundHiveDate();
+        PositiveBoundHiveDate.PositiveBoundHiveDateTag tag = new PositiveBoundHiveDate.PositiveBoundHiveDateTag();
+        tag.setName("name");
+        tag.setEarliest("2016-02-28");
+        tag.setLatest("2016-03-01");
+
+        List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
+        Assert.assertEquals(newList.get(0).get("name"), "2016-02-28");
+        Assert.assertEquals(newList.get(1).get("name"), "2016-02-29");
+        Assert.assertEquals(newList.get(2).get("name"), "2016-02-29");
+        Assert.assertEquals(newList.get(3).get("name"), "2016-03-01");
+    }
+
+    /**
      * test default behavior
      */
     @Test
@@ -84,7 +106,7 @@ public class PositiveBoundHiveDateTest {
         Assert.assertEquals(newList.get(0).get("name"), "1970-01-01");
         Assert.assertEquals(newList.get(1).get("name"), "1970-01-02");
         Assert.assertEquals(newList.get(2).get("name"), year + "-" + earlyMo + "-" + earlyDy);
-        earlyDy = (Integer.toString(day).length() < 2 ? "0" + ++day : "" + ++day);
+        earlyDy = Integer.toString(day).length() < 2 ? "0" + ++day : "" + ++day;
         Assert.assertEquals(newList.get(3).get("name"), year + "-" + earlyMo + "-" + earlyDy);
     }
 

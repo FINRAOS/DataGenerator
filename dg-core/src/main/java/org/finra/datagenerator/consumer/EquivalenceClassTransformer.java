@@ -333,21 +333,24 @@ public class EquivalenceClassTransformer implements DataTransformer {
 
                     case "number":
                         String[] lengths = expr.split(",");
-                        int whole = Integer.valueOf(lengths[0]);
-                        int decimal = 0;
+                        int precision = Integer.valueOf(lengths[0]);
+                        int scale = 0;
+
                         if (lengths.length == 2) {
-                            decimal = Integer.valueOf(lengths[1]);
+                            scale = Integer.valueOf(lengths[1]) < 0 ? 0 : Integer.valueOf(lengths[1]);
                         }
 
-                        if (whole == 0 && decimal > 0) {
+                        int wholeDigits = precision - scale < 0 ? 0 : precision - scale;
+
+                        if (wholeDigits == 0 && scale > 0) {
                             b.append("0.");
-                            digitSequence(b, decimal);
-                        } else if (whole > 0) {
+                            digitSequence(b, scale);
+                        } else if (wholeDigits > 0) {
                             b.append(random.nextInt(9) + 1);
-                            digitSequence(b, whole - 1);
-                            if (decimal > 0) {
+                            digitSequence(b, wholeDigits);
+                            if (scale > 0) {
                                 b.append(".");
-                                digitSequence(b, decimal);
+                                digitSequence(b, scale);
                             }
                         }
                         break;

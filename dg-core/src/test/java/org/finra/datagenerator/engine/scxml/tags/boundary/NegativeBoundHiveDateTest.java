@@ -59,6 +59,26 @@ public class NegativeBoundHiveDateTest {
     }
 
     /**
+     * testing leap year
+     */
+    @Test
+    public void leapYearTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        NegativeBoundHiveDate dateTest = new NegativeBoundHiveDate();
+        NegativeBoundHiveDate.NegativeBoundHiveDateTag tag = new NegativeBoundHiveDate.NegativeBoundHiveDateTag();
+        tag.setName("name");
+        tag.setEarliest("2016-03-01");
+        tag.setLatest("2016-02-28");
+
+        List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
+        Assert.assertEquals(newList.get(0).get("name"), "2016-02-29");
+        Assert.assertEquals(newList.get(1).get("name"), "2016-02-29");
+    }
+
+    /**
      * testing lower bound
      */
     @Test
