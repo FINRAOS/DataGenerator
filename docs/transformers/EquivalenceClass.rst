@@ -19,7 +19,10 @@ Supported equivalence classes:
 +-----------------------------------+------------------------------------------+------------------------------------+
 | alphaWithSpaces                   | Alpha characters with spaces             | %alphaWithSpaces(1)                |
 +-----------------------------------+------------------------------------------+------------------------------------+
-| number                            | Numbers                                  | %number(5)                         |
+| number                            | Numbers (precision, scale)               | %number(5, 3)                      |
+|                                   |   precision is the total number of digits|                                    |
+|                                   |   scale is the number of digits right of |                                    |
+|                                   |      the decimal point                   |                                    |
 +-----------------------------------+------------------------------------------+------------------------------------+
 | digits                            | Digits (can start with 0)                | %digits(10)                        |
 +-----------------------------------+------------------------------------------+------------------------------------+
