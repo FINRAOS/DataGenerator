@@ -347,7 +347,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                             digitSequence(b, scale);
                         } else if (wholeDigits > 0) {
                             b.append(random.nextInt(9) + 1);
-                            digitSequence(b, wholeDigits);
+                            digitSequence(b, wholeDigits - 1);
                             if (scale > 0) {
                                 b.append(".");
                                 digitSequence(b, scale);
