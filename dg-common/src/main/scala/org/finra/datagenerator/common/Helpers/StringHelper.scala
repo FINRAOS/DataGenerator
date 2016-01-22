@@ -28,6 +28,16 @@ object StringHelper {
 
   /**
    * Build a delimited string
+   * @param delimiter Char to use as delimiter
+   * @param parts Varargs strings to separate by delimiter
+   * @return Delimited string. Example: buildDelimitedString(',', "1", "2", "3") returns "1,2,3"
+   */
+  def buildDelimitedString(delimiter: Char, parts: String*): String = {
+    parts.mkString(delimiter.toString)
+  }
+
+  /**
+   * Build a delimited string
    * @param delimiter String to use as delimiter
    * @param parts Varargs strings to separate by delimiter
    * @return Delimited string. Example: buildDelimitedString(",", "1", "2", "3") returns "1,2,3"
