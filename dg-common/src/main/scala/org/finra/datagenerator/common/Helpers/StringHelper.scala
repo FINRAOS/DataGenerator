@@ -72,6 +72,18 @@ object StringHelper {
     }
 
     /**
+     * Convert to a Long.
+     * @return If parsable to a Long, return as Option(longVal), else None.
+     */
+    def toLongMaybe: Option[Long] = {
+      try {
+        Option(str.toLong)
+      } catch {
+        case e: NumberFormatException => None
+      }
+    }
+
+    /**
      * Converts a String with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.util.Date.
      * @return java.util.Date formed from the string
      */

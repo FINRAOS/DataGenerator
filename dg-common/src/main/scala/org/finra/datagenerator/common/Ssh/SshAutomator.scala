@@ -55,12 +55,16 @@ abstract class SshAutomator extends AutoCloseable {
 
   def downloadLogsToLocal(): Unit
 
+  private var _connectionEstablished: Boolean = false
+  def connectionEstablished: Boolean = _connectionEstablished
+
   protected var _sessionMaybe: Option[Session] = None
   protected var _session: Session = null
   def getOpenSession(): Session = {
     _sessionMaybe = Some(JSchHelper.getOpenSession(_sessionMaybe, host, user, port, publicKeyPath,
       Some(privateKeyPath), passphrase, getPasswordMaybe))
     _session = _sessionMaybe.get
+    _connectionEstablished = true
     _sessionMaybe.get
   }
 
