@@ -163,19 +163,14 @@ public class EquivalenceClassTransformerTest {
 
         pipeToTransform.getDataMap().put("TEST", "%number(10,10)");
         eqTransformer.transform(pipeToTransform);
-        alphaWithSpacesPattern = Pattern.compile("^[1-9]{1}[\\d]{9}\\.[\\d]{10}$");
+        alphaWithSpacesPattern = Pattern.compile("0.[\\d]{10}$");
         didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST"));
         Assert.assertTrue(didItMatch.matches());
 
-        pipeToTransform.getDataMap().put("TEST", "%number(1,10)");
+        pipeToTransform.getDataMap().put("TEST", "%number(10,5)");
         eqTransformer.transform(pipeToTransform);
-        alphaWithSpacesPattern = Pattern.compile("^[1-9]{1}.[\\d]{10}$");
-        didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST"));
-        Assert.assertTrue(didItMatch.matches());
-
-        pipeToTransform.getDataMap().put("TEST", "%number(0,10)");
-        eqTransformer.transform(pipeToTransform);
-        alphaWithSpacesPattern = Pattern.compile("^0\\.[\\d]{10}$");
+        alphaWithSpacesPattern = Pattern.compile("^[\\d]{5}.[\\d]{5}$");
+        System.out.println(pipeToTransform.getDataMap().get("TEST"));
         didItMatch = alphaWithSpacesPattern.matcher(pipeToTransform.getDataMap().get("TEST"));
         Assert.assertTrue(didItMatch.matches());
 
