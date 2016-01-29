@@ -39,15 +39,12 @@ class ScalaDataConsumer extends DataConsumer with java.io.Serializable {
    * call writeOutput method to write output to Output Stream for each dataWriter
    */
   override def consume(initialVars: util.Map[String, String]): Int = {
-
     for (ent <- initialVars.entrySet) {
-
-      scalaDataPipe.getDataMap.put(ent.getKey, ent.getValue)
+      scalaDataPipe.getDataMap.put(ent.getKey(), ent.getValue())
     }
 
     // Writing Output
     for(dw <- scalaDatawriters) {
-
       scalaDataWriter.writeOutput(scalaDataPipe)
     }
 
