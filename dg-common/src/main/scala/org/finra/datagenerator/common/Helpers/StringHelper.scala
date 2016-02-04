@@ -17,7 +17,7 @@
 package org.finra.datagenerator.common.Helpers
 
 import java.security.MessageDigest
-import java.sql.Date
+import org.finra.datagenerator.common.Helpers.CharHelper.CharExtensions
 import java.text.SimpleDateFormat
 import javax.xml.bind.DatatypeConverter
 
@@ -84,14 +84,26 @@ object StringHelper {
     }
 
     /**
+     * Convert to a Double.
+     * @return If parsable to a Double, return as Option(doubleVal), else None.
+     */
+    def toDoubleMaybe: Option[Double] = {
+      try {
+        Option(str.toDouble)
+      } catch {
+        case e: NumberFormatException => None
+      }
+    }
+
+    /**
      * Converts a String with at least 8 digits (yyyyMMdd), and optionally with [hh[mm[ss[S*]]]] parts, to a java.util.Date.
      * @return java.util.Date formed from the string
      */
     def toDateTime: java.util.Date = {
-      val dateString = str.replaceAll("/|-|_", "")
-      require(dateString.isNumeric && dateString.length >= 8
-        , s"Trying to convert ${dateString} to date, but, after removing /, -, and _, "
-          + "it must be numeric and at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
+      val dateString = str.filter(_.isNumeric)
+      require(dateString.length >= 8
+        , s"Trying to convert ${dateString} to date, but, after removing all non-numeric characters, "
+          + "it must at least 8 digits (yyyyMMdd at minimum, and hhmmssSSS... optional).")
       var format = "yyyyMMdd"
       if (dateString.length >= 10) {
         format += "hh"
@@ -113,7 +125,50 @@ object StringHelper {
      * @return java.sql.Date (no time part) formed from the string
      */
     def toDate: java.sql.Date = {
-      new Date(str.toDateTime.getTime)
+      val dateString = str.filter(_.isNumeric)
+      require(dateString.length >= 8
+        , s"Trying to convert ${dateString} to date, but, after removing all non-numeric characters, "
+          + "it must at least 8 digits (yyyyMMdd).")
+      str.filter(_.isNumeric).substring(0,8).toSqlDate
+    }
+
+    /**
+     * Convert string to char -- throw exception if not a single char.
+     * @return Char
+     */
+    def toChar: Char = {
+      if (str.length == 1) {
+        str.head
+      } else {
+        throw new IllegalArgumentException(s"""Error trying to invoke "toChar" on string "${str}", which is not a char!""")
+      }
+    }
+
+    /**
+     * Convert string to char -- return None if not a single char.
+     * @return Option[Char]
+     */
+    def toCharMaybe: Option[Char] = {
+      if (str.length == 1) {
+        Some(str.head)
+      } else {
+        None
+      }
+    }
+
+    /**
+     * Converts a String with at least 8 digits (yyyyMMdd) to a java.sql.Date.
+     * @return java.sql.Date formed from the string
+     */
+    def toSqlDate: java.sql.Date = {
+      val dateString = str.filter(_.isNumeric)
+      require(dateString.length == 8
+        , s"Trying to convert ${dateString} to date, but, after removing all non-numeric characters, "
+          + "it must 8 digits (yyyyMMdd).")
+      val format = "yyyyMMdd"
+
+      val formatter = new SimpleDateFormat(format)
+      new java.sql.Date(formatter.parse(dateString).getTime)
     }
 
     /**

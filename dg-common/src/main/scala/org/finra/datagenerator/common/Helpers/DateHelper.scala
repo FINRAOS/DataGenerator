@@ -18,6 +18,7 @@ package org.finra.datagenerator.common.Helpers
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
 
 /**
  * Helper methods on Option
@@ -26,6 +27,7 @@ object DateHelper {
   private val yyyyMM_formatter = new SimpleDateFormat("yyyyMM")
   private val yyyyMMdd_formatter = new SimpleDateFormat("yyyyMMdd")
   private val `yyyy-MM-dd_formatter` = new SimpleDateFormat("yyyy-MM-dd")
+  private val `yyyy-MM-dd hh:mm:ss.SSS_formatter` = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
   private val timestamp_formatter = new SimpleDateFormat("yyyyMMddhhmmssSSS")
   private val time_formatter = new SimpleDateFormat("hhmmssSS")
 
@@ -33,13 +35,13 @@ object DateHelper {
    * Implicit methods on a java.util.Date
    * @param date Date
    */
-   implicit class DateExtensions(val date: java.util.Date) extends AnyVal {
+  implicit class DateExtensions(val date: java.util.Date) extends AnyVal {
     /**
      * Convert to a date with no time information (java.sql.Date)
      * @return SQL Date (date with no time information)
      */
     def toSqlDate: java.sql.Date = {
-      new java.sql.Date(date.getTime)
+      to_yyyyMMdd.toSqlDate
     }
 
     /**
@@ -64,6 +66,14 @@ object DateHelper {
      */
     def `to_yyyy-MM-dd`: String = { // scalastyle:ignore
       `yyyy-MM-dd_formatter`.format(date)
+    }
+
+    /**
+     * Convert the date value to a string using the yyyy-MM-dd hh:mm:ss.SSS format.
+     * @return String in yyyy-MM-dd hh:mm:ss.SSS format
+     */
+    def `to_yyyy-MM-dd hh:mm:ss.SSS`: String = { // scalastyle:ignore
+      `yyyy-MM-dd hh:mm:ss.SSS_formatter`.format(date)
     }
 
     /**
