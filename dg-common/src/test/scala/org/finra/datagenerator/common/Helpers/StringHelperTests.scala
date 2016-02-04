@@ -23,7 +23,7 @@ import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
 import org.finra.datagenerator.common.Helpers.CharHelper.CharExtensions
 
 /**
- * Unit tests for RetryHelper
+ * Unit tests for StringHelper
  */
 @RunWith(classOf[JUnitRunner])
 class StringHelperTests extends WordSpec {

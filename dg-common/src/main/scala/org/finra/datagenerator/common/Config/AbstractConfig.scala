@@ -84,7 +84,7 @@ abstract class AbstractConfig {
         file2Maybe
       } else {
         println(s"Could not find ${_PRODUCTNAME} config file using environment variable ${_PRODUCTNAME.toUpperCase}_CONFIG_PATH${if (file2Maybe.nonEmpty) {
-          s" (set to ${file2Maybe.get.getAbsolutePath})"}}.")
+          s" (set to ${file2Maybe.get.getAbsolutePath})" } else ""}.")
         val file3 = new File(s"${_CONFIGDIR}${configFilePath}")
         if (file3.exists) {
           Some(file3)
