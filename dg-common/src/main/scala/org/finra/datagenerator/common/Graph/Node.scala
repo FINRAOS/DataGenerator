@@ -85,16 +85,18 @@ class Node[+T_NodeData <: DisplayableData](_data: T_NodeData, _containingGraph: 
   def delete(): Unit = {
     if (isRoot) {
       containingGraph.rootNodes -= this
-      parents.foreach(parent => {
-        parent.children -= this
-      })
-      children.foreach(child => {
-        child.parents -= this
-        if (child.isRoot) {
-          containingGraph.rootNodes += child
-        }
-      })
     }
+    parents.foreach(parent => {
+      parent.children -= this
+    })
+    parents.clear()
+    children.foreach(child => {
+      child.parents -= this
+      if (child.isRoot) {
+        containingGraph.rootNodes += child
+      }
+    })
+    children.clear()
     containingGraph.allNodes.indices.filter(_ > nodeIndexInContainingGraph).foreach(index => {
       containingGraph.allNodes(index).nodeIndexInContainingGraph -= 1
     })
