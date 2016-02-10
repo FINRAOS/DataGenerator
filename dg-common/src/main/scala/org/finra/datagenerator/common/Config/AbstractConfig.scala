@@ -261,6 +261,10 @@ abstract class AbstractConfig {
   }
 
   trait SlashedPath extends StringKey {
+    protected override def userSpecifiedValueMaybe_=(value: Option[T]): Unit = {
+      super.userSpecifiedValueMaybe_=(value.map(_.replaceAllLiterally("\\", "/")))
+    }
+
     def valueWithoutEndSlash: String = value.substring(0, value.length - 1)
     protected override def onValueChanged(oldValue: Option[T], newValue: Option[T]): Unit = {
       if (newValue.nonEmpty) {
