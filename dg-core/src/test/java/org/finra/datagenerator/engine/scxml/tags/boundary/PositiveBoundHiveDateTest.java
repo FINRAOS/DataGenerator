@@ -84,7 +84,7 @@ public class PositiveBoundHiveDateTest {
      * test default behavior
      */
     @Test
-	@Ignore
+    @Ignore
     public void defaultTest() {
         Map<String, String> variableDomains = new HashMap<>();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
