@@ -17,6 +17,7 @@
 package org.finra.datagenerator.common.Helpers
 
 import java.io.{File, FilenameFilter}
+import scala.io
 
 /**
  * File implicit methods and helper methods
