@@ -16,7 +16,9 @@
 
 package org.finra.datagenerator.common.NodeData
 
-import org.finra.datagenerator.common.Helpers.StringHelper._
+import java.security.MessageDigest
+import javax.xml.bind.DatatypeConverter
+
 import NodeDataType.NodeDataType
 
 /**
@@ -53,6 +55,7 @@ trait DisplayableData {
    * @return String uniquely representing this graph's structure
    */
   def getStructuralMD5: String = {
-    s"${dataType.name},${displayableElements.mkString(",")}".md5
+    val strToMd5 = s"${dataType.name},${displayableElements.mkString(",")}"
+    DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(strToMd5.getBytes("UTF-8")))
   }
 }

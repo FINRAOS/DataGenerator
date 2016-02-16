@@ -16,7 +16,6 @@
 
 package org.finra.datagenerator.common.SocialNetwork_Example
 
-import org.finra.datagenerator.common.Helpers.StringHelper._
 import org.finra.datagenerator.common.NodeData.NodeDataStub
 import org.finra.datagenerator.common.SocialNetwork_Example.UserType.UserType
 
@@ -58,14 +57,6 @@ class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserS
 
   override def simplifiedDisplayableElements: Iterable[String] = {
     Iterable[String](displayableDataId)
-  }
-
-  /**
-   * Used for testing graph isomorphism.
-   * @return String uniquely representing this graph's structure
-   */
-  override def getStructuralMD5: String = {
-    new String(s"${dataType.name},${displayableElements.mkString(",")}".md5)
   }
 
   override def defaultDisplayableDataId: String = dataType.name
