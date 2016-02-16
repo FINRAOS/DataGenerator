@@ -16,11 +16,11 @@
 
 package org.finra.datagenerator.common.SocialNetwork_Example
 
+import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.finra.datagenerator.common.Graph.Graph
 import org.finra.datagenerator.common.GraphEngine.StructureBuilder
-import org.finra.datagenerator.common.Helpers.FileHelper
 
 import scala.collection.immutable
 
@@ -32,7 +32,7 @@ object SocialNetworkStructureBuilder extends StructureBuilder[User, UserType.Use
 
   val systemTempDir = System.getProperty("java.io.tmpdir").replaceAllLiterally("\\", "/")
   val outDir = s"$systemTempDir${if (systemTempDir.endsWith("/")) "" else "/"}SocialNetworkGraphs/"
-  FileHelper.ensureEmptyDirectoryExists(outDir)
+  new File(outDir).mkdirs()
 
   val WRITE_STRUCTURES_IN_PARALLEL = false // Having same structure be same ID helps debugging...
   val ALSO_WRITE_AS_PNG = true

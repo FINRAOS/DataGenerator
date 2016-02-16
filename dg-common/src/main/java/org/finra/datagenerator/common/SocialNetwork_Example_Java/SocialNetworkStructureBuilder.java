@@ -18,10 +18,11 @@ package org.finra.datagenerator.common.SocialNetwork_Example_Java;
 
 import org.finra.datagenerator.common.Graph.Graph;
 import org.finra.datagenerator.common.GraphEngine.StructureBuilder;
-import org.finra.datagenerator.common.Helpers.FileHelper;
+import scala.NotImplementedError;
 import scala.collection.Iterator;
 import scala.collection.immutable.Vector;
-import scala.NotImplementedError;
+
+import java.io.File;
 
 /**
  * Builds all combinations of graph structures for friendships with a maximum graph size
@@ -54,7 +55,7 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
     }
 
     private SocialNetworkStructureBuilder() {
-        FileHelper.ensureDirectoryExists(outDir);
+        new File(outDir).mkdirs();
     }
 
     /**

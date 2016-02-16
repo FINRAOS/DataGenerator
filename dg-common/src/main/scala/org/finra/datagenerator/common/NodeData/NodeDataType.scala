@@ -16,7 +16,6 @@
 
 package org.finra.datagenerator.common.NodeData
 
-import org.finra.datagenerator.common.Helpers.StringHelper.StringExtensions
 import org.finra.datagenerator.common.Graph.Node
 import org.finra.datagenerator.common.GraphEngine.{DefaultNodeGenerator, DataNodeGenerator}
 import scala.annotation.unchecked.{uncheckedVariance => uV}
@@ -69,7 +68,7 @@ object NodeDataType {
     /**
      * Name that uniquely identifies this type
      */
-    val name: String = getClass.getSimpleName.remove("$")
+    val name: String = getClass.getSimpleName.replaceAllLiterally("$", "")
 
     /**
      * Lowercased name
