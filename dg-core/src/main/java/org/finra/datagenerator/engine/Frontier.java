@@ -16,8 +16,8 @@
 
 package org.finra.datagenerator.engine;
 
-import java.util.Map;
-import java.util.Queue;
+import org.finra.datagenerator.distributor.ProcessingStrategy;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -26,13 +26,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public interface Frontier {
 
     /**
-     * Fills the queue with Maps of variable assignments produced by a DFS strategy;
+     * Passes to the processingStrategy Maps of variable assignments produced by a DFS;
      * the DFS is performed on a possible state bound up inside the Frontier and will
      * stop early if flag is set to true
      *
-     * @param queue the queue
+     * @param processingStrategy knows what to do with completed maps
      * @param flag the exit flag
      */
-    void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag);
+    void searchForScenarios(ProcessingStrategy processingStrategy, AtomicBoolean flag);
 
 }

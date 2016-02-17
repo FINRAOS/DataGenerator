@@ -27,6 +27,7 @@ import org.apache.commons.scxml.model.SCXML;
 import org.apache.commons.scxml.model.Transition;
 import org.apache.commons.scxml.model.TransitionTarget;
 import org.apache.log4j.Logger;
+import org.finra.datagenerator.distributor.ProcessingStrategy;
 import org.finra.datagenerator.engine.Frontier;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 
@@ -34,7 +35,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -77,17 +77,17 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
     }
 
     /**
-     * Performs a DFS on the model, starting from root, placing results in the queue
+     * Performs a DFS on the model, starting from root, giving results to the processingStrategy
      * Just a public wrapper for private dfs function
      *
-     * @param queue the results queue
+     * @param processingStrategy the results handler
      * @param flag used to stop the search before completion
      */
-    public void searchForScenarios(Queue<Map<String, String>> queue, AtomicBoolean flag) {
-        dfs(queue, flag, root);
+    public void searchForScenarios(ProcessingStrategy processingStrategy, AtomicBoolean flag) {
+        dfs(processingStrategy, flag, root);
     }
 
-    private void dfs(Queue<Map<String, String>> queue, AtomicBoolean flag, PossibleState state) {
+    private void dfs(ProcessingStrategy processingStrategy, AtomicBoolean flag, PossibleState state) {
         if (flag.get()) {
             return;
         }
@@ -96,16 +96,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
 
         //reached end of chart, valid assignment found
         if (nextState.getId().equalsIgnoreCase("end")) {
-            queue.add(state.variables);
-
-            if (queue.size() > 10000) {
-                log.info("Queue size " + queue.size() + ", waiting");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    log.info("Interrupted ", ex);
-                }
-            }
+            processingStrategy.processOutput(state.variables);
 
             return;
         }
@@ -158,7 +149,7 @@ public class SCXMLFrontier extends SCXMLExecutor implements Frontier {
                 //transition condition satisfied, continue search recursively
                 if (pass) {
                     PossibleState result = new PossibleState(target, p);
-                    dfs(queue, flag, result);
+                    dfs(processingStrategy, flag, result);
                 }
             }
         }
