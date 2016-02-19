@@ -20,6 +20,7 @@ import org.apache.commons.scxml.io.SCXMLParser;
 import org.apache.commons.scxml.model.CustomAction;
 import org.apache.commons.scxml.model.ModelException;
 import org.apache.commons.scxml.model.SCXML;
+import org.finra.datagenerator.distributor.multithreaded.QueueResultsProcessing;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.FileExtension;
 import org.finra.datagenerator.engine.scxml.tags.RangeExtension;
@@ -92,7 +93,7 @@ public class SCXMLFrontierTest {
                 SCXMLFrontier frontier = new SCXMLFrontier(p, model, tagExtensionList);
                 Queue<Map<String, String>> queue = new LinkedList<>();
                 AtomicBoolean flag = new AtomicBoolean(false);
-                frontier.searchForScenarios(queue, flag);
+                frontier.searchForScenarios(new QueueResultsProcessing(queue), flag);
 
                 Assert.assertEquals(queue.size(), 6);
             } catch (IOException | SAXException ex) {
@@ -126,7 +127,7 @@ public class SCXMLFrontierTest {
                 SCXMLFrontier frontier = new SCXMLFrontier(p, model, tagExtensionList);
                 Queue<Map<String, String>> queue = new LinkedList<>();
                 AtomicBoolean flag = new AtomicBoolean(true);
-                frontier.searchForScenarios(queue, flag);
+                frontier.searchForScenarios(new QueueResultsProcessing(queue), flag);
 
                 Assert.assertEquals(queue.isEmpty(), true);
             } catch (IOException | SAXException ex) {

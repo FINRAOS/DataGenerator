@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -157,6 +158,33 @@ public class DataConsumer {
         }
 
         return 1;
+    }
+
+    /**
+     * Consumes a produced result. Calls every transformer in sequence, then
+     * returns the produced result(s) back to the caller
+     *
+     * Children may override this class to produce more than one consumed result
+     *
+     * @param initialVars a map containing the initial variables assignments
+     * @return the produced output map
+     */
+    public List<Map<String, String>> transformAndReturn(Map<String, String> initialVars) {
+        this.dataPipe = new DataPipe(this);
+
+        // Set initial variables
+        for (Map.Entry<String, String> ent : initialVars.entrySet()) {
+            dataPipe.getDataMap().put(ent.getKey(), ent.getValue());
+        }
+
+        // Call transformers
+        for (DataTransformer dc : dataTransformers) {
+            dc.transform(dataPipe);
+        }
+
+        List<Map<String, String>> result = new LinkedList<>();
+        result.add(dataPipe.getDataMap());
+        return result;
     }
 
     /**

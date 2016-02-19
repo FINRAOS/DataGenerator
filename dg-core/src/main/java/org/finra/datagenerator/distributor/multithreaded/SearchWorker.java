@@ -52,7 +52,7 @@ public class SearchWorker implements Runnable {
     @Override
     public void run() {
         log.info(Thread.currentThread().getName() + " is starting DFS");
-        frontier.searchForScenarios(queue, flag);
+        frontier.searchForScenarios(new QueueResultsProcessing(queue), flag);
         log.info(Thread.currentThread().getName() + " is done with DFS");
     }
 }

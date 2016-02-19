@@ -1,0 +1,76 @@
+<!-- -->
+<!-- Copyright 2014 DataGenerator Contributors -->
+<!-- -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -->
+<!--      http://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+<!-- -->
+
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:dg="org.finra.datagenerator"
+       version="1.0"
+       initial="start">
+
+    <state id="start">
+        <transition event="step1" target="step1"/>
+    </state>
+
+    <state id="step1">
+        <onentry>
+            <!-- Example of using 'set' from 'dg:assign'  -->
+            <dg:assign name="var_1_1" set="A1,B1,C1"/>
+
+            <!-- Example of using 'set' from 'dg:assign'  -->
+            <dg:assign name="var_1_1" set="A1,B1,C1"/>
+
+            <!-- Example of using 'set' from 'dg:assign'  -->
+            <dg:assign name="var_1_1" set="A1,B1,C1"/>
+
+            <!-- Example of using 'set' from 'dg:assign'  -->
+            <dg:assign name="var_1_1" set="A1,B1,C1"/>
+
+            <!-- Example of using 'set' from 'dg:assign'  -->
+            <dg:assign name="var_1_1" set="A1,B1,C1"/>
+
+            <assign name="var_1_6" expr="77"/>
+        </onentry>
+        <transition event="step2" target="step2"/>
+    </state>
+
+    <state id="step2">
+        <onentry>
+            <!--Adding custom equivalence class generation transformer as defined in EquivalenceClassTransformer.java - NOTE this will get applied post data generation (AFTER TRAVERSAL). -->
+
+            <!-- Example of using 'expr' from 'assign'  -->
+            <assign name="var_2_1" expr="#{customplaceholder}"/>
+
+            <!-- Example of using '%ssn' from equivalence class generation  -->
+            <assign name="var_2_2" expr="%ssn"/>
+
+            <!-- Example of using '%%currency' from equivalence class generation  -->
+            <assign name="var_2_3" expr="%currency"/>
+
+            <!-- Example of using '%regex' from equivalence class generation  -->
+            <assign name="var_2_4" expr="%regex([0-9]{3}[A-Z0-9]{5})"/>
+
+            <!-- Example of using '%digits' from equivalence class generation  -->
+            <assign name="var_2_5" expr="%digits(5)"/>
+
+            <!-- Example of using '%number' from equivalence class generation  -->
+            <assign name="var_2_6" expr="%number(5,2)"/>
+
+        </onentry>
+        <transition event="end" target="end"/>
+    </state>
+
+    <state id="end" />
+</scxml>
+

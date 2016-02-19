@@ -18,13 +18,14 @@ package org.finra.datagenerator.engine.scxml.tags;
 
 import org.apache.commons.scxml.model.Action;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @param <A> the action class handled by this class' filerPossibleStates logic
  */
-public interface CustomTagExtension<A extends Action> {
+public interface CustomTagExtension<A extends Action> extends Serializable {
 
     /**
      * Returns a class object representing the Action class handled by this class' pipelinePossibleStates logic

@@ -67,6 +67,20 @@
             <version>9.2.1.v20140609</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- For use with the spark distributor -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.10</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-launcher_2.10</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
     </dependencies>
 
 </project>

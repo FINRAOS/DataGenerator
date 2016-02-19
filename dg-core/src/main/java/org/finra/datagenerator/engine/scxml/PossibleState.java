@@ -18,13 +18,14 @@ package org.finra.datagenerator.engine.scxml;
 
 import org.apache.commons.scxml.model.TransitionTarget;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Represents a partial traversal over an SCXML state machine, storing
  * a list of variable assignments and the current state machine state.
  */
-public class PossibleState {
+public class PossibleState implements Serializable {
     final TransitionTarget nextState;
     final Map<String, String> variables;
 
