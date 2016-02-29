@@ -6,14 +6,25 @@ Contributing
 ------------
 We encourage contribution from the open source community to make DataGenerator better. Please refer to the [development](http://finraos.github.io/DataGenerator/index.html#get_involved) page for more information on how to contribute to this project.
 
-Maven dependency
+Maven Dependency
 -----------------
+For the core
 
 ```sh
 <dependency>
     <groupId>org.finra.datagenerator</groupId>
     <artifactId>dg-core</artifactId>
-    <version>2.1</version>
+    <version>2.2</version>
+</dependency>
+```
+
+For the commons library
+
+```sh
+<dependency>
+    <groupId>org.finra.datagenerator</groupId>
+    <artifactId>dg-common<artifactId>
+    <version>2.2</version>
 </dependency>
 ```
 
@@ -41,10 +52,8 @@ License
 ------------------------------------
 The DataGenerator project is licensed under [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-
-=======
 Overview
-=============
+--------------------
 
 Data Generator generates pattern using two pieces of user provided information:
 
@@ -53,9 +62,8 @@ Data Generator generates pattern using two pieces of user provided information:
 
 The user can optionally provide their own [distributor](http://finraos.github.io/DataGenerator/apis/v2.0/org/finra/datagenerator/distributor/SearchDistributor.html) that distributes the search of bigger problems on systems like hadoop. By default, DataGenerator will use a multithreaded distributor.
 
-=============
 Quick start
-=============
+--------------------
 
 For the full compilable code please see the [default example](https://github.com/FINRAOS/DataGenerator/blob/master/dg-example-default/)
 
