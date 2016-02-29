@@ -30,6 +30,10 @@
     <version>2.3-SNAPSHOT</version>
     <name>Data Generator Common Utils</name>
 
+    <properties>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
+
     <dependencies>
         <!-- Copy of license at licenses/license_scala-language.txt -->
         <dependency>
@@ -88,6 +92,12 @@
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>3.2.0</version>
                 <executions>
+                    <execution>
+                        <id>doc-jar</id>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
                     <execution>
                         <id>compile</id>
                         <goals>
