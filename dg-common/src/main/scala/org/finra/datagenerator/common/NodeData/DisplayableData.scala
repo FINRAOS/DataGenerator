@@ -47,8 +47,8 @@ trait DisplayableData {
   def getDisplayableElements: Iterable[String] = displayableElements
   def simplifiedDisplayableElements: Iterable[String] = Iterable[String](displayableDataId)
   def getSimplifiedDisplayableElements: Iterable[String] = simplifiedDisplayableElements
-  def dataType: NodeDataType[_, _, _, _]
-  def getDataType: NodeDataType[_, _, _, _] = dataType
+  def dataType: NodeDataType[_, _, _, _] = getDataType
+  def getDataType: NodeDataType[_, _, _, _]
 
   /**
    * Used for testing graph isomorphism.

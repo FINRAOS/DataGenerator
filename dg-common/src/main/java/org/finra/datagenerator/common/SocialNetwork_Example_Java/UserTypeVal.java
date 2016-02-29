@@ -1,4 +1,3 @@
-//CHECKSTYLE:OFF
 /*
  * Copyright 2014 DataGenerator Contributors
  *

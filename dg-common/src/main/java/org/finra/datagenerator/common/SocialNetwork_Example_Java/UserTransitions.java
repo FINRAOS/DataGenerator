@@ -1,4 +1,3 @@
-//CHECKSTYLE:OFF
 /*
  * Copyright 2014 DataGenerator Contributors
  *
@@ -24,11 +23,11 @@ import scala.NotImplementedError;
 /**
  * Methods to link users together
  */
-public class UserTransitions extends DataTransitions<User, UserTypeVal, UserStub, UserTypes> {
-    private static final UserTransitions ourInstance = new UserTransitions();
+public final class UserTransitions extends DataTransitions<User, UserTypeVal, UserStub, UserTypes> {
+    private static final UserTransitions INSTANCE = new UserTransitions();
 
     public static UserTransitions getInstance() {
-        return ourInstance;
+        return INSTANCE;
     }
 
     private UserTransitions() {
@@ -49,10 +48,10 @@ public class UserTransitions extends DataTransitions<User, UserTypeVal, UserStub
         UserTypeVal childType = childNode.data().dataType();
         UserTypeVal parentType = candidateParentNode.data().dataType();
 
-        if (childType == UserType.Admin) {
-            return parentType == UserType.Admin;
-        } else if (childType == UserType.SocialNetworkEmployee) {
-            return parentType != UserType.PublicUser;
+        if (childType == UserType.ADMIN) {
+            return parentType == UserType.ADMIN;
+        } else if (childType == UserType.SOCIAL_NETWORK_EMPLOYEE) {
+            return parentType != UserType.PUBLIC_USER;
         } else {
             return true;
         }

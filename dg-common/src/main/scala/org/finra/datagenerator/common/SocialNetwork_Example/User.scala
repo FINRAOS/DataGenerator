@@ -17,13 +17,14 @@
 package org.finra.datagenerator.common.SocialNetwork_Example
 
 import org.finra.datagenerator.common.NodeData.NodeData
+import org.finra.datagenerator.common.NodeData.NodeDataType.NodeDataType
 
 import scala.beans.BeanProperty
 
 /*
 Social network user
  */
-class User( var dataType: UserType.UserType,
+class User( private var _dataType: UserType.UserType,
             @BeanProperty var firstName: String,
             @BeanProperty var lastName: String,
             @BeanProperty val dateOfBirth: java.sql.Date, // Assert > 13 years old when creating
@@ -31,4 +32,8 @@ class User( var dataType: UserType.UserType,
             @BeanProperty var isSecret: Boolean,
             @BeanProperty val socialNetworkId: Long) extends NodeData(None) {
   override def defaultDisplayableDataId: String = s"$socialNetworkId (${dataType.name}): $lastName, $firstName"
+
+  override def getDataType: UserType.UserType = {
+    _dataType
+  }
 }

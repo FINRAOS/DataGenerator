@@ -1,4 +1,3 @@
-//CHECKSTYLE:OFF
 /*
  * Copyright 2014 DataGenerator Contributors
  *
@@ -33,17 +32,21 @@ import java.util.LinkedList;
 /**
  * User Type
  */
-public class UserType {
+public final class UserType {
+    private UserType() {
+        // Not called -- utility class
+    }
+
     /**
-     * Admin
+     * ADMIN
      */
-    public static final UserTypeVal Admin = new UserTypeVal() {
+    public static final UserTypeVal ADMIN = new UserTypeVal() {
         /**
          * Get data type
          * @return
          */
-        public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> dataType() {
-            return UserType.Admin;
+        public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> getDataType() {
+            return UserType.ADMIN;
         }
 
         /**
@@ -63,9 +66,9 @@ public class UserType {
         @Override
         public Seq<UserTypeVal> getAllowableChildTypes(Node<UserStub> nodeOfThisType) {
             LinkedList<UserTypeVal> list = new LinkedList<>();
-            list.add(UserType.Admin);
-            list.add(UserType.SocialNetworkEmployee);
-            list.add(UserType.PublicUser);
+            list.add(UserType.ADMIN);
+            list.add(UserType.SOCIAL_NETWORK_EMPLOYEE);
+            list.add(UserType.PUBLIC_USER);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
@@ -77,7 +80,7 @@ public class UserType {
         @Override
         public Seq<UserTypeVal> getAllowableParentTypes(Node<UserStub> nodeOfThisType) {
             LinkedList<UserTypeVal> list = new LinkedList<>();
-            list.add(UserType.Admin);
+            list.add(UserType.ADMIN);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
@@ -98,21 +101,21 @@ public class UserType {
                     new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.Admin,
+                    UserType.ADMIN,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.07);
                         }
                     }));
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.SocialNetworkEmployee,
+                    UserType.SOCIAL_NETWORK_EMPLOYEE,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.1);
                         }
                     }));
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.PublicUser,
+                    UserType.PUBLIC_USER,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.15);
@@ -138,7 +141,7 @@ public class UserType {
                     new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.Admin,
+                    UserType.ADMIN,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.07);
@@ -149,13 +152,16 @@ public class UserType {
         }
     };
 
-    public static final UserTypeVal SocialNetworkEmployee = new UserTypeVal() {
+    /**
+     * Social network employee
+     */
+    public static final UserTypeVal SOCIAL_NETWORK_EMPLOYEE = new UserTypeVal() {
         /**
          * Get data type
          * @return
          */
-        public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> dataType() {
-            return UserType.SocialNetworkEmployee;
+        public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> getDataType() {
+            return UserType.SOCIAL_NETWORK_EMPLOYEE;
         }
 
         /**
@@ -175,8 +181,8 @@ public class UserType {
         @Override
         public Seq<UserTypeVal> getAllowableChildTypes(Node<UserStub> nodeOfThisType) {
             LinkedList<UserTypeVal> list = new LinkedList<>();
-            list.add(UserType.SocialNetworkEmployee);
-            list.add(UserType.PublicUser);
+            list.add(UserType.SOCIAL_NETWORK_EMPLOYEE);
+            list.add(UserType.PUBLIC_USER);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
@@ -188,8 +194,8 @@ public class UserType {
         @Override
         public Seq<UserTypeVal> getAllowableParentTypes(Node<UserStub> nodeOfThisType) {
             LinkedList<UserTypeVal> list = new LinkedList<>();
-            list.add(UserType.Admin);
-            list.add(UserType.SocialNetworkEmployee);
+            list.add(UserType.ADMIN);
+            list.add(UserType.SOCIAL_NETWORK_EMPLOYEE);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
@@ -210,14 +216,14 @@ public class UserType {
                     new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.SocialNetworkEmployee,
+                    UserType.SOCIAL_NETWORK_EMPLOYEE,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.25);
                         }
                     }));
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.PublicUser,
+                    UserType.PUBLIC_USER,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.30);
@@ -243,14 +249,14 @@ public class UserType {
                     new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.Admin,
+                    UserType.ADMIN,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.03);
                         }
                     }));
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.SocialNetworkEmployee,
+                    UserType.SOCIAL_NETWORK_EMPLOYEE,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.25);
@@ -261,13 +267,16 @@ public class UserType {
         }
     };
 
-    public static final UserTypeVal PublicUser = new UserTypeVal() {
+    /**
+     * Public User
+     */
+    public static final UserTypeVal PUBLIC_USER = new UserTypeVal() {
         /**
          * Get data type
          * @return
          */
-        public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> dataType() {
-            return UserType.PublicUser;
+        public NodeDataType.NodeDataType<User, UserStub, UserTypes, UserTypeVal> getDataType() {
+            return UserType.PUBLIC_USER;
         }
 
         /**
@@ -287,7 +296,7 @@ public class UserType {
         @Override
         public Seq<UserTypeVal> getAllowableChildTypes(Node<UserStub> nodeOfThisType) {
             LinkedList<UserTypeVal> list = new LinkedList<>();
-            list.add(UserType.PublicUser);
+            list.add(UserType.PUBLIC_USER);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
@@ -299,9 +308,9 @@ public class UserType {
         @Override
         public Seq<UserTypeVal> getAllowableParentTypes(Node<UserStub> nodeOfThisType) {
             LinkedList<UserTypeVal> list = new LinkedList<>();
-            list.add(UserType.Admin);
-            list.add(UserType.SocialNetworkEmployee);
-            list.add(UserType.PublicUser);
+            list.add(UserType.ADMIN);
+            list.add(UserType.SOCIAL_NETWORK_EMPLOYEE);
+            list.add(UserType.PUBLIC_USER);
             return ScalaInJavaHelper.linkedListToScalaIterable(list).toSeq();
         }
 
@@ -322,7 +331,7 @@ public class UserType {
                     new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.PublicUser,
+                    UserType.PUBLIC_USER,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.35);
@@ -348,21 +357,21 @@ public class UserType {
                     new ListBuffer<>();
 
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.Admin,
+                    UserType.ADMIN,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.01);
                         }
                     }));
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.SocialNetworkEmployee,
+                    UserType.SOCIAL_NETWORK_EMPLOYEE,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.02);
                         }
                     }));
             list.$plus$eq(new Tuple2<UserTypeVal, Function1<Node<T_DisplayableData>, Object>>(
-                    UserType.PublicUser,
+                    UserType.PUBLIC_USER,
                     new AbstractFunction1<Node<T_DisplayableData>, Object>() {
                         public Object apply(Node<T_DisplayableData> sourceEventNode) {
                             return RandomHelper.evaluateProbability(probabilityMultiplier * 0.35);

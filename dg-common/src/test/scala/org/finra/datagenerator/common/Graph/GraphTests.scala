@@ -31,18 +31,18 @@ class GraphTests extends WordSpec {
   "A new graph" when {
     "Adding some nodes" should {
       "Contain all nodes and edges in the DOT output of the copied graph" in {
-        val initialNodeValue = UserType.Admin.asStub
+        val initialNodeValue = UserType.ADMIN.asStub
         val graph = new Graph[UserStub](
           Option(initialNodeValue), isEdgeLinkTrackingOn = true, _graphId = "TestGraph1", appendSharedDisplayIdsWithNumericalSuffix = true)
         assert(graph.rootNodes.size == 1 && graph.allNodes.size == 1 && graph.rootNodes.head == graph.allNodes.head
           && graph.rootNodes.head.data == initialNodeValue)
-        val child1 = graph.allNodes.head.addChild(UserType.Admin.asStub)
-        val child2 = graph.allNodes.head.addChild(UserType.SocialNetworkEmployee.asStub)
-        val child3 = graph.allNodes.head.addChild(UserType.PublicUser.asStub)
-        val grandchild1 = child1.addChild(UserType.PublicUser.asStub)
+        val child1 = graph.allNodes.head.addChild(UserType.ADMIN.asStub)
+        val child2 = graph.allNodes.head.addChild(UserType.SOCIAL_NETWORK_EMPLOYEE.asStub)
+        val child3 = graph.allNodes.head.addChild(UserType.PUBLIC_USER.asStub)
+        val grandchild1 = child1.addChild(UserType.PUBLIC_USER.asStub)
         child2.addLinkToExistingChild(grandchild1)
         grandchild1.addLinkToExistingParent(child3)
-        child3.addParent(UserType.Admin.asStub)
+        child3.addParent(UserType.ADMIN.asStub)
         assert(graph.rootNodes.size == 2 && graph.allNodes.size == 6)
         val outputStream = new ByteArrayOutputStream()
         val copiedGraph = graph.deepCopy

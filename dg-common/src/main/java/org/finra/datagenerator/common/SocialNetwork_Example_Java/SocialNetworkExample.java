@@ -19,7 +19,11 @@ package org.finra.datagenerator.common.SocialNetwork_Example_Java;
 /**
  * Main method that generates social-network friendship graphs
  */
-public class SocialNetworkExample_Program {
+public final class SocialNetworkExample {
+    private SocialNetworkExample() {
+        // Not called -- utility class
+    }
+
     /**
      * Main entry point
      * @param args Arguments

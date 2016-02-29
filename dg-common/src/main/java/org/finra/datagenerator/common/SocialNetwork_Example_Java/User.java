@@ -33,14 +33,24 @@ public class User extends NodeData {
     final Boolean isSecret;
     final Long socialNetworkId;
 
+    /**
+     * Construct a User
+     * @param dataType User type
+     * @param firstName First name
+     * @param lastName Last name
+     * @param dateOfBirth Date of birth
+     * @param geographicalLocation Latitude and longitude
+     * @param isSecret Is secret user
+     * @param socialNetworkId Social network ID of user
+     */
     public User(
-            UserTypeVal dataType,
-            String firstName,
-            String lastName,
-            Date dateOfBirth, // Assert > 13 years old when creating
-            Tuple2<Double, Double> geographicalLocation,
-            Boolean isSecret,
-            Long socialNetworkId) {
+            final UserTypeVal dataType,
+            final String firstName,
+            final String lastName,
+            final Date dateOfBirth, // Assert > 13 years old when creating
+            final Tuple2<Double, Double> geographicalLocation,
+            final Boolean isSecret,
+            final Long socialNetworkId) {
         super();
         this.dataType = dataType;
         this.firstName = firstName;
@@ -51,11 +61,19 @@ public class User extends NodeData {
         this.socialNetworkId = socialNetworkId;
     }
 
+    /**
+     * Get default ID to display when outputting user, e.g., as part of a node in of DOT file
+     * @return ID String
+     */
     public String defaultDisplayableDataId() {
-        return socialNetworkId + " (" + dataType.name() + "): " +lastName + ", " + firstName;
+        return socialNetworkId + " (" + dataType.name() + "): " + lastName + ", " + firstName;
     }
 
-    public UserTypeVal dataType() {
+    /**
+     * Get user type
+     * @return User type
+     */
+    public UserTypeVal getDataType() {
         return dataType;
     }
 }

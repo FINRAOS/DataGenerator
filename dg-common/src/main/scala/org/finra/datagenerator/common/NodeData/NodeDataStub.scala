@@ -35,5 +35,10 @@ abstract case class NodeDataStub[+T_NodeDataType <: NodeDataType[T_NodeData, T_T
                                  +T_NodeDataTypes <: NodeDataTypes[T_NodeData, T_ThisType, T_NodeDataType, T_NodeDataTypes],
                                  +T_ThisType <: NodeDataStub[T_NodeDataType, T_NodeData, T_NodeDataTypes, T_ThisType]
     ] protected() extends DisplayableData {
-  var dataType: (T_NodeDataType @uV)
+  override def dataType(): (T_NodeDataType @uV) = getDataType
+  def getDataType: (T_NodeDataType @uV)
+  def setDataType(value: (T_NodeDataType @uV)): Unit
+  def dataType_=(value: (T_NodeDataType @uV)): Unit = {
+    setDataType(value)
+  }
 }

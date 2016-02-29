@@ -110,15 +110,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -221,8 +212,8 @@
                             <resourceIncludes>**/*.*</resourceIncludes>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
-                            <failOnViolation>false</failOnViolation>
-                            <failsOnError>false</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <failsOnError>true</failsOnError>
                         </configuration>
                         <goals>
                             <goal>check</goal>

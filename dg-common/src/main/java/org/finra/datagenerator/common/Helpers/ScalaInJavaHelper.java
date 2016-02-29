@@ -23,7 +23,11 @@ import java.util.LinkedList;
 /**
  * org.finra.datagenerator.common.Helpers to use Scala code in Java.
  */
-public class ScalaInJavaHelper {
+public final class ScalaInJavaHelper {
+    private ScalaInJavaHelper() {
+        // Not called -- utility class
+    }
+
     /**
      * Convert a Java LinkedList to a Scala Iterable.
      * @param linkedList Java LinkedList to convert

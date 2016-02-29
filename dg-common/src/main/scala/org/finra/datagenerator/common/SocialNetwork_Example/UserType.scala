@@ -29,11 +29,11 @@ import scala.collection.mutable.ListBuffer
  */
 class UserTypes extends NodeDataTypes[User, UserStub, UserType.UserType, UserTypes] {
   def allInitialDataTypes: collection.immutable.HashSet[UserType.UserType] = {
-    collection.immutable.HashSet[UserType.UserType](UserType.Admin)
+    collection.immutable.HashSet[UserType.UserType](UserType.ADMIN)
   }
 
   def allDataTypes: collection.immutable.HashSet[UserType.UserType] = {
-    collection.immutable.HashSet[UserType.UserType](UserType.Admin, UserType.SocialNetworkEmployee, UserType.PublicUser)
+    collection.immutable.HashSet[UserType.UserType](UserType.ADMIN, UserType.SOCIAL_NETWORK_EMPLOYEE, UserType.PUBLIC_USER)
   }
 
   def dataTransitions: UserTransitions.type = UserTransitions
@@ -50,72 +50,72 @@ object UserType {
     override def probabilisticallyLinkToExistingParentStubNode(stubNode: Node[UserStub]): Unit = {}
   }
 
-  // Admin can friend request Admin, SocialNetworkEmployee, and PublicUser
-  // SocialNetworkEmployee can friend request SocialNetworkEmployee and PublicUser
-  // PublicUser can friend request PublicUser
+  // ADMIN can friend request ADMIN, SOCIAL_NETWORK_EMPLOYEE, and PUBLIC_USER
+  // SOCIAL_NETWORK_EMPLOYEE can friend request SOCIAL_NETWORK_EMPLOYEE and PUBLIC_USER
+  // PUBLIC_USER can friend request PUBLIC_USER
 
-  case object Admin extends UserType {
-    override def dataType: NodeDataType[User, UserStub, UserTypes, UserType] = UserType.Admin
+  case object ADMIN extends UserType {
+    override def getDataType: NodeDataType[User, UserStub, UserTypes, UserType] = UserType.ADMIN
     override val name = "Admin"
 
     override def getAllowableChildTypes(nodeOfThisType: Node[UserStub]): Seq[UserType.UserType] = {
       nodeDataTypes.allDataTypes.toSeq
     }
     override def getAllowableParentTypes(nodeOfThisType: Node[UserStub]): Seq[UserType.UserType] = {
-      Seq[UserType.UserType](UserType.Admin)
+      Seq[UserType.UserType](UserType.ADMIN)
     }
     override def childStateTransitionPredicates[T_DisplayableData <: DisplayableData](
                   node: Node[T_DisplayableData], maxToGenerate: Int, probabilityMultiplier: Int)
                   : ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))] = {
       ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))](
-        (UserType.Admin, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.07)),
-        (UserType.SocialNetworkEmployee, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.1)),
-        (UserType.PublicUser, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.15))
+        (UserType.ADMIN, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.07)),
+        (UserType.SOCIAL_NETWORK_EMPLOYEE, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.1)),
+        (UserType.PUBLIC_USER, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.15))
       )
     }
     override def parentStateTransitionPredicates[T_DisplayableData <: DisplayableData](
                   node: Node[T_DisplayableData], maxToGenerate: Int, probabilityMultiplier: Int)
                   : ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))] = {
       ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))](
-        (UserType.Admin, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier * 0.07))
+        (UserType.ADMIN, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier * 0.07))
       )
     }
   }
 
-  case object SocialNetworkEmployee extends UserType {
-    override def dataType: NodeDataType[User, UserStub, UserTypes, UserType] = UserType.Admin
+  case object SOCIAL_NETWORK_EMPLOYEE extends UserType {
+    override def getDataType: NodeDataType[User, UserStub, UserTypes, UserType] = UserType.ADMIN
     override val name = "SocialNetworkEmployee"
 
     override def getAllowableChildTypes(nodeOfThisType: Node[UserStub]): Seq[UserType.UserType] = {
-      Seq[UserType.UserType](UserType.SocialNetworkEmployee, UserType.PublicUser)
+      Seq[UserType.UserType](UserType.SOCIAL_NETWORK_EMPLOYEE, UserType.PUBLIC_USER)
     }
     override def getAllowableParentTypes(nodeOfThisType: Node[UserStub]): Seq[UserType.UserType] = {
-      Seq[UserType.UserType](UserType.Admin, UserType.SocialNetworkEmployee)
+      Seq[UserType.UserType](UserType.ADMIN, UserType.SOCIAL_NETWORK_EMPLOYEE)
     }
     override def childStateTransitionPredicates[T_DisplayableData <: DisplayableData](
                   node: Node[T_DisplayableData], maxToGenerate: Int, probabilityMultiplier: Int)
                   : ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))] = {
       ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))](
-        (UserType.SocialNetworkEmployee, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.25)),
-        (UserType.PublicUser, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.30))
+        (UserType.SOCIAL_NETWORK_EMPLOYEE, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.25)),
+        (UserType.PUBLIC_USER, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.30))
       )
     }
     override def parentStateTransitionPredicates[T_DisplayableData <: DisplayableData](
                   node: Node[T_DisplayableData], maxToGenerate: Int, probabilityMultiplier: Int)
                   : ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))] = {
       ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))](
-        (UserType.Admin, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.03)),
-        (UserType.SocialNetworkEmployee, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.25))
+        (UserType.ADMIN, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.03)),
+        (UserType.SOCIAL_NETWORK_EMPLOYEE, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.25))
       )
     }
   }
 
-  case object PublicUser extends UserType {
-    override def dataType: NodeDataType[User, UserStub, UserTypes, UserType] = UserType.Admin
+  case object PUBLIC_USER extends UserType {
+    override def getDataType: NodeDataType[User, UserStub, UserTypes, UserType] = UserType.ADMIN
     override val name = "PublicUser"
 
     override def getAllowableChildTypes(nodeOfThisType: Node[UserStub]): Seq[UserType.UserType] = {
-      Seq[UserType.UserType](UserType.PublicUser)
+      Seq[UserType.UserType](UserType.PUBLIC_USER)
     }
     override def getAllowableParentTypes(nodeOfThisType: Node[UserStub]): Seq[UserType.UserType] = {
       nodeDataTypes.allDataTypes.toSeq
@@ -124,16 +124,16 @@ object UserType {
                   node: Node[T_DisplayableData], maxToGenerate: Int, probabilityMultiplier: Int)
                   : ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))] = {
       ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))](
-        (UserType.PublicUser, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.35))
+        (UserType.PUBLIC_USER, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.35))
       )
     }
     override def parentStateTransitionPredicates[T_DisplayableData <: DisplayableData](
                   node: Node[T_DisplayableData], maxToGenerate: Int, probabilityMultiplier: Int)
                   : ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))]= {
       ListBuffer[(UserType.UserType, (Node[T_DisplayableData] => Boolean))](
-        (UserType.Admin, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.01)),
-        (UserType.SocialNetworkEmployee, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.02)),
-        (UserType.PublicUser, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.35))
+        (UserType.ADMIN, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.01)),
+        (UserType.SOCIAL_NETWORK_EMPLOYEE, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.02)),
+        (UserType.PUBLIC_USER, (sourceEventNode: Node[T_DisplayableData]) => RandomHelper.evaluateProbability(probabilityMultiplier*0.35))
       )
     }
   }

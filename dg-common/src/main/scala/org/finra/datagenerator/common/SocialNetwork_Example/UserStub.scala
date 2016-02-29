@@ -17,6 +17,7 @@
 package org.finra.datagenerator.common.SocialNetwork_Example
 
 import org.finra.datagenerator.common.NodeData.NodeDataStub
+import org.finra.datagenerator.common.NodeData.NodeDataType.NodeDataType
 import org.finra.datagenerator.common.SocialNetwork_Example.UserType.UserType
 
 import scala.beans.BeanProperty
@@ -29,20 +30,27 @@ import scala.collection.mutable.ArrayBuffer
  * Any non-specified parameters are expected to be populated with default or random values.
  */
 class UserStub protected() extends NodeDataStub[UserType, User, UserTypes, UserStub]() {
-  var dataType: UserType = UserType.PublicUser
+  protected var _dataType: UserType = UserType.PUBLIC_USER
+  override def setDataType(value: UserType): Unit ={
+    _dataType = value
+  }
+  override def getDataType: UserType = {
+    _dataType
+  }
+
   @BeanProperty var geographicalLocation: Option[(Double, Double)] = None
   @BeanProperty var isSecret: Option[Boolean] = None
 
   def this(userType: UserType.UserType, geographicalLocation: (Double, Double), isSecret: Boolean) = {
     this()
-    this.dataType = userType
+    this._dataType = userType
     this.geographicalLocation = Option(geographicalLocation)
     this.isSecret = Option(isSecret)
   }
 
   def this(userType: UserType.UserType) = {
     this()
-    this.dataType = userType
+    this._dataType = userType
   }
 
   override def displayableElements: ArrayBuffer[String] = {

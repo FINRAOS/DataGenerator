@@ -28,7 +28,11 @@ import java.sql.Date;
  * the current implementation only supports stub generation and doesn't yet have any implementation of
  * stub-to-data translation.
  */
-public class SocialNetworkUtilities {
+public final class SocialNetworkUtilities {
+    private SocialNetworkUtilities() {
+        // Not called -- utility class
+    }
+
     /**
      * Randomly get whether it is a secret account
      * @return Boolean
@@ -41,10 +45,10 @@ public class SocialNetworkUtilities {
      * Get random geographical location
      * @return 2-Tuple of ints (latitude, longitude)
      */
-    public static Tuple2<Double,Double> getRandomGeographicalLocation() {
+    public static Tuple2<Double, Double> getRandomGeographicalLocation() {
         return new Tuple2<>(
-            (double)(RandomHelper.randWithConfiguredSeed().nextInt(999) + 1) / 100,
-            (double)(RandomHelper.randWithConfiguredSeed().nextInt(999) + 1) / 100);
+            (double) (RandomHelper.randWithConfiguredSeed().nextInt(999) + 1) / 100,
+            (double) (RandomHelper.randWithConfiguredSeed().nextInt(999) + 1) / 100);
     }
 
     /**
@@ -53,7 +57,7 @@ public class SocialNetworkUtilities {
      * @param point2 Point2
      * @return Distance (double)
      */
-    public static Double getDistanceBetweenCoordinates(Tuple2<Double,Double> point1, Tuple2<Double,Double> point2) {
+    public static Double getDistanceBetweenCoordinates(Tuple2<Double, Double> point1, Tuple2<Double, Double> point2) {
         // sqrt( (x2-x1)^2 + (y2-y2)^2 )
         Double xDiff = point1._1() - point2._1();
         Double yDiff = point1._2() - point2._2();
@@ -67,7 +71,7 @@ public class SocialNetworkUtilities {
      * @return Throws an exception.
      */
     public static Double getDistanceWithinThresholdOfCoordinates(
-            Tuple2<Double,Double> point1, Tuple2<Double,Double> point2) {
+            Tuple2<Double, Double> point1, Tuple2<Double, Double> point2) {
         throw new NotImplementedError();
     }
 
@@ -87,7 +91,7 @@ public class SocialNetworkUtilities {
      * @param point2 Point 2
      * @return True or false
      */
-    public static Boolean areCoordinatesWithinThreshold(Tuple2<Double,Double> point1, Tuple2<Double,Double> point2) {
+    public static Boolean areCoordinatesWithinThreshold(Tuple2<Double, Double> point1, Tuple2<Double, Double> point2) {
         return getDistanceBetweenCoordinates(point1, point2) < COORDINATE_THRESHOLD;
     }
 }

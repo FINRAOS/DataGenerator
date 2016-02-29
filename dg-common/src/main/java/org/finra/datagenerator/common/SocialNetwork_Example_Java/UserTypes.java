@@ -1,4 +1,3 @@
-//CHECKSTYLE:OFF
 /*
  * Copyright 2014 DataGenerator Contributors
  *
@@ -24,15 +23,15 @@ import scala.collection.immutable.HashSet;
 /**
  * User type classifications
  */
-public class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, UserTypes> {
-    private static final UserTypes ourInstance = new UserTypes();
+public final class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, UserTypes> {
+    private static final UserTypes INSTANCE = new UserTypes();
 
     /**
      * Get singleton instance
      * @return UserTypes
      */
     public static UserTypes getInstance() {
-        return ourInstance;
+        return INSTANCE;
     }
 
     private UserTypes() {
@@ -49,9 +48,9 @@ public class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, Use
             // Would be cleaner if we could call scala's apply method here, but it isn't part of a HashSet companion
             // object -- instead it lives in GenericCompanion, and it's unclear now to get to it from Java.
             allDataTypes = new HashSet<>();
-            allDataTypes = allDataTypes.$plus(UserType.Admin);
-            allDataTypes = allDataTypes.$plus(UserType.PublicUser);
-            allDataTypes = allDataTypes.$plus(UserType.SocialNetworkEmployee);
+            allDataTypes = allDataTypes.$plus(UserType.ADMIN);
+            allDataTypes = allDataTypes.$plus(UserType.PUBLIC_USER);
+            allDataTypes = allDataTypes.$plus(UserType.SOCIAL_NETWORK_EMPLOYEE);
         }
         return allDataTypes;
     }
@@ -67,7 +66,7 @@ public class UserTypes implements NodeDataTypes<User, UserStub, UserTypeVal, Use
             // Would be cleaner if we could call scala's apply method here, but it isn't part of a HashSet companion
             // object -- instead it lives in GenericCompanion, and it's unclear now to get to it from Java.
             allInitialDataTypes = new HashSet<>();
-            allInitialDataTypes = allInitialDataTypes.$plus(UserType.Admin);
+            allInitialDataTypes = allInitialDataTypes.$plus(UserType.ADMIN);
         }
         return allInitialDataTypes;
     }

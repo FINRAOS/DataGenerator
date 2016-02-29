@@ -27,7 +27,7 @@ import java.io.File;
 /**
  * Builds all combinations of graph structures for friendships with a maximum graph size
  */
-public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTypeVal,UserStub,UserTypes> {
+public final class SocialNetworkStructureBuilder extends StructureBuilder<User, UserTypeVal, UserStub, UserTypes> {
     // Defined as protected in the Scala abstract class, but for some reason it requires public on the Java impl.
 
     /**
@@ -44,14 +44,14 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
     private static final Boolean WRITE_STRUCTURES_IN_PARALLEL = false; // Same structure = same ID helps debugging.
     private static final Boolean ALSO_WRITE_AS_PNG = true;
 
-    private static final SocialNetworkStructureBuilder ourInstance = new SocialNetworkStructureBuilder();
+    private static final SocialNetworkStructureBuilder INSTANCE = new SocialNetworkStructureBuilder();
 
     /**
      * Singleton instance
      * @return SocialNetworkStructureBuilder singleton
      */
     public static SocialNetworkStructureBuilder getInstance() {
-        return ourInstance;
+        return INSTANCE;
     }
 
     private SocialNetworkStructureBuilder() {
@@ -71,7 +71,7 @@ public class SocialNetworkStructureBuilder extends StructureBuilder<User,UserTyp
             throw new NotImplementedError();
         } else {
             int i = 0;
-            for (Iterator<Graph<UserStub>> iter = graphs.toIterator(); iter.hasNext(); ) {
+            for (Iterator<Graph<UserStub>> iter = graphs.toIterator(); iter.hasNext();) {
                 Graph<UserStub> graph = iter.next();
                 graph.setGraphId("S_" + ++i + "_" + graph.allNodes().size());
                 graph.writeDotFile(outDir + graph.graphId() + ".gv", false, ALSO_WRITE_AS_PNG);

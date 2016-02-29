@@ -26,17 +26,17 @@ object UserTransitions extends DataTransitions[User, UserType.UserType, UserStub
 
   override def isStubParentTypeTransitionAllowed(childNode: Node[UserStub], candidateParentNode: Node[UserStub]): Boolean = {
     childNode.data.dataType match {
-      case UserType.Admin =>
+      case UserType.ADMIN =>
         candidateParentNode.data.dataType match {
-          case UserType.Admin => true
+          case UserType.ADMIN => true
           case _ => false
         }
-      case UserType.SocialNetworkEmployee =>
+      case UserType.SOCIAL_NETWORK_EMPLOYEE =>
         candidateParentNode.data.dataType match {
-          case UserType.PublicUser => false
+          case UserType.PUBLIC_USER => false
           case _ => true
         }
-      case UserType.PublicUser => true
+      case UserType.PUBLIC_USER => true
     }
   }
 
