@@ -57,6 +57,11 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         }
     }
 
+    /**
+     *
+     * @param year to check if it is a leap year
+     * @return true if the year is a leap year
+     */
     public boolean isLeapYear(int year) {
         if (year % 4 == 0) {
             if (year % 100 == 0) {
