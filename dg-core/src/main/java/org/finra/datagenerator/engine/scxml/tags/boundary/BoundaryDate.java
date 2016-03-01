@@ -134,6 +134,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         int lateDay = Integer.parseInt(latest.substring(8, 10));
         int lateMonth = Integer.parseInt(latest.substring(5, 7));
         int lateYear = Integer.parseInt(latest.substring(0, 4));
+        isLeapYear = isLeapYear(lateYear);
 
         if (lateDay > 1) {
             lateDay--;
