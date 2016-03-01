@@ -57,6 +57,19 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         }
     }
 
+    public boolean isLeapYear(int year) {
+        if (year % 4 == 0) {
+            if (year % 100 == 0) {
+                if (year % 400 == 0) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param isNullable isNullable
      * @param earliest   lower boundary date
@@ -65,20 +78,11 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      */
     public List<String> positiveCase(boolean isNullable, String earliest, String latest) {
         List<String> values = new LinkedList<>();
-        boolean isLeapYear = false;
+
         int earlyDay = Integer.parseInt(earliest.substring(8, 10));
         int earlyMonth = Integer.parseInt(earliest.substring(5, 7));
         int earlyYear = Integer.parseInt(earliest.substring(0, 4));
-
-        if (earlyYear % 4 == 0) {
-            if (earlyYear % 100 == 0) {
-                if (earlyYear % 400 == 0) {
-                    isLeapYear = true;
-                }
-            } else {
-                isLeapYear = true;
-            }
-        }
+        boolean isLeapYear = isLeapYear(earlyYear);
 
         // prepend 0 for months 1 - 9
         String earlyMo = (Integer.toString(earlyMonth).length() < 2 ? "0" + earlyMonth : "" + earlyMonth);
@@ -96,7 +100,15 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
             if (isLeapYear && earlyDay < 29) {
                 earlyDay++;
             } else if (!isLeapYear && earlyDay < 28) {
-                earlyDay++;
+                if (earlyDay < 28) {
+                    earlyDay++;
+                } else {
+                    earlyDay = 1;
+                    earlyMonth = 3;
+                }
+            } else {
+                earlyDay = 1;
+                earlyMonth = 3;
             }
         } else {
             if (earlyMonth < 12) {
@@ -129,10 +141,10 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
             } else if (lateMonth == 3) {
                 if (isLeapYear) {
                     lateDay = 29;
-                    lateMonth--;
+                    lateMonth = 2;
                 } else {
                     lateDay = 28;
-                    lateMonth--;
+                    lateMonth = 2;
                 }
             } else {
                 if (lateYear > 1970) {
@@ -172,20 +184,10 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      */
     public List<String> negativeCase(boolean isNullable, String earliest, String latest) {
         List<String> values = new LinkedList<>();
-        boolean isLeapYear = false;
         int earlyDay = Integer.parseInt(earliest.substring(8, 10));
         int earlyMonth = Integer.parseInt(earliest.substring(5, 7));
         int earlyYear = Integer.parseInt(earliest.substring(0, 4));
-
-        if (earlyYear % 4 == 0) {
-            if (earlyYear % 100 == 0) {
-                if (earlyYear % 400 == 0) {
-                    isLeapYear = true;
-                }
-            } else {
-                isLeapYear = true;
-            }
-        }
+        boolean isLeapYear = isLeapYear(earlyYear);
 
         if (earlyDay > 1) {
             earlyDay--;
@@ -225,10 +227,20 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
             && lateDay < 30) {
             lateDay++;
         } else if (lateMonth == 2) {
-            if (isLeapYear && lateDay < 29) {
-                lateDay++;
-            } else if (!isLeapYear && lateDay < 28) {
-                lateDay++;
+            if (isLeapYear) {
+                if (lateDay < 29) {
+                    lateDay++;
+                } else {
+                    lateDay = 1;
+                    lateMonth = 3;
+                }
+            } else {
+                if (lateDay < 28) {
+                    lateDay++;
+                } else {
+                    lateDay = 1;
+                    lateMonth = 3;
+                }
             }
         } else {
             if (lateMonth < 12) {
