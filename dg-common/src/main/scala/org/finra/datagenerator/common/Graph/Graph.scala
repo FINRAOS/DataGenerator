@@ -222,17 +222,20 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    * @return Copied graph
    */
   def deepCopy: Graph[T] = {
-    //this.deepClone // Has performance issues (uses reflection)... so let's implement it ourselves instead.
-    val copiedGraph = new Graph[T](initialNodeValue = Option(allNodes.head.data.deepClone), isEdgeLinkTrackingOn = false,
-      _graphId = _graphId, appendSharedDisplayIdsWithNumericalSuffix = false)
-    copiedGraph.edgeLinkTrackingDescriptions = edgeLinkTrackingDescriptions.deepClone
+    val copiedGraph = new Graph[T](
+      initialNodeValue = Option(allNodes.head.data.deepClone(Set(allNodes.head.data.dataType.getClass))),
+      isEdgeLinkTrackingOn = false,
+      _graphId = _graphId,
+      appendSharedDisplayIdsWithNumericalSuffix = false
+    )
+    copiedGraph.edgeLinkTrackingDescriptions = edgeLinkTrackingDescriptions.deepClone()
     copiedGraph.customSeed = customSeed
     copiedGraph.customGlobalSeed = customGlobalSeed
-    copiedGraph.nodeIdCounters = nodeIdCounters.deepClone
-    copiedGraph.customBooleanAttributes = customBooleanAttributes.deepClone
-    copiedGraph.customStringAttributes = customStringAttributes.deepClone
-    //copiedGraph.customBooleanAttributes = customBooleanAttributes.deepClone
-    allNodes.tail.foreach(node => copiedGraph.addNewRootNode(node.data.deepClone))
+    copiedGraph.nodeIdCounters = nodeIdCounters.deepClone()
+    copiedGraph.customBooleanAttributes = customBooleanAttributes.deepClone()
+    copiedGraph.customStringAttributes = customStringAttributes.deepClone()
+    //copiedGraph.customBooleanAttributes = customBooleanAttributes.deepClone()
+    allNodes.tail.foreach(node => copiedGraph.addNewRootNode(node.data.deepClone(Set(node.data.dataType.getClass))))
     allNodes.foreach(node => {
       val nodeInNewGraph = copiedGraph.allNodes(node.nodeIndexInContainingGraph)
       node.parents.foreach(parent => {

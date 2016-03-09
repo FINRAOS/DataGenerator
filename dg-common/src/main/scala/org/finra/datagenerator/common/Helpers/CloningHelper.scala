@@ -33,7 +33,10 @@ object CloningHelper {
      * object, or copy using Scala's built in copy if utilizing a case class.
      * @return Deep clone of object
      */
-    def deepClone: T = {
+    def deepClone(classesNotToClone: Set[Class[_]] = Set()): T = {
+      classesNotToClone.foreach(classNotToClone => {
+        cloner.dontClone(classNotToClone)
+      })
       cloner.deepClone(cloneableObject)
     }
   }
