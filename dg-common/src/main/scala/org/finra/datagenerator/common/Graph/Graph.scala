@@ -20,7 +20,7 @@ import java.io.{FileOutputStream, OutputStream}
 
 import org.finra.datagenerator.common.Helpers.{RetryHelper, DotHelper, RandomHelper}
 import org.finra.datagenerator.common.NodeData.DisplayableData
-
+import org.finra.datagenerator.common.Helpers.CloningHelper.ObjectCloning
 import scala.beans.BeanProperty
 import scala.collection.mutable
 
@@ -223,16 +223,16 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
    */
   def deepCopy: Graph[T] = {
     //this.deepClone // Has performance issues (uses reflection)... so let's implement it ourselves instead.
-    val copiedGraph = new Graph[T](initialNodeValue = Option(allNodes.head.data), isEdgeLinkTrackingOn = false,
+    val copiedGraph = new Graph[T](initialNodeValue = Option(allNodes.head.data.deepClone), isEdgeLinkTrackingOn = false,
       _graphId = _graphId, appendSharedDisplayIdsWithNumericalSuffix = false)
-    copiedGraph.edgeLinkTrackingDescriptions = edgeLinkTrackingDescriptions
+    copiedGraph.edgeLinkTrackingDescriptions = edgeLinkTrackingDescriptions.deepClone
     copiedGraph.customSeed = customSeed
     copiedGraph.customGlobalSeed = customGlobalSeed
-    copiedGraph.nodeIdCounters = nodeIdCounters
-    copiedGraph.customBooleanAttributes = customBooleanAttributes
-    copiedGraph.customStringAttributes = customStringAttributes
-    //copiedGraph.customBooleanAttributes = customBooleanAttributes
-    allNodes.tail.foreach(node => copiedGraph.addNewRootNode(node.data))
+    copiedGraph.nodeIdCounters = nodeIdCounters.deepClone
+    copiedGraph.customBooleanAttributes = customBooleanAttributes.deepClone
+    copiedGraph.customStringAttributes = customStringAttributes.deepClone
+    //copiedGraph.customBooleanAttributes = customBooleanAttributes.deepClone
+    allNodes.tail.foreach(node => copiedGraph.addNewRootNode(node.data.deepClone))
     allNodes.foreach(node => {
       val nodeInNewGraph = copiedGraph.allNodes(node.nodeIndexInContainingGraph)
       node.parents.foreach(parent => {
