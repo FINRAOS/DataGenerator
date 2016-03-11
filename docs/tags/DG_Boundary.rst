@@ -101,8 +101,8 @@ Hive Types
   
 **Varchar** 
 
-| ``<dg:positiveBoundHiveVarchar name="SIZE" length="18" minLen=10 maxLen=18 nullable="true"/>`` 
-| ``<dg:negativeBoundHiveVarchar name="SIZE" length="18" minLen=10 maxLen=18 nullable="true"/>``
+| ``<dg:positiveBoundHiveVarchar name="SIZE" length="18" minLen="10" maxLen="18" nullable="true"/>`` 
+| ``<dg:negativeBoundHiveVarchar name="SIZE" length="18" minLen="10" maxLen="18" nullable="true"/>``
 |  
 | Required Parameters: ``name``
 | Optional Parameters: ``nullable``, ``length``, ``minLen``, ``maxLen``
