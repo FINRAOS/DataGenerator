@@ -15,6 +15,17 @@
  */
 package org.finra.datagenerator.consumer;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NetworkConnector;
@@ -25,17 +36,6 @@ import org.finra.datagenerator.reporting.ReportingHandler;
 import org.finra.datagenerator.writer.DataWriter;
 import org.junit.Assert;
 import org.junit.Test;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 /**
  * Created by RobbinBr on 7/2/2014.
@@ -77,7 +77,7 @@ public class DataConsumerTest {
             port = nc.getLocalPort();
         }
 
-        return InetAddress.getLocalHost().getHostName() + ":" + port;
+        return "127.0.0.1:" + port;
     }
 
 
