@@ -36,4 +36,18 @@ public final class ScalaInJavaHelper {
     public static scala.collection.Iterable linkedListToScalaIterable(LinkedList<?> linkedList) {
         return JavaConverters.asScalaIterableConverter(linkedList).asScala();
     }
+
+    /**
+     * Flattens an option into its value or else null, which is not great but is usually more convenient in Java.
+     * @param option Optional value -- either Some(T) or None
+     * @param <T> Any type
+     * @return The value inside the option, or else null
+     */
+    public static <T> T flattenOption(scala.Option<T> option) {
+        if (option.isEmpty()) {
+            return null;
+        } else {
+            return option.get();
+        }
+    }
 }
