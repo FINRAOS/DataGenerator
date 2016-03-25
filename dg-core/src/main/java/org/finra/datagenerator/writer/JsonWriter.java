@@ -80,9 +80,10 @@ public class JsonWriter implements BulkWriter {
     public JSONObject getJsonFormatted(Map<String, String> dataMap) {
         JSONObject oneRowJson = new JSONObject();
 
-        for (String var : outTemplate) {
-            oneRowJson.put(var, dataMap.get(var));
+        for (int i = 0; i < outTemplate.length; i++) {
+            oneRowJson.put(outTemplate[i], dataMap.get(outTemplate[i]));
         }
+
 
         return oneRowJson;
     }
