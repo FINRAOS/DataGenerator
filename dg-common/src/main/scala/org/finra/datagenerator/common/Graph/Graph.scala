@@ -188,7 +188,9 @@ class Graph[T <: DisplayableData](initialNodeValue: Option[T] = None, var isEdge
   def writeDotFile(filepathToCreate: String, isSimplified: Boolean = false, alsoWriteAsPng: Boolean = true): Unit = {
     val writer = RetryHelper.retry(10, Seq(classOf[java.io.FileNotFoundException])){
       new FileOutputStream(filepathToCreate)
-    }(Thread.sleep(100))
+    }(_ => {
+      Thread.sleep(100)
+    })
     try {
       writeDotFileToOpenStream(writer, isSimplified = isSimplified)
     }

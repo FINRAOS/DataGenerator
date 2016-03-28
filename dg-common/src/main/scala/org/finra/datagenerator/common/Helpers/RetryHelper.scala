@@ -32,12 +32,13 @@ object RetryHelper {
    * @param maxTries Number of times to try before throwing the exception.
    * @param exceptionTypesToRetry Types of exceptions to retry. Defaults to single-element sequence containing classOf[RuntimeException]
    * @param codeToRetry Block of code to try
+   * @param handlingCode Block of code to run if there is a catchable exception
    * @tparam T Return type of block of code to try
    * @return Return value of block of code to try (else exception will be thrown if it failed all tries)
    */
   def retry[T](maxTries: Int, exceptionTypesToRetry: Seq[Class[_ <: Throwable]] = Seq(classOf[RuntimeException]))
               (codeToRetry: => T)
-              (handlingCode: => Unit = () => ()): T = {
+              (handlingCode: Throwable => Unit = _ => ()): T = {
     var result: Option[T] = None
     var left = maxTries
     while (!result.isDefined) {
@@ -50,7 +51,7 @@ object RetryHelper {
         if (left <= 0) {
           throw ex
         } else {
-          handlingCode
+          handlingCode(ex)
         }
       }).apply({
         result = Option(codeToRetry)

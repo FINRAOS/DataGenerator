@@ -35,7 +35,9 @@ class RetryHelperTests extends WordSpec {
           RetryHelper.retry(200, Seq(classOf[IllegalArgumentException]))({
             i += 1
             throw new IllegalArgumentException()
-          })(flag = true)
+          })(_ => {
+            flag = true
+          })
         } catch {
           case ex: IllegalArgumentException =>
             assert(flag, "Handling code did not execute properly!")
@@ -63,7 +65,7 @@ class RetryHelperTests extends WordSpec {
           if (thisTryShouldFail) {
             throw new IllegalArgumentException()
           }
-        })(flag = true)
+        })(_ => flag = true)
         assert(i <= 200, "Retry count was not correct!")
         assert(flag, "Handling code did not execute properly!")
       }
@@ -88,7 +90,7 @@ class RetryHelperTests extends WordSpec {
             if (thisTryShouldFail) {
               throw new NullPointerException()
             }
-          })(flag = true)
+          })(_ => flag = true)
         } catch {
           case ex: NullPointerException =>
             assert(!flag, "Handling code should not have executed!")
