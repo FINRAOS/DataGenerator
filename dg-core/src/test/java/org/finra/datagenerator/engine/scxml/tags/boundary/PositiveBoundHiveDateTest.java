@@ -17,7 +17,6 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Ignore;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -84,7 +83,6 @@ public class PositiveBoundHiveDateTest {
      * test default behavior
      */
     @Test
-    @Ignore
     public void defaultTest() {
         Map<String, String> variableDomains = new HashMap<>();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
