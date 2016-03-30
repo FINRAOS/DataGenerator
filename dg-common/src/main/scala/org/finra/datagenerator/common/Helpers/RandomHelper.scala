@@ -36,16 +36,127 @@ object RandomHelper {
     /**
      * Get next long between 0 (inclusive) and max (exclusive)
      * @return Long >= 0 and < max
-     * @param max Max number (exclusive)
+     * @param maxSizeExclusive Max number (exclusive)
      */
-    def nextLong(max: Long): Long = {
+    def nextLong(maxSizeExclusive: Long): Long = {
       var bits: Long = 0L
       var result: Long = 0L
       do {
         bits = (random.nextLong << 1) >>> 1
-        result = bits % max
-      } while (bits - result + (max - 1) < 0L)
+        result = bits % maxSizeExclusive
+      } while (bits - result + (maxSizeExclusive - 1) < 0L)
       result
+    }
+
+    /**
+     * Get the next Long with specified minimum size (inclusive)
+     * and specified maximum size (exclusive).
+     * @param minSizeInclusive Min size (inclusive), >= 0
+     * @param maxSizeExclusive Max size (exclusive)
+     * @return Random long in range [min, max)
+     */
+    def nextLong(minSizeInclusive: Long, maxSizeExclusive: Long) : Long = {
+      require(minSizeInclusive >= 0)
+      require(maxSizeExclusive > minSizeInclusive)
+
+      val scale = maxSizeExclusive - minSizeInclusive
+      val returnVal = nextLong(scale) + minSizeInclusive
+      require(returnVal >= 0)
+      returnVal
+    }
+
+    /**
+     * Generate a random alphabetic string from allowable characters
+     * @param length Length of string to generate; acts as max length if minLength is also specified
+     * @param minLengthMaybe If specified, then length is randomized between minLength and length
+     * @return Random string containing only alphabetic characters
+     */
+    def randomAlphabeticString(length: Int, minLengthMaybe: Option[Int] = None): String = {
+      randomStringFromAllowableChars(length, CharHelper.alphabeticChars, minLengthMaybe)
+    }
+    /**
+     * Generate a random alphanumeric string from allowable characters
+     * @param length Length of string to generate; acts as max length if minLength is also specified
+     * @param minLengthMaybe If specified, then length is randomized between minLength and length
+     * @return Random string containing only alphanumeric characters
+     */
+    def randomAlphanumericString(length: Int, minLengthMaybe: Option[Int] = None): String = {
+      randomStringFromAllowableChars(length, CharHelper.alphanumericChars, minLengthMaybe)
+    }
+    /**
+     * Generate a random hexadecimal string from allowable characters
+     * @param length Length of string to generate; acts as max length if minLength is also specified
+     * @param minLengthMaybe If specified, then length is randomized between minLength and length
+     * @return Random hexadecimal string (lowercase)
+     */
+    def randomHexString(length: Int, minLengthMaybe: Option[Int] = None): String = {
+      randomStringFromAllowableChars(length, CharHelper.hexCharsLowercase, minLengthMaybe)
+    }
+
+    /**
+     * Get random string of maximum length including allowable characters 8, 9, a, and b
+     * @return Random hex char from 8 to b (lowercase)
+     */
+    def randomHexCharFrom8ToB: Char = {
+      val randomIndex = random.nextInt(CharHelper.hexCharsBetween8AndB.length)
+      CharHelper.hexCharsBetween8AndB(randomIndex)
+    }
+
+    /**
+     * Get a random int between two numbers, inclusive
+     * @param min Minimum, inclusive
+     * @param max Maximum, inclusive
+     * @return Random int in range
+     */
+    def randomIntInRange(min: Int, max: Int): Int = {
+      min + random.nextInt(max - min + 1)
+    }
+
+    /**
+     * Generate a random string from allowable characters
+     * @param length Length of string to generate; acts as max length if minLength is also specified
+     * @param chars Allowable characters
+     * @param minLengthMaybe If specified, then length is randomized between minLength and length
+     * @return Random string containing only the allowed characters
+     */
+    def randomStringFromAllowableChars(length: Int, chars: Seq[Char], minLengthMaybe: Option[Int] = None): String = {
+      val adjustedLength =
+        if (minLengthMaybe.isEmpty) {
+          length
+        }
+        else {
+          randomIntInRange(minLengthMaybe.get, length)
+        }
+
+      if (adjustedLength == 0) {
+        ""
+      } else {
+        val sb = new StringBuilder
+        for (i <- 1 to adjustedLength) {
+          val randomIndex = random.nextInt(chars.length)
+          sb.append(chars(randomIndex))
+        }
+        sb.toString()
+      }
+    }
+
+    /**
+     * Returns true (percentage * 100)% of the time, else false
+     * @param percentage A number between 0 and 1.0 (or else, if below 0 it will always evaluate false, and >= 1 will always evaluate true)
+     * @return Whether or not probability passed
+     */
+    def evaluateProbability(percentage: Double): Boolean = {
+      random.nextDouble <= percentage
+    }
+
+    /**
+     * Same behavior as java.util.UUID.randomUUID().
+     * @return Random UUID
+     */
+    def randomUuid: String = {
+      // xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal digit and y is one of 8, 9, A, or B (e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479)
+      s"${randomHexString(8)}-${randomHexString(4)}-4${randomHexString(3)
+      }-${randomHexCharFrom8ToB}${randomHexString(3)}-${randomHexString(12)}"
     }
   }
 
@@ -120,6 +231,19 @@ object RandomHelper {
   }
 
   /**
+   * Gets the specified randomizer
+   * @param isGloballyRandom Whether or not to get the globally unique randomizer
+   * @return Randomizer
+   */
+  def getRandomizer(isGloballyRandom: Boolean = false): Random = {
+    if (isGloballyRandom) {
+      randForGloballyUniqueIds
+    } else {
+      randWithConfiguredSeed
+    }
+  }
+
+  /**
    * Generate a random alphabetic string from allowable characters
    * @param length Length of string to generate; acts as max length if minLength is also specified
    * @param isGloballyRandom Whether or not to use global randomizer
@@ -127,7 +251,7 @@ object RandomHelper {
    * @return Random string containing only alphabetic characters
    */
   def randomAlphabeticString(length: Int, isGloballyRandom: Boolean = false, minLengthMaybe: Option[Int] = None): String = {
-    randomStringFromAllowableChars(length, CharHelper.alphabeticChars, isGloballyRandom, minLengthMaybe)
+    getRandomizer(isGloballyRandom).randomAlphabeticString(length, minLengthMaybe)
   }
   /**
    * Generate a random alphanumeric string from allowable characters
@@ -137,7 +261,7 @@ object RandomHelper {
    * @return Random string containing only alphanumeric characters
    */
   def randomAlphanumericString(length: Int, isGloballyRandom: Boolean = false, minLengthMaybe: Option[Int] = None): String = {
-    randomStringFromAllowableChars(length, CharHelper.alphanumericChars, isGloballyRandom, minLengthMaybe)
+    getRandomizer(isGloballyRandom).randomAlphanumericString(length, minLengthMaybe)
   }
   /**
    * Generate a random hexadecimal string from allowable characters
@@ -147,7 +271,7 @@ object RandomHelper {
    * @return Random hexadecimal string (lowercase)
    */
   def randomHexString(length: Int, isGloballyRandom: Boolean = false, minLengthMaybe: Option[Int] = None): String = {
-    randomStringFromAllowableChars(length, CharHelper.hexCharsLowercase, isGloballyRandom, minLengthMaybe)
+    getRandomizer(isGloballyRandom).randomHexString(length, minLengthMaybe)
   }
 
   /**
@@ -156,9 +280,7 @@ object RandomHelper {
    * @return Random hex char from 8 to b (lowercase)
    */
   def randomHexCharFrom8ToB(isGloballyRandom: Boolean = false): Char = {
-    val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
-    val randomIndex = random.nextInt(CharHelper.hexCharsBetween8AndB.length)
-    CharHelper.hexCharsBetween8AndB(randomIndex)
+    getRandomizer(isGloballyRandom).randomHexCharFrom8ToB
   }
 
   /**
@@ -169,8 +291,7 @@ object RandomHelper {
    * @return Random int in range
    */
   def randomIntInRange(min: Int, max: Int, isGloballyRandom: Boolean = false): Int = {
-    val random = if (isGloballyRandom) randForGloballyUniqueIds else randWithConfiguredSeed
-    min + random.nextInt(max - min + 1)
+    getRandomizer(isGloballyRandom).randomIntInRange(min, max)
   }
 
   /**
@@ -182,29 +303,7 @@ object RandomHelper {
    * @return Random string containing only the allowed characters
    */
   def randomStringFromAllowableChars(length: Int, chars: Seq[Char], isGloballyRandom: Boolean = false, minLengthMaybe: Option[Int] = None): String = {
-    val adjustedLength =
-      if (minLengthMaybe.isEmpty) {
-        length
-      }
-      else {
-        randomIntInRange(minLengthMaybe.get, length, isGloballyRandom)
-      }
-
-    if (adjustedLength == 0) {
-      ""
-    } else {
-      val random = if (isGloballyRandom) {
-        randForGloballyUniqueIds
-      } else {
-        randWithConfiguredSeed
-      }
-      val sb = new StringBuilder
-      for (i <- 1 to adjustedLength) {
-        val randomIndex = random.nextInt(chars.length)
-        sb.append(chars(randomIndex))
-      }
-      sb.toString()
-    }
+    getRandomizer(isGloballyRandom).randomStringFromAllowableChars(length, chars, minLengthMaybe)
   }
 
   /**
@@ -213,7 +312,7 @@ object RandomHelper {
    * @return Whether or not probability passed
    */
   def evaluateProbability(percentage: Double): Boolean = {
-    randWithConfiguredSeed.nextDouble <= percentage
+    getRandomizer(false).evaluateProbability(percentage)
   }
 
   /**
@@ -222,7 +321,7 @@ object RandomHelper {
    * @return Random long in range [0, maxsize)
    */
   def nextLong(maxSizeExclusive: Long): Long = {
-    (randWithConfiguredSeed.nextDouble() * maxSizeExclusive).toLong
+    getRandomizer(false).nextLong(maxSizeExclusive)
   }
 
   /**
@@ -233,13 +332,7 @@ object RandomHelper {
    * @return Random long in range [min, max)
    */
   def nextLong(minSizeInclusive: Long, maxSizeExclusive: Long) : Long = {
-    require(minSizeInclusive >= 0)
-    require(maxSizeExclusive > minSizeInclusive)
-
-    val scale = maxSizeExclusive - minSizeInclusive
-    val returnVal = nextLong(scale) + minSizeInclusive
-    require(returnVal >= 0)
-    returnVal
+    getRandomizer(false).nextLong(minSizeInclusive, maxSizeExclusive)
   }
 
   /**
@@ -248,9 +341,7 @@ object RandomHelper {
    * @return Random UUID
    */
   def randomUuid(isGloballyRandom: Boolean = false): String = {
-    // xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal digit and y is one of 8, 9, A, or B (e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479)
-    s"${randomHexString(8, isGloballyRandom)}-${randomHexString(4, isGloballyRandom)}-4${randomHexString(3, isGloballyRandom)
-      }-${randomHexCharFrom8ToB(isGloballyRandom)}${randomHexString(3, isGloballyRandom)}-${randomHexString(12, isGloballyRandom)}"
+    getRandomizer(isGloballyRandom).randomUuid
   }
 
   /**
