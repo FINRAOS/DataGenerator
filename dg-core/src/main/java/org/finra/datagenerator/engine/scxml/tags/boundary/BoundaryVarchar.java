@@ -41,7 +41,12 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         String length = action.getLength();
         String minLen = action.getMinLen();
         String maxLen = action.getMaxLen();
+        boolean allCaps = false;
         boolean nullable = true;
+
+        if (action.getIsAllCaps().equals("true")) {
+            allCaps = true;
+        }
 
         if (!action.getNullable().equals("true")) {
             nullable = false;
@@ -70,10 +75,10 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         }
         if (positive) {
             return positiveCaseVarchar(nullable, Integer.parseInt(maxLen),
-                Integer.parseInt(minLen));
+                Integer.parseInt(minLen), allCaps);
         } else {
             return negativeCaseVarchar(nullable, Integer.parseInt(maxLen),
-                Integer.parseInt(minLen));
+                Integer.parseInt(minLen), allCaps);
         }
     }
 
@@ -83,13 +88,14 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @param minLen   contains min legnth for varchar
      * @return a list of boundary cases
      */
-    public List<String> positiveCaseVarchar(boolean nullable, int maxLen, int minLen) {
+    public List<String> positiveCaseVarchar(boolean nullable, int maxLen, int minLen, boolean allCaps) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder varcharMid = new StringBuilder();
         StringBuilder varcharMin = new StringBuilder();
         StringBuilder varcharMax = new StringBuilder();
         List<String> variableValue = new LinkedList<>();
+        String val;
 
         try {
             m = EquivalenceClassTransformer.class.getDeclaredMethod("alpha",
@@ -100,22 +106,24 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
             m.invoke(eq, varcharMin, minLen);
             m.invoke(eq, varcharMid, (maxLen - minLen) / 2 + minLen);
 
-            if (maxLen != minLen) { // if they are the same, only need to add one
-                variableValue.add(varcharMin.toString());
-            }
-            variableValue.add(varcharMax.toString());
+            val = allCaps ? varcharMin.toString().toUpperCase() : varcharMin.toString();
 
+            if (maxLen != minLen) { // if they are the same, only need to add one
+                variableValue.add(val);
+            }
+            val = allCaps ? varcharMax.toString().toUpperCase() : varcharMax.toString();
+            variableValue.add(val);
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        variableValue.add(varcharMid.toString());
+        val = allCaps ? varcharMid.toString().toUpperCase() : varcharMid.toString();
+        variableValue.add(val);
 
         if (nullable) {
             variableValue.add("");
         }
-
         return variableValue;
     }
 
@@ -125,12 +133,13 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @param minLen   contains the min length for this varchar
      * @return a list of boundary cases
      */
-    public List<String> negativeCaseVarchar(boolean nullable, int maxLen, int minLen) {
+    public List<String> negativeCaseVarchar(boolean nullable, int maxLen, int minLen, boolean allCaps) {
         Method m;
         EquivalenceClassTransformer eq = new EquivalenceClassTransformer();
         StringBuilder varcharMin = new StringBuilder();
         StringBuilder varcharMax = new StringBuilder();
         List<String> variableValue = new LinkedList<>();
+        String val;
 
         try {
             m = EquivalenceClassTransformer.class.getDeclaredMethod("alpha",
@@ -148,11 +157,13 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
             m.invoke(eq, varcharMax, maxLen + 1);
             m.invoke(eq, varcharMin, minLen);
 
-            if (maxLen != minLen) { // if they are the same, only need to add one
-                variableValue.add(varcharMin.toString());
-            }
-            variableValue.add(varcharMax.toString());
+            val = allCaps ? varcharMin.toString().toUpperCase() : varcharMin.toString();
 
+            if (maxLen != minLen) { // if they are the same, only need to add one
+                variableValue.add(val);
+            }
+            val = allCaps ? varcharMax.toString().toUpperCase() : varcharMax.toString();
+            variableValue.add(val);
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
@@ -161,7 +172,6 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         if (!nullable && !variableValue.contains("")) {
             variableValue.add("");
         }
-
         return variableValue;
     }
 
