@@ -94,6 +94,18 @@ public class EquivalenceClassTransformer implements DataTransformer {
     };
 
     /**
+     * List of holidays
+     *
+     * Format - HolidayName(Month,DayOfWeek,Occurence) || HolidayName(MM,DD)
+     *
+     * DayOfWeek -> 0(Sun)-6(Sat)
+     */
+    public static final String[] HOLIDAYS = {
+        "Thanksgiving(11,5,5)", "NewYearsDay(1,1)", "Christmas(12,25)", "LaborDay(9,1,1)",
+        "MLK(1,1,3)", "PresidentsDay(2,1,3)", "MemorialDay(5,1,5)", "IndependenceDay(7,4)"
+    };
+
+    /**
      * List of countries. Long version
      */
     public static final String[] COUNTRIES = {
