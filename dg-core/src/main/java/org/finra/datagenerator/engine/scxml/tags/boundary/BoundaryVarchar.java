@@ -44,7 +44,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
         boolean allCaps = false;
         boolean nullable = true;
 
-        if (action.getIsAllCaps().equals("true")) {
+        if (action.getAllCaps().equals("true")) {
             allCaps = true;
         }
 
