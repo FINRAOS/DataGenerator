@@ -59,6 +59,7 @@ public class PositiveBoundHiveVarchar extends BoundaryVarchar<PositiveBoundHiveV
          */
         public PositiveBoundHiveVarcharTag() {
             this.setLength("10");
+            this.setAllCaps("false");
         }
     }
 }

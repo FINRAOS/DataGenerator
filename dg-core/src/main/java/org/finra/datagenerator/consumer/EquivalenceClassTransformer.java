@@ -16,6 +16,8 @@
 
 package org.finra.datagenerator.consumer;
 
+import org.finra.datagenerator.engine.scxml.tags.boundary.Holiday;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +93,20 @@ public class EquivalenceClassTransformer implements DataTransformer {
         "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO", 
         "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", 
         "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "VI", "WA", "WV", "WI", "WY"
+    };
+
+    /**
+     * List of Holidays
+     */
+    public static final Holiday[] HOLIDAYS = {
+        new Holiday("New Years Day", 1, 1),
+        new Holiday("Martin Luther King Day", 1, 2, 3),
+        new Holiday("Presidents Day", 2, 2, 3),
+        new Holiday("Memorial Day", 5, 2, 5),
+        new Holiday("Independence Day", 7, 4),
+        new Holiday("Labor Day", 9, 2, 1),
+        new Holiday("Thanksgiving", 11, 5, 4),
+        new Holiday("Christmas", 12, 25)
     };
 
     /**
@@ -273,7 +289,6 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     if (!random.nextBoolean()) {
                         done = true;
                     }
-
                     break;
                 } else if (m.hitEnd()) { //prefix to a solution found, keep this letter
                     break;
@@ -416,7 +431,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 }
                 entry.setValue(b.toString());
 
-            } else if (value.startsWith("$")) {     //Added by Shraddha Patel
+            } else if (value.startsWith("$")) {
                 String variable, varValue;
 
                 int param = value.indexOf("{");

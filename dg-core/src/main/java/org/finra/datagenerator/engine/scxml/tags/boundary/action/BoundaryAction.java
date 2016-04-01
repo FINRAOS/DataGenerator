@@ -38,7 +38,6 @@ public class BoundaryAction extends Action {
     }
 
     public String getNullable() {
-
         return nullable;
     }
 

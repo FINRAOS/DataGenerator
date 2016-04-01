@@ -37,11 +37,6 @@ public abstract class BoundaryInteger<T extends BoundaryActionNumeric> implement
      * @return a List containing the boundary values
      */
     public List<String> buildNumericData(BoundaryActionNumeric action, String minVALUE, String maxVALUE, boolean positive) {
-
-        if (action.getClass().getCanonicalName() != null) {
-            System.out.println(action.getClass().getCanonicalName());
-        }
-
         BigInteger min = new BigInteger(action.getMin());
         BigInteger max = new BigInteger(action.getMax());
         List<String> values = new LinkedList<>();

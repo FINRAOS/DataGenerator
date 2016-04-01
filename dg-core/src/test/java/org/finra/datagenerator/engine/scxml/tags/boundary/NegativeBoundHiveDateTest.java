@@ -123,6 +123,8 @@ public class NegativeBoundHiveDateTest {
         List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
         Assert.assertEquals(newList.get(0).get("name"), "2012-12-30");
         Assert.assertEquals(newList.get(1).get("name"), "2014-01-02");
+        Assert.assertEquals(newList.get(2).get("name"), "01-02-2014");
+        Assert.assertEquals(newList.size(), 4);
     }
 
     /**

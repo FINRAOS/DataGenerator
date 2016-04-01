@@ -50,5 +50,12 @@ public class NegativeBoundHiveDate extends BoundaryDate<NegativeBoundHiveDate.Ne
     /**
      * A custom Action for the 'dg:negativeBoundHiveDate' tag inside models
      */
-    public static class NegativeBoundHiveDateTag extends BoundaryActionDate { }
+    public static class NegativeBoundHiveDateTag extends BoundaryActionDate {
+        /**
+         * constructor
+         */
+        public NegativeBoundHiveDateTag() {
+            this.setOnlyBusinessDays("true");
+        }
+    }
 }
