@@ -91,19 +91,18 @@ public class NegativeBoundHiveDateTest {
         NegativeBoundHiveDate.NegativeBoundHiveDateTag tag = new NegativeBoundHiveDate.NegativeBoundHiveDateTag();
         tag.setName("name");
 
-        Calendar currDate = Calendar.getInstance();
-        String current = new SimpleDateFormat("yyyy-MM-dd").format(currDate.getTime());
-        int day = Integer.parseInt(current.substring(8, 10));
-        int month = Integer.parseInt(current.substring(5, 7));
-        int year = Integer.parseInt(current.substring(0, 4));
+        Calendar nextDate = Calendar.getInstance();
+        nextDate.add(Calendar.DATE, +1);
+        String next = new SimpleDateFormat("yyyy-MM-dd").format(nextDate.getTime());
 
-        String earlyMo = (Integer.toString(month).length() < 2 ? "0" + month : "" + month);
-        String earlyDy = (Integer.toString(day).length() < 2 ? "0" + ++day : "" + ++day);
+        String day = next.substring(8, 10);
+        String month = next.substring(5, 7);
+        String year = next.substring(0, 4);
 
         List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
         Assert.assertEquals(newList.get(0).get("name"), "1969-12-31");
-        Assert.assertEquals(newList.get(1).get("name"), year + "-" + earlyMo + "-" + earlyDy);
-        Assert.assertEquals(newList.get(2).get("name"), earlyMo + "-" + earlyDy + "-" + year);
+        Assert.assertEquals(newList.get(1).get("name"), next);
+        Assert.assertEquals(newList.get(2).get("name"), month + "-" + day + "-" + year);
     }
 
     /**

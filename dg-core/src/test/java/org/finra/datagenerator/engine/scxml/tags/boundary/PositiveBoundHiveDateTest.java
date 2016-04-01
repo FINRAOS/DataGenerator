@@ -93,20 +93,26 @@ public class PositiveBoundHiveDateTest {
         tag.setName("name");
 
         Calendar currDate = Calendar.getInstance();
-        String current = new SimpleDateFormat("yyyy-MM-dd").format(currDate.getTime());
-        int day = Integer.parseInt(current.substring(8, 10));
-        int month = Integer.parseInt(current.substring(5, 7));
-        int year = Integer.parseInt(current.substring(0, 4));
+        Calendar prevDate = Calendar.getInstance();
+        prevDate.add(Calendar.DATE, -1);
 
-        String earlyMo = (Integer.toString(month).length() < 2 ? "0" + month : "" + month);
-        String earlyDy = (Integer.toString(day).length() < 2 ? "0" + --day : "" + --day);
+        String current = new SimpleDateFormat("yyyy-MM-dd").format(currDate.getTime());
+        String prev = new SimpleDateFormat("yyyy-MM-dd").format(prevDate.getTime());
+
+        String day = current.substring(8, 10);
+        String month = current.substring(5, 7);
+        String year = current.substring(0, 4);
+
+        String prevDay = prev.substring(8, 10);
+        String prevMonth = prev.substring(5, 7);
+        String preYear = prev.substring(0, 4);
 
         List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
+
         Assert.assertEquals(newList.get(0).get("name"), "1970-01-01");
         Assert.assertEquals(newList.get(1).get("name"), "1970-01-02");
-        Assert.assertEquals(newList.get(2).get("name"), year + "-" + earlyMo + "-" + earlyDy);
-        earlyDy = Integer.toString(day).length() < 2 ? "0" + ++day : "" + ++day;
-        Assert.assertEquals(newList.get(3).get("name"), year + "-" + earlyMo + "-" + earlyDy);
+        Assert.assertEquals(newList.get(2).get("name"), preYear + "-" + prevMonth + "-" + prevDay);
+        Assert.assertEquals(newList.get(3).get("name"), year + "-" + month + "-" + day);
     }
 
     /**
