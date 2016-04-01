@@ -73,16 +73,7 @@ public class DataPipe {
      * @return a pipe delimited {@link String} of values
      */
     public String getPipeDelimited(String[] outTemplate) {
-        StringBuilder b = new StringBuilder(1024);
-
-        for (String var : outTemplate) {
-            if (b.length() > 0) {
-                b.append('|');
-            }
-            b.append(getDataMap().get(var));
-        }
-
-        return b.toString();
+        return getDelimited(outTemplate, "|");
     }
 
     /**
