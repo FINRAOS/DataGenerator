@@ -86,6 +86,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @param nullable nullable
      * @param maxLen   contains max length for varchar
      * @param minLen   contains min legnth for varchar
+     * @param allCaps  flag for generating all uppercase characters
      * @return a list of boundary cases
      */
     public List<String> positiveCaseVarchar(boolean nullable, int maxLen, int minLen, boolean allCaps) {
@@ -131,6 +132,7 @@ public abstract class BoundaryVarchar<T extends BoundaryActionVarchar> implement
      * @param nullable nullable
      * @param maxLen   contains the max length for this varchar
      * @param minLen   contains the min length for this varchar
+     * @param allCaps  flag for generating all uppercase characters
      * @return a list of boundary cases
      */
     public List<String> negativeCaseVarchar(boolean nullable, int maxLen, int minLen, boolean allCaps) {

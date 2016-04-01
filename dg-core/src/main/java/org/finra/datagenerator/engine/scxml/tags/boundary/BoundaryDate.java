@@ -71,7 +71,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     /**
      * Checks if the date is a holiday
      *
-     * @param dateString
+     * @param dateString the date
      * @return true if it is a holiday, false otherwise
      */
     public boolean isHoliday(String dateString) {
@@ -221,7 +221,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
 
         int min = Integer.parseInt(earlyDate.toString().substring(0, 4));
         int max = Integer.parseInt(lateDate.toString().substring(0, 4));
-        int range = (max - min) + 1;
+        int range = max - min + 1;
         int randomYear = (int) (Math.random() * range) + min;
 
         for (Holiday s : EquivalenceClassTransformer.HOLIDAYS) {
@@ -279,10 +279,10 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         DateTimeFormatter parser = ISODateTimeFormat.date();
 
         if (holiday.isInDateForm()) {
-            String month = Integer.toString(holiday.getMonth()).length() < 2 ?
-                "0" + holiday.getMonth() : Integer.toString(holiday.getMonth());
-            String day = Integer.toString(holiday.getDayOfMonth()).length() < 2 ?
-                "0" + holiday.getDayOfMonth() : Integer.toString(holiday.getDayOfMonth());
+            String month = Integer.toString(holiday.getMonth()).length() < 2
+                ? "0" + holiday.getMonth() : Integer.toString(holiday.getMonth());
+            String day = Integer.toString(holiday.getDayOfMonth()).length() < 2
+                ? "0" + holiday.getDayOfMonth() : Integer.toString(holiday.getDayOfMonth());
             return holiday.getYear() + "-" + month + "-" + day;
         } else {
             /*

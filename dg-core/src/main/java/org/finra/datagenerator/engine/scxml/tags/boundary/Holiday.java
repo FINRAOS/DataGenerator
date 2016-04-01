@@ -15,6 +15,9 @@
  */
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
+/**
+ * Class to represent Holidays
+ */
 public class Holiday {
 
     private String name;
@@ -23,16 +26,29 @@ public class Holiday {
     private int dayOfWeek;
     private int occurrence;
     private int dayOfMonth;
-    private boolean isInDateForm =  false;
+    private boolean isInDateForm;
 
-    public Holiday(String name, int month, int dayOfWeek, int occurrence) {
+    /**
+     * Constructor for Holidays that are defined by an occurrence of a day in a month
+     * @param name the name of the holiday
+     * @param month the month the holiday is in
+     * @param dayOfWeek the day of the week the holiday is on
+     * @param occurrence the occurrence of the day of week in the month
+     */
+    public Holiday(final String name, final int month, final int dayOfWeek, final int occurrence) {
         this.name = name;
         this.month = month;
         this.dayOfWeek = dayOfWeek;
         this.occurrence = occurrence;
     }
 
-    public Holiday(String name, int month, int dayOfMonth) {
+    /**
+     * Constructor for Holidays that are defined by an actual date in the year
+     * @param name the name of the holiday
+     * @param month the month the holiday is in
+     * @param dayOfMonth the day of the month the holiday is on
+     */
+    public Holiday(final String name, final int month, final int dayOfMonth) {
         this.name = name;
         this.month = month;
         this.dayOfMonth = dayOfMonth;
