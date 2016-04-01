@@ -15,7 +15,6 @@
  */
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
-import org.apache.commons.lang3.StringUtils;
 import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDate;
@@ -71,13 +70,14 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
 
     /**
      * Checks if the date is a holiday
+     *
      * @param dateString
      * @return true if it is a holiday, false otherwise
      */
     public boolean isHoliday(String dateString) {
         boolean isHoliday = false;
-        for (String date : EquivalenceClassTransformer.HOLIDAYS) {
-            if (convertToReadableDate(date, dateString.substring(0, 4)).equals(dateString)) {
+        for (Holiday date : EquivalenceClassTransformer.HOLIDAYS) {
+            if (convertToReadableDate(date.forYear(Integer.parseInt(dateString.substring(0, 4)))).equals(dateString)) {
                 isHoliday = true;
             }
         }
@@ -209,7 +209,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * Grab random holiday from the equivalence class that falls between the two dates
      *
      * @param earliest the earliest date parameter as defined in the model
-     * @param latest the latest date parameter as defined in the model
+     * @param latest   the latest date parameter as defined in the model
      * @return a holiday that falls between the dates
      */
     public String getRandomHoliday(String earliest, String latest) {
@@ -217,20 +217,20 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime earlyDate = parser.parseDateTime(earliest);
         DateTime lateDate = parser.parseDateTime(latest);
-        List<String> holidays = new LinkedList<>();
+        List<Holiday> holidays = new LinkedList<>();
 
         int min = Integer.parseInt(earlyDate.toString().substring(0, 4));
         int max = Integer.parseInt(lateDate.toString().substring(0, 4));
         int range = (max - min) + 1;
         int randomYear = (int) (Math.random() * range) + min;
 
-        for (String s : EquivalenceClassTransformer.HOLIDAYS) {
+        for (Holiday s : EquivalenceClassTransformer.HOLIDAYS) {
             holidays.add(s);
         }
         Collections.shuffle(holidays);
 
-        for (String s : holidays) {
-            dateString = convertToReadableDate(s, Integer.toString(randomYear));
+        for (Holiday holiday : holidays) {
+            dateString = convertToReadableDate(holiday.forYear(randomYear));
             if (toDate(dateString).after(toDate(earliest)) && toDate(dateString).before(toDate(latest))) {
                 break;
             }
@@ -241,12 +241,12 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     /**
      * Given a year, month, and day, find the number of occurrences of that day in the month
      *
-     * @param year the year
+     * @param year  the year
      * @param month the month
-     * @param day the day
+     * @param day   the day
      * @return the number of occurrences of the day in the month
      */
-    public int numOccurrences(String year, int month, int day) {
+    public int numOccurrences(int year, int month, int day) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime date = parser.parseDateTime(year + "-" + month + "-" + "01");
         Calendar cal = Calendar.getInstance();
@@ -256,7 +256,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
 
         int days = 0;
         int count = 0;
-        int num = field.getMaximumValue(new LocalDate(Integer.parseInt(year), month, day, calendar));
+        int num = field.getMaximumValue(new LocalDate(year, month, day, calendar));
         while (days < num) {
             if (cal.get(Calendar.DAY_OF_WEEK) == day) {
                 count++;
@@ -272,37 +272,38 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     /**
      * Convert the holiday format from EquivalenceClassTransformer into a date format
      *
-     * @param equivalenceDate the date
+     * @param holiday the date
      * @return a date String in the format yyyy-MM-dd
      */
-    public String convertToReadableDate(String equivalenceDate, String year) {
+    public String convertToReadableDate(Holiday holiday) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
-        String[] params = StringUtils.substringBetween(equivalenceDate, "(", ")").split(",");
 
-        if (params.length == 2) {
-            String month = params[0].length() > 1 ? params[0] : "0" + params[0];
-            String day = params[1].length() > 1 ? params[1] : "0" + params[1];
-            return year + "-" + month + "-" + day;
-        } else if (params.length == 3) {
-            String month = params[0].length() > 1 ? params[0] : "0" + params[0];
-            int dayOfWeek = Integer.parseInt(params[1]);
-            int occurrence = Integer.parseInt(params[2]);
+        if (holiday.isInDateForm()) {
+            String month = Integer.toString(holiday.getMonth()).length() < 2 ?
+                "0" + holiday.getMonth() : Integer.toString(holiday.getMonth());
+            String day = Integer.toString(holiday.getDayOfMonth()).length() < 2 ?
+                "0" + holiday.getDayOfMonth() : Integer.toString(holiday.getDayOfMonth());
+            return holiday.getYear() + "-" + month + "-" + day;
+        } else {
             /*
-             * 5 denotes the final occurrence of the day in the month. Need to fiind actual
+             * 5 denotes the final occurrence of the day in the month. Need to find actual
              * number of occurrences
              */
-            if (occurrence == 5) {
-                occurrence = numOccurrences(year, Integer.parseInt(params[0]), dayOfWeek);
+            if (holiday.getOccurrence() == 5) {
+                holiday.setOccurrence(numOccurrences(holiday.getYear(), holiday.getMonth(),
+                    holiday.getDayOfWeek()));
             }
-            DateTime date = parser.parseDateTime(year + "-" + month + "-" + "01");
+
+            DateTime date = parser.parseDateTime(holiday.getYear() + "-"
+                + holiday.getMonth() + "-" + "01");
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date.toDate());
             int count = 0;
 
-            while (count < occurrence) {
-                if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek) {
+            while (count < holiday.getOccurrence()) {
+                if (calendar.get(Calendar.DAY_OF_WEEK) == holiday.getDayOfWeek()) {
                     count++;
-                    if (count == occurrence) {
+                    if (count == holiday.getOccurrence()) {
                         break;
                     }
                 }
@@ -310,8 +311,6 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
                 calendar.setTime(date.toDate());
             }
             return date.toString().substring(0, 10);
-        } else {
-            throw new InvalidDateException("Invalid Date Format");
         }
     }
 

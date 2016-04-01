@@ -16,6 +16,8 @@
 
 package org.finra.datagenerator.consumer;
 
+import org.finra.datagenerator.engine.scxml.tags.boundary.Holiday;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,15 +96,17 @@ public class EquivalenceClassTransformer implements DataTransformer {
     };
 
     /**
-     * List of holidays
-     *
-     * Format - HolidayName(Month,DayOfWeek,Occurence) || HolidayName(MM,DD)
-     *
-     * DayOfWeek -> 0(Sun)-6(Sat)
+     * List of Holidays
      */
-    public static final String[] HOLIDAYS = {
-        "Thanksgiving(11,5,5)", "NewYearsDay(1,1)", "Christmas(12,25)", "LaborDay(9,2,1)",
-        "MLK(1,2,3)", "PresidentsDay(2,2,3)", "MemorialDay(5,2,5)", "IndependenceDay(7,4)"
+    public static final Holiday[] HOLIDAYS = {
+        new Holiday("New Years Day", 1, 1),
+        new Holiday("Martin Luther King Day", 1, 2, 3),
+        new Holiday("Presidents Day", 2, 2, 3),
+        new Holiday("Memorial Day", 5, 2, 5),
+        new Holiday("Independence Day", 7, 4),
+        new Holiday("Labor Day", 9, 2, 1),
+        new Holiday("Thanksgiving", 11, 5, 4),
+        new Holiday("Christmas", 12, 25)
     };
 
     /**
@@ -285,7 +289,6 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     if (!random.nextBoolean()) {
                         done = true;
                     }
-
                     break;
                 } else if (m.hitEnd()) { //prefix to a solution found, keep this letter
                     break;
@@ -428,7 +431,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 }
                 entry.setValue(b.toString());
 
-            } else if (value.startsWith("$")) {     //Added by Shraddha Patel
+            } else if (value.startsWith("$")) {
                 String variable, varValue;
 
                 int param = value.indexOf("{");
