@@ -15,9 +15,14 @@
  */
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
+import org.apache.commons.lang3.StringUtils;
+import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDate;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.LocalDate;
+import org.joda.time.chrono.GregorianChronology;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -25,6 +30,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -64,7 +70,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
-     *
+     * @param dateString
      * @return
      */
     public static String getNextBusinessDay(String dateString) {
@@ -85,7 +91,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
-     *
+     * @param dateString
      * @return
      */
     public String getPreviousBusinessDay(String dateString) {
@@ -121,7 +127,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
             }
             return values;
         }
-//
+
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime earlyDate = parser.parseDateTime(earliest);
         DateTime lateDate = parser.parseDateTime(latest);
@@ -161,7 +167,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         values.add(prevDay);
         values.add(nextDay);
         values.add(nextDay.substring(5, 7) + "-" + nextDay.substring(8, 10) + "-" + nextDay.substring(0, 4));
-//        values.add(getRandomHoliday(toDate(earliest), toDate(latest)));
+        values.add(getRandomHoliday(earliest, latest));
 
         if (!isNullable) {
             values.add("");
@@ -170,6 +176,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
+     * Convert a String to Date
      *
      * @param dateString
      * @return Date denoted by dateString
@@ -185,42 +192,120 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         return date;
     }
 
-//    /**
-//     *
-//     * @return
-//     */
-//    public String getRandomHoliday(Date earliest, Date latest) {
-//        String dateString = "";
-//
-//        for (String s : EquivalenceClassTransformer.HOLIDAYS) {
-//            dateString = convertToReadableDate(s);
-//            if (toDate(dateString).after(earliest) && toDate(dateString).before(latest)) {
-//                break;
-//            }
-//        }
-//        return dateString;
-//    }
+    /**
+     * Grab random holiday from the equivalence class that falls between the two dates
+     *
+     * @param earliest the earliest date parameter as defined in the model
+     * @param latest   the latest date parameter as defined in the model
+     * @return
+     */
+    public String getRandomHoliday(String earliest, String latest) {
+        String dateString = "";
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime earlyDate = parser.parseDateTime(earliest);
+        DateTime lateDate = parser.parseDateTime(latest);
+        List<String> holidays = new LinkedList<>();
 
-//    /**
-//     *
-//     * @param equivalenceDate
-//     * @return
-//     */
-//    public String convertToReadableDate(String equivalenceDate) {
-//        DateTimeFormatter parser = ISODateTimeFormat.date();
-//        String year = parser.print(Calendar.getInstance().get(Calendar.YEAR));
-//        String[] holiday = StringUtils.substringBetween(equivalenceDate, "(", ")").split(",");
-//
-//        if (holiday.length == 2) {
-//            String month = holiday[0].length() > 1 ? holiday[0] : "0" + holiday[0];
-//            String day = holiday[1].length() > 1 ? holiday[1] : "0" + holiday[1];
-//            return year + "-" + month + "-" + day;
-//        } else if (holiday.length == 3) {
-//            return null;
-//        } else {
-//            throw new InvalidDateException("Invalid Date Format");
-//        }
-//    }
+        int min = Integer.parseInt(earlyDate.toString().substring(0, 4));
+        int max = Integer.parseInt(lateDate.toString().substring(0, 4));
+
+        int range = (max - min) + 1;
+        int randomYear = (int) (Math.random() * range) + min;
+
+        for (String s : EquivalenceClassTransformer.HOLIDAYS) {
+            holidays.add(s);
+        }
+        Collections.shuffle(holidays);
+
+        for (String s : holidays) {
+            dateString = convertToReadableDate(s, Integer.toString(randomYear));
+            if (toDate(dateString).after(toDate(earliest)) && toDate(dateString).before(toDate(latest))) {
+                break;
+            }
+        }
+        return dateString;
+    }
+
+    /**
+     * Given a year, month, and day, find the number of occurrences of that day in the month
+     *
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
+    public static int numOccurrences(String year, int month, int day) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime date = parser.parseDateTime(year + "-" + month + "-" + "01");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date.toDate());
+        GregorianChronology calendar = GregorianChronology.getInstance();
+        DateTimeField field = calendar.dayOfMonth();
+
+        int days = 0;
+        int count = 0;
+        int num = field.getMaximumValue(new LocalDate(Integer.parseInt(year), month, day, calendar));
+        while (days < num) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == day) {
+                count++;
+            }
+            date = date.plusDays(1);
+            cal.setTime(date.toDate());
+
+            days++;
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(convertToReadableDate("MemorialDay(5,2,5)", "1999"));
+    }
+
+    /**
+     * Convert the holiday format from EquivalenceClassTransformer into a date format
+     *
+     * @param equivalenceDate
+     * @return a date String in the format yyyy-MM-dd
+     */
+    public static String convertToReadableDate(String equivalenceDate, String year) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        String[] params = StringUtils.substringBetween(equivalenceDate, "(", ")").split(",");
+
+        if (params.length == 2) {
+            String month = params[0].length() > 1 ? params[0] : "0" + params[0];
+            String day = params[1].length() > 1 ? params[1] : "0" + params[1];
+            return year + "-" + month + "-" + day;
+        } else if (params.length == 3) {
+            String month = params[0].length() > 1 ? params[0] : "0" + params[0];
+            int dayOfWeek = Integer.parseInt(params[1]);
+            int occurrence = Integer.parseInt(params[2]);
+            /*
+             * 5 denotes the final occurrence of the day in the month. Need to fiind actual
+             * number of occurrences
+             */
+            if (occurrence == 5) {
+                occurrence = numOccurrences(year, Integer.parseInt(params[0]), dayOfWeek);
+            }
+            DateTime date = parser.parseDateTime(year + "-" + month + "-" + "01");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date.toDate());
+            int count = 0;
+
+            while (count < occurrence) {
+                if (calendar.get(Calendar.DAY_OF_WEEK) == dayOfWeek) {
+                    count++;
+                    if (count == occurrence) {
+                        break;
+                    }
+                }
+                date = date.plusDays(1);
+                calendar.setTime(date.toDate());
+            }
+            return date.toString().substring(0, 10);
+        } else {
+            throw new InvalidDateException("Invalid Date Format");
+        }
+    }
 
     /**
      * @param action            an Action of the type handled by this class
