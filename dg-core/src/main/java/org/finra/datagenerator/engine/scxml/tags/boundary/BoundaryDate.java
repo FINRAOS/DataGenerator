@@ -49,6 +49,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     public List<String> setParameters(T action, boolean positive) {
         String earliest = action.getEarliest();
         String latest = action.getLatest();
+        boolean onlyBusinessDays = true;
 
         boolean nullable = true;
         if (!action.getNullable().equals("true")) {
@@ -61,8 +62,11 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
             Calendar currDate = Calendar.getInstance();
             latest = new SimpleDateFormat("yyyy-MM-dd").format(currDate.getTime());
         }
+        if (!action.getOnlyBusinessDays().equalsIgnoreCase("true")) {
+            onlyBusinessDays = false;
+        }
         if (positive) {
-            return positiveCase(nullable, earliest, latest);
+            return positiveCase(nullable, earliest, latest, onlyBusinessDays);
         } else {
             return negativeCase(nullable, earliest, latest);
         }
@@ -90,15 +94,19 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param dateString the date
      * @return a string containing the next business day
      */
-    public String getNextBusinessDay(String dateString) {
+    public String getNextDay(String dateString, boolean onlyBusinessDays) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime date = parser.parseDateTime(dateString).plusDays(1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date.toDate());
 
-        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
-            || isHoliday(date.toString().substring(0, 10))) {
-            return getNextBusinessDay(date.toString().substring(0, 10));
+        if (onlyBusinessDays) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
+                || isHoliday(date.toString().substring(0, 10))) {
+                return getNextDay(date.toString().substring(0, 10), true);
+            } else {
+                return parser.print(date);
+            }
         } else {
             return parser.print(date);
         }
@@ -110,15 +118,19 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param dateString the date
      * @return the previous business day
      */
-    public String getPreviousBusinessDay(String dateString) {
+    public String getPreviousDay(String dateString, boolean onlyBusinessDays) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime date = parser.parseDateTime(dateString).minusDays(1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date.toDate());
 
-        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
-            || isHoliday(date.toString().substring(0, 10))) {
-            return getPreviousBusinessDay(date.toString().substring(0, 10));
+        if (onlyBusinessDays) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
+                || isHoliday(date.toString().substring(0, 10))) {
+                return getPreviousDay(date.toString().substring(0, 10), true);
+            } else {
+                return parser.print(date);
+            }
         } else {
             return parser.print(date);
         }
@@ -130,7 +142,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param latest     upper boundary date
      * @return a list of boundary dates
      */
-    public List<String> positiveCase(boolean isNullable, String earliest, String latest) {
+    public List<String> positiveCase(boolean isNullable, String earliest, String latest, boolean onlyBusinessDays) {
         List<String> values = new LinkedList<>();
 
         if (earliest.equalsIgnoreCase(latest)) {
@@ -146,8 +158,8 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         DateTime lateDate = parser.parseDateTime(latest);
 
         String earlyDay = parser.print(earlyDate);
-        String nextDay = getNextBusinessDay(earlyDate.toString().substring(0, 10));
-        String prevDay = getPreviousBusinessDay(lateDate.toString().substring(0, 10));
+        String nextDay = getNextDay(earlyDate.toString().substring(0, 10), onlyBusinessDays);
+        String prevDay = getPreviousDay(lateDate.toString().substring(0, 10), onlyBusinessDays);
         String lateDay = parser.print(lateDate);
 
         values.add(earlyDay);
