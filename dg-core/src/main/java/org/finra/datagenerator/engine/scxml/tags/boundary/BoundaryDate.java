@@ -70,7 +70,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
-     * Returns whether or not the given date is a holiday
+     * Checks if the date is a holiday
      * @param dateString
      * @return true if it is a holiday, false otherwise
      */
@@ -85,8 +85,10 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
-     * @param dateString
-     * @return
+     * Takes a date, and retrieves the next business day
+     *
+     * @param dateString the date
+     * @return a string containing the next business day
      */
     public String getNextBusinessDay(String dateString) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
@@ -103,8 +105,10 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
-     * @param dateString
-     * @return
+     * Takes a date, and returns the previous business day
+     *
+     * @param dateString the date
+     * @return the previous business day
      */
     public String getPreviousBusinessDay(String dateString) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
@@ -185,9 +189,9 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
-     * Convert a String to Date
+     * Takes a String and converts it to a Date
      *
-     * @param dateString
+     * @param dateString the date
      * @return Date denoted by dateString
      */
     public Date toDate(String dateString) {
@@ -205,8 +209,8 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * Grab random holiday from the equivalence class that falls between the two dates
      *
      * @param earliest the earliest date parameter as defined in the model
-     * @param latest   the latest date parameter as defined in the model
-     * @return
+     * @param latest the latest date parameter as defined in the model
+     * @return a holiday that falls between the dates
      */
     public String getRandomHoliday(String earliest, String latest) {
         String dateString = "";
@@ -237,10 +241,10 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     /**
      * Given a year, month, and day, find the number of occurrences of that day in the month
      *
-     * @param year
-     * @param month
-     * @param day
-     * @return
+     * @param year the year
+     * @param month the month
+     * @param day the day
+     * @return the number of occurrences of the day in the month
      */
     public int numOccurrences(String year, int month, int day) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
@@ -268,7 +272,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     /**
      * Convert the holiday format from EquivalenceClassTransformer into a date format
      *
-     * @param equivalenceDate
+     * @param equivalenceDate the date
      * @return a date String in the format yyyy-MM-dd
      */
     public String convertToReadableDate(String equivalenceDate, String year) {
