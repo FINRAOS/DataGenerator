@@ -101,8 +101,8 @@ public class EquivalenceClassTransformer implements DataTransformer {
      * DayOfWeek -> 0(Sun)-6(Sat)
      */
     public static final String[] HOLIDAYS = {
-        "Thanksgiving(11,5,5)", "NewYearsDay(1,1)", "Christmas(12,25)", "LaborDay(9,1,1)",
-        "MLK(1,1,3)", "PresidentsDay(2,1,3)", "MemorialDay(5,1,5)", "IndependenceDay(7,4)"
+        "Thanksgiving(11,5,5)", "NewYearsDay(1,1)", "Christmas(12,25)", "LaborDay(9,2,1)",
+        "MLK(1,2,3)", "PresidentsDay(2,2,3)", "MemorialDay(5,2,5)", "IndependenceDay(7,4)"
     };
 
     /**
