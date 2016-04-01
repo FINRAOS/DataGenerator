@@ -15,7 +15,6 @@
  */
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
-import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDate;
 import org.joda.time.DateTime;
@@ -65,6 +64,48 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
+     *
+     * @return
+     */
+    public static String getNextBusinessDay(String dateString) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime date = parser.parseDateTime(dateString);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date.toDate());
+
+        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+            while (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+                date = date.plusDays(1);
+                cal.setTime(date.toDate());
+            }
+            return parser.print(date);
+        } else {
+            return parser.print(date.plusDays(1));
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getPreviousBusinessDay(String dateString) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime date = parser.parseDateTime(dateString);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date.toDate());
+
+        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+            while (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+                date = date.minusDays(1);
+                cal.setTime(date.toDate());
+            }
+            return parser.print(date);
+        } else {
+            return parser.print(date.minusDays(1));
+        }
+    }
+
+    /**
      * @param isNullable isNullable
      * @param earliest   lower boundary date
      * @param latest     upper boundary date
@@ -73,13 +114,21 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     public List<String> positiveCase(boolean isNullable, String earliest, String latest) {
         List<String> values = new LinkedList<>();
 
+        if (earliest.equalsIgnoreCase(latest)) {
+            values.add(earliest);
+            if (isNullable) {
+                values.add("");
+            }
+            return values;
+        }
+//
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime earlyDate = parser.parseDateTime(earliest);
         DateTime lateDate = parser.parseDateTime(latest);
 
         String earlyDay = parser.print(earlyDate);
-        String nextDay = parser.print(earlyDate.plusDays(1));
-        String prevDay = parser.print(lateDate.minusDays(1));
+        String nextDay = getNextBusinessDay(earlyDate.toString().substring(0, 10));
+        String prevDay = getPreviousBusinessDay(lateDate.toString().substring(0, 10));
         String lateDay = parser.print(lateDate);
 
         values.add(earlyDay);
@@ -90,7 +139,6 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         if (isNullable) {
             values.add("");
         }
-
         return values;
     }
 
@@ -113,7 +161,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         values.add(prevDay);
         values.add(nextDay);
         values.add(nextDay.substring(5, 7) + "-" + nextDay.substring(8, 10) + "-" + nextDay.substring(0, 4));
-        values.add(getRandomHoliday(toDate(earliest), toDate(latest)));
+//        values.add(getRandomHoliday(toDate(earliest), toDate(latest)));
 
         if (!isNullable) {
             values.add("");
@@ -137,28 +185,42 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         return date;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getRandomHoliday(Date earliest, Date latest) {
-        for (String s : EquivalenceClassTransformer.HOLIDAYS) {
-            String dateString = convertToReadableDate(s);
-            if (toDate(dateString).after(earliest) && toDate(dateString).before(latest)) {
-                String st = "asd";
-            }
-        }
-        return null;
-    }
+//    /**
+//     *
+//     * @return
+//     */
+//    public String getRandomHoliday(Date earliest, Date latest) {
+//        String dateString = "";
+//
+//        for (String s : EquivalenceClassTransformer.HOLIDAYS) {
+//            dateString = convertToReadableDate(s);
+//            if (toDate(dateString).after(earliest) && toDate(dateString).before(latest)) {
+//                break;
+//            }
+//        }
+//        return dateString;
+//    }
 
-    /**
-     *
-     * @param equivalenceDate
-     * @return
-     */
-    public String convertToReadableDate(String equivalenceDate) {
-        return null;
-    }
+//    /**
+//     *
+//     * @param equivalenceDate
+//     * @return
+//     */
+//    public String convertToReadableDate(String equivalenceDate) {
+//        DateTimeFormatter parser = ISODateTimeFormat.date();
+//        String year = parser.print(Calendar.getInstance().get(Calendar.YEAR));
+//        String[] holiday = StringUtils.substringBetween(equivalenceDate, "(", ")").split(",");
+//
+//        if (holiday.length == 2) {
+//            String month = holiday[0].length() > 1 ? holiday[0] : "0" + holiday[0];
+//            String day = holiday[1].length() > 1 ? holiday[1] : "0" + holiday[1];
+//            return year + "-" + month + "-" + day;
+//        } else if (holiday.length == 3) {
+//            return null;
+//        } else {
+//            throw new InvalidDateException("Invalid Date Format");
+//        }
+//    }
 
     /**
      * @param action            an Action of the type handled by this class
