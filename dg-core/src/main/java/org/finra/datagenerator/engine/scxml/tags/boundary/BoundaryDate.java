@@ -70,23 +70,35 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     }
 
     /**
+     * Returns whether or not the given date is a holiday
+     * @param dateString
+     * @return true if it is a holiday, false otherwise
+     */
+    public boolean isHoliday(String dateString) {
+        boolean isHoliday = false;
+        for (String date : EquivalenceClassTransformer.HOLIDAYS) {
+            if (convertToReadableDate(date, dateString.substring(0, 4)).equals(dateString)) {
+                isHoliday = true;
+            }
+        }
+        return isHoliday;
+    }
+
+    /**
      * @param dateString
      * @return
      */
-    public static String getNextBusinessDay(String dateString) {
+    public String getNextBusinessDay(String dateString) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
-        DateTime date = parser.parseDateTime(dateString);
+        DateTime date = parser.parseDateTime(dateString).plusDays(1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date.toDate());
 
-        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
-            while (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
-                date = date.plusDays(1);
-                cal.setTime(date.toDate());
-            }
-            return parser.print(date);
+        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
+            || isHoliday(date.toString().substring(0, 10))) {
+            return getNextBusinessDay(date.toString().substring(0, 10));
         } else {
-            return parser.print(date.plusDays(1));
+            return parser.print(date);
         }
     }
 
@@ -96,18 +108,15 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      */
     public String getPreviousBusinessDay(String dateString) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
-        DateTime date = parser.parseDateTime(dateString);
+        DateTime date = parser.parseDateTime(dateString).minusDays(1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date.toDate());
 
-        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
-            while (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
-                date = date.minusDays(1);
-                cal.setTime(date.toDate());
-            }
-            return parser.print(date);
+        if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
+            || isHoliday(date.toString().substring(0, 10))) {
+            return getPreviousBusinessDay(date.toString().substring(0, 10));
         } else {
-            return parser.print(date.minusDays(1));
+            return parser.print(date);
         }
     }
 
@@ -181,7 +190,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param dateString
      * @return Date denoted by dateString
      */
-    public static Date toDate(String dateString) {
+    public Date toDate(String dateString) {
         Date date = null;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -208,7 +217,6 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
 
         int min = Integer.parseInt(earlyDate.toString().substring(0, 4));
         int max = Integer.parseInt(lateDate.toString().substring(0, 4));
-
         int range = (max - min) + 1;
         int randomYear = (int) (Math.random() * range) + min;
 
@@ -234,7 +242,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param day
      * @return
      */
-    public static int numOccurrences(String year, int month, int day) {
+    public int numOccurrences(String year, int month, int day) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
         DateTime date = parser.parseDateTime(year + "-" + month + "-" + "01");
         Calendar cal = Calendar.getInstance();
@@ -257,17 +265,13 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
         return count;
     }
 
-    public static void main(String[] args) {
-        System.out.println(convertToReadableDate("MemorialDay(5,2,5)", "1999"));
-    }
-
     /**
      * Convert the holiday format from EquivalenceClassTransformer into a date format
      *
      * @param equivalenceDate
      * @return a date String in the format yyyy-MM-dd
      */
-    public static String convertToReadableDate(String equivalenceDate, String year) {
+    public String convertToReadableDate(String equivalenceDate, String year) {
         DateTimeFormatter parser = ISODateTimeFormat.date();
         String[] params = StringUtils.substringBetween(equivalenceDate, "(", ")").split(",");
 

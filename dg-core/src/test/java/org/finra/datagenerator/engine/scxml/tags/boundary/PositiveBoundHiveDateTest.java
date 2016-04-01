@@ -129,13 +129,13 @@ public class PositiveBoundHiveDateTest {
         PositiveBoundHiveDate.PositiveBoundHiveDateTag tag = new PositiveBoundHiveDate.PositiveBoundHiveDateTag();
         tag.setName("name");
         tag.setEarliest("2012-12-31");
-        tag.setLatest("2014-01-01");
+        tag.setLatest("2014-01-02");
 
         List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
         Assert.assertEquals(newList.get(0).get("name"), "2012-12-31");
-        Assert.assertEquals(newList.get(1).get("name"), "2013-01-01");
+        Assert.assertEquals(newList.get(1).get("name"), "2013-01-02");
         Assert.assertEquals(newList.get(2).get("name"), "2013-12-31");
-        Assert.assertEquals(newList.get(3).get("name"), "2014-01-01");
+        Assert.assertEquals(newList.get(3).get("name"), "2014-01-02");
     }
 
     /**
