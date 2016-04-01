@@ -92,6 +92,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * Takes a date, and retrieves the next business day
      *
      * @param dateString the date
+     * @param onlyBusinessDays only business days
      * @return a string containing the next business day
      */
     public String getNextDay(String dateString, boolean onlyBusinessDays) {
@@ -116,6 +117,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * Takes a date, and returns the previous business day
      *
      * @param dateString the date
+     * @param onlyBusinessDays only business days
      * @return the previous business day
      */
     public String getPreviousDay(String dateString, boolean onlyBusinessDays) {
@@ -140,6 +142,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param isNullable isNullable
      * @param earliest   lower boundary date
      * @param latest     upper boundary date
+     * @param onlyBusinessDays only business days
      * @return a list of boundary dates
      */
     public List<String> positiveCase(boolean isNullable, String earliest, String latest, boolean onlyBusinessDays) {
