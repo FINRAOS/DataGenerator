@@ -79,7 +79,7 @@
 	Best to avoid null in Scala code, but sometimes necessary, e.g., if writing a library to be used by Java code,
 	even something like assert(param != null) would violate the NullChecker.
 	-->
-    <check level="warning" class="org.scalastyle.scalariform.NullChecker" enabled="false"></check>
+    <check level="warning" class="org.scalastyle.scalariform.NullChecker" enabled="true"></check>
     <check level="warning" class="org.scalastyle.scalariform.NoCloneChecker" enabled="true"></check>
     <check level="warning" class="org.scalastyle.scalariform.NoFinalizeChecker" enabled="true"></check>
     <check level="warning" class="org.scalastyle.scalariform.CovariantEqualsChecker" enabled="true"></check>
