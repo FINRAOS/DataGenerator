@@ -11,8 +11,9 @@ Modeling the Problem with SCXML
 
 To put eight rooks on a chess board such that none attack each other, all eight ranks and all eight files will have one rook on them. Knowing this simplifies the SCXML model we need to describe the problem::
 
-    <scxml xmlns="http://www.w3.org/2005/07/scxml" xmlns:cs="http://commons.apache.org/scxml"
-        version="1.0" initial="start">
+    <scxml xmlns="http://www.w3.org/2005/07/scxml" 
+           xmlns:cs="http://org.finra.datagenerator"
+           version="1.0" initial="start">
 
         <state id="start">
             <transition target="ROOK_ONE" event="ROOK_ONE" />
