@@ -16,6 +16,8 @@
 
 package org.finra.datagenerator.consumer;
 
+import org.finra.datagenerator.engine.scxml.tags.boundary.Holiday;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,56 +43,70 @@ public class EquivalenceClassTransformer implements DataTransformer {
      * List of currency codes
      */
     public static final String[] CURRENCY_CODES = {
-            "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD",
-            "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF",
-            "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP",
-            "BYR", "BZD", "CAD", "CDF", "CHE", "CHF", "CHW", "CLF",
-            "CLP", "CNY", "COP", "COU", "CRC", "CUC", "CUP", "CVE",
-            "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB",
-            "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD",
-            "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF",
-            "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD",
-            "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD",
-            "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL",
-            "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT",
-            "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MXV", "MYR",
-            "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR",
-            "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR",
-            "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG",
-            "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD",
-            "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP",
-            "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "USN",
-            "USS", "UYI", "UYU", "UZS", "VEF", "VND", "VUV", "WST",
-            "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD",
-            "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XSU", "XTS",
-            "XUA", "XXX", "YER", "ZAR", "ZMK", "ZWL"
+        "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD",
+        "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF",
+        "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP",
+        "BYR", "BZD", "CAD", "CDF", "CHE", "CHF", "CHW", "CLF",
+        "CLP", "CNY", "COP", "COU", "CRC", "CUC", "CUP", "CVE",
+        "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB",
+        "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD",
+        "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF",
+        "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD",
+        "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD",
+        "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL",
+        "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT",
+        "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MXV", "MYR",
+        "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR",
+        "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR",
+        "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG",
+        "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD",
+        "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP",
+        "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "USN",
+        "USS", "UYI", "UYU", "UZS", "VEF", "VND", "VUV", "WST",
+        "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD",
+        "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XSU", "XTS",
+        "XUA", "XXX", "YER", "ZAR", "ZMK", "ZWL"
     };
 
     /**
      * List of US states. Long version
      */
     public static final String[] STATE_LONG = {
-            "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas",
-            "California", "Colorado", "Connecticut", "Delaware", "Dist. of Columbia",
-            "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana",
-            "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Marshall Islands",
-            "Massachusetts", "Michigan", "Micronesia", "Minnesota", "Mississippi",
-            "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
-            "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Marianas",
-            "Ohio", "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
-            "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas",
-            "Utah", "Vermont", "Virginia", "Virgin Islands", "Washington", "West Virginia",
-            "Wisconsin", "Wyoming"
+        "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas",
+        "California", "Colorado", "Connecticut", "Delaware", "Dist. of Columbia",
+        "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana",
+        "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Marshall Islands",
+        "Massachusetts", "Michigan", "Micronesia", "Minnesota", "Mississippi",
+        "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+        "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Marianas",
+        "Ohio", "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+        "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas",
+        "Utah", "Vermont", "Virginia", "Virgin Islands", "Washington", "West Virginia",
+        "Wisconsin", "Wyoming"
     };
 
     /**
      * List of US states. Short 2 chars version
      */
     public static final String[] STATES_SHORT = {
-        "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", 
-        "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO", 
-        "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA", 
+        "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID",
+        "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MH", "MA", "MI", "FM", "MN", "MS", "MO",
+        "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "MP", "OH", "OK", "OR", "PW", "PA",
         "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "VI", "WA", "WV", "WI", "WY"
+    };
+
+    /**
+     * List of Holidays
+     */
+    public static final Holiday[] HOLIDAYS = {
+        new Holiday("New Years Day", 1, 1),
+        new Holiday("Martin Luther King Day", 1, 2, 3),
+        new Holiday("Presidents Day", 2, 2, 3),
+        new Holiday("Memorial Day", 5, 2, 5),
+        new Holiday("Independence Day", 7, 4),
+        new Holiday("Labor Day", 9, 2, 1),
+        new Holiday("Thanksgiving", 11, 5, 4),
+        new Holiday("Christmas", 12, 25)
     };
 
     /**
@@ -153,7 +169,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
      */
     public static final String[] SECURITY_NAMES_NOT_NASDAQ = new String[COUNT_NOT_NASDAQ_SECURITIES];
 
-    
+
     /**
      * Constructor
      */
@@ -220,7 +236,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
     private void ssn(StringBuilder b) {
         //See more details here - http://en.wikipedia.org/wiki/Social_Security_number#Valid_SSNs
         generateFromRegex(b, "^((?!000)(?!666)(?:[0-6]\\d{2}|7[0-2][0-9]|73[0-3]|7[5-6][0-9]|77[0-2]))"
-                + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
+            + "-((?!00)\\d{2})-((?!0000)\\d{4})$");
     }
 
     private void phoneDomesticUSA(StringBuilder b) {
@@ -273,7 +289,6 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     if (!random.nextBoolean()) {
                         done = true;
                     }
-
                     break;
                 } else if (m.hitEnd()) { //prefix to a solution found, keep this letter
                     break;
@@ -393,7 +408,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                     case "countryLong":
                         b.append(COUNTRIES[random.nextInt(COUNTRIES.length)]);
                         break;
-                        
+
                     case "symbolNASDAQ":
                         b.append(SYMBOLS_NASDAQ[random.nextInt(SYMBOLS_NASDAQ.length)]);
                         break;
@@ -416,7 +431,7 @@ public class EquivalenceClassTransformer implements DataTransformer {
                 }
                 entry.setValue(b.toString());
 
-            } else if (value.startsWith("$")) {     //Added by Shraddha Patel
+            } else if (value.startsWith("$")) {
                 String variable, varValue;
 
                 int param = value.indexOf("{");

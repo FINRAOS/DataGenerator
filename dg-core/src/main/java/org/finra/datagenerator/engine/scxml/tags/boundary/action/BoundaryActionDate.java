@@ -22,14 +22,18 @@ public class BoundaryActionDate extends BoundaryAction {
 
     private String earliest;
     private String latest;
+    private String onlyBusinessDays;
 
     public String getEarliest() {
         return earliest;
     }
 
-
     public String getLatest() {
         return latest;
+    }
+
+    public String getOnlyBusinessDays() {
+        return onlyBusinessDays;
     }
 
     public void setEarliest(String earliest) {
@@ -38,5 +42,9 @@ public class BoundaryActionDate extends BoundaryAction {
 
     public void setLatest(String latest) {
         this.latest = latest;
+    }
+
+    public void setOnlyBusinessDays(String onlyBusinessDays) {
+        this.onlyBusinessDays = onlyBusinessDays;
     }
 }

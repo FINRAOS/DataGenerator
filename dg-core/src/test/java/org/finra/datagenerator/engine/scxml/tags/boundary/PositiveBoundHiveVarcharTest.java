@@ -116,6 +116,28 @@ public class PositiveBoundHiveVarcharTest {
     }
 
     /**
+     * test for allCaps
+     */
+    @Test
+    public void allCapsTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
+        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag neg = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
+
+        neg.setName("name");
+        neg.setAllCaps("true");
+
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
+
+        Assert.assertEquals(newList.get(0).get("name"), newList.get(0).get("name").toUpperCase());
+        Assert.assertEquals(newList.get(1).get("name"), newList.get(1).get("name").toUpperCase());
+        Assert.assertEquals(newList.get(3).get("name"), newList.get(3).get("name").toUpperCase());
+    }
+
+    /**
      * test for maxLen
      */
     @Test
