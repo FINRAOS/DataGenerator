@@ -15,11 +15,22 @@
  */
 package org.finra.datagenerator.engine.scxml.tags.boundary;
 
+import org.finra.datagenerator.consumer.EquivalenceClassTransformer;
 import org.finra.datagenerator.engine.scxml.tags.CustomTagExtension;
 import org.finra.datagenerator.engine.scxml.tags.boundary.action.BoundaryActionDate;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.LocalDate;
+import org.joda.time.chrono.GregorianChronology;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +49,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
     public List<String> setParameters(T action, boolean positive) {
         String earliest = action.getEarliest();
         String latest = action.getLatest();
+        boolean onlyBusinessDays = true;
 
         boolean nullable = true;
         if (!action.getNullable().equals("true")) {
@@ -50,135 +62,117 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
             Calendar currDate = Calendar.getInstance();
             latest = new SimpleDateFormat("yyyy-MM-dd").format(currDate.getTime());
         }
+        if (!action.getOnlyBusinessDays().equalsIgnoreCase("true")) {
+            onlyBusinessDays = false;
+        }
         if (positive) {
-            return positiveCase(nullable, earliest, latest);
+            return positiveCase(nullable, earliest, latest, onlyBusinessDays);
         } else {
             return negativeCase(nullable, earliest, latest);
         }
     }
 
     /**
+     * Checks if the date is a holiday
      *
-     * @param year to check if it is a leap year
-     * @return true if the year is a leap year
+     * @param dateString the date
+     * @return true if it is a holiday, false otherwise
      */
-    public boolean isLeapYear(int year) {
-        if (year % 4 == 0) {
-            if (year % 100 == 0) {
-                if (year % 400 == 0) {
-                    return true;
-                }
-            } else {
-                return true;
+    public boolean isHoliday(String dateString) {
+        boolean isHoliday = false;
+        for (Holiday date : EquivalenceClassTransformer.HOLIDAYS) {
+            if (convertToReadableDate(date.forYear(Integer.parseInt(dateString.substring(0, 4)))).equals(dateString)) {
+                isHoliday = true;
             }
         }
-        return false;
+        return isHoliday;
+    }
+
+    /**
+     * Takes a date, and retrieves the next business day
+     *
+     * @param dateString the date
+     * @param onlyBusinessDays only business days
+     * @return a string containing the next business day
+     */
+    public String getNextDay(String dateString, boolean onlyBusinessDays) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime date = parser.parseDateTime(dateString).plusDays(1);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date.toDate());
+
+        if (onlyBusinessDays) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
+                || isHoliday(date.toString().substring(0, 10))) {
+                return getNextDay(date.toString().substring(0, 10), true);
+            } else {
+                return parser.print(date);
+            }
+        } else {
+            return parser.print(date);
+        }
+    }
+
+    /**
+     * Takes a date, and returns the previous business day
+     *
+     * @param dateString the date
+     * @param onlyBusinessDays only business days
+     * @return the previous business day
+     */
+    public String getPreviousDay(String dateString, boolean onlyBusinessDays) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime date = parser.parseDateTime(dateString).minusDays(1);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date.toDate());
+
+        if (onlyBusinessDays) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7
+                || isHoliday(date.toString().substring(0, 10))) {
+                return getPreviousDay(date.toString().substring(0, 10), true);
+            } else {
+                return parser.print(date);
+            }
+        } else {
+            return parser.print(date);
+        }
     }
 
     /**
      * @param isNullable isNullable
      * @param earliest   lower boundary date
      * @param latest     upper boundary date
+     * @param onlyBusinessDays only business days
      * @return a list of boundary dates
      */
-    public List<String> positiveCase(boolean isNullable, String earliest, String latest) {
+    public List<String> positiveCase(boolean isNullable, String earliest, String latest, boolean onlyBusinessDays) {
         List<String> values = new LinkedList<>();
 
-        int earlyDay = Integer.parseInt(earliest.substring(8, 10));
-        int earlyMonth = Integer.parseInt(earliest.substring(5, 7));
-        int earlyYear = Integer.parseInt(earliest.substring(0, 4));
-        boolean isLeapYear = isLeapYear(earlyYear);
-
-        // prepend 0 for months 1 - 9
-        String earlyMo = (Integer.toString(earlyMonth).length() < 2 ? "0" + earlyMonth : "" + earlyMonth);
-        String earlyDy = (Integer.toString(earlyDay).length() < 2 ? "0" + earlyDay : "" + earlyDay);
-
-        values.add("" + earlyYear + "-" + earlyMo + "-" + earlyDy);
-
-        if ((earlyMonth == 1 || earlyMonth == 3 || earlyMonth == 5 || earlyMonth == 7
-            || earlyMonth == 8 || earlyMonth == 10 || earlyMonth == 12) && earlyDay < 31) {
-            earlyDay++;
-        } else if ((earlyMonth == 4 || earlyMonth == 6 || earlyMonth == 9 || earlyMonth == 11)
-            && earlyDay < 30) {
-            earlyDay++;
-        } else if (earlyMonth == 2) {
-            if (isLeapYear && earlyDay < 29) {
-                earlyDay++;
-            } else if (!isLeapYear && earlyDay < 28) {
-                if (earlyDay < 28) {
-                    earlyDay++;
-                } else {
-                    earlyDay = 1;
-                    earlyMonth = 3;
-                }
-            } else {
-                earlyDay = 1;
-                earlyMonth = 3;
+        if (earliest.equalsIgnoreCase(latest)) {
+            values.add(earliest);
+            if (isNullable) {
+                values.add("");
             }
-        } else {
-            if (earlyMonth < 12) {
-                earlyDay = 1;
-                earlyMonth++;
-            } else {
-                earlyMonth = 1;
-                earlyDay = 1;
-                earlyYear++;
-            }
+            return values;
         }
 
-        earlyMo = (Integer.toString(earlyMonth).length() < 2 ? "0" + earlyMonth : "" + earlyMonth);
-        earlyDy = (Integer.toString(earlyDay).length() < 2 ? "0" + earlyDay : "" + earlyDay);
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime earlyDate = parser.parseDateTime(earliest);
+        DateTime lateDate = parser.parseDateTime(latest);
 
-        values.add("" + earlyYear + "-" + earlyMo + "-" + earlyDy);
+        String earlyDay = parser.print(earlyDate);
+        String nextDay = getNextDay(earlyDate.toString().substring(0, 10), onlyBusinessDays);
+        String prevDay = getPreviousDay(lateDate.toString().substring(0, 10), onlyBusinessDays);
+        String lateDay = parser.print(lateDate);
 
-        int lateDay = Integer.parseInt(latest.substring(8, 10));
-        int lateMonth = Integer.parseInt(latest.substring(5, 7));
-        int lateYear = Integer.parseInt(latest.substring(0, 4));
-        isLeapYear = isLeapYear(lateYear);
-
-        if (lateDay > 1) {
-            lateDay--;
-        } else {
-            if (lateMonth == 2 || lateMonth == 4 || lateMonth == 6 || lateMonth == 8
-                || lateMonth == 9 || lateMonth == 11) {
-                lateDay = 31;
-            } else if (lateMonth == 5 || lateMonth == 7 || lateMonth == 10 || lateMonth == 12) {
-                lateDay = 30;
-            } else if (lateMonth == 3) {
-                if (isLeapYear) {
-                    lateDay = 29;
-                    lateMonth = 2;
-                } else {
-                    lateDay = 28;
-                    lateMonth = 2;
-                }
-            } else {
-                if (lateYear > 1970) {
-                    lateMonth = 12;
-                    lateDay = 31;
-                    lateYear--;
-                }
-            }
-        }
-
-        String lateMo = (Integer.toString(lateMonth).length() < 2 ? "0" + lateMonth : "" + lateMonth);
-        String lateDy = (Integer.toString(lateDay).length() < 2 ? "0" + lateDay : "" + lateDay);
-
-        values.add("" + lateYear + "-" + lateMo + "-" + lateDy);
-
-        lateDay = Integer.parseInt(latest.substring(8, 10));
-        lateMonth = Integer.parseInt(latest.substring(5, 7));
-        lateYear = Integer.parseInt(latest.substring(0, 4));
-
-        lateMo = (Integer.toString(lateMonth).length() < 2 ? "0" + lateMonth : "" + lateMonth);
-        lateDy = (Integer.toString(lateDay).length() < 2 ? "0" + lateDay : "" + lateDay);
-
-        values.add("" + lateYear + "-" + lateMo + "-" + lateDy);
+        values.add(earlyDay);
+        values.add(nextDay);
+        values.add(prevDay);
+        values.add(lateDay);
 
         if (isNullable) {
             values.add("");
         }
-
         return values;
     }
 
@@ -190,86 +184,149 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      */
     public List<String> negativeCase(boolean isNullable, String earliest, String latest) {
         List<String> values = new LinkedList<>();
-        int earlyDay = Integer.parseInt(earliest.substring(8, 10));
-        int earlyMonth = Integer.parseInt(earliest.substring(5, 7));
-        int earlyYear = Integer.parseInt(earliest.substring(0, 4));
-        boolean isLeapYear = isLeapYear(earlyYear);
 
-        if (earlyDay > 1) {
-            earlyDay--;
-        } else {
-            if (earlyMonth == 2 || earlyMonth == 4 || earlyMonth == 6 || earlyMonth == 8 || earlyMonth == 9
-                || earlyMonth == 11) {
-                earlyDay = 31;
-            } else if (earlyMonth == 5 || earlyMonth == 7 || earlyMonth == 10) {
-                earlyDay = 30;
-            } else if (earlyMonth == 3) {
-                if (isLeapYear) {
-                    earlyDay = 29;
-                    earlyMonth--;
-                } else {
-                    earlyDay = 28;
-                    earlyMonth--;
-                }
-            } else {
-                earlyMonth = 12;
-                earlyDay = 31;
-                earlyYear--;
-            }
-        }
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime earlyDate = parser.parseDateTime(earliest);
+        DateTime lateDate = parser.parseDateTime(latest);
 
-        String earlyMo = (Integer.toString(earlyMonth).length() < 2 ? "0" + earlyMonth : "" + earlyMonth);
-        String earlyDy = (Integer.toString(earlyDay).length() < 2 ? "0" + earlyDay : "" + earlyDay);
-        values.add("" + earlyYear + "-" + earlyMo + "-" + earlyDy);
+        String prevDay = parser.print(earlyDate.minusDays(1));
+        String nextDay = parser.print(lateDate.plusDays(1));
 
-        int lateDay = Integer.parseInt(latest.substring(8, 10));
-        int lateMonth = Integer.parseInt(latest.substring(5, 7));
-        int lateYear = Integer.parseInt(latest.substring(0, 4));
-
-        if ((lateMonth == 1 || lateMonth == 3 || lateMonth == 5 || lateMonth == 7
-            || lateMonth == 8 || lateMonth == 10 || lateMonth == 12) && lateDay < 31) {
-            lateDay++;
-        } else if ((lateMonth == 4 || lateMonth == 6 || lateMonth == 9 || lateMonth == 11)
-            && lateDay < 30) {
-            lateDay++;
-        } else if (lateMonth == 2) {
-            if (isLeapYear) {
-                if (lateDay < 29) {
-                    lateDay++;
-                } else {
-                    lateDay = 1;
-                    lateMonth = 3;
-                }
-            } else {
-                if (lateDay < 28) {
-                    lateDay++;
-                } else {
-                    lateDay = 1;
-                    lateMonth = 3;
-                }
-            }
-        } else {
-            if (lateMonth < 12) {
-                lateDay = 1;
-                lateMonth++;
-            } else {
-                lateMonth = 1;
-                lateDay = 1;
-                lateYear++;
-            }
-        }
-
-        String lateMo = (Integer.toString(lateMonth).length() < 2 ? "0" + lateMonth : "" + lateMonth);
-        String lateDy = (Integer.toString(lateDay).length() < 2 ? "0" + lateDay : "" + lateDay);
-
-        values.add("" + lateYear + "-" + lateMo + "-" + lateDy);
-        values.add("" + lateMo + "-" + lateDy + "-" + lateYear);
+        values.add(prevDay);
+        values.add(nextDay);
+        values.add(nextDay.substring(5, 7) + "-" + nextDay.substring(8, 10) + "-" + nextDay.substring(0, 4));
+        values.add(getRandomHoliday(earliest, latest));
 
         if (!isNullable) {
             values.add("");
         }
-
         return values;
+    }
+
+    /**
+     * Takes a String and converts it to a Date
+     *
+     * @param dateString the date
+     * @return Date denoted by dateString
+     */
+    public Date toDate(String dateString) {
+        Date date = null;
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = df.parse(dateString);
+        } catch (ParseException ex) {
+            System.out.println(ex.fillInStackTrace());
+        }
+        return date;
+    }
+
+    /**
+     * Grab random holiday from the equivalence class that falls between the two dates
+     *
+     * @param earliest the earliest date parameter as defined in the model
+     * @param latest   the latest date parameter as defined in the model
+     * @return a holiday that falls between the dates
+     */
+    public String getRandomHoliday(String earliest, String latest) {
+        String dateString = "";
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime earlyDate = parser.parseDateTime(earliest);
+        DateTime lateDate = parser.parseDateTime(latest);
+        List<Holiday> holidays = new LinkedList<>();
+
+        int min = Integer.parseInt(earlyDate.toString().substring(0, 4));
+        int max = Integer.parseInt(lateDate.toString().substring(0, 4));
+        int range = max - min + 1;
+        int randomYear = (int) (Math.random() * range) + min;
+
+        for (Holiday s : EquivalenceClassTransformer.HOLIDAYS) {
+            holidays.add(s);
+        }
+        Collections.shuffle(holidays);
+
+        for (Holiday holiday : holidays) {
+            dateString = convertToReadableDate(holiday.forYear(randomYear));
+            if (toDate(dateString).after(toDate(earliest)) && toDate(dateString).before(toDate(latest))) {
+                break;
+            }
+        }
+        return dateString;
+    }
+
+    /**
+     * Given a year, month, and day, find the number of occurrences of that day in the month
+     *
+     * @param year  the year
+     * @param month the month
+     * @param day   the day
+     * @return the number of occurrences of the day in the month
+     */
+    public int numOccurrences(int year, int month, int day) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+        DateTime date = parser.parseDateTime(year + "-" + month + "-" + "01");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date.toDate());
+        GregorianChronology calendar = GregorianChronology.getInstance();
+        DateTimeField field = calendar.dayOfMonth();
+
+        int days = 0;
+        int count = 0;
+        int num = field.getMaximumValue(new LocalDate(year, month, day, calendar));
+        while (days < num) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == day) {
+                count++;
+            }
+            date = date.plusDays(1);
+            cal.setTime(date.toDate());
+
+            days++;
+        }
+        return count;
+    }
+
+    /**
+     * Convert the holiday format from EquivalenceClassTransformer into a date format
+     *
+     * @param holiday the date
+     * @return a date String in the format yyyy-MM-dd
+     */
+    public String convertToReadableDate(Holiday holiday) {
+        DateTimeFormatter parser = ISODateTimeFormat.date();
+
+        if (holiday.isInDateForm()) {
+            String month = Integer.toString(holiday.getMonth()).length() < 2
+                ? "0" + holiday.getMonth() : Integer.toString(holiday.getMonth());
+            String day = Integer.toString(holiday.getDayOfMonth()).length() < 2
+                ? "0" + holiday.getDayOfMonth() : Integer.toString(holiday.getDayOfMonth());
+            return holiday.getYear() + "-" + month + "-" + day;
+        } else {
+            /*
+             * 5 denotes the final occurrence of the day in the month. Need to find actual
+             * number of occurrences
+             */
+            if (holiday.getOccurrence() == 5) {
+                holiday.setOccurrence(numOccurrences(holiday.getYear(), holiday.getMonth(),
+                    holiday.getDayOfWeek()));
+            }
+
+            DateTime date = parser.parseDateTime(holiday.getYear() + "-"
+                + holiday.getMonth() + "-" + "01");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date.toDate());
+            int count = 0;
+
+            while (count < holiday.getOccurrence()) {
+                if (calendar.get(Calendar.DAY_OF_WEEK) == holiday.getDayOfWeek()) {
+                    count++;
+                    if (count == holiday.getOccurrence()) {
+                        break;
+                    }
+                }
+                date = date.plusDays(1);
+                calendar.setTime(date.toDate());
+            }
+            return date.toString().substring(0, 10);
+        }
     }
 
     /**
@@ -279,8 +336,7 @@ public abstract class BoundaryDate<T extends BoundaryActionDate> implements Cust
      * @param variableValue     a list storing the values
      * @return a list of Maps containing the cross product of all states
      */
-    public List<Map<String, String>> returnStates(T action,
-                                                  List<Map<String, String>> possibleStateList, List<String> variableValue) {
+    public List<Map<String, String>> returnStates(T action, List<Map<String, String>> possibleStateList, List<String> variableValue) {
         List<Map<String, String>> states = new LinkedList<>();
         for (Map<String, String> p : possibleStateList) {
             for (String s : variableValue) {
