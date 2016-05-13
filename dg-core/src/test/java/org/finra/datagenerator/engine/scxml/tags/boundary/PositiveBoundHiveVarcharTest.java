@@ -125,12 +125,12 @@ public class PositiveBoundHiveVarcharTest {
         listOfMaps.add(variableDomains);
 
         PositiveBoundHiveVarchar maxLenTest = new PositiveBoundHiveVarchar();
-        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag neg = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
+        PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag pos = new PositiveBoundHiveVarchar.PositiveBoundHiveVarcharTag();
 
-        neg.setName("name");
-        neg.setAllCaps("true");
+        pos.setName("name");
+        pos.setAllCaps("true");
 
-        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(neg, listOfMaps);
+        List<Map<String, String>> newList = maxLenTest.pipelinePossibleStates(pos, listOfMaps);
 
         Assert.assertEquals(newList.get(0).get("name"), newList.get(0).get("name").toUpperCase());
         Assert.assertEquals(newList.get(1).get("name"), newList.get(1).get("name").toUpperCase());
