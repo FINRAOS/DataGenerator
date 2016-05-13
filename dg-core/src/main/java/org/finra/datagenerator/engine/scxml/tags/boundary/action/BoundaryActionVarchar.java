@@ -23,6 +23,11 @@ public class BoundaryActionVarchar extends BoundaryAction {
     private String maxLen;
     private String minLen;
     private String length;
+    private String allCaps;
+
+    public String getAllCaps() {
+        return allCaps;
+    }
 
     public String getLength() {
         return length;
@@ -34,6 +39,10 @@ public class BoundaryActionVarchar extends BoundaryAction {
 
     public String getMinLen() {
         return minLen;
+    }
+
+    public void setAllCaps(String allCaps) {
+        this.allCaps = allCaps;
     }
 
     public void setLength(String length) {
