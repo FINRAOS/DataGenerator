@@ -51,5 +51,12 @@ public class PositiveBoundHiveDate extends BoundaryDate<PositiveBoundHiveDate.Po
     /**
      * A custom Action for the 'dg:positiveBoundHiveDate' tag inside models
      */
-    public static class PositiveBoundHiveDateTag extends BoundaryActionDate { }
+    public static class PositiveBoundHiveDateTag extends BoundaryActionDate {
+        /**
+         * constructor
+         */
+        public PositiveBoundHiveDateTag() {
+            this.setOnlyBusinessDays("true");
+        }
+    }
 }
