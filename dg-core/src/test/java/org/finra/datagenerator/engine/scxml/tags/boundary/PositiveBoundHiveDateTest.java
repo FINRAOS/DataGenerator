@@ -17,6 +17,7 @@ package org.finra.datagenerator.engine.scxml.tags.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -119,7 +120,7 @@ public class PositiveBoundHiveDateTest {
      * test with provided min and max dates
      */
     @Test
-    public void datesTest() {
+    public void onlyBusinessDayTest() {
         Map<String, String> variableDomains = new HashMap<>();
         List<Map<String, String>> listOfMaps = new LinkedList<>();
         listOfMaps.add(variableDomains);
@@ -128,13 +129,37 @@ public class PositiveBoundHiveDateTest {
         PositiveBoundHiveDate.PositiveBoundHiveDateTag tag = new PositiveBoundHiveDate.PositiveBoundHiveDateTag();
         tag.setName("name");
         tag.setEarliest("2012-12-31");
-        tag.setLatest("2014-01-01");
+        tag.setLatest("2014-01-02");
+        tag.setOnlyBusinessDays("true");
+
+        List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
+        Assert.assertEquals(newList.get(0).get("name"), "2012-12-31");
+        Assert.assertEquals(newList.get(1).get("name"), "2013-01-02");
+        Assert.assertEquals(newList.get(2).get("name"), "2013-12-31");
+        Assert.assertEquals(newList.get(3).get("name"), "2014-01-02");
+    }
+
+    /**
+     * test with provided min and max dates
+     */
+    @Test
+    public void notOnlyBusinessDayTest() {
+        Map<String, String> variableDomains = new HashMap<>();
+        List<Map<String, String>> listOfMaps = new LinkedList<>();
+        listOfMaps.add(variableDomains);
+
+        PositiveBoundHiveDate dateTest = new PositiveBoundHiveDate();
+        PositiveBoundHiveDate.PositiveBoundHiveDateTag tag = new PositiveBoundHiveDate.PositiveBoundHiveDateTag();
+        tag.setName("name");
+        tag.setEarliest("2012-12-31");
+        tag.setLatest("2014-01-02");
+        tag.setOnlyBusinessDays("false");
 
         List<Map<String, String>> newList = dateTest.pipelinePossibleStates(tag, listOfMaps);
         Assert.assertEquals(newList.get(0).get("name"), "2012-12-31");
         Assert.assertEquals(newList.get(1).get("name"), "2013-01-01");
-        Assert.assertEquals(newList.get(2).get("name"), "2013-12-31");
-        Assert.assertEquals(newList.get(3).get("name"), "2014-01-01");
+        Assert.assertEquals(newList.get(2).get("name"), "2014-01-01");
+        Assert.assertEquals(newList.get(3).get("name"), "2014-01-02");
     }
 
     /**
