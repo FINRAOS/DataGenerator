@@ -59,6 +59,7 @@ public class NegativeBoundHiveVarchar extends BoundaryVarchar<NegativeBoundHiveV
          */
         public NegativeBoundHiveVarcharTag() {
             this.setLength("10");
+            this.setAllCaps("true");
         }
     }
 }
