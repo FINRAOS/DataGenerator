@@ -48,10 +48,10 @@
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <!--<module name="RegexpMultiline">
+    <module name="RegexpMultiline">
         <property name="format" value="\r\n"/>
         <property name="message" value="CRLF line endings are prohibited"/>
-    </module>-->
+    </module>
     <!--module name="NewlineAtEndOfFile"/-->
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
