@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/FINRAOS/DataGenerator.svg?branch=master)](https://travis-ci.org/FINRAOS/DataGenerator)
+[![Dependency Status](https://www.versioneye.com/user/projects/577671b068ee07003cb5d56a/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/577671b068ee07003cb5d56a)
 [![Join the chat at https://gitter.im/FINRAOS/DataGenerator](https://badges.gitter.im/FINRAOS/DataGenerator.svg)](https://gitter.im/FINRAOS/DataGenerator?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Quick Start Videos
