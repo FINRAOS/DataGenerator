@@ -1,5 +1,7 @@
 Quick Start Videos
 ------------------
+
+[![Join the chat at https://gitter.im/FINRAOS/DataGenerator](https://badges.gitter.im/FINRAOS/DataGenerator.svg)](https://gitter.im/FINRAOS/DataGenerator?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 https://www.youtube.com/playlist?list=PLB0Zha5q-7wJp3TLH782J7ZDQ2RwPS_hQ
 
 Contributing
