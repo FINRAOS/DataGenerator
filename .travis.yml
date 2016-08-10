@@ -1,3 +1,10 @@
 language: java
 jdk: oraclejdk8
 script: mvn test
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/c9d15c7671aea65b9d29
+    on_success: change
+    on_failure: always
+    on_start: never
