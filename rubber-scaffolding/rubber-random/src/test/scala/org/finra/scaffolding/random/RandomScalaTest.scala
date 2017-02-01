@@ -310,7 +310,9 @@ class RandomScalaTest extends TestCase {
         val outS2: String = mapper.writeValueAsString(out3)
     }
 
+    // Ignoring recursive stack overflow test for
     @Test(expected = classOf[StackOverflowError])
+    @Ignore
     def testRecursiveStackOverflow: Unit = {
         implicit var r = new RubberRandomImpl
         r.setOverride(MaxRecursionCountName, Int.MaxValue)
