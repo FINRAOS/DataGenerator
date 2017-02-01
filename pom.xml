@@ -52,6 +52,11 @@
 			<name>Samer Adra</name>
 			<email>SamerAdra@gmail.com</email>
 		</developer>
+        <developer>
+            <id>dovidkopel</id>
+            <name>Dovid Kopel</name>
+            <email>dovid@dovidkopel.com</email>
+        </developer>
     </developers>
 
     <properties>
