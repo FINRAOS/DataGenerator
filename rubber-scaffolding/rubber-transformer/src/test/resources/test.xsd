@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xsd:element name="StockRecord">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FileControl">
+                    <xsd:complexType>
+                        <xsd:attribute name="FileNumber" type="xsd:int" use="required"/>
+                        <xsd:attribute name="FileTotal" type="xsd:int" use="required"/>
+                        <xsd:attribute name="Version" type="xsd:normalizedString" use="required"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Security" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Cusip" type="xsd:normalizedString"/>
+                            <xsd:element name="SecurityId" type="DQS.SecurityDetail"/>
+                            <xsd:element name="SecuritySymbol" type="DQS.SecurityDetail"/>
+                            <xsd:element name="SecurityDescription" type="DQS.Description" minOccurs="0"/>
+                            <xsd:element name="SecurityType" type="SecurityTypes"/>
+                            <xsd:element name="MaturityDate" type="OptionalDate" minOccurs="0"/>
+                            <xsd:element name="Factor" type="xsd:normalizedString" minOccurs="0"/>
+                            <xsd:element name="Price" type="Price"/>
+                            <xsd:element name="Currency" type="xsd:normalizedString" minOccurs="0"/>
+                            <xsd:element name="ExchangeRate" type="xsd:normalizedString" minOccurs="0"/>
+                            <xsd:element name="AllocatedPrice" type="DQS.NonNegativeDecimal.Wrapper.Wrapper" minOccurs="0"/>
+                            <xsd:element name="TotalLongSD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalShortSD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalLongTD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalShortTD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="SegRequiredBySecurity" type="DQS.Decimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalLongMKSD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalShortMKSD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalLongMKTD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="TotalShortMKTD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                            <xsd:element name="ThresholdIndicator" type="Threshold" minOccurs="0"/>
+                            <xsd:element ref="Accounts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GrandTotalLongSD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="GrandTotalShortSD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="GrandTotalLongTD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="GrandTotalShortTD" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="TotalNumberOfSecurities" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+            </xsd:sequence>
+            <xsd:attribute name="AsOfDate" type="xsd:date" use="required"/>
+            <xsd:attribute name="FirmFocusNumber" type="xsd:normalizedString">
+                <xsd:annotation>
+                    <xsd:documentation>Firm FOCUS Number: Deprecated in favor of FirmCrdNumber</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="FirmCrdNumber" type="xsd:int" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="Account">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="AccountNumber" type="DQS.AccountNumber"/>
+                <xsd:element name="BranchCode" type="DQS.BranchCode" minOccurs="0"/>
+                <xsd:element name="AccountName" type="DQS.Description"/>
+                <xsd:element name="AccountType" type="DQS.AccountType"/>
+                <xsd:element name="LongPosSettle" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="ShortPosSettle" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="LongMKSettle" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="ShortMKSettle" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="LongPosTrade" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="ShortPosTrade" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="LongMKTrade" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="ShortMKTrade" type="DQS.NonNegativeDecimal.Wrapper.Wrapper"/>
+                <xsd:element name="SegRequiredByAccount" type="DQS.Decimal.Wrapper.Wrapper"/>
+                <xsd:element name="LastActivitySettleDate" type="OptionalDate" minOccurs="0"/>
+                <xsd:element name="LastActivityTradeDate" type="OptionalDate" minOccurs="0"/>
+                <xsd:element ref="MemoFields" minOccurs="0"/>
+                <xsd:element name="AllocationCode" type="DQS.AllocationCode" minOccurs="0"/>
+                <xsd:element name="COACode" type="xsd:int" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="Accounts">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Account" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="MemoFields">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="MemoField" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="MemoField">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="MemoFieldType" type="DQS.Memo"/>
+                <xsd:element name="MemoFieldQuantity" type="xsd:normalizedString"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:simpleType name="SecurityTypes">
+        <xsd:restriction base="xsd:int">
+            <xsd:enumeration value="1">
+                <xsd:annotation>
+                    <xsd:documentation>Bankers Acceptances</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="2">
+                <xsd:annotation>
+                    <xsd:documentation>Certificates of Deposit</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="3">
+                <xsd:annotation>
+                    <xsd:documentation>Commercial Paper</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="4">
+                <xsd:annotation>
+                    <xsd:documentation>US Treasury Securities</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="5">
+                <xsd:annotation>
+                    <xsd:documentation>US Government Agency Securities</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="6">
+                <xsd:annotation>
+                    <xsd:documentation>Canadian Government Obligations</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="7">
+                <xsd:annotation>
+                    <xsd:documentation>State and Municipal Government Obligations</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="8">
+                <xsd:annotation>
+                    <xsd:documentation>Corporate Obligations</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="9">
+                <xsd:annotation>
+                    <xsd:documentation>Asset Backed Securities</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="10">
+                <xsd:annotation>
+                    <xsd:documentation>Private Label CMOs</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="11">
+                <xsd:annotation>
+                    <xsd:documentation>Common Stock</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="12">
+                <xsd:annotation>
+                    <xsd:documentation>Preferred Stock</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="13">
+                <xsd:annotation>
+                    <xsd:documentation>Warrants</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="14">
+                <xsd:annotation>
+                    <xsd:documentation>Mutual Funds</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="15">
+                <xsd:annotation>
+                    <xsd:documentation>Money Market Instruments</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="16">
+                <xsd:annotation>
+                    <xsd:documentation>Options</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="17">
+                <xsd:annotation>
+                    <xsd:documentation>Other Securities</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="18">
+                <xsd:annotation>
+                    <xsd:documentation>Currencies</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Threshold">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value=""/>
+            <xsd:enumeration value="T"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.NonEmptyString">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="CollapsingString">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="0"/>
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.NonNegativeDecimal.Wrapper.Wrapper">
+        <xsd:annotation>
+            <xsd:documentation>This is a wrapper type. Its sole purpose is to give DQS power to extract errors and treat them differently from normal XSD validation errors. In the future these wrappers should be removed and all elements should be typed directly to the core type.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="DQS.NonNegativeDecimal.Wrapper">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.NonNegativeDecimal">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0.0"/>
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.NonNegativeDecimal.Wrapper">
+        <xsd:annotation>
+            <xsd:documentation>This is a wrapper type. Its sole purpose is to give DQS power to extract errors and treat them differently from normal XSD validation errors. In the future these wrappers should be removed and all elements should be typed directly to the core type.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction>
+            <xsd:simpleType>
+                <xsd:list itemType="DQS.NonNegativeDecimal"/>
+            </xsd:simpleType>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.Decimal.Wrapper.Wrapper">
+        <xsd:restriction base="DQS.Decimal.Wrapper">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.Decimal.Wrapper">
+        <xsd:restriction>
+            <xsd:simpleType>
+                <xsd:list itemType="DQS.Decimal"/>
+            </xsd:simpleType>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.Decimal">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="Price">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:decimal">
+                <xsd:attribute name="PriceIndicator">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="A">
+                                <xsd:annotation>
+                                    <xsd:documentation>[00230] Security was priced from an automated pricing system.</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:enumeration>
+                            <xsd:enumeration value="M">
+                                <xsd:annotation>
+                                    <xsd:documentation>[00240] Security price was unavailable from automated pricing services and price was entered manually (e.g., from trader's desk)</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:enumeration>
+                            <xsd:enumeration value=""/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:simpleType name="OptionalDate">
+        <xsd:restriction>
+            <xsd:simpleType>
+                <xsd:list itemType="xsd:date"/>
+            </xsd:simpleType>
+            <xsd:minLength value="0"/>
+            <xsd:maxLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.Description">
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:maxLength value="200"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.Memo">
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:maxLength value="4000"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.AccountNumber">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.BranchCode">
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:maxLength value="50"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.AllocationCode">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="0"/>
+            <xsd:maxLength value="50"/>
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.AccountType">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="100"/>
+            <xsd:whiteSpace value="collapse"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DQS.SecurityDetail">
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:maxLength value="30"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>
