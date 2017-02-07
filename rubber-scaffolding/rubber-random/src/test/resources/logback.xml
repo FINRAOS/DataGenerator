@@ -13,7 +13,7 @@
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="org.finra.scaffolding" level="info" additivity="false">
+    <logger name="org.finra.datagenerator.scaffolding" level="info" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 

@@ -1,23 +1,23 @@
 <graphml>
     <graph>
         <node id="1">
-            <data key="_clazz">org.finra.scaffolding.transformer.Person</data>
+            <data key="_clazz">org.finra.datagenerator.scaffolding.transformer.Person</data>
             <data key="age">30</data>
             <data key="name">Steve</data>
         </node>
         <node id="2">
-            <data key="_clazz">org.finra.scaffolding.transformer.Person</data>
+            <data key="_clazz">org.finra.datagenerator.scaffolding.transformer.Person</data>
             <data key="name">Tom</data>
         </node>
         <node id="3">
-            <data key="_clazz">org.finra.scaffolding.transformer.Person</data>
+            <data key="_clazz">org.finra.datagenerator.scaffolding.transformer.Person</data>
             <data key="name">John</data>
         </node>
         <edge id="99" source="1" target="2">
-            <data key="_clazz">org.finra.scaffolding.transformer.FriendsWith</data>
+            <data key="_clazz">org.finra.datagenerator.scaffolding.transformer.FriendsWith</data>
         </edge>
         <edge id="100" source="1" target="3">
-            <data key="_clazz">org.finra.scaffolding.transformer.FriendsWith</data>
+            <data key="_clazz">org.finra.datagenerator.scaffolding.transformer.FriendsWith</data>
         </edge>
     </graph>
 </graphml>

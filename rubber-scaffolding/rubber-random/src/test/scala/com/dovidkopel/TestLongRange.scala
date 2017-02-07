@@ -3,8 +3,8 @@ package com.dovidkopel
 import java.util.Date
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import org.finra.scaffolding.random.support.annotations.{CustomRandomizer, DateTime, LongRange}
-import org.finra.scaffolding.random.{BarStringRandomizer, FooStringRandomizer}
+import org.finra.datagenerator.scaffolding.random.support.annotations.{CustomRandomizer, DateTime, LongRange}
+import org.finra.datagenerator.scaffolding.random.{BarStringRandomizer, FooStringRandomizer}
 
 
 
