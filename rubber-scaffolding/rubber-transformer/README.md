@@ -96,7 +96,7 @@ public class TestClass {
 ```    
 What this means is take the value of the variable with the alias "big" and the property "id" which in out case is "-552742142". Append the text "SPICY". Now append the value "num" from the variable with the "big" alias; "-2374009424711251484". If you look at our output it correctly reflects this value.
 
-The language used in the [`@Transformation`](src/main/java/org/finra/scaffolding/transformer/support/Transformation.java) annotation is called [SpEL](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/expressions.html) and is an expression language that is provided by the Spring Framework. You will want to familiarize yourself with the syntax since SpEL is used in a number of cases throughout this library.
+The language used in the [`@Transformation`](src/main/java/org/finra/datagenerator/scaffolding/transformer/support/Transformation.java) annotation is called [SpEL](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/expressions.html) and is an expression language that is provided by the Spring Framework. You will want to familiarize yourself with the syntax since SpEL is used in a number of cases throughout this library.
 
 Let's look at the next two fields:
 
@@ -117,10 +117,10 @@ public class TestClass {
 ```
 
 ### Order
-For the `tomorrow` field we see that there is an `@Order(0)` annotation, and for the `weather` field we see that there is an `@Order(1)` annotation. When the system is evaluating the [`@Transformations`](src/main/java/org/finra/scaffolding/transformer/support/Transformations.java) for a given class it sorts the fields beginning with the lowest order ending with the highest order. Fields that have the `@Order` annotation omitted are all given the value `Long.MAX_VALUE`, which will make them have the lost sort priority
+For the `tomorrow` field we see that there is an `@Order(0)` annotation, and for the `weather` field we see that there is an `@Order(1)` annotation. When the system is evaluating the [`@Transformations`](src/main/java/org/finra/datagenerator/scaffolding/transformer/support/Transformations.java) for a given class it sorts the fields beginning with the lowest order ending with the highest order. Fields that have the `@Order` annotation omitted are all given the value `Long.MAX_VALUE`, which will make them have the lost sort priority
 
 ### Conditions
-The other thing to note is the `condition` attribute on the `weather` field. Only one [`@Transformation`](src/main/java/org/finra/scaffolding/transformer/support/Transformations.java) will be executed on a given object instance. The transformations are evaluated in order in which they are defined. A transformation that has no `condition` is equivalent to a `true` condition. In the unit tests there different scenarios so that each one of the transformations may be used for the `weather` field. The condition uses the same SpEL syntax as mentioned earlier. 
+The other thing to note is the `condition` attribute on the `weather` field. Only one [`@Transformation`](src/main/java/org/finra/datagenerator/scaffolding/transformer/support/Transformations.java) will be executed on a given object instance. The transformations are evaluated in order in which they are defined. A transformation that has no `condition` is equivalent to a `true` condition. In the unit tests there different scenarios so that each one of the transformations may be used for the `weather` field. The condition uses the same SpEL syntax as mentioned earlier. 
 
 ### NULL
 If you want a value to be NULL and not randomly generated based on its type, then you can use the `isNull` attribute:
@@ -250,7 +250,7 @@ Map<Long, ? extends Collection<TransformationContainer>> os = mt.orderedTransfor
 This example will set the "fruit" field to the value "flounder" for each even iteration of this transformation.
 
 ## Transformations Without Annotations
-There may be times where it is preferable to programmatically describe transformations as opposed to using annotations. Fortunately it is not an all or nothing decision. You can combine both annotation and programmatic transformation metadata. This is accomplished using the [TransformationsImpl](/src/main/java/org/finra/scaffolding/transformer/service/transformations/TransformationsImpl.java) which utilizes a builder pattern.
+There may be times where it is preferable to programmatically describe transformations as opposed to using annotations. Fortunately it is not an all or nothing decision. You can combine both annotation and programmatic transformation metadata. This is accomplished using the [TransformationsImpl](/org/finra/datagenerator/scaffolding/transformer/service/transformations/TransformationsImpl.java) which utilizes a builder pattern.
 
 Let's look at a snippet of how this may look:
 ```java

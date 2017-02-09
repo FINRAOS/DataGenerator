@@ -1,7 +1,7 @@
 package com.dovidkopel
 
-import org.finra.scaffolding.random.Bar
-import org.finra.scaffolding.random.predicate.{ClassRandomGenerator, RandomContext}
+import org.finra.datagenerator.scaffolding.random.Bar
+import org.finra.datagenerator.scaffolding.random.predicate.{ClassRandomGenerator, RandomContext}
 
 /**
   * Created by dkopel on 1/26/17.

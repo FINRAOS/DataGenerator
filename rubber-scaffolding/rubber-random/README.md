@@ -7,7 +7,7 @@ After adding the Rubber Random dependency to your project you will need to initi
 
 In Java:
 ```java
-import org.finra.scaffolding.random.core.JavaRubberRandom;
+import org.finra.datagenerator.scaffolding.random.core.JavaRubberRandom;
 
 class JavaRandomTest {
     JavaRubberRandom random = JavaRubberRandom.apply();
@@ -25,7 +25,7 @@ class JavaRandomTest {
 
 In Scala:
 ```scala
-import org.finra.scaffolding.random.core._
+import org.finra.datagenerator.scaffolding.random.core._
 
 class ScalaRandomTest {
     val random = RubberRandomImpl()
@@ -38,7 +38,7 @@ Most the code here will be in Java except where there may be distinctions.
 The value of `l` is `-4049405566182728712`. Here we generated the `Long` using the seed `196542L`. Now you have seen the library generate a primitive. By default Rubber Random comes with support for:
 * Primitives and their corresponding wrapper type (Like `int` and `Integer`).
 * Primitive and objects arrays (`int[]` or `Integer[]` or `Date[]`)
-* [Collection types](src/main/scala/org/finra/scaffolding/random/types/CollectionTypes.scala) 
+* [Collection types](src/main/scala/org/finra/datagenerator/scaffolding/random/types/CollectionTypes.scala) 
     * Unordered collections
     * Ordered collections
     * Maps

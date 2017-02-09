@@ -47,20 +47,20 @@ What we did here is describe a simple bakery. We created a `Food` trait which sp
    
 The bakery trait lets each bakery decide how it cooks food and when it is considered ready. This separates the logic making a very customizable interface.
   
-### [TypeContainer](src/main/scala/org/finra/scaffolding/random/types/TypeContainer.scala)
+### [TypeContainer](src/main/scala/org/finra/datagenerator/scaffolding/random/types/TypeContainer.scala)
 There are many different types of data that Rubber Random can generate. Rubber Random first and foremost supports Java built-in types, [POJO](https://en.wikipedia.org/wiki/Plain_Old_Java_Object), Java collections, and generics. Support for Scala built-in types, as well as Scala collections (mutable and immutable) and generics.
 
-A [TypeContainer](src/main/scala/org/finra/scaffolding/random/types/TypeContainer.scala) abstracts the different types and provides a single interface for the framework to deal with. The `TypeContainer` is composed of three main parts:
+A [TypeContainer](src/main/scala/org/finra/datagenerator/scaffolding/random/types/TypeContainer.scala) abstracts the different types and provides a single interface for the framework to deal with. The `TypeContainer` is composed of three main parts:
 * clazz: Class<T> - The base underlying type
 * types:  Seq<TypeContainer<T>> - The secondary types 
 * parentTypeContainer: Option<TypeContainer<T>> - A parent type container if present
 
-The other thing that the `TypeContainer` maintains is a [Stack](src/main/scala/org/finra/scaffolding/random/types/Stack.scala). The `Stack` hold every step of the generating process. This information is important for recursion as well as collections.  
+The other thing that the `TypeContainer` maintains is a [Stack](src/main/scala/org/finra/datagenerator/scaffolding/random/types/Stack.scala). The `Stack` hold every step of the generating process. This information is important for recursion as well as collections.  
 
-### [RandomContext](src/main/scala/org/finra/scaffolding/random/predicate/RandomContext.scala)
+### [RandomContext](src/main/scala/org/finra/datagenerator/scaffolding/random/predicate/RandomContext.scala)
 The `RandomContext` is passed along which holds the current `TypeContainer`, access to the current `Random` seed, as well as the parent`TypeContainer`.
 
-### [RandomGenerator](src/main/scala/org/finra/scaffolding/random/predicate/RandomGenerator.scala)
+### [RandomGenerator](src/main/scala/org/finra/datagenerator/scaffolding/random/predicate/RandomGenerator.scala)
 This is used to generate the random value.
 ```scala
 trait RandomGenerator[T] extends (RandomContext=>T)
@@ -73,13 +73,13 @@ class IntRandomGenerator extends RandomGenerator[Integer] {
 }
 ```
 
-### [RandomPredicate](src/main/scala/org/finra/scaffolding/random/predicate/RandomPredicate.scala)
+### [RandomPredicate](src/main/scala/org/finra/datagenerator/scaffolding/random/predicate/RandomPredicate.scala)
 The `RandomPredicate` takes the `RandomContext` as an argument and returns a `Boolean`, this is the predicate. The `action` has the type `RandomGenerator[T]` which returns the generated value. The priority defaults to the value `Long.MaxValue`. The priority is used to sort the priorities to choose the most appropriate one for the situation.
    
-### [PredicateRegistry](src/main/scala/org/finra/scaffolding/random/predicate/PredicateRegistry.scala)
+### [PredicateRegistry](src/main/scala/org/finra/datagenerator/scaffolding/random/predicate/PredicateRegistry.scala)
 Rubber Random chooses how to generate data base on evaluating predicates the are registered to the system. Within that list of valid predicates they are sorted and the strongest priority will be selected.
 
-#### [PredicateType](src/main/scala/org/finra/scaffolding/random/predicate/PredicateType.scala)
+#### [PredicateType](src/main/scala/org/finra/datagenerator/scaffolding/random/predicate/PredicateType.scala)
 There are three types of predicates:
 * `InternalPredicate` - This is a built-in predicate that are made to handle primitives and built-in classes. 
 * `CustomPredicate` - This is for any custom predicate to be added to the system.
@@ -101,7 +101,7 @@ There are three types of predicates:
 2. `Date`
 3. `LocalDateTime`
 
-###### [GeneratingStrategy](src/main/scala/org/finra/scaffolding/random/strategy/GeneratingStrategy.scala)
+###### [GeneratingStrategy](src/main/scala/org/finra/datagenerator/scaffolding/random/strategy/GeneratingStrategy.scala)
 Let's look at what a `GeneratingStrategy` is:
 ```scala
 trait GeneratingStrategy extends Logging {

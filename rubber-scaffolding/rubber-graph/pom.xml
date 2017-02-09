@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>rubber-scaffolding</artifactId>
-        <groupId>org.finra.scaffolding</groupId>
+        <groupId>org.finra.datagenerator.scaffolding</groupId>
         <version>1.2.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -13,12 +13,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.finra.scaffolding</groupId>
+            <groupId>org.finra.datagenerator.scaffolding</groupId>
             <artifactId>rubber-commons</artifactId>
             <version>1.2.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.finra.scaffolding</groupId>
+            <groupId>org.finra.datagenerator.scaffolding</groupId>
             <artifactId>rubber-random</artifactId>
             <version>1.2.1-SNAPSHOT</version>
         </dependency>
@@ -29,12 +29,20 @@
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>spark-gremlin</artifactId>
-            <version>3.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jeremyh</groupId>
+                    <artifactId>jBCrypt</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-core_2.10</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>tinkergraph-gremlin</artifactId>
-            <version>3.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>

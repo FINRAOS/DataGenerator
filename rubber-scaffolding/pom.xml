@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.finra.scaffolding</groupId>
+    <groupId>org.finra.datagenerator.scaffolding</groupId>
     <artifactId>rubber-scaffolding</artifactId>
     <version>1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -29,7 +29,7 @@
         <scala.version>2.11.8</scala.version>
         <enumeratum.version>1.4.14</enumeratum.version>
         <maven-scala-plugin.version>2.15.2</maven-scala-plugin.version>
-        <gremlin-scala.version>3.2.2.0</gremlin-scala.version>
+        <gremlin-scala.version>3.2.3.4</gremlin-scala.version>
         <shapeless.version>2.3.2</shapeless.version>
         <scalatest.version>3.0.0</scalatest.version>
     </properties>
@@ -45,6 +45,17 @@
                         <groupId>com.github.jeremyh</groupId>
                         <artifactId>jBCrypt</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.spark</groupId>
+                        <artifactId>spark-core_2.10</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tinkerpop</groupId>
+                <artifactId>hadoop-gremlin</artifactId>
+                <version>${gremlin.version}</version>
+                <exclusions>
                     <exclusion>
                         <groupId>org.apache.spark</groupId>
                         <artifactId>spark-core_2.10</artifactId>
@@ -151,6 +162,21 @@
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-repl</artifactId>
                 <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tinkerpop</groupId>
+                <artifactId>spark-gremlin</artifactId>
+                <version>${gremlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tinkerpop</groupId>
+                <artifactId>gremlin-core</artifactId>
+                <version>${gremlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tinkerpop</groupId>
+                <artifactId>tinkergraph-gremlin</artifactId>
+                <version>${gremlin.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.beachape</groupId>
