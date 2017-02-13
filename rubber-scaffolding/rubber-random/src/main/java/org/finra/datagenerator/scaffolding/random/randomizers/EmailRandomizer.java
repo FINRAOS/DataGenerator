@@ -4,7 +4,6 @@ import org.finra.datagenerator.scaffolding.random.predicate.JavaClassRandomGener
 import org.finra.datagenerator.scaffolding.random.predicate.RandomContext;
 import org.finra.datagenerator.scaffolding.random.userTypes.Email;
 
-
 /**
  * Created by dkopel on 1/27/17.
  */

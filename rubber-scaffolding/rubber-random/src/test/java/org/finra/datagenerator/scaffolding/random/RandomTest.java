@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.finra.datagenerator.scaffolding.config.ConfigName;
 import org.finra.datagenerator.scaffolding.random.core.JavaRubberRandom;
 import org.finra.datagenerator.scaffolding.random.core.RegexGenerator;
+import org.finra.datagenerator.scaffolding.random.randomizers.EmailRandomizer;
+import org.finra.datagenerator.scaffolding.random.randomizers.StringEmailRandomizer;
+import org.finra.datagenerator.scaffolding.random.support.annotations.CustomRandomizer;
 import org.finra.datagenerator.scaffolding.random.types.CollectionTypes;
 import org.finra.datagenerator.scaffolding.random.types.ParameterizedTypeReference;
 import org.finra.datagenerator.scaffolding.random.userTypes.Email;
@@ -64,11 +67,27 @@ public class RandomTest {
         }
     }
 
+    public static class OtherEmail {
+        @CustomRandomizer(value=StringEmailRandomizer.class)
+        private String email;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public OtherEmail setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+    }
+
     @Test
     public void emailTest() {
         JavaRubberRandom random = JavaRubberRandom.apply();
         Email e1 = random.generate(Email.class);
         logger.info("Email: {}", e1);
+        OtherEmail e2 = random.generate(OtherEmail.class);
+        logger.info("Email: {}", e2.getEmail());
     }
 
     @Test
