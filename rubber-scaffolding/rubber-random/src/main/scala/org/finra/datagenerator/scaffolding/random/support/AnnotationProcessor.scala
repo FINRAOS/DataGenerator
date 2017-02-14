@@ -81,6 +81,7 @@ class AnnotationProcessor extends AnnotationUtils {
             val aa: RandomConfigAnnotation = a.getAnnotation(classOf[RandomConfigAnnotation])
             logger.info("Aa: {}", aa.value())
             val randomizer = {
+                makeObject(aa.value()).asInstanceOf[Randomizer[_]]
                 if(classOf[JavaClassRandomGenerator[_]].isAssignableFrom(aa.value())) {
                     val z = aa.value().newInstance().asInstanceOf[JavaClassRandomGenerator[T] with AnnotationCapable]
                     new (RandomContext=>T) with Configurable with AnnotationCapable {
@@ -90,7 +91,7 @@ class AnnotationProcessor extends AnnotationUtils {
 
                         override def values: Set[AnnotationField[_, _]] = z.values
 
-                        override def configBundle: ConfigBundle = z.configBundle()
+                        override def configBundle: ConfigBundle = z.configBundle
                     }
                 } else {
                     makeObject(aa.value()).asInstanceOf[Randomizer[_]]

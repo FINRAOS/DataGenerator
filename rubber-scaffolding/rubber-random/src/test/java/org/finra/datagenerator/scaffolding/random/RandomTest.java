@@ -5,7 +5,6 @@ import org.finra.datagenerator.scaffolding.config.ConfigName;
 import org.finra.datagenerator.scaffolding.random.core.JavaRubberRandom;
 import org.finra.datagenerator.scaffolding.random.core.RegexGenerator;
 import org.finra.datagenerator.scaffolding.random.randomizers.EmailRandomizer;
-import org.finra.datagenerator.scaffolding.random.randomizers.StringEmailRandomizer;
 import org.finra.datagenerator.scaffolding.random.support.annotations.CustomRandomizer;
 import org.finra.datagenerator.scaffolding.random.types.CollectionTypes;
 import org.finra.datagenerator.scaffolding.random.types.ParameterizedTypeReference;
@@ -68,15 +67,26 @@ public class RandomTest {
     }
 
     public static class OtherEmail {
-        @CustomRandomizer(value=StringEmailRandomizer.class)
-        private String email;
+        private Email email;
 
-        public String getEmail() {
+        @CustomRandomizer(value=EmailRandomizer.class)
+        private String emailString;
+
+        public Email getEmail() {
             return email;
         }
 
-        public OtherEmail setEmail(String email) {
+        public OtherEmail setEmail(Email email) {
             this.email = email;
+            return this;
+        }
+
+        public String getEmailString() {
+            return emailString;
+        }
+
+        public OtherEmail setEmailString(String emailString) {
+            this.emailString = emailString;
             return this;
         }
     }
@@ -88,6 +98,7 @@ public class RandomTest {
         logger.info("Email: {}", e1);
         OtherEmail e2 = random.generate(OtherEmail.class);
         logger.info("Email: {}", e2.getEmail());
+        logger.info("String Email: {}", e2.getEmailString());
     }
 
     @Test

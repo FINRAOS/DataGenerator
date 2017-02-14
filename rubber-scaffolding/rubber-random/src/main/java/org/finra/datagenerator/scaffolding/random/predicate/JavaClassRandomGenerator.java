@@ -1,31 +1,32 @@
 package org.finra.datagenerator.scaffolding.random.predicate;
 
 import org.finra.datagenerator.scaffolding.config.ConfigBundle;
-import org.finra.datagenerator.scaffolding.config.ConfigBundle$;
 import org.finra.datagenerator.scaffolding.config.ConfigBundleName;
 import org.finra.datagenerator.scaffolding.config.Configurable;
-import scala.collection.immutable.HashMap;
 
 /**
  * Created by dkopel on 1/27/17.
  */
-@FunctionalInterface
-public interface JavaClassRandomGenerator<T> extends Configurable {
-    T apply(RandomContext rc);
+public abstract class JavaClassRandomGenerator<T>
+    extends AbstractJavaClassRandomGenerator<T>
+    implements Configurable {
 
-    default Class[] classes() {
+    @Override
+    public abstract T apply(RandomContext rc);
+
+    public Class[] classes() {
         return new Class[]{};
     }
 
-    default long priority() {
+    public long priority() {
         return Long.MAX_VALUE;
     }
 
     @Override
-    default ConfigBundle configBundle() {
-        return ConfigBundle$.MODULE$.apply(
+    public ConfigBundle configBundle() {
+        return new ConfigBundle(
             ConfigBundleName.apply(getClass().getName()),
-            new HashMap()
+            new scala.collection.immutable.HashMap<>()
         );
     }
 }
