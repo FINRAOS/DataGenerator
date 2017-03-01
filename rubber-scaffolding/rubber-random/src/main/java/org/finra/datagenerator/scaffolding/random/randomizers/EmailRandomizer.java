@@ -4,11 +4,10 @@ import org.finra.datagenerator.scaffolding.random.predicate.JavaClassRandomGener
 import org.finra.datagenerator.scaffolding.random.predicate.RandomContext;
 import org.finra.datagenerator.scaffolding.random.userTypes.Email;
 
-
 /**
  * Created by dkopel on 1/27/17.
  */
-public class EmailRandomizer implements JavaClassRandomGenerator<Email> {
+public class EmailRandomizer extends JavaClassRandomGenerator<Email> {
     @Override
     public Class<?>[] classes() {
         return new Class<?>[] { Email.class };
