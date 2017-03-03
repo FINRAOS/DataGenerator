@@ -93,12 +93,12 @@ public class RandomTest {
 
     @Test
     public void emailTest() {
-        //JavaRubberRandom random = JavaRubberRandom.apply();
-        //Email e1 = random.generate(Email.class);
-        //logger.info("Email: {}", e1);
-        //OtherEmail e2 = random.generate(OtherEmail.class);
-        //logger.info("Email: {}", e2.getEmail());
-        //logger.info("String Email: {}", e2.getEmailString());
+        JavaRubberRandom random = JavaRubberRandom.apply();
+        Email e1 = random.generate(Email.class);
+        logger.info("Email: {}", e1);
+        OtherEmail e2 = random.generate(OtherEmail.class);
+        logger.info("Email: {}", e2.getEmail());
+        logger.info("String Email: {}", e2.getEmailString());
     }
 
     @Test

@@ -144,38 +144,38 @@ class RandomScalaTest extends TestCase {
         Assert.assertTrue(longCount <= 1)
     }
 
-//    @Test
-//    def testPredicateDecorator(): Unit = {
-//        val r = new RubberRandomImpl
-//        val lr = new LongRandomizer
-//
-//        locally {
-//            implicit val lc = LocalConfig(
-//                Seq(
-//                    lr.minDef(0L),
-//                    lr.maxDef(100L)
-//                )
-//            )(r)
-//
-//            logger.debug("initial max long: {}", lc.confValue(lr.LongRandomizerMaxName));
-//
-//            lc({
-//                logger.debug("max long: {}", lc.confValue(lr.LongRandomizerMaxName));
-//                val out = r.generate(classOf[java.lang.Long])
-//                Assert.assertTrue(out < 100L)
-//                Assert.assertTrue(out > 0L)
-//                logger.debug("Long out: {}", out)
-//            })(lc)
-//        }
-//
-//        locally {
-//            implicit val rr: RubberRandom = r
-//            val out = r.generate(classOf[java.lang.Long])
-//            Assert.assertTrue(out < Long.MaxValue)
-//            Assert.assertTrue(out > Long.MinValue)
-//            logger.debug("Long out: {}", out)
-//        }
-//    }
+    @Test
+    def testPredicateDecorator(): Unit = {
+        val r = new RubberRandomImpl
+        val lr = new LongRandomizer
+
+        locally {
+            implicit val lc = LocalConfig(
+                Seq(
+                    lr.minDef(0L),
+                    lr.maxDef(100L)
+                )
+            )(r)
+
+            logger.debug("initial max long: {}", lc.confValue(lr.LongRandomizerMaxName));
+
+            lc({
+                logger.debug("max long: {}", lc.confValue(lr.LongRandomizerMaxName));
+                val out = r.generate(classOf[java.lang.Long])
+                Assert.assertTrue(out < 100L)
+                Assert.assertTrue(out > 0L)
+                logger.debug("Long out: {}", out)
+            })(lc)
+        }
+
+        locally {
+            implicit val rr: RubberRandom = r
+            val out = r.generate(classOf[java.lang.Long])
+            Assert.assertTrue(out < Long.MaxValue)
+            Assert.assertTrue(out > Long.MinValue)
+            logger.debug("Long out: {}", out)
+        }
+    }
 
     @Test(expected = classOf[RecursionDisabledException])
     def testRecursiveDisabled: Unit = {

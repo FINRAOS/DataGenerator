@@ -1,6 +1,6 @@
 package org.finra.datagenerator.scaffolding.knowledge.rule.support.annotations;
 
-import org.finra.datagenerator.scaffolding.knowledge.rule.Criteria;
+import org.finra.scaffolding.knowledge.rule.Criteria;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
