@@ -4,6 +4,7 @@ import gremlin.scala._
 import jdk.nashorn.internal.ir.annotations.Ignore
 import junit.framework.TestCase
 import org.apache.spark.SparkContext
+import org.apache.tinkerpop.gremlin.structure.io.IoCore
 import org.finra.datagenerator.scaffolding.dependency.Domain
 import org.finra.datagenerator.scaffolding.graph.GraphService
 import org.finra.datagenerator.scaffolding.spark.RDDService
