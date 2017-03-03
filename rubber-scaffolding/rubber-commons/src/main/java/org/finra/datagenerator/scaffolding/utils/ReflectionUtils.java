@@ -105,9 +105,6 @@ public class ReflectionUtils {
     public static void setField(Field f, Object obj, Object val) throws IllegalAccessException {
         boolean access = f.isAccessible();
         f.setAccessible(true);
-        if(f.getType().equals(String.class)) {
-            val = val.toString();
-        }
         f.set(obj, val);
         f.setAccessible(access);
     }

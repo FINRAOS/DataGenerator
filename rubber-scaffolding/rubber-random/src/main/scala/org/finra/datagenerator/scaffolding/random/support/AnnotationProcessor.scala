@@ -5,7 +5,7 @@ import java.lang.reflect.Field
 import org.finra.datagenerator.scaffolding.config._
 import org.finra.datagenerator.scaffolding.utils.ReflectionUtils
 import org.finra.datagenerator.scaffolding.config._
-import org.finra.datagenerator.scaffolding.random.predicate.{ClassRandomGenerator, JavaClassRandomGenerator, RandomContext, RandomGenerator}
+import org.finra.datagenerator.scaffolding.random.predicate.RandomContext
 import org.finra.datagenerator.scaffolding.random.support.annotations.RandomConfigAnnotation
 import org.finra.datagenerator.scaffolding.utils.ReflectionUtils.AnnotationAssociation
 
@@ -18,9 +18,9 @@ class AnnotationProcessor extends AnnotationUtils {
     override val basePackages: Seq[String] = Seq("org.finra.datagenerator.scaffolding")
     val annotationsSeq: Seq[AnnotationContainer] = scanRandomConfigAnnotations
 
-    type Randomizer[T] = (RandomContext=>T) with Configurable with AnnotationCapable
+    type Randomizer = (RandomContext=>_) with Configurable with AnnotationCapable
 
-    case class AnnotationContainer(annotation: Class[_], randomizer: Randomizer[_])
+    case class AnnotationContainer(annotation: Class[_], randomizer: Randomizer)
 
     case class AnnotationFieldConfig(ref: AnyRef, confs: Seq[Config[_]]) extends FieldReference {
         override def field: Field = ref.asInstanceOf[java.lang.reflect.Field]
@@ -34,7 +34,7 @@ class AnnotationProcessor extends AnnotationUtils {
         }).filter(e => e._2.nonEmpty).toMap
     }
 
-    def filterValues[T, U](randomizer: Randomizer[_], values: Map[String, AnyRef]) = {
+    def filterValues[T, U](randomizer: Randomizer, values: Map[String, AnyRef]) = {
         randomizer.values
             .filter(value => values.keySet.contains(value.name))
             .map(value => {
@@ -75,29 +75,11 @@ class AnnotationProcessor extends AnnotationUtils {
         else LocalConfig(Seq.empty)(conf)
     }
 
-    def scanRandomConfigAnnotations[T]: Seq[AnnotationContainer] = {
+    def scanRandomConfigAnnotations: Seq[AnnotationContainer] = {
         var ss = Seq.empty[AnnotationContainer]
         findAnnotation(classOf[RandomConfigAnnotation], ANNOTATION, false).foreach(a => {
             val aa: RandomConfigAnnotation = a.getAnnotation(classOf[RandomConfigAnnotation])
-            logger.info("Aa: {}", aa.value())
-            val randomizer = {
-                makeObject(aa.value()).asInstanceOf[Randomizer[_]]
-                if(classOf[JavaClassRandomGenerator[_]].isAssignableFrom(aa.value())) {
-                    val z = aa.value().newInstance().asInstanceOf[JavaClassRandomGenerator[T] with AnnotationCapable]
-                    new (RandomContext=>T) with Configurable with AnnotationCapable {
-                        override def apply(v1: RandomContext): T = z.apply(v1)
-
-                        override def name: String = z.name
-
-                        override def values: Set[AnnotationField[_, _]] = z.values
-
-                        override def configBundle: ConfigBundle = z.configBundle
-                    }
-                } else {
-                    makeObject(aa.value()).asInstanceOf[Randomizer[_]]
-                }
-            }
-
+            val randomizer = makeObject(aa.value()).asInstanceOf[Randomizer]
             ss = ss :+ AnnotationContainer(a, randomizer)
             logger.debug("{} -> {}", a.getClass.toString.asInstanceOf[Any], randomizer.getClass)
             randomizer.values.foreach(v => logger.debug("Field: {}", v.name))
