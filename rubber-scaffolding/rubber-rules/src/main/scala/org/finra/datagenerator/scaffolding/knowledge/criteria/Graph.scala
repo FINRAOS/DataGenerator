@@ -1,5 +1,8 @@
 package org.finra.datagenerator.scaffolding.knowledge.criteria
 
+import gremlin.scala.Graph
+import org.finra.datagenerator.scaffolding.knowledge.context.KnowledgeContext
+import org.finra.datagenerator.scaffolding.knowledge.rule.Criteria
 import org.slf4j.LoggerFactory
 
 /**

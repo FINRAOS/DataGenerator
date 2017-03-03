@@ -1,7 +1,7 @@
 package org.finra.datagenerator.scaffolding.knowledge.criteria
 
-import org.finra.scaffolding.knowledge.context.{KnowledgeContext, Variable}
-import org.finra.scaffolding.knowledge.rule.Criteria
+import org.finra.datagenerator.scaffolding.knowledge.context.{KnowledgeContext, Variable}
+import org.finra.datagenerator.scaffolding.knowledge.rule.Criteria
 import org.slf4j.LoggerFactory
 
 /**

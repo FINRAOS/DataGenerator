@@ -3,7 +3,7 @@ package org.finra.datagenerator.scaffolding.messaging
 import java.util.UUID
 import java.util.concurrent.{CountDownLatch, ThreadLocalRandom}
 
-import Configuration
+//import Configuration
 import org.finra.datagenerator.scaffolding.messaging.config.CompleteResponse
 import org.finra.datagenerator.scaffolding.messaging.response.{Response, SimpleResponse}
 import org.finra.datagenerator.scaffolding.spark.RDDService

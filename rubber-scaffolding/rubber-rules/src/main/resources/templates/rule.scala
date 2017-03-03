@@ -2,9 +2,9 @@ package PACKAGE
 
 import java.util.UUID
 
-import org.finra.scaffolding.knowledge._
-import org.finra.scaffolding.knowledge.context._
-import org.finra.scaffolding.knowledge.rule._
+import org.finra.datagenerator.scaffolding.knowledge._
+import org.finra.datagenerator.scaffolding.knowledge.context._
+import org.finra.datagenerator.scaffolding.knowledge.rule._
 
 class CLASSNAME(override val criteria: Map[String, CriteriaContainer]) extends CriteriaRule {
     override val id = UUID.randomUUID

@@ -56,48 +56,49 @@ class DependencyTest extends TestCase {
         Assert.assertEquals("apple", t.property("fruit").value())
     }
 
-    @Ignore
-    @Test def test2(): Unit = {
-        val graph = graphService.graph
-
-        val Founded = Key[String]("founded")
-        val Distance = Key[Int]("distance")
-
-        // create labelled vertex
-        val paris = graph + "Paris"
-
-        // create vertex with typed properties
-        val london = graph + ("London", Founded -> "43 AD")
-
-        // create labelled edges
-        paris --- "OneWayRoad" --> london
-        paris <-- "OtherWayAround" --- london
-        paris <-- "Eurostar" --> london
-
-        // create edge with typed properties
-        paris --- ("Eurostar", Distance -> 495) --> london
-
-        // type safe access to properties
-        paris.out("Eurostar").value(Founded).head //43 AD
-        paris.outE("Eurostar").value(Distance).head //495
-        london.valueOption(Founded) //Some(43 AD)
-        london.valueOption(Distance) //None
-        paris.setProperty(Founded, "300 BC")
-
-        val Name = Key[String]("name")
-        val Age = Key[Int]("age")
-
-        val v1 = graph + ("person", Name -> "marko", Age -> 29) asScala
-
-        v1.keys // Set(Key("name"), Key("age"))
-        v1.property(Name) // "marko"
-        v1.valueMap // Map("name" → "marko", "age" → 29)
-        v1.valueMap("name", "age") // Map("name" → "marko", "age" → 29)
-
-        logger.info("Vertex keys {}", v1.keys)
-        logger.info("Vertex properties {}", v1.valueMap)
-        graph.graph.io(IoCore.graphml()).writeGraph("graph.xml");
-    }
+//    todo: this needs to be cleaned up
+//    @Ignore
+//    @Test def test2(): Unit = {
+//        val graph = graphService.graph
+//
+//        val Founded = Key[String]("founded")
+//        val Distance = Key[Int]("distance")
+//
+//        // create labelled vertex
+//        val paris = graph + "Paris"
+//
+//        // create vertex with typed properties
+//        val london = graph + ("London", Founded -> "43 AD")
+//
+//        // create labelled edges
+//        paris --- "OneWayRoad" --> london
+//        paris <-- "OtherWayAround" --- london
+//        paris <-- "Eurostar" --> london
+//
+//        // create edge with typed properties
+//        paris --- ("Eurostar", Distance -> 495) --> london
+//
+//        // type safe access to properties
+//        paris.out("Eurostar").value(Founded).head //43 AD
+//        paris.outE("Eurostar").value(Distance).head //495
+//        london.valueOption(Founded) //Some(43 AD)
+//        london.valueOption(Distance) //None
+//        paris.setProperty(Founded, "300 BC")
+//
+//        val Name = Key[String]("name")
+//        val Age = Key[Int]("age")
+//
+//        val v1 = graph + ("person", Name -> "marko", Age -> 29) asScala
+//
+//        v1.keys // Set(Key("name"), Key("age"))
+//        v1.property(Name) // "marko"
+//        v1.valueMap // Map("name" → "marko", "age" → 29)
+//        v1.valueMap("name", "age") // Map("name" → "marko", "age" → 29)
+//
+//        logger.info("Vertex keys {}", v1.keys)
+//        logger.info("Vertex properties {}", v1.valueMap)
+//        graph.graph.io(IoCore.graphml()).writeGraph("graph.xml");
+//    }
 
     @Ignore
     def test3: Unit = {

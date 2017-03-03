@@ -1,6 +1,6 @@
 package org.finra.datagenerator.scaffolding.knowledge.rule
 
-import org.finra.scaffolding.knowledge.context.{KnowledgeContext, Variable}
+import org.finra.datagenerator.scaffolding.knowledge.context.{KnowledgeContext, Variable}
 
 /**
   * Created by dkopel on 9/21/16.
