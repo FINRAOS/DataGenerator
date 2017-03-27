@@ -92,6 +92,7 @@ public class PositiveBoundHiveDateTest {
         PositiveBoundHiveDate dateTest = new PositiveBoundHiveDate();
         PositiveBoundHiveDate.PositiveBoundHiveDateTag tag = new PositiveBoundHiveDate.PositiveBoundHiveDateTag();
         tag.setName("name");
+        tag.setOnlyBusinessDays("false");
 
         Calendar currDate = Calendar.getInstance();
         Calendar prevDate = Calendar.getInstance();
