@@ -165,11 +165,6 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.tinkerpop</groupId>
-                <artifactId>spark-gremlin</artifactId>
-                <version>${gremlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tinkerpop</groupId>
                 <artifactId>gremlin-core</artifactId>
                 <version>${gremlin.version}</version>
             </dependency>
