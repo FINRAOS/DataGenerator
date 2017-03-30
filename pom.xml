@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.finra.datagenerator</groupId>
@@ -47,11 +48,11 @@
             <name>Mohamed Ibrahim</name>
             <email>mibrahim@mibrahim.net</email>
         </developer>
-		<developer>
-			<id>sameradra</id>
-			<name>Samer Adra</name>
-			<email>SamerAdra@gmail.com</email>
-		</developer>
+        <developer>
+            <id>sameradra</id>
+            <name>Samer Adra</name>
+            <email>SamerAdra@gmail.com</email>
+        </developer>
         <developer>
             <id>dovidkopel</id>
             <name>Dovid Kopel</name>
@@ -86,9 +87,19 @@
             </build>
         </profile>
     </profiles>
-
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.9.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
