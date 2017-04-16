@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.finra.datagenerator</groupId>
+  <artifactId>dg-example-default-archetype</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <packaging>maven-archetype</packaging>
+
+  <name>dg-example-default-archetype</name>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.archetype</groupId>
+        <artifactId>archetype-packaging</artifactId>
+        <version>2.2</version>
+      </extension>
+    </extensions>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <description>A tool that generates test scripts using a given model and templates</description>
+
+  <url>http://github.com/FINRAOS/DataGenerator/dg-example-default</url>
+
+  <developers>
+    <developer>
+      <id>wnilkamal</id>
+      <name>Nil Weerasingh</name>
+      <email>wnilkamal@yahoo.com</email>
+    </developer>
+    <developer>
+      <id>bryantrobbins</id>
+      <name>Bryan Robbins</name>
+      <email>bryantrobbins@gmail.com</email>
+    </developer>
+    <developer>
+      <id>mibrahim</id>
+      <name>Mohamed Ibrahim</name>
+      <email>mibrahim@mibrahim.net</email>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:http://github.com/FINRAOS/DataGenerator/dg-example-default</connection>
+    <developerConnection>scm:git:http://github.com/FINRAOS/DataGenerator/dg-example-default</developerConnection>
+    <url>http://github.com/FINRAOS/DataGenerator/dg-example-default</url>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Staging Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Nexus Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+</project>
