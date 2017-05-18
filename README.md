@@ -27,7 +27,7 @@ For the commons library
 ```sh
 <dependency>
     <groupId>org.finra.datagenerator</groupId>
-    <artifactId>dg-common<artifactId>
+    <artifactId>dg-common</artifactId>
     <version>2.2</version>
 </dependency>
 ```
