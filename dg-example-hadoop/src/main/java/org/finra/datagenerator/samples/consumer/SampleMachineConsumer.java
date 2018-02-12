@@ -44,7 +44,7 @@ public class SampleMachineConsumer extends DataConsumer {
     private class JenkinsReportingHandler implements ReportingHandler {
         private final AtomicBoolean exit;
 
-        public JenkinsReportingHandler(final AtomicBoolean exit) {
+        JenkinsReportingHandler(final AtomicBoolean exit) {
             this.exit = exit;
         }
 
