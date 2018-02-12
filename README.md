@@ -5,6 +5,7 @@
 [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/repos/FINRAOS/DataGenerator/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/repos/FINRAOS/DataGenerator/branches/master)
 
 [![Join the chat at https://gitter.im/FINRAOS/DataGenerator](https://badges.gitter.im/FINRAOS/DataGenerator.svg)](https://gitter.im/FINRAOS/DataGenerator?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/repos/FINRAOS/DataGenerator/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/repos/FINRAOS/DataGenerator/branches/master)
 
 Quick Start Videos
 ------------------
