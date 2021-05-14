@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package org.finra.datagenerator.consumer;
 
 import java.util.Map;
