@@ -26,7 +26,7 @@
         </parameters>
     </check>
     <!-- Catches plus sign in type parameter variance annotations, not just the plus operator. -->
-	<check level="warning" class="org.scalastyle.scalariform.SpacesAfterPlusChecker" enabled="false"></check>
+	<check level="warning 1" class="org.scalastyle.scalariform.SpacesAfterPlusChecker" enabled="false"></check>
 	<!-- Not sure what the point of this check is. -->
     <check level="warning" class="org.scalastyle.file.WhitespaceEndOfLineChecker" enabled="false"></check>
     <check level="warning" class="org.scalastyle.scalariform.SpacesBeforePlusChecker" enabled="true"></check>
